@@ -8,3 +8,6 @@ __pycache__
 *.RFF
 *.pyprof
 *.png
+build
+dist
+*.spec

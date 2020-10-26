@@ -29,5 +29,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=_install_requires()
+    install_requires=_install_requires(),
+    entry_points={"console_scripts": ["bloom=bloom.__main__:main"]}
 )
