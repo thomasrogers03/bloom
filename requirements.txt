@@ -1,0 +1,8 @@
+# Copyright 2020 Thomas Rogers
+# SPDX-License-Identifier: Apache-2.0
+
+panda3d==1.10.7
+numpy==1.19.2
+opencv-python==4.4.0.44
+triangle==20200424
+matplotlib==3.3.2
