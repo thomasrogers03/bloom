@@ -3,7 +3,7 @@
 
 import typing
 
-import data_loading
+from . import data_loading
 
 
 class Header(data_loading.CustomStruct):

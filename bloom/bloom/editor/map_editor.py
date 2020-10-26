@@ -5,16 +5,9 @@ import logging
 import math
 import typing
 
-import constants
-import data_loading
-import game_map
-import map_data.sector
-import map_data.wall
-import triangle
 from panda3d import bullet, core
 
-import editor
-
+from .. import constants, data_loading, editor, game_map, map_data
 from . import (grid_snapper, highlight, sector_selector, sprite_selector,
                wall_bunch, wall_selector)
 from .sector import EditorSector

@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import typing
-
-import data_loading
-from map_data import headers, sector, wall, sprite
 import zlib
+
+from . import data_loading
+from .map_data import headers, sector, sprite, wall
 
 
 class Map:

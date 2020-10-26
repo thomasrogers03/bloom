@@ -1,7 +1,7 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
-import data_loading
+from .. import data_loading
 
 
 class MapHeader0(data_loading.CustomStruct):

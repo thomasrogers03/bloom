@@ -3,15 +3,9 @@
 
 import typing
 
-import constants
-import game_map
-import map_data.sector
-import map_data.sprite
-import map_data.wall
 from panda3d import bullet, core
 
-import editor
-
+from .. import constants, editor, game_map, map_data
 from . import sprite, wall
 
 

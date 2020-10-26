@@ -1,9 +1,12 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
-import editor
 import math
+
 from panda3d import core
+
+from .. import editor
+
 
 class GridSnapper:
 

@@ -8,9 +8,8 @@ from glob import glob
 import cv2
 import numpy
 
-import data_loading
-import game_map
-from rff import RFF
+from . import data_loading, game_map
+from .rff import RFF
 
 blood_path = 'J:/Games/DOSBox-0.73/Games/Blood/ouwblood'
 art_files = glob(f'{blood_path}/*.[aA][rR][tT]')

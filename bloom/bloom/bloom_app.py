@@ -11,14 +11,9 @@ from glob import glob
 from direct.showbase.ShowBase import ShowBase
 from panda3d import bullet, core
 
-import art
-import clicker
-import constants
-import edit_mode
-import editor
-import game_map
-from editor import map_editor
-from rff import RFF
+from . import art, clicker, constants, edit_mode, editor, game_map
+from .editor import map_editor
+from .rff import RFF
 
 logger = logging.getLogger(__name__)
 
@@ -393,23 +388,3 @@ class Bloom(ShowBase):
 
         return self._tiles[picnum]
 
-
-if __name__ == '__main__':
-    core.load_prc_file_data('', 'sync-video #f')
-    core.load_prc_file_data('', 'show-frame-rate-meter #t')
-    core.load_prc_file_data('', 'win-size 1800 800')
-
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            logging.StreamHandler()
-        ]
-    )
-
-    if len(sys.argv) > 1:
-        path = sys.argv[1]
-    else:
-        path = None
-    app = Bloom(path)
-    app.run()
