@@ -7,7 +7,9 @@ import os.path
 
 def _install_requires():
     directory = os.path.dirname(__file__)
-    with open(os.path.join(directory, 'requirements.txt'), 'r') as file:
+    requirements_path = os.path.join(directory, 'requirements.txt')
+    
+    with open(requirements_path, 'r') as file:
         lines = [
             line.strip()
             for line in file.readlines()
@@ -17,7 +19,7 @@ def _install_requires():
 
 setuptools.setup(
     name="bloom",
-    version="0.0.1",
+    version="0.0.2",
     author="Thomas Rogers",
     author_email="thomasrogers03@gmail.com",
     description="Blood Modding Suite",

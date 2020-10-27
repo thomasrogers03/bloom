@@ -13,7 +13,11 @@ def main():
     options = parameters.get_parameters()
     core.load_prc_file_data('', 'sync-video #f')
     core.load_prc_file_data('', 'show-frame-rate-meter #t')
-    core.load_prc_file_data('', 'win-size 1800 800')
+    core.load_prc_file_data('', 'disable-message-loop #t')
+    if options.direct_tools:
+        raise NotImplementedError()
+        # core.load_prc_file_data('', 'want-tk #t')
+        # core.load_prc_file_data('', 'want-directtools #t')
 
     logging.basicConfig(
         level=logging.INFO,

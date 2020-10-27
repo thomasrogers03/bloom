@@ -1,19 +1,21 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import importlib
 import logging
 import math
 import os.path
 import sys
+import tkinter
 import tkinter.filedialog
 import tkinter.messagebox
-import tkinter
 import typing
 from glob import glob
 
 import yaml
 from direct.showbase.ShowBase import ShowBase
 from panda3d import bullet, core
+from panda3d.direct import init_app_for_gui
 
 from . import art, clicker, constants, edit_mode, editor, game_map
 from .editor import map_editor
@@ -23,16 +25,14 @@ logger = logging.getLogger(__name__)
 
 
 class Bloom(ShowBase):
-    _TICK_RATE = 1 / 120.0
+    _TICK_RATE = 1 / 35.0
+    _TICK_SCALE = 10240
     _CONFIG_PATH = 'config.yaml'
 
     def __init__(self, path: str):
-        ShowBase.__init__(self)
+        self._setup_window()
         self._path = path
         self._collision_world = bullet.BulletWorld()
-
-        root_window = tkinter.Tk()
-        root_window.withdraw()
 
         if os.path.exists(self._CONFIG_PATH):
             with open(self._CONFIG_PATH, 'r') as file:
@@ -54,6 +54,57 @@ class Bloom(ShowBase):
                 file.write(yaml.dump(self._config))
 
         self.task_mgr.add(self._initialize, 'initialize')
+
+    def _setup_window(self):
+        ShowBase.__init__(self, windowType='none')
+
+        frame = tkinter.Tk()
+
+        frame.state("zoomed")
+        frame.title("Bloom")
+        frame.bind("<Configure>", self._handle_resize)
+
+        self.wantTk = True
+        self.tkRoot = frame
+        init_app_for_gui()
+
+        tk_frame_rate = core.ConfigVariableDouble('tk-frame-rate', 60.0)
+        self._tk_delay = int(1000.0 / tk_frame_rate.get_value())
+        self.tkRoot.after(self._tk_delay, self._tk_timer_callback)
+
+        self.run = self.tkRun
+        self.taskMgr.run = self.tkRun
+        if self.appRunner:
+            self.appRunner.run = self.tkRun
+
+        props = self._window_props()
+
+        self.make_default_pipe()
+        self.open_default_window(props=props)
+
+    def _tk_timer_callback(self):
+        if not core.Thread.get_current_thread().get_current_task():
+            self.task_mgr.step()
+
+        self.tkRoot.after(self._tk_delay, self._tk_timer_callback)
+
+    def _window_props(self):
+        self.tkRoot.update()
+        window_id = self.tkRoot.winfo_id()
+        width = self.tkRoot.winfo_width()
+        height = self.tkRoot.winfo_height()
+
+        props = core.WindowProperties()
+        props.set_parent_window(window_id)
+        props.set_origin(0, 50)
+        props.set_size(width, height - 250)
+
+        return props
+
+    def _handle_resize(self, event):
+        if self.win is not None:
+            props = self._window_props()
+            self.win.request_properties(props)
 
     def _initialize(self, task):
         blood_path = self._config['blood_path']
@@ -278,20 +329,19 @@ class Bloom(ShowBase):
         y_direction = cos_theta * total_delta.y - sin_theta * -total_delta.x
         total_camera_delta = core.Vec2(x_direction, y_direction)
 
-        scale = 5120
         self._map_editor.move_selection(
-            total_delta * scale, 
-            delta * scale, 
-            total_camera_delta * scale, 
-            camera_delta * scale, modified
+            total_delta * self._TICK_SCALE, 
+            delta * self._TICK_SCALE, 
+            total_camera_delta * self._TICK_SCALE, 
+            camera_delta * self._TICK_SCALE, modified
         )
 
     def _pan_camera_2d(self, total_delta: core.Vec2, delta: core.Vec2):
         x_direction = (delta.x * self._camera_2d.get_sx()) / 4
         y_direction = (delta.y * self._camera_2d.get_sx()) / 4
 
-        self._builder_2d.set_x(self._builder_2d, x_direction * 5120)
-        self._builder_2d.set_y(self._builder_2d, y_direction * 5120)
+        self._builder_2d.set_x(self._builder_2d, x_direction * self._TICK_SCALE)
+        self._builder_2d.set_y(self._builder_2d, y_direction * self._TICK_SCALE)
 
     def _pan_camera(self, total_delta: core.Vec2, delta: core.Vec2):
         heading = self._builder.get_h()
@@ -301,11 +351,11 @@ class Bloom(ShowBase):
         x_direction = -sin_theta * delta.y + cos_theta * delta.x
         y_direction = cos_theta * delta.y + sin_theta * delta.x
 
-        self._builder_2d.set_x(self._builder_2d, x_direction * 5120)
-        self._builder_2d.set_y(self._builder_2d, y_direction * 5120)
+        self._builder_2d.set_x(self._builder_2d, x_direction * self._TICK_SCALE)
+        self._builder_2d.set_y(self._builder_2d, y_direction * self._TICK_SCALE)
 
     def _strafe_camera_2d(self, total_delta: core.Vec2, delta: core.Vec2):
-        delta *= 100
+        delta *= self._TICK_SCALE / 100.0
 
         scale_grid = 1.0 / 8
         delta_y_scaled = delta.y / 2
