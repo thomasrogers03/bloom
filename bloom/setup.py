@@ -41,7 +41,8 @@ setuptools.setup(
             'plugins': [
                 'pandagl',
                 'p3openal_audio',
-            ]
+            ],
+            'platforms': ['win_amd64']
         }
     }
 )
