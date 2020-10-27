@@ -6,6 +6,7 @@ import math
 import os.path
 import sys
 import tkinter.filedialog
+import tkinter.messagebox
 import tkinter
 import typing
 from glob import glob
@@ -38,10 +39,16 @@ class Bloom(ShowBase):
             root_window.withdraw()
 
             self._config = {}
-            self._config['blood_path'] = tkinter.filedialog.askdirectory(
+            blood_path = tkinter.filedialog.askdirectory(
                 initialdir=os.getcwd(),
                 title='Specify Blood Game Path',
             )
+            if not (blood_path and os.path.exists(os.path.join(blood_path, 'BLOOD.RFF'))):
+                message = 'Unable to proceed without a valid blood path'
+                tkinter.messagebox.showerror(title='Cannot load', message=message)
+                raise ValueError(message)
+
+            self._config['blood_path'] = blood_path
 
             with open(self._CONFIG_PATH, 'w+') as file:
                 file.write(yaml.dump(self._config))
@@ -205,6 +212,7 @@ class Bloom(ShowBase):
         self._tickers.set_mode('3d')
 
         self.accept('control-s', self._save_map)
+        self.accept('control-o', self._open_map)
         self.accept('control-p', lambda: self.screenshot('screenshot.png', defaultFilename=False))
         self.accept('space', lambda: self._map_editor.split_highlight(False))
         self.accept('shift-space', lambda: self._map_editor.split_highlight(True))
