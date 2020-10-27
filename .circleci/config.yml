@@ -24,7 +24,7 @@ jobs:
       - store_artifacts:
           path: bloom/dist     
       - persist_to_workspace:
-          root: bloom/dist
+          root: .
           paths:
             - bloom/dist
   publish-github-release:
@@ -35,7 +35,7 @@ jobs:
           at: ./artifacts
       - run:
           command: |
-            VERSION=$(cat ./artifacts/version.txt)
+            VERSION=$(cat ./artifacts/bloom/dist/version.txt)
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
           name: Create release    
 
