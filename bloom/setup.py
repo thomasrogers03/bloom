@@ -32,6 +32,11 @@ setuptools.setup(
     install_requires=_install_requires(),
     options={
         'build_apps': {
+            'include_patterns': [
+                '**/*.png',
+                '**/*.jpg',
+                '**/*.egg',
+            ],
             'gui_apps': {'bloom': 'run_bloom.py'},
             'plugins': [
                 'pandagl',
