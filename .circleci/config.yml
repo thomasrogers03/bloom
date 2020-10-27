@@ -1,0 +1,26 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@0.2.1
+
+jobs:
+  build-and-test:
+    executor: python/default
+    steps:
+      - checkout
+      - python/load-cache
+      - run:
+          command: python -m pip install -r bloom/dev_requirements.txt
+          name: Install development requirements
+      - python/save-cache
+      - run:
+          command: cd bloom && python setup.py bdist_apps
+          name: Build application
+      - store_artifacts:
+          path: dist          
+
+workflows:
+  main:
+    jobs:
+      - build-and-test
+
