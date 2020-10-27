@@ -17,7 +17,7 @@ jobs:
           command: cd bloom && python setup.py bdist_apps
           name: Build application
       - store_artifacts:
-          path: dist          
+          path: bloom/dist          
 
 workflows:
   main:
