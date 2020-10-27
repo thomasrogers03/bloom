@@ -6,12 +6,14 @@ orbs:
 jobs:
   build-and-test:
     executor: python/default
+    docker:
+      - image: circleci/python:3.6.12
+        environment:
+          - ENV: CIRCLE
     steps:
       - checkout
       - python/load-cache
-      - run:
-          command: python -m pip install -r bloom/dev_requirements.txt
-          name: Install development requirements
+      - python/install-packages
       - python/save-cache
       - run:
           command: cd bloom && python setup.py bdist_apps
