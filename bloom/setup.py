@@ -30,5 +30,13 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=_install_requires(),
-    entry_points={"console_scripts": ["bloom=bloom.__main__:main"]}
+    options={
+        'build_apps': {
+            'gui_apps': {'bloom': 'run_bloom.py'},
+            'plugins': [
+                'pandagl',
+                'p3openal_audio',
+            ]
+        }
+    }
 )

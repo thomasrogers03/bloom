@@ -5,7 +5,6 @@ import time
 import typing
 from glob import glob
 
-import cv2
 import numpy
 
 from . import data_loading, game_map
