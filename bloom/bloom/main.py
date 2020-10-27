@@ -6,10 +6,11 @@ import sys
 
 from panda3d import core
 
-from . import bloom_app
+from . import bloom_app, parameters
 
 
 def main():
+    options = parameters.get_parameters()
     core.load_prc_file_data('', 'sync-video #f')
     core.load_prc_file_data('', 'show-frame-rate-meter #t')
     core.load_prc_file_data('', 'win-size 1800 800')
@@ -22,9 +23,5 @@ def main():
         ]
     )
 
-    if len(sys.argv) > 1:
-        path = sys.argv[1]
-    else:
-        path = None
-    app = bloom_app.Bloom(path)
+    app = bloom_app.Bloom(options.map_path)
     app.run()
