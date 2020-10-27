@@ -18,19 +18,25 @@ jobs:
             python3 -m pip install -r requirements.txt
       - python/save-cache
       - run:
-          command: cd bloom && python3 setup.py bdist_apps
+          command: |
+            cd bloom && python3 setup.py bdist_apps
+            cd bloom && python3 setup.py --version > dist/version.txt
           name: Build application
       - store_artifacts:
           path: bloom/dist     
+      - persist_to_workspace:
+          root: .
+          paths:
+            - bloom/dist
   publish-github-release:
     docker:
       - image: cibuilds/github:0.10
     steps:
       - attach_workspace:
-        at: ./artifacts
+          at: ./artifacts
       - run:
           command: |
-            VERSION=$(cd bloom && python3 setup.py --version)
+            VERSION=$(cat ./artifacts/version.txt)
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
           name: Create release    
 
