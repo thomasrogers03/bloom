@@ -3,3 +3,4 @@
 
 panda3d==1.10.7
 numpy==1.17.2
+pyyaml==5.1

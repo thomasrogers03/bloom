@@ -5,9 +5,12 @@ import logging
 import math
 import os.path
 import sys
+import tkinter.filedialog
+import tkinter
 import typing
 from glob import glob
 
+import yaml
 from direct.showbase.ShowBase import ShowBase
 from panda3d import bullet, core
 
@@ -20,15 +23,33 @@ logger = logging.getLogger(__name__)
 
 class Bloom(ShowBase):
     _TICK_RATE = 1 / 120.0
+    _CONFIG_PATH = 'config.yaml'
 
     def __init__(self, path: str):
         ShowBase.__init__(self)
         self._path = path
         self._collision_world = bullet.BulletWorld()
+
+        if os.path.exists(self._CONFIG_PATH):
+            with open(self._CONFIG_PATH, 'r') as file:
+                self._config = yaml.load(file.read())
+        else:
+            root_window = tkinter.Tk()
+            root_window.withdraw()
+
+            self._config = {}
+            self._config['blood_path'] = tkinter.filedialog.askdirectory(
+                initialdir=os.getcwd(),
+                title='Specify Blood Game Path',
+            )
+
+            with open(self._CONFIG_PATH, 'w+') as file:
+                file.write(yaml.dump(self._config))
+
         self.task_mgr.add(self._initialize, 'initialize')
 
     def _initialize(self, task):
-        blood_path = 'J:/Games/DOSBox-0.73/Games/Blood/ouwblood'
+        blood_path = self._config['blood_path']
         self._rff = RFF(f'{blood_path}/BLOOD.RFF')
 
         art_paths = glob(f'{blood_path}/*.[aA][rR][tT]')
