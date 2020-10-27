@@ -20,7 +20,7 @@ jobs:
       - run:
           command: |
             cd bloom && python3 setup.py bdist_apps
-            cd bloom && python3 setup.py --version > dist/version.txt
+            cd bloom && python3 setup.py --version > bloom/dist/version.txt
           name: Build application
       - store_artifacts:
           path: bloom/dist     
