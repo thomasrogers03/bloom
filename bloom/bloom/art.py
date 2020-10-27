@@ -10,10 +10,6 @@ import numpy
 from . import data_loading, game_map
 from .rff import RFF
 
-blood_path = 'J:/Games/DOSBox-0.73/Games/Blood/ouwblood'
-art_files = glob(f'{blood_path}/*.[aA][rR][tT]')
-
-
 class Header(data_loading.CustomStruct):
     version: data_loading.UInt32
     tile_count: data_loading.UInt32
