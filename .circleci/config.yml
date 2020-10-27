@@ -13,7 +13,9 @@ jobs:
     steps:
       - checkout
       - python/load-cache
-      - python/install-packages
+      - run:
+          command: |
+            python3 -m pip install -r requirements.txt
       - python/save-cache
       - run:
           command: cd bloom && python setup.py bdist_apps
