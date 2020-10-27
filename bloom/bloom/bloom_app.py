@@ -337,8 +337,8 @@ class Bloom(ShowBase):
         )
 
     def _pan_camera_2d(self, total_delta: core.Vec2, delta: core.Vec2):
-        x_direction = (delta.x * self._camera_2d.get_sx()) / 4
-        y_direction = (delta.y * self._camera_2d.get_sx()) / 4
+        x_direction = (delta.x * self._camera_2d.get_sx()) / 50
+        y_direction = (delta.y * self._camera_2d.get_sx()) / 50
 
         self._builder_2d.set_x(self._builder_2d, x_direction * self._TICK_SCALE)
         self._builder_2d.set_y(self._builder_2d, y_direction * self._TICK_SCALE)

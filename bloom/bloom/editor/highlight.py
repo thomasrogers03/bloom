@@ -21,7 +21,7 @@ class Highlight:
         if self._display.is_empty():
             return
 
-        colour_scale = ((math.sin(ticks / 32.0) + 1) / 4) + 0.5
+        colour_scale = ((math.sin(ticks / 6.0) + 1) / 4) + 0.5
         self._display.set_color_scale(
             self.colour.x * colour_scale,
             self.colour.y * colour_scale,

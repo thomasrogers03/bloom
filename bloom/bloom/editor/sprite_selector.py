@@ -39,12 +39,12 @@ class Selector(empty_selector.Selector):
     ):
         if modified:
             direction_2d = self._snapper.snap_to_angular_grid_2d_scaled(total_camera_delta)
+            direction_2d = self._snapper.snap_to_grid_2d(direction_2d)
             new_position_2d = core.Point2(self._start_position.x, self._start_position.y) + direction_2d
-            new_position_2d = self._snapper.snap_to_grid_2d(new_position_2d)
 
             new_position = core.Point3(new_position_2d.x, new_position_2d.y, self._start_position.z)
         else:
-            new_height = self._snapper.snap_to_grid(self._start_position.z - total_delta.y)
+            new_height = self._start_position.z - self._snapper.snap_to_grid(total_delta.y)
             new_position = core.Point3(self._start_position.x, self._start_position.y, new_height)
 
         self._debug.update_move_debug(self._start_position, new_position)
