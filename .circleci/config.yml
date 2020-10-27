@@ -24,7 +24,7 @@ jobs:
       - store_artifacts:
           path: bloom/dist     
       - persist_to_workspace:
-          root: .
+          root: bloom/dist
           paths:
             - bloom/dist
   publish-github-release:
