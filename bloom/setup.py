@@ -9,11 +9,11 @@ def _install_requires():
     directory = os.path.dirname(__file__)
     with open(os.path.join(directory, 'requirements.txt'), 'r') as file:
         lines = [
-            line
+            line.strip()
             for line in file.readlines()
             if not line.startswith('#') and len(line.strip()) > 0
         ]
-
+    return lines
 
 setuptools.setup(
     name="bloom",

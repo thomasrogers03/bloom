@@ -19,7 +19,10 @@ jobs:
       - python/save-cache
       - run:
           command: |
-            cd bloom && python3 setup.py --quiet bdist_apps && (python3 setup.py --version > dist/version.txt)
+            cd bloom && \
+              python3 setup.py --quiet bdist_apps && \
+              python3 setup.py bdist_wheel && \
+              (python3 setup.py --version > dist/version.txt)
           name: Build application
       - store_artifacts:
           path: bloom/dist     

@@ -12,3 +12,4 @@ build
 dist
 *.spec
 config.yaml
+bloom.egg-info
