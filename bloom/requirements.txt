@@ -3,4 +3,3 @@
 
 panda3d==1.10.7
 numpy==1.17.2
-matplotlib==3.3.2
