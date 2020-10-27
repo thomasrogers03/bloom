@@ -67,8 +67,7 @@ class Bloom(ShowBase):
         self._builder.set_z(editor.to_height(position.z))
         self._builder.set_h(editor.to_degrees(map_to_load.start_theta))
 
-        builder_camera: core.NodePath = self.loader.load_model('camera')
-        builder_camera.reparent_to(self._builder)
+        builder_camera: core.NodePath = self._builder.attach_new_node('builder_camera')
         builder_camera.hide(constants.SCENE_3D)
         builder_camera.set_depth_write(False)
         builder_camera.set_depth_test(False)
