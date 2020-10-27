@@ -31,13 +31,13 @@ class Bloom(ShowBase):
         self._path = path
         self._collision_world = bullet.BulletWorld()
 
+        root_window = tkinter.Tk()
+        root_window.withdraw()
+
         if os.path.exists(self._CONFIG_PATH):
             with open(self._CONFIG_PATH, 'r') as file:
                 self._config = yaml.load(file.read())
         else:
-            root_window = tkinter.Tk()
-            root_window.withdraw()
-
             self._config = {}
             blood_path = tkinter.filedialog.askdirectory(
                 initialdir=os.getcwd(),
@@ -219,7 +219,19 @@ class Bloom(ShowBase):
 
         return task.done
 
+    def _open_map(self):
+        pass
+
     def _save_map(self):
+        if not self._path:
+            self._path = tkinter.filedialog.asksaveasfilename(
+                initialdir=self._config['blood_path'],
+                title='Save map to...',
+                filetypes=(('Map files', '*.MAP'),)
+            )
+            if not self._path:
+                return
+
         position = self._builder.get_pos(self._scene)
         sectors, walls, sprites, builder_sector_index = self._map_editor.prepare_to_persist(position)
         map_to_save = game_map.Map()
