@@ -28,7 +28,7 @@ class Selector(empty_selector.Selector):
     def get_picnum(self):
         return self._wall.get_picnum(self._part)
 
-    def et_picnum(self, picnum: int):
+    def set_picnum(self, picnum: int):
         self._wall.set_picnum(self._part, picnum)
 
     def begin_move(self, hit: core.Point3):

@@ -212,6 +212,12 @@ class MapEditor:
 
         return self._selection.selector.get_picnum()
 
+    def set_selected_picnum(self, picnum: int):
+        if self._selection is None:
+            return
+
+        self._selection.selector.set_picnum(picnum)
+
     def move_selection(
         self,
         total_delta: core.Vec2,

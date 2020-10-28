@@ -7,7 +7,7 @@ from direct.gui import DirectGui, DirectGuiGlobals
 from direct.task import Task
 from panda3d import core
 
-from . import edit_mode
+from . import constants, edit_mode
 
 
 class TileDialog:
@@ -19,13 +19,31 @@ class TileDialog:
         get_tile_async: typing.Callable[[int, typing.Callable[[core.Texture], None]], None],
         tile_count: int,
         edit_mode: edit_mode.EditMode,
-        task_manager: Task.TaskManager
+        task_manager: Task.TaskManager,
+        tile_selected: typing.Callable[[int], None]
     ):
         self._dialog = DirectGui.DirectFrame(
             parent=parent,
             frameSize=(-1.1, 1.1, -0.9, 0.9)
         )
         self._dialog.hide()
+
+        self._tile_selected = tile_selected
+        DirectGui.DirectButton(
+            parent=self._dialog,
+            text='Ok',
+            scale=0.05,
+            pos=core.Vec3(0.81, -0.85),
+            command=self._confirm
+        )
+        DirectGui.DirectButton(
+            parent=self._dialog,
+            text='Cancel',
+            scale=0.05,
+            pos=core.Vec3(0.95, -0.85),
+            command=self._hide
+        )
+
         self._frame = DirectGui.DirectScrolledFrame(
             parent=self._dialog,
             canvasSize=(0, 1, -1, 0),
@@ -37,10 +55,10 @@ class TileDialog:
         self._canvas = self._frame.getCanvas()
 
         self._task_manager = task_manager
-        self._task_manager.setupTaskChain(self._TASK_CHAIN, numThreads=1)
 
         self._edit_mode = edit_mode
         self._selected_tile: DirectGui.DirectFrame = None
+        self._clicked_tile: DirectGui.DirectFrame = None
         self._tile_frames: typing.List[DirectGui.DirectFrame] = [None] * tile_count
 
         self._top = 0.2
@@ -102,6 +120,17 @@ class TileDialog:
         self._selected_tile['frameColor'] = (0, 0, 1, 1)
         self._selected_picnum = picnum
 
+        if self._selected_tile == self._clicked_tile:
+            self._confirm()
+
+        self._clicked_tile = self._selected_tile
+        self._task_manager.do_method_later(
+            constants.DOUBLE_CLICK_TIMEOUT, self._reset_clicked_tile, 'reset_double_click_tile')
+
+    def _reset_clicked_tile(self, task):
+        self._clicked_tile = None
+        return task.done
+
     def show(self, picnum: int):
         self._dialog.show()
         self._edit_mode.push_mode('tiles')
@@ -115,11 +144,13 @@ class TileDialog:
         value = self._selected_tile.get_z() / self._top
         scroll_bar.setValue(value)
 
-    def hide(self):
-        self._dialog.hide()
-        self._edit_mode.pop_mode('tiles')
+    def _confirm(self):
+        self._hide()
+        self._tile_selected(self._selected_picnum)
 
-        return self._selected_picnum
+    def _hide(self):
+        self._dialog.hide()
+        self._edit_mode.pop_mode()
 
     def _tick(self):
         pass

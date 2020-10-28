@@ -178,7 +178,8 @@ class Bloom(ShowBase):
             self._get_tile_async,
             self._art_manager.tile_count,
             self._tickers,
-            self.task_mgr
+            self.task_mgr,
+            self._update_selected_tile
         )
 
         self._builder_2d: core.NodePath = self._scene.attach_new_node('builder')
@@ -316,6 +317,9 @@ class Bloom(ShowBase):
         self.accept('v', self._change_tile)
 
         return task.done
+
+    def _update_selected_tile(self, picnum: int):
+        self._map_editor.set_selected_picnum(picnum)
 
     def _save_screenshot(self):
         self.screenshot('screenshot.png', defaultFilename=False)
