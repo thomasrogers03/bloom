@@ -488,6 +488,19 @@ class EditorSector:
     def sector(self):
         return self._sector
 
+    def get_picnum(self, part: str):
+        if part == 'floor_collision':
+            return self._sector.sector.floor_picnum
+        return self._sector.sector.ceiling_picnum
+
+    def set_picnum(self, part: str, picnum: int):
+        print(part, picnum)
+        self.invalidate_geometry()
+        if part == 'floor_collision':
+            self._sector.sector.floor_picnum = picnum
+        else:
+            self._sector.sector.ceiling_picnum = picnum
+
     def add_wall(self, new_wall: wall.EditorWall):
         self.invalidate_geometry()
 

@@ -18,7 +18,10 @@ class Selector(empty_selector.Selector):
         self._start_height: float = None
 
     def get_picnum(self):
-        return -1
+        return self._sector.get_picnum(self._part)
+
+    def set_picnum(self, picnum: int):
+        self._sector.set_picnum(self._part, picnum)
 
     def begin_move(self, hit: core.Point3):
         if self._start_height is None:

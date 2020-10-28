@@ -10,7 +10,7 @@ from .. import constants, editor, game_map, map_data
 
 
 class EditorWall:
-    _MASK_WALL_PART = 'middle'
+    _MASK_WALL_PART = 'middle_collision'
 
     def __init__(
         self,
