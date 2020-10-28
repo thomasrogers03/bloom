@@ -5,7 +5,9 @@ import importlib
 import logging
 import math
 import os.path
+import queue
 import sys
+import time
 import tkinter
 import tkinter.filedialog
 import tkinter.messagebox
@@ -17,7 +19,8 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d import bullet, core
 from panda3d.direct import init_app_for_gui
 
-from . import art, clicker, constants, edit_mode, editor, game_map, tile_dialog
+from . import (art, clicker, constants, edit_mode, editor, game_map,
+               tile_dialog, utils)
 from .editor import map_editor
 from .rff import RFF
 
@@ -57,7 +60,7 @@ class Bloom(ShowBase):
             with open(self._CONFIG_PATH, 'w+') as file:
                 file.write(yaml.dump(self._config))
 
-        self.task_mgr.add(self._initialize, 'initialize')
+        self.task_mgr.do_method_later(0.1, self._initialize, 'initialize')
 
     def _setup_window(self):
         ShowBase.__init__(self, windowType='none')
@@ -169,11 +172,13 @@ class Bloom(ShowBase):
         self._tickers = edit_mode.EditMode()
         self.task_mgr.add(self._tick, 'tick')
 
+        self._tile_loads = queue.Queue()
         self._tile_dialog = tile_dialog.TileDialog(
             self.aspect2d, 
-            self._get_tile,
+            self._get_tile_async,
             self._art_manager.tile_count,
-            self._tickers
+            self._tickers,
+            self.task_mgr
         )
 
         self._builder_2d: core.NodePath = self._scene.attach_new_node('builder')
@@ -196,6 +201,7 @@ class Bloom(ShowBase):
         self._tickers.always_run(self._update_builder_sector)
         self._tickers.always_run(lambda: self._map_editor.hide_sectors())
         self._tickers.always_run(self._show_traceable_sectors)
+        self._tickers.always_run(self._process_loading_tiles)
 
         self.camera.reparent_to(self._builder)
         self.cam.node().set_camera_mask(constants.SCENE_3D)
@@ -540,13 +546,26 @@ class Bloom(ShowBase):
             image = self._art_manager.get_tile_image(picnum)
             buffer = image.tobytes()
 
-            self._tiles[picnum] = core.Texture()
-            self._tiles[picnum].setup_2d_texture(
+            tile = core.Texture()
+            tile.setup_2d_texture(
                 image.shape[1],
                 image.shape[0],
                 core.Texture.T_unsigned_byte,
                 core.Texture.F_rgba8
             )
-            self._tiles[picnum].set_ram_image(buffer)
+            tile.set_ram_image(buffer)
+            self._tiles[picnum] = tile
 
         return self._tiles[picnum]
+
+    def _get_tile_async(self, picnum: int, callback: typing.Callable[[core.Texture], None]):
+        self._tile_loads.put((picnum, callback))
+
+    def _process_loading_tiles(self):
+        now = time.time()
+        while (time.time() - now) < self._TICK_RATE / 4:
+            if self._tile_loads.empty():
+                break
+
+            tile_to_load, callback = self._tile_loads.get_nowait()
+            callback(self._get_tile(tile_to_load))
