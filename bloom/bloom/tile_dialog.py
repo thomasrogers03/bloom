@@ -111,6 +111,10 @@ class TileDialog:
 
         self._select_tile(picnum)
 
+        scroll_bar: DirectGui.DirectScrollBar = self._frame.verticalScroll
+        value = self._selected_tile.get_z() / self._top
+        scroll_bar.setValue(value)
+
     def hide(self):
         self._dialog.hide()
         self._edit_mode.pop_mode('tiles')
