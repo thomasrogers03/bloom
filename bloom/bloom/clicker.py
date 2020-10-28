@@ -2,9 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import typing
+import uuid
 
 from direct.task import Task
 from panda3d import core
+
+from . import constants
 
 
 class Clicker:
@@ -26,6 +29,7 @@ class Clicker:
         task_manager: Task.TaskManager,
         mouse_buttons: typing.List[core.MouseButton],
         on_click: typing.Callable[[], None] = None,
+        on_double_click: typing.Callable[[], None] = None,
         on_click_move: typing.Callable[[core.Vec2], None] = None,
         on_click_after_move: typing.Callable[[], None] = None,
     ):
@@ -33,9 +37,12 @@ class Clicker:
         self._task_manager = task_manager
         self._mouse_buttons = set(mouse_buttons)
         self._unwanted_mouse_buttons = self.ALL_BUTTONS - self._mouse_buttons
+        self._mouse_button_released = False
         self._on_click = on_click
+        self._on_double_click = on_double_click
         self._on_click_move = on_click_move
         self._on_click_after_move = on_click_after_move
+        self._id = str(uuid.uuid4)
 
         self._mouse_down_point: core.Point2() = None
         self._last_mouse_point: core.Point2() = None
@@ -68,14 +75,28 @@ class Clicker:
         else:
             if self._mouse_down_point is not None:
                 if self._no_mouse_buttons_down():
-                    if not self._moved_when_down:
-                        if self._on_click is not None:
-                            self._on_click()
-                    else:
+                    if self._moved_when_down:
                         if self._on_click_after_move is not None:
                             self._on_click_after_move()
+                    else:
+                        if self._mouse_button_released:
+                            self._on_double_click()
+                        else:
+                            self._mouse_button_released = True
+                            if self._on_click is not None:
+                                self._on_click()
+                            self._task_manager.do_method_later(
+                                constants.DOUBLE_CLICK_TIMEOUT,
+                                self._reset_double_click,
+                                self._id
+                            )
                 self._mouse_down_point = None
                 self._moved_when_down = False
+
+    def _reset_double_click(self, task):
+        self._mouse_button_released = False
+
+        return task.done
 
     def _buttons_down(self):
         return self._wanted_buttons_down() and not self._any_unwanted_buttons_down()

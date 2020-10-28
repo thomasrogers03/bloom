@@ -257,6 +257,7 @@ class Bloom(ShowBase):
         left_clicker = self._make_clicker(
             [core.MouseButton.one()],
             on_click=self._select_object,
+            on_double_click=self._change_tile,
             on_click_move=self._pan_camera,
         )
         self._tickers['3d'].append(left_clicker.tick)
@@ -315,6 +316,7 @@ class Bloom(ShowBase):
         self,
         mouse_buttons: typing.List[core.MouseButton],
         on_click: typing.Callable[[], None] = None,
+        on_double_click: typing.Callable[[], None] = None,
         on_click_move: typing.Callable[[core.Vec2], None] = None,
         on_click_after_move: typing.Callable[[], None] = None,
     ):
@@ -323,6 +325,7 @@ class Bloom(ShowBase):
             self.task_mgr,
             mouse_buttons,
             on_click=on_click,
+            on_double_click=on_double_click,
             on_click_move=on_click_move,
             on_click_after_move=on_click_after_move,
         )
