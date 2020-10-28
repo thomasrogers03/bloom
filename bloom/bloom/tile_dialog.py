@@ -11,8 +11,6 @@ from . import constants, edit_mode
 
 
 class TileDialog:
-    _TASK_CHAIN = 'tiles'
-
     def __init__(
         self,
         parent: core.NodePath,
@@ -89,8 +87,6 @@ class TileDialog:
         frame_size[2] = self._top
         self._frame['canvasSize'] = frame_size
 
-        self._edit_mode['tiles'].append(self._tick)
-
     def _bind_scroll(self, control):
         control.bind(DirectGuiGlobals.WHEELUP, self._scroll_up)
         control.bind(DirectGuiGlobals.WHEELDOWN, self._scroll_down)
@@ -153,7 +149,7 @@ class TileDialog:
 
     def show(self, picnum: int):
         self._dialog.show()
-        self._edit_mode.push_mode('tiles', self._dialog.hide)
+        self._edit_mode.push_mode(self)
 
         if picnum < 0:
             picnum = 0
@@ -162,6 +158,12 @@ class TileDialog:
 
         value = self._selected_tile.get_z() / self._top
         self._scroll_bar.setValue(value)
+
+    def enter_mode(self):
+        pass
+
+    def exit_mode(self):
+        self._dialog.hide()
 
     @property
     def _scroll_bar(self) -> DirectGui.DirectScrollBar:
@@ -174,5 +176,5 @@ class TileDialog:
     def _hide(self):
         self._edit_mode.pop_mode()
 
-    def _tick(self):
+    def tick(self):
         pass

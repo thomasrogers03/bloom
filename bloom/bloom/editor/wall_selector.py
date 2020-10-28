@@ -85,7 +85,7 @@ class Selector(empty_selector.Selector):
             self._debug.update_move_debug_2d(self._start_point_2, new_point_2, self._hit.z)
             self._wall.move_point_2_to(new_point_2)
 
-    def split(self, hit: core.Point3, sectors: typing.List[EditorSector], tickers: edit_mode.EditMode, modified: bool):
+    def split(self, hit: core.Point3, sectors: typing.List[EditorSector], modified: bool):
         if modified:
             self._wall.extrude(sectors)
         else:

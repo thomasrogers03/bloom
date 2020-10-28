@@ -21,6 +21,7 @@ from panda3d.direct import init_app_for_gui
 
 from . import (art, clicker, constants, edit_mode, editor, game_map,
                tile_dialog, utils)
+from .edit_modes import edit_mode_2d, edit_mode_3d
 from .editor import map_editor
 from .rff import RFF
 
@@ -28,8 +29,6 @@ logger = logging.getLogger(__name__)
 
 
 class Bloom(ShowBase):
-    _TICK_RATE = 1 / 35.0
-    _TICK_SCALE = 10240
     _CONFIG_PATH = 'config.yaml'
 
     def __init__(self, path: str):
@@ -117,7 +116,7 @@ class Bloom(ShowBase):
         self.tkRoot.config(menu=menu_bar)
 
     def _change_tile(self):
-        self._select_object()
+        self._mode_3d.select_object()
         self._tile_dialog.show(self._map_editor.get_selected_picnum())
 
     def _tk_timer_callback(self):
@@ -163,8 +162,10 @@ class Bloom(ShowBase):
         self._scene.set_scale(1.0 / 100)
         self._collision_world.set_gravity(core.Vec3(0, 0, -9.81 / 100.0))
 
-        self._tickers = edit_mode.EditMode()
-        self.task_mgr.add(self._tick, 'tick')
+        self._edit_mode_selector = edit_mode.EditMode(
+            self.mouseWatcherNode,
+            self.task_mgr
+        )
 
         self._sectors: core.NodePath = self._scene.attach_new_node('sectors')
         self._map_editor = map_editor.MapEditor(
@@ -172,8 +173,7 @@ class Bloom(ShowBase):
             self._sectors,
             map_to_load,
             self._get_tile,
-            self._collision_world,
-            self._tickers
+            self._collision_world
         )
 
         self._tile_loads = queue.Queue()
@@ -181,7 +181,7 @@ class Bloom(ShowBase):
             self.aspect2d,
             self._get_tile_async,
             self._art_manager.tile_count,
-            self._tickers,
+            self._edit_mode_selector,
             self.task_mgr,
             self._update_selected_tile
         )
@@ -196,17 +196,18 @@ class Bloom(ShowBase):
         self._builder.set_h(editor.to_degrees(map_to_load.start_theta))
 
         builder_camera: core.NodePath = self._builder.attach_new_node(
-            'builder_camera')
+            'builder_camera'
+        )
         builder_camera.hide(constants.SCENE_3D)
         builder_camera.set_depth_write(False)
         builder_camera.set_depth_test(False)
         builder_camera.set_bin('fixed', 1000)
         builder_camera.set_scale(500)
 
-        self._tickers.always_run(self._update_builder_sector)
-        self._tickers.always_run(lambda: self._map_editor.hide_sectors())
-        self._tickers.always_run(self._show_traceable_sectors)
-        self._tickers.always_run(self._process_loading_tiles)
+        self._edit_mode_selector.always_run(self._update_builder_sector)
+        self._edit_mode_selector.always_run(lambda: self._map_editor.hide_sectors())
+        self._edit_mode_selector.always_run(self._show_traceable_sectors)
+        self._edit_mode_selector.always_run(self._process_loading_tiles)
 
         self.camera.reparent_to(self._builder)
         self.cam.node().set_camera_mask(constants.SCENE_3D)
@@ -224,7 +225,8 @@ class Bloom(ShowBase):
         camera_2d_node.set_lens(self._lens_2d)
         camera_2d_node.set_camera_mask(constants.SCENE_2D)
         self._camera_2d: core.NodePath = self._builder_2d.attach_new_node(
-            camera_2d_node)
+            camera_2d_node
+        )
         self._camera_2d.set_scale(32)
         self._camera_2d.set_hpr(180, -90, 0)
         self._camera_2d.set_z(512_000)
@@ -237,7 +239,7 @@ class Bloom(ShowBase):
         self._display_region_2d.set_sort(1000)
         self._display_region_2d.set_active(False)
         self.accept('tab', self._toggle_2d_view)
-        self.accept('escape', self._tickers.pop_mode)
+        self.accept('escape', self._edit_mode_selector.pop_mode)
 
         debug_node = bullet.BulletDebugNode('Debug')
         debug_node.show_wireframe(True)
@@ -249,64 +251,39 @@ class Bloom(ShowBase):
         )
         self._collision_world.set_debug_node(debug_node)
 
-        self._tickers.always_run(
-            lambda: self._collision_world.do_physics(self._TICK_RATE)
+        self._edit_mode_selector.always_run(
+            lambda: self._collision_world.do_physics(constants.TICK_RATE)
         )
         self.accept('1', self._toggle_collision_debug)
 
-        self._tickers['3d'].append(self._mouse_collision_tests)
-        self._tickers.always_run(lambda: self._map_editor.tick())
+        self._edit_mode_selector.always_run(lambda: self._map_editor.tick())
 
         self.mouseWatcherNode.setModifierButtons(core.ModifierButtons())
 
-        left_clicker = self._make_clicker(
-            [core.MouseButton.one()],
-            on_click=self._select_object,
-            on_double_click=self._change_tile,
-            on_click_move=self._pan_camera,
+        self._mode_3d = edit_mode_3d.EditMode(
+            self._tile_dialog,
+            self.cam,
+            self.camLens,
+            render=self.render, 
+            scene=self._scene,
+            builder_camera_2d=self._builder_2d,
+            builder_camera=self._builder,
+            edit_mode_selector=self._edit_mode_selector
         )
-        self._tickers['3d'].append(left_clicker.tick)
+        self._mode_3d.set_editor(self._map_editor)
 
-        left_clicker = self._make_clicker(
-            [core.MouseButton.one()],
-            on_click=self._select_object,
-            on_click_move=self._pan_camera_2d,
+        self._mode_2d = edit_mode_2d.EditMode(
+            self._camera_2d,
+            self._display_region_2d,
+            render=self.render, 
+            scene=self._scene,
+            builder_camera_2d=self._builder_2d,
+            builder_camera=self._builder,
+            edit_mode_selector=self._edit_mode_selector
         )
-        self._tickers['2d'].append(left_clicker.tick)
+        self._mode_2d.set_editor(self._map_editor)
 
-        left_clicker = self._make_clicker(
-            [core.KeyboardButton.control(), core.MouseButton.one()],
-            on_click_after_move=lambda: self._map_editor.end_move_selection(),
-            on_click_move=self._move_selected,
-        )
-        self._tickers['3d'].append(left_clicker.tick)
-
-        left_clicker = self._make_clicker(
-            [core.KeyboardButton.shift(), core.MouseButton.one()],
-            on_click_after_move=lambda: self._map_editor.end_move_selection(),
-            on_click_move=self._modified_move_selected,
-        )
-        self._tickers['3d'].append(left_clicker.tick)
-
-        right_clicker = self._make_clicker(
-            [core.MouseButton.three()],
-            on_click_move=self._rotate_camera,
-        )
-        self._tickers['3d'].append(right_clicker.tick)
-
-        left_and_right_clicker = self._make_clicker(
-            [core.MouseButton.one(), core.MouseButton.three()],
-            on_click_move=self._strafe_camera,
-        )
-        self._tickers['3d'].append(left_and_right_clicker.tick)
-
-        left_and_right_clicker = self._make_clicker(
-            [core.MouseButton.one(), core.MouseButton.three()],
-            on_click_move=self._strafe_camera_2d,
-        )
-        self._tickers['2d'].append(left_and_right_clicker.tick)
-
-        self._tickers.set_mode('3d')
+        self._edit_mode_selector.push_mode(self._mode_3d)
 
         self.accept('control-s', self._save_map)
         self.accept('control-o', self._open_map)
@@ -316,24 +293,6 @@ class Bloom(ShowBase):
         self.accept('v', self._change_tile)
 
         return task.done
-
-    def _make_clicker(
-        self,
-        mouse_buttons: typing.List[core.MouseButton],
-        on_click: typing.Callable[[], None] = None,
-        on_double_click: typing.Callable[[], None] = None,
-        on_click_move: typing.Callable[[core.Vec2], None] = None,
-        on_click_after_move: typing.Callable[[], None] = None,
-    ):
-        return clicker.Clicker(
-            self.mouseWatcherNode,
-            self.task_mgr,
-            mouse_buttons,
-            on_click=on_click,
-            on_double_click=on_double_click,
-            on_click_move=on_click_move,
-            on_click_after_move=on_click_after_move,
-        )
 
     def _update_selected_tile(self, picnum: int):
         self._map_editor.set_selected_picnum(picnum)
@@ -367,9 +326,10 @@ class Bloom(ShowBase):
                 self._sectors,
                 map_to_load,
                 self._get_tile,
-                self._collision_world,
-                self._tickers
+                self._collision_world
             )
+            self._mode_3d.set_editor(self._map_editor)
+            self._mode_2d.set_editor(self._map_editor)
 
     def _save_map(self):
         if not self._path:
@@ -407,132 +367,16 @@ class Bloom(ShowBase):
 
         logger.info(f'Saved map to {self._path}')
 
-    def _select_object(self):
-        self._map_editor.perform_select()
-
-    def _move_selected(self, total_delta: core.Vec2, delta: core.Vec2):
-        self._do_move_selected(total_delta, delta, False)
-
-    def _modified_move_selected(self, total_delta: core.Vec2, delta: core.Vec2):
-        self._do_move_selected(total_delta, delta, True)
-
-    def _do_move_selected(self, total_delta: core.Vec2, delta: core.Vec2, modified: bool):
-        heading = self._builder.get_h()
-
-        sin_theta = math.sin(math.radians(heading))
-        cos_theta = math.cos(math.radians(heading))
-
-        x_direction = sin_theta * delta.y + cos_theta * -delta.x
-        y_direction = cos_theta * delta.y - sin_theta * -delta.x
-        camera_delta = core.Vec2(x_direction, y_direction)
-
-        x_direction = sin_theta * total_delta.y + cos_theta * -total_delta.x
-        y_direction = cos_theta * total_delta.y - sin_theta * -total_delta.x
-        total_camera_delta = core.Vec2(x_direction, y_direction)
-
-        self._map_editor.move_selection(
-            total_delta * self._TICK_SCALE,
-            delta * self._TICK_SCALE,
-            total_camera_delta * self._TICK_SCALE,
-            camera_delta * self._TICK_SCALE, modified
-        )
-
-    def _pan_camera_2d(self, total_delta: core.Vec2, delta: core.Vec2):
-        x_direction = (delta.x * self._camera_2d.get_sx()) / 50
-        y_direction = (delta.y * self._camera_2d.get_sx()) / 50
-
-        self._builder_2d.set_x(self._builder_2d, x_direction * self._TICK_SCALE)
-        self._builder_2d.set_y(self._builder_2d, y_direction * self._TICK_SCALE)
-
-    def _pan_camera(self, total_delta: core.Vec2, delta: core.Vec2):
-        heading = self._builder.get_h()
-
-        sin_theta = math.sin(math.radians(heading))
-        cos_theta = math.cos(math.radians(heading))
-        x_direction = -sin_theta * delta.y + cos_theta * delta.x
-        y_direction = cos_theta * delta.y + sin_theta * delta.x
-
-        self._builder_2d.set_x(self._builder_2d, x_direction * self._TICK_SCALE)
-        self._builder_2d.set_y(self._builder_2d, y_direction * self._TICK_SCALE)
-
-    def _strafe_camera_2d(self, total_delta: core.Vec2, delta: core.Vec2):
-        delta *= self._TICK_SCALE / 100.0
-
-        scale_grid = 1.0 / 8
-        delta_y_scaled = delta.y / 2
-        zoom_amount = int(delta_y_scaled / scale_grid) * scale_grid
-
-        zoom_scale = math.pow(2, zoom_amount)
-        current_zoom = self._camera_2d.get_sx()
-        new_zoom = current_zoom * zoom_scale
-
-        if new_zoom > 128:
-            new_zoom = 128
-        if new_zoom < 1:
-            new_zoom = 1
-
-        self._camera_2d.set_scale(new_zoom)
-        self._builder_2d.set_x(self._builder_2d, delta.x * 512)
-
-    def _strafe_camera(self, total_delta: core.Vec2, delta: core.Vec2):
-        delta *= 100
-
-        heading = self._builder.get_h()
-
-        sin_theta = math.sin(math.radians(heading))
-        cos_theta = math.cos(math.radians(heading))
-        x_direction = cos_theta * delta.x
-        y_direction = sin_theta * delta.x
-
-        self._builder.set_z(self._builder.get_z() + delta.y * 512)
-
-        self._builder_2d.set_x(self._builder_2d, x_direction * 512)
-        self._builder_2d.set_y(self._builder_2d, y_direction * 512)
-
-    def _rotate_camera(self, total_delta: core.Vec2, delta: core.Vec2):
-        hpr = self._builder.get_hpr()
-        hpr = core.Vec3(hpr.x - delta.x * 90, hpr.y + delta.y * 90, 0)
-
-        if hpr.y < -90:
-            hpr.y = -90
-        if hpr.y > 90:
-            hpr.y = 90
-
-        self._builder.set_hpr(hpr)
-
-    def _is_editing_2d(self) -> bool:
-        return self._tickers.current_mode == '2d'
-
     def _toggle_2d_view(self):
-        if self._is_editing_2d():
-            self._tickers.pop_mode()
-        else:
-            self._tickers.push_mode(
-                '2d', 
-                lambda: self._display_region_2d.set_active(False)
-            )
-            self._display_region_2d.set_active(True)
-
-    def _mouse_collision_tests(self):
-        if self.mouseWatcherNode.has_mouse():
-            if any(self.mouseWatcherNode.is_button_down(button) for button in clicker.Clicker.ALL_BUTTONS):
-                return
-
-            mouse = self.mouseWatcherNode.get_mouse()
-            source = core.Point3()
-            target = core.Point3()
-
-            lens: core.Lens = self.camLens
-            camera: core.NodePath = self.cam
-            lens.extrude(mouse, source, target)
-
-            source = self.render.get_relative_point(camera, source)
-            target = self.render.get_relative_point(camera, target)
-
-            source = core.TransformState.make_pos(source)
-            target = core.TransformState.make_pos(target)
-
-            self._map_editor.highlight_mouse_hit(source, target)
+        self._edit_mode_selector.push_mode(self._mode_2d)
+        # if self._is_editing_2d():
+        #     self._edit_mode_selector.pop_mode()
+        # else:
+        #     self._edit_mode_selector.push_mode(
+        #         '2d', 
+        #         lambda: self._display_region_2d.set_active(False)
+        #     )
+        #     self._display_region_2d.set_active(True)
 
     def _toggle_collision_debug(self):
         if self._collision_debug.is_hidden():
@@ -559,12 +403,6 @@ class Bloom(ShowBase):
 
         return projected_point
 
-    def _tick(self, task):
-        self._tickers.tick()
-
-        self.task_mgr.do_method_later(self._TICK_RATE, self._tick, 'tick')
-        return task.done
-
     def _get_tile(self, picnum: int):
         if picnum not in self._tiles:
             image = self._art_manager.get_tile_image(picnum)
@@ -587,7 +425,7 @@ class Bloom(ShowBase):
 
     def _process_loading_tiles(self):
         now = time.time()
-        while (time.time() - now) < self._TICK_RATE / 4:
+        while (time.time() - now) < constants.TICK_RATE / 4:
             if self._tile_loads.empty():
                 break
 

@@ -49,6 +49,10 @@ class Clicker:
         self._delta: core.Vec2 = None
         self._moved_when_down = False
 
+    def append_tick_to(self, tickers: typing.List[typing.Callable[[], None]]):
+        tickers.append(self.tick)
+        return self
+
     def tick(self):
         if not self._watcher.has_mouse():
             return

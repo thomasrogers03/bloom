@@ -5,7 +5,6 @@ import typing
 
 from panda3d import core
 
-from .. import edit_mode
 from .sector import EditorSector
 
 
@@ -33,5 +32,5 @@ class Selector:
     ):
         pass
 
-    def split(self, hit: core.Point3, sectors: typing.List[EditorSector], tickers: edit_mode.EditMode, modified: bool):
+    def split(self, hit: core.Point3, sectors: typing.List[EditorSector], modified: bool):
         pass

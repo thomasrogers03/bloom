@@ -19,7 +19,7 @@ def _install_requires():
 
 setuptools.setup(
     name="bloom",
-    version="0.0.2",
+    version="0.0.3",
     author="Thomas Rogers",
     author_email="thomasrogers03@gmail.com",
     description="Blood Modding Suite",

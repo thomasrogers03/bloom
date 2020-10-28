@@ -25,8 +25,7 @@ class MapEditor:
         scene: core.NodePath,
         map_to_load: game_map.Map,
         get_tile_callback: typing.Callable[[int], core.Texture],
-        collision_world: bullet.BulletWorld,
-        tickers: edit_mode.EditMode
+        collision_world: bullet.BulletWorld
     ):
         logger.info('Setting up sector editor')
 
@@ -40,7 +39,6 @@ class MapEditor:
         self._last_hit_position = core.Vec3()
         self._selected_is_highlighted = False
         self._ticks = 0
-        self._tickers = tickers
         self._snapper = grid_snapper.GridSnapper()
 
         split_segment = core.LineSegs('splitter')
@@ -256,7 +254,7 @@ class MapEditor:
         if highlight is None:
             return
 
-        highlight.selector.split(self._last_hit_position, self._sectors, self._tickers, modified)
+        highlight.selector.split(self._last_hit_position, self._sectors, modified)
 
     def tick(self):
         for sector in self._sectors:
