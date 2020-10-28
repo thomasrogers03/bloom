@@ -1,7 +1,12 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import typing
+
 from panda3d import core
+
+from .. import edit_mode
+from .sector import EditorSector
 
 
 class Selector:
@@ -26,4 +31,7 @@ class Selector:
         camera_delta: core.Vec2,
         modified: bool
     ):
+        pass
+
+    def split(self, hit: core.Point3, sectors: typing.List[EditorSector], tickers: edit_mode.EditMode, modified: bool):
         pass

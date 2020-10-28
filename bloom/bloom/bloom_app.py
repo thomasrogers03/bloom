@@ -163,17 +163,18 @@ class Bloom(ShowBase):
         self._scene.set_scale(1.0 / 100)
         self._collision_world.set_gravity(core.Vec3(0, 0, -9.81 / 100.0))
 
+        self._tickers = edit_mode.EditMode()
+        self.task_mgr.add(self._tick, 'tick')
+
         self._sectors: core.NodePath = self._scene.attach_new_node('sectors')
         self._map_editor = map_editor.MapEditor(
             self.render,
             self._sectors,
             map_to_load,
             self._get_tile,
-            self._collision_world
+            self._collision_world,
+            self._tickers
         )
-
-        self._tickers = edit_mode.EditMode()
-        self.task_mgr.add(self._tick, 'tick')
 
         self._tile_loads = queue.Queue()
         self._tile_dialog = tile_dialog.TileDialog(
@@ -366,7 +367,8 @@ class Bloom(ShowBase):
                 self._sectors,
                 map_to_load,
                 self._get_tile,
-                self._collision_world
+                self._collision_world,
+                self._tickers
             )
 
     def _save_map(self):

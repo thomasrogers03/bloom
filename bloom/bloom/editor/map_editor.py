@@ -7,7 +7,7 @@ import typing
 
 from panda3d import bullet, core
 
-from .. import constants, data_loading, editor, game_map, map_data
+from .. import constants, data_loading, edit_mode, editor, game_map, map_data
 from . import (grid_snapper, highlight, sector_selector, sprite_selector,
                wall_bunch, wall_selector)
 from .sector import EditorSector
@@ -25,7 +25,8 @@ class MapEditor:
         scene: core.NodePath,
         map_to_load: game_map.Map,
         get_tile_callback: typing.Callable[[int], core.Texture],
-        collision_world: bullet.BulletWorld
+        collision_world: bullet.BulletWorld,
+        tickers: edit_mode.EditMode
     ):
         logger.info('Setting up sector editor')
 
@@ -39,6 +40,7 @@ class MapEditor:
         self._last_hit_position = core.Vec3()
         self._selected_is_highlighted = False
         self._ticks = 0
+        self._tickers = tickers
         self._snapper = grid_snapper.GridSnapper()
 
         split_segment = core.LineSegs('splitter')
@@ -254,7 +256,7 @@ class MapEditor:
         if highlight is None:
             return
 
-        highlight.selector.split(self._last_hit_position, self._sectors, modified)
+        highlight.selector.split(self._last_hit_position, self._sectors, self._tickers, modified)
 
     def tick(self):
         for sector in self._sectors:
