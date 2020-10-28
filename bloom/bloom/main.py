@@ -20,8 +20,8 @@ def main():
         # core.load_prc_file_data('', 'want-tk #t')
         # core.load_prc_file_data('', 'want-directtools #t')
 
-    DirectGuiGlobals.WHEELUP = core.PGButton.getReleasePrefix() + core.MouseButton.wheelUp().getName() + '-'
-    DirectGuiGlobals.WHEELDOWN = core.PGButton.getReleasePrefix() + core.MouseButton.wheelDown().getName() + '-'
+    DirectGuiGlobals.WHEELUP = core.PGButton.get_release_prefix() + core.MouseButton.wheel_up().get_name() + '-'
+    DirectGuiGlobals.WHEELDOWN = core.PGButton.get_release_prefix() + core.MouseButton.wheel_down().get_name() + '-'
 
     logging.basicConfig(
         level=logging.INFO,
