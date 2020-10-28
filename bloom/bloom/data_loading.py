@@ -206,9 +206,7 @@ class Unpacker:
         self._offset = 0
 
     def read_struct(self, struct_type: type, skip_members=0) -> T:
-        hints: typing.Dict[str, typing.Any] = typing.get_type_hints(
-            struct_type
-        )
+        hints: typing.Dict[str, typing.Any] = struct_type.type_hints()
         result = struct_type()
 
         index = 0
@@ -344,9 +342,7 @@ class Packer:
         return self._stream.tell()
 
     def write_struct(self, structure: T):
-        hints: typing.Dict[str, typing.Any] = typing.get_type_hints(
-            structure.__class__
-        )
+        hints: typing.Dict[str, typing.Any] = structure.type_hints()
 
         index = 0
         hint_member_names = list(hints.keys())
@@ -447,9 +443,7 @@ class Packer:
 class CustomStruct:
 
     def __init__(self, **kwargs):
-        hints: typing.Dict[str, typing.Any] = typing.get_type_hints(
-            self.__class__
-        )
+        hints: typing.Dict[str, typing.Any] = self.type_hints()
         for key, hint_type in hints.items():
             if key not in kwargs:
                 default = getattr(hint_type, 'default', None)
@@ -464,11 +458,17 @@ class CustomStruct:
                 raise ValueError(f'Member {key} not in {self.__class__}')
             setattr(self, key, value)
 
+    @classmethod
+    def type_hints(cls):
+        hints = getattr(cls, '_type_hints', None)
+        if hints is None:
+            cls._type_hints = typing.get_type_hints(cls)
+            return cls._type_hints
+        return hints
+
     def copy(self):
         result = self.__class__()
-        hints: typing.Dict[str, typing.Any] = typing.get_type_hints(
-            self.__class__
-        )
+        hints: typing.Dict[str, typing.Any] = self.type_hints()
         for key in hints.keys():
             value = getattr(self, key)
             if isinstance(value, CustomStruct):
@@ -486,9 +486,7 @@ class CustomStruct:
 
     @classmethod
     def size(cls: type):
-        hints: typing.Dict[str, typing.Any] = typing.get_type_hints(
-            cls
-        )
+        hints: typing.Dict[str, typing.Any] = cls.type_hints()
         size = 0
         for hint_type in hints.values():
             size += hint_type.size()
