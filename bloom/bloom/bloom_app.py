@@ -31,6 +31,7 @@ class Bloom(ShowBase):
 
     def __init__(self, path: str):
         self._setup_window()
+        self._setup_menu()
         self._path = path
         self._collision_world = bullet.BulletWorld()
 
@@ -84,6 +85,18 @@ class Bloom(ShowBase):
 
         self.make_default_pipe()
         self.open_default_window(props=props)
+
+    def _setup_menu(self):
+        menu_bar = tkinter.Menu(self.tkRoot)
+
+        file_menu = tkinter.Menu(menu_bar, tearoff=0)
+        file_menu.add_command(label="Open", command=self._open_map)
+        file_menu.add_command(label="Save", command=self._save_map)
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self.tkRoot.quit)
+        menu_bar.add_cascade(label="File", menu=file_menu)
+
+        self.tkRoot.config(menu=menu_bar)
 
     def _tk_timer_callback(self):
         if not core.Thread.get_current_thread().get_current_task():
@@ -149,7 +162,8 @@ class Bloom(ShowBase):
         self._builder.set_z(editor.to_height(position.z))
         self._builder.set_h(editor.to_degrees(map_to_load.start_theta))
 
-        builder_camera: core.NodePath = self._builder.attach_new_node('builder_camera')
+        builder_camera: core.NodePath = self._builder.attach_new_node(
+            'builder_camera')
         builder_camera.hide(constants.SCENE_3D)
         builder_camera.set_depth_write(False)
         builder_camera.set_depth_test(False)
@@ -157,7 +171,7 @@ class Bloom(ShowBase):
         builder_camera.set_scale(500)
 
         self._tickers.always_run(self._update_builder_sector)
-        self._tickers.always_run(self._map_editor.hide_sectors)
+        self._tickers.always_run(lambda: self._map_editor.hide_sectors())
         self._tickers.always_run(self._show_traceable_sectors)
 
         self.camera.reparent_to(self._builder)
@@ -206,7 +220,7 @@ class Bloom(ShowBase):
         self.accept('1', self._toggle_collision_debug)
 
         self._tickers['3d'].append(self._mouse_collision_tests)
-        self._tickers.always_run(self._map_editor.tick)
+        self._tickers.always_run(lambda: self._map_editor.tick())
 
         self.mouseWatcherNode.setModifierButtons(core.ModifierButtons())
 
@@ -229,7 +243,7 @@ class Bloom(ShowBase):
         left_clicker = clicker.Clicker(
             self.mouseWatcherNode,
             [core.KeyboardButton.control(), core.MouseButton.one()],
-            on_click_after_move=self._map_editor.end_move_selection,
+            on_click_after_move=lambda: self._map_editor.end_move_selection(),
             on_click_move=self._move_selected,
         )
         self._tickers['3d'].append(left_clicker.tick)
@@ -237,7 +251,7 @@ class Bloom(ShowBase):
         left_clicker = clicker.Clicker(
             self.mouseWatcherNode,
             [core.KeyboardButton.shift(), core.MouseButton.one()],
-            on_click_after_move=self._map_editor.end_move_selection,
+            on_click_after_move=lambda: self._map_editor.end_move_selection(),
             on_click_move=self._modified_move_selected,
         )
         self._tickers['3d'].append(left_clicker.tick)
@@ -267,14 +281,35 @@ class Bloom(ShowBase):
 
         self.accept('control-s', self._save_map)
         self.accept('control-o', self._open_map)
-        self.accept('control-p', lambda: self.screenshot('screenshot.png', defaultFilename=False))
+        self.accept(
+            'control-p', lambda: self.screenshot('screenshot.png', defaultFilename=False))
         self.accept('space', lambda: self._map_editor.split_highlight(False))
         self.accept('shift-space', lambda: self._map_editor.split_highlight(True))
 
         return task.done
 
     def _open_map(self):
-        pass
+        path = tkinter.filedialog.askopenfilename(
+            initialdir=self._config['blood_path'],
+            title='Open map',
+            filetypes=(('Map files', '*.MAP'),)
+        )
+        if path:
+            self._path = path
+            self._sectors.remove_node()
+            self._map_editor = None
+            for body in self._collision_world.get_rigid_bodies():
+                self._collision_world.remove(body)
+            self._sectors: core.NodePath = self._scene.attach_new_node('sectors')
+            with open(self._path, 'rb') as file:
+                map_to_load = game_map.Map.load(self._path, file.read())
+            self._map_editor = map_editor.MapEditor(
+                self.render,
+                self._sectors,
+                map_to_load,
+                self._get_tile,
+                self._collision_world
+            )            
 
     def _save_map(self):
         if not self._path:
@@ -287,7 +322,9 @@ class Bloom(ShowBase):
                 return
 
         position = self._builder.get_pos(self._scene)
-        sectors, walls, sprites, builder_sector_index = self._map_editor.prepare_to_persist(position)
+        sectors, walls, sprites, builder_sector_index = self._map_editor.prepare_to_persist(
+            position
+        )
         map_to_save = game_map.Map()
         map_to_save.sectors[:] = sectors
         map_to_save.walls[:] = walls
@@ -334,9 +371,9 @@ class Bloom(ShowBase):
         total_camera_delta = core.Vec2(x_direction, y_direction)
 
         self._map_editor.move_selection(
-            total_delta * self._TICK_SCALE, 
-            delta * self._TICK_SCALE, 
-            total_camera_delta * self._TICK_SCALE, 
+            total_delta * self._TICK_SCALE,
+            delta * self._TICK_SCALE,
+            total_camera_delta * self._TICK_SCALE,
             camera_delta * self._TICK_SCALE, modified
         )
 
@@ -481,4 +518,3 @@ class Bloom(ShowBase):
             self._tiles[picnum].set_ram_image(buffer)
 
         return self._tiles[picnum]
-
