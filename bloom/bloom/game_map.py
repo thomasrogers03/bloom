@@ -1,10 +1,12 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import os.path
+import pickle
 import typing
 import zlib
 
-from . import data_loading
+from . import constants, data_loading
 from .map_data import headers, sector, sprite, wall
 
 
@@ -28,9 +30,9 @@ class Map:
         self._crc: int = None
 
     @staticmethod
-    def load(map_data: bytes):
+    def load(map_path: str, map_data: bytes):
         result = Map()
-        result._load(map_data)
+        result._load(map_path, map_data)
         return result
 
     def new(self):
@@ -96,7 +98,52 @@ class Map:
 
         self._header_1.player_sector = 0
 
-    def _load(self, map_data: bytes):
+    @staticmethod
+    def _get_cache_name(map_path: str):
+        map_name = os.path.basename(map_path)
+        return os.path.join(constants.CACHE_PATH, f'{map_name}.mapcache')
+
+    def _load_from_cache(self, map_path) -> bool:
+        if not constants.MAP_CACHE_ENABLED:
+            return False
+
+        cache_path = self._get_cache_name(map_path)
+        if os.path.exists(cache_path):
+            with open(cache_path, 'rb') as file:
+                self._header_0 = pickle.load(file)
+                self._encrypted = pickle.load(file)
+                self._header_1 = pickle.load(file)
+                self._header_2 = pickle.load(file)
+                self._header_3 = pickle.load(file)
+                self._header_4 = pickle.load(file)
+                self._sky_offsets = pickle.load(file)
+                self._sectors = pickle.load(file)
+                self._walls = pickle.load(file)
+                self._sprites = pickle.load(file)
+            return True
+        return False
+
+    def _save_to_cache(self, map_path):
+        if not constants.MAP_CACHE_ENABLED:
+            return
+
+        cache_path = self._get_cache_name(map_path)
+        with open(cache_path, 'w+b') as file:
+            pickle.dump(self._header_0, file)
+            pickle.dump(self._encrypted, file)
+            pickle.dump(self._header_1, file)
+            pickle.dump(self._header_2, file)
+            pickle.dump(self._header_3, file)
+            pickle.dump(self._header_4, file)
+            pickle.dump(self._sky_offsets, file)
+            pickle.dump(self._sectors, file)
+            pickle.dump(self._walls, file)
+            pickle.dump(self._sprites, file)
+
+    def _load(self, map_path: str, map_data: bytes):
+        if self._load_from_cache(map_path):
+            return
+
         unpacker = data_loading.Unpacker(map_data)
         self._header_0 = unpacker.read_struct(headers.MapHeader0)
 
@@ -173,8 +220,11 @@ class Map:
         )
         self._crc = unpacker.read_member(data_loading.UInt32)
 
+        self._save_to_cache(map_path)
+
     def save(
         self, 
+        map_path: str,
         start_position_x: int, 
         start_position_y: int, 
         start_position_z: int,
@@ -192,6 +242,8 @@ class Map:
         self._header_3.sector_count = len(self._sectors)
         self._header_3.wall_count = len(self._walls)
         self._header_3.sprite_count = len(self._sprites)
+
+        self._save_to_cache(map_path)
 
         packer.write_struct(self._header_0)
 
@@ -247,8 +299,8 @@ class Map:
             self._sprites
         )
 
-        crc = zlib.crc32(packer.get_bytes())
-        packer.write_member(data_loading.UInt32, crc)
+        self._crc = zlib.crc32(packer.get_bytes())
+        packer.write_member(data_loading.UInt32, self._crc)
 
         return packer.get_bytes()
 

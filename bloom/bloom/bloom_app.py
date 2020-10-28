@@ -34,6 +34,9 @@ class Bloom(ShowBase):
         self._path = path
         self._collision_world = bullet.BulletWorld()
 
+        if not os.path.isdir(constants.CACHE_PATH):
+            os.mkdir(constants.CACHE_PATH)
+
         if os.path.exists(self._CONFIG_PATH):
             with open(self._CONFIG_PATH, 'r') as file:
                 self._config = yaml.load(file.read())
@@ -119,7 +122,7 @@ class Bloom(ShowBase):
             map_to_load.new()
         else:
             with open(self._path, 'rb') as file:
-                map_to_load = game_map.Map.load(file.read())
+                map_to_load = game_map.Map.load(self._path, file.read())
 
         self._scene: core.NodePath = self.render.attach_new_node('scene')
         self._scene.set_scale(1.0 / 100)
@@ -295,6 +298,7 @@ class Bloom(ShowBase):
         position_z = editor.to_build_height(position.z)
         theta = editor.to_build_angle(self._builder.get_h())
         result = map_to_save.save(
+            self._path,
             position_x,
             position_y,
             position_z,
