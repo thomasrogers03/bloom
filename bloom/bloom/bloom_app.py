@@ -101,14 +101,17 @@ class Bloom(ShowBase):
 
         edit_menu = tkinter.Menu(menu_bar, tearoff=0)
         edit_menu.add_command(label="Split (space)", command=self._split_selection)
-        edit_menu.add_command(label="Extrude (shift+space)", command=self._extrude_selection)
+        edit_menu.add_command(label="Extrude (shift+space)",
+                              command=self._extrude_selection)
         edit_menu.add_separator()
         edit_menu.add_command(label="Change tile (v)", command=self._change_tile)
         menu_bar.add_cascade(label="Edit", menu=edit_menu)
 
         view_menu = tkinter.Menu(menu_bar, tearoff=0)
-        view_menu.add_command(label="Debug (1)", command=self._toggle_collision_debug)
-        view_menu.add_command(label="Screenshot (ctrl+p)", command=self._save_screenshot)
+        view_menu.add_command(
+            label="Debug (1)", command=self._toggle_collision_debug)
+        view_menu.add_command(label="Screenshot (ctrl+p)",
+                              command=self._save_screenshot)
         menu_bar.add_cascade(label="View", menu=view_menu)
 
         self.tkRoot.config(menu=menu_bar)
@@ -174,7 +177,7 @@ class Bloom(ShowBase):
 
         self._tile_loads = queue.Queue()
         self._tile_dialog = tile_dialog.TileDialog(
-            self.aspect2d, 
+            self.aspect2d,
             self._get_tile_async,
             self._art_manager.tile_count,
             self._tickers,
@@ -363,7 +366,7 @@ class Bloom(ShowBase):
                 map_to_load,
                 self._get_tile,
                 self._collision_world
-            )            
+            )
 
     def _save_map(self):
         if not self._path:
@@ -500,9 +503,11 @@ class Bloom(ShowBase):
     def _toggle_2d_view(self):
         if self._is_editing_2d():
             self._tickers.pop_mode()
-            self._display_region_2d.set_active(False)
         else:
-            self._tickers.push_mode('2d')
+            self._tickers.push_mode(
+                '2d', 
+                lambda: self._display_region_2d.set_active(False)
+            )
             self._display_region_2d.set_active(True)
 
     def _mouse_collision_tests(self):

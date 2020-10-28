@@ -12,7 +12,7 @@ class EditMode:
         self._tickers: typing.List[typing.List[typing.Callable[[], None]]] = []
         self._always_tickers: typing.List[typing.Callable[[], None]] = []
         self._current_mode_index = 0
-        self._mode_stack = []
+        self._mode_stack: typing.List[typing.Tuple[int, typing.Callable[[], None]]] = []
 
     def toggle_mode(self):
         if len(self._tickers) < 1:
@@ -23,13 +23,14 @@ class EditMode:
     def set_mode(self, name: str):
         self._current_mode_index = self._ticker_indices[name]
 
-    def push_mode(self, name: str):
-        self._mode_stack.append(self._current_mode_index)
+    def push_mode(self, name: str, on_pop: typing.Callable[[], None]):
+        self._mode_stack.append((self._current_mode_index, on_pop))
         self.set_mode(name)
 
     def pop_mode(self):
-        mode_index = self._mode_stack.pop()
+        mode_index, pop_callback = self._mode_stack.pop()
         self._current_mode_index = mode_index
+        pop_callback()
 
     @property
     def current_mode(self):

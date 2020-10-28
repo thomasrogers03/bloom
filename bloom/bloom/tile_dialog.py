@@ -153,7 +153,7 @@ class TileDialog:
 
     def show(self, picnum: int):
         self._dialog.show()
-        self._edit_mode.push_mode('tiles')
+        self._edit_mode.push_mode('tiles', self._dialog.hide)
 
         if picnum < 0:
             picnum = 0
@@ -172,7 +172,6 @@ class TileDialog:
         self._tile_selected(self._selected_picnum)
 
     def _hide(self):
-        self._dialog.hide()
         self._edit_mode.pop_mode()
 
     def _tick(self):
