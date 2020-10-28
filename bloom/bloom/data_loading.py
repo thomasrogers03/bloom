@@ -216,6 +216,7 @@ class Unpacker:
         while index < len(hint_hint_types):
             index = self._read_bits(
                 result,
+                struct_type,
                 hint_member_names,
                 hint_hint_types,
                 index
@@ -297,10 +298,9 @@ class Unpacker:
         data = self.get_xor_encrypted_bytes(struct_type.size() * count, key)
         return Unpacker(data).read_multiple(struct_type, count)
 
-    def _read_bits(self, result, hint_member_names, hint_hint_types, index):
+    def _read_bits(self, result, struct_type, hint_member_names, hint_hint_types, index):
         while True:
-            count, integer_type = PartialInteger.next_required_for_full_integer(
-                hint_hint_types,
+            count, integer_type = struct_type.next_required_for_full_integer(
                 index
             )
 
@@ -350,6 +350,7 @@ class Packer:
         while index < len(hint_hint_types):
             index = self._write_bits(
                 structure,
+                structure.__class__,
                 hint_member_names,
                 hint_hint_types,
                 index
@@ -385,10 +386,9 @@ class Packer:
         for structure in structures:
             self.write_struct(structure)
 
-    def _write_bits(self, structure, hint_member_names, hint_hint_types, index):
+    def _write_bits(self, structure, struct_type, hint_member_names, hint_hint_types, index):
         while True:
-            count, integer_type = PartialInteger.next_required_for_full_integer(
-                hint_hint_types,
+            count, integer_type = struct_type.next_required_for_full_integer(
                 index
             )
 
@@ -459,12 +459,34 @@ class CustomStruct:
             setattr(self, key, value)
 
     @classmethod
-    def type_hints(cls):
+    def type_hints(cls) -> dict:
         hints = getattr(cls, '_type_hints', None)
         if hints is None:
             cls._type_hints = typing.get_type_hints(cls)
             return cls._type_hints
         return hints
+
+    @classmethod
+    def type_hints_list(cls):
+        hints = getattr(cls, '_type_hints_list', None)
+        if hints is None:
+            cls._type_hints_list = list(cls.type_hints().values())
+            cls._type_hints_list_bits_cache = [None] * len(cls._type_hints_list)
+            return cls._type_hints_list
+        return hints
+
+    @classmethod
+    def next_required_for_full_integer(cls, index):
+        hints = cls.type_hints_list()
+        if index >= len(hints):
+            return 0, None
+
+        if cls._type_hints_list_bits_cache[index] is None:
+            cls._type_hints_list_bits_cache[index] = PartialInteger.next_required_for_full_integer(
+                hints,
+                index
+            )
+        return cls._type_hints_list_bits_cache[index]
 
     def copy(self):
         result = self.__class__()
