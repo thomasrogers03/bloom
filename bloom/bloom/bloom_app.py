@@ -90,11 +90,20 @@ class Bloom(ShowBase):
         menu_bar = tkinter.Menu(self.tkRoot)
 
         file_menu = tkinter.Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="Open", command=self._open_map)
-        file_menu.add_command(label="Save", command=self._save_map)
+        file_menu.add_command(label="Open (ctrl+o)", command=self._open_map)
+        file_menu.add_command(label="Save (ctrl+s)", command=self._save_map)
         file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.tkRoot.quit)
         menu_bar.add_cascade(label="File", menu=file_menu)
+
+        edit_menu = tkinter.Menu(menu_bar, tearoff=0)
+        edit_menu.add_command(label="Split (space)", command=self._split_selection)
+        edit_menu.add_command(label="Extrude (shift+space)", command=self._extrude_selection)
+        menu_bar.add_cascade(label="Edit", menu=edit_menu)
+
+        view_menu = tkinter.Menu(menu_bar, tearoff=0)
+        view_menu.add_command(label="Debug (1)", command=self._toggle_collision_debug)
+        menu_bar.add_cascade(label="View", menu=view_menu)
 
         self.tkRoot.config(menu=menu_bar)
 
@@ -283,10 +292,16 @@ class Bloom(ShowBase):
         self.accept('control-o', self._open_map)
         self.accept(
             'control-p', lambda: self.screenshot('screenshot.png', defaultFilename=False))
-        self.accept('space', lambda: self._map_editor.split_highlight(False))
-        self.accept('shift-space', lambda: self._map_editor.split_highlight(True))
+        self.accept('space', self._split_selection)
+        self.accept('shift-space', self._extrude_selection)
 
         return task.done
+
+    def _extrude_selection(self):
+        self._map_editor.split_highlight(True)
+
+    def _split_selection(self):
+        self._map_editor.split_highlight(False)
 
     def _open_map(self):
         path = tkinter.filedialog.askopenfilename(
