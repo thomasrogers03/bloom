@@ -109,6 +109,11 @@ class ArtManager:
 
     def __init__(self, rff: RFF, paths: typing.List[str]):
         self._art = [Art(rff, path) for path in paths]
+        self._tile_count = sum(art.count for art in self._art)
+
+    @property
+    def tile_count(self):
+        return self._tile_count
 
     def get_tile_image(self, tile_number):
         for art in self._art:
@@ -116,3 +121,4 @@ class ArtManager:
                 return art.get_tile_image(tile_number)
         
         raise ValueError(f'Tile {tile_number} not available')
+

@@ -17,7 +17,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d import bullet, core
 from panda3d.direct import init_app_for_gui
 
-from . import art, clicker, constants, edit_mode, editor, game_map
+from . import art, clicker, constants, edit_mode, editor, game_map, tile_dialog
 from .editor import map_editor
 from .rff import RFF
 
@@ -99,6 +99,8 @@ class Bloom(ShowBase):
         edit_menu = tkinter.Menu(menu_bar, tearoff=0)
         edit_menu.add_command(label="Split (space)", command=self._split_selection)
         edit_menu.add_command(label="Extrude (shift+space)", command=self._extrude_selection)
+        edit_menu.add_separator()
+        edit_menu.add_command(label="Change tile (v)", command=self._change_tile)
         menu_bar.add_cascade(label="Edit", menu=edit_menu)
 
         view_menu = tkinter.Menu(menu_bar, tearoff=0)
@@ -107,6 +109,10 @@ class Bloom(ShowBase):
         menu_bar.add_cascade(label="View", menu=view_menu)
 
         self.tkRoot.config(menu=menu_bar)
+
+    def _change_tile(self):
+        self._select_object()
+        self._tile_dialog.show()
 
     def _tk_timer_callback(self):
         if not core.Thread.get_current_thread().get_current_task():
@@ -123,7 +129,7 @@ class Bloom(ShowBase):
         props = core.WindowProperties()
         props.set_parent_window(window_id)
         props.set_origin(0, 50)
-        props.set_size(width, height - 250)
+        props.set_size(width, height - 80)
 
         return props
 
@@ -162,6 +168,13 @@ class Bloom(ShowBase):
 
         self._tickers = edit_mode.EditMode()
         self.task_mgr.add(self._tick, 'tick')
+
+        self._tile_dialog = tile_dialog.TileDialog(
+            self.aspect2d, 
+            self._get_tile,
+            self._art_manager.tile_count,
+            self._tickers
+        )
 
         self._builder_2d: core.NodePath = self._scene.attach_new_node('builder')
         position = core.Vec3(*map_to_load.start_position)
@@ -294,6 +307,7 @@ class Bloom(ShowBase):
         self.accept('control-p', self._save_screenshot)
         self.accept('space', self._split_selection)
         self.accept('shift-space', self._extrude_selection)
+        self.accept('v', self._change_tile)
 
         return task.done
 
@@ -463,10 +477,10 @@ class Bloom(ShowBase):
 
     def _toggle_2d_view(self):
         if self._is_editing_2d():
-            self._tickers.set_mode('3d')
+            self._tickers.pop_mode()
             self._display_region_2d.set_active(False)
         else:
-            self._tickers.set_mode('2d')
+            self._tickers.push_mode('2d')
             self._display_region_2d.set_active(True)
 
     def _mouse_collision_tests(self):
