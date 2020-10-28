@@ -5,10 +5,12 @@ import math
 
 from panda3d import core
 
+from . import empty_selector
+
 
 class Highlight:
 
-    def __init__(self, colour: core.Vec3, item, part: str, selector):
+    def __init__(self, colour: core.Vec3, item, part: str, selector: empty_selector.Selector):
         self.colour = colour
         self.item = item
         self._part = part

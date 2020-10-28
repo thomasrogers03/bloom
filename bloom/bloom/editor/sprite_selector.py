@@ -21,6 +21,9 @@ class Selector(empty_selector.Selector):
         self._snapper = snapper
         self._start_position: core.Point3 = None
 
+    def get_picnum(self):
+        return -1
+
     def begin_move(self, hit: core.Point3):
         if self._start_position is None:
             self._start_position = self._sprite.position

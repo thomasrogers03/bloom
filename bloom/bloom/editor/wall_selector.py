@@ -25,6 +25,12 @@ class Selector(empty_selector.Selector):
         self._start_point_1: core.Point2 = None
         self._start_point_2: core.Point2 = None
 
+    def get_picnum(self):
+        return self._wall.get_picnum(self._part)
+
+    def et_picnum(self, picnum: int):
+        self._wall.set_picnum(self._part, picnum)
+
     def begin_move(self, hit: core.Point3):
         if self._hit is None:
             self._hit = hit

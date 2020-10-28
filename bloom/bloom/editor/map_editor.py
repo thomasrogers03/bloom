@@ -206,6 +206,12 @@ class MapEditor:
                 self._selected_is_highlighted = False
                 self._highlight = found_highlight
 
+    def get_selected_picnum(self):
+        if self._selection is None:
+            return -1
+
+        return self._selection.selector.get_picnum()
+
     def move_selection(
         self,
         total_delta: core.Vec2,

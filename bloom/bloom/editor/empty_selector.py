@@ -6,6 +6,12 @@ from panda3d import core
 
 class Selector:
 
+    def get_picnum(self):
+        return -1
+
+    def set_picnum(self, picnum: int):
+        pass
+
     def begin_move(self, hit: core.Point3):
         pass
 

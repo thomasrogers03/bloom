@@ -47,8 +47,21 @@ class TileDialog:
         for y in range(int(tile_count / 10)):
             self._top -= 0.2
             for x in range(10):
+                left = x * 0.2
                 picnum = y * 10 + x
-                callback = self._make_tile_callback(x * 0.2, self._top, picnum)
+
+                frame = DirectGui.DirectButton(
+                    parent=self._canvas,
+                    pos=core.Vec3(left, 0, self._top),
+                    frameSize=(0, 0.2, 0, -0.2),
+                    frameColor=(0, 0, 0, 0),
+                    relief=DirectGuiGlobals.FLAT,
+                    command=self._select_tile,
+                    extraArgs=[picnum]
+                )
+                self._tile_frames[picnum] = frame
+
+                callback = self._make_tile_callback(frame, left, self._top, picnum)
                 get_tile_async(picnum, callback)
 
         frame_size = list(self._frame['canvasSize'])
@@ -57,7 +70,7 @@ class TileDialog:
 
         self._edit_mode['tiles'].append(self._tick)
 
-    def _make_tile_callback(self, left: float, top: float, picnum: int):
+    def _make_tile_callback(self, parent_frame: DirectGui.DirectFrame, left: float, top: float, picnum: int):
         def _callback(texture: core.Texture):
             width = texture.get_x_size()
             height = texture.get_y_size()
@@ -71,41 +84,38 @@ class TileDialog:
                 frame_height = 0.2
                 frame_width = (width / height) * 0.2
 
-            frame = DirectGui.DirectButton(
-                parent=self._canvas,
-                pos=core.Vec3(left, 0, top),
-                frameSize=(0, 0.2, 0, -0.2),
-                frameColor=(0, 0, 0, 0),
-                relief=DirectGuiGlobals.FLAT,
-                command=self._select_tile
-            )
-            frame['extraArgs'] = [frame, picnum]
             DirectGui.DirectButton(
-                parent=frame,
+                parent=parent_frame,
                 frameSize=(0.01, frame_width - 0.01, -0.01, -(frame_height - 0.01)),
                 frameTexture=texture,
                 relief=DirectGuiGlobals.FLAT,
                 command=self._select_tile,
-                extraArgs=[frame, picnum]
+                extraArgs=[picnum]
             )
 
-            self._tile_frames[picnum] = frame
         return _callback
 
-    def _select_tile(self, frame: DirectGui.DirectFrame, picnum: int):
+    def _select_tile(self, picnum: int):
         if self._selected_tile is not None:
             self._selected_tile['frameColor'] = (0, 0, 0, 0)
-        self._selected_tile = frame
+        self._selected_tile = self._tile_frames[picnum]
         self._selected_tile['frameColor'] = (0, 0, 1, 1)
         self._selected_picnum = picnum
 
-    def show(self):
+    def show(self, picnum: int):
         self._dialog.show()
         self._edit_mode.push_mode('tiles')
+
+        if picnum < 0:
+            picnum = 0
+
+        self._select_tile(picnum)
 
     def hide(self):
         self._dialog.hide()
         self._edit_mode.pop_mode('tiles')
+
+        return self._selected_picnum
 
     def _tick(self):
         pass

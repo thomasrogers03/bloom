@@ -10,6 +10,7 @@ from .. import constants, editor, game_map, map_data
 
 
 class EditorWall:
+    _MASK_WALL_PART = 'middle'
 
     def __init__(
         self,
@@ -126,7 +127,7 @@ class EditorWall:
             )
             if self._wall.wall.stat.masking > 0 and self._wall.wall.over_picnum > 0:
                 middle = self._make_wall_part(
-                    'middle',
+                    self._MASK_WALL_PART,
                     self._other_side_sector.floor_z,
                     self._other_side_sector.ceiling_z,
                     lambda point: self._other_side_sector.floor_z_at_point(point),
@@ -310,6 +311,18 @@ class EditorWall:
     @property
     def point_2(self):
         return self._wall_point_2.point_1
+
+    def get_picnum(self, part: str):
+        if part == self._MASK_WALL_PART:
+            return self._wall.wall.over_picnum
+        return self._wall.wall.picnum
+
+    def set_picnum(self, part: str, picnum: int):
+        self.invalidate_geometry()
+        if part == self._MASK_WALL_PART:
+            self._wall.wall.over_picnum = picnum
+        else:
+            self._wall.wall.picnum = picnum
 
     def show_debug(self):
         self._debug_display.show()

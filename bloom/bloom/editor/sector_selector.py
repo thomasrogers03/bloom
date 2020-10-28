@@ -17,6 +17,9 @@ class Selector(empty_selector.Selector):
         self._snapper = snapper
         self._start_height: float = None
 
+    def get_picnum(self):
+        return -1
+
     def begin_move(self, hit: core.Point3):
         if self._start_height is None:
             if self._part == 'floor_collision':

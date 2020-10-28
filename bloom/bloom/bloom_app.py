@@ -115,7 +115,7 @@ class Bloom(ShowBase):
 
     def _change_tile(self):
         self._select_object()
-        self._tile_dialog.show()
+        self._tile_dialog.show(self._map_editor.get_selected_picnum())
 
     def _tk_timer_callback(self):
         if not core.Thread.get_current_thread().get_current_task():
