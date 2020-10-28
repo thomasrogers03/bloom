@@ -3,6 +3,7 @@
 
 import typing
 
+from direct.task import Task
 from panda3d import core
 
 
@@ -22,12 +23,14 @@ class Clicker:
     def __init__(
         self,
         watcher: core.MouseWatcher,
+        task_manager: Task.TaskManager,
         mouse_buttons: typing.List[core.MouseButton],
         on_click: typing.Callable[[], None] = None,
         on_click_move: typing.Callable[[core.Vec2], None] = None,
         on_click_after_move: typing.Callable[[], None] = None,
     ):
         self._watcher = watcher
+        self._task_manager = task_manager
         self._mouse_buttons = set(mouse_buttons)
         self._unwanted_mouse_buttons = self.ALL_BUTTONS - self._mouse_buttons
         self._on_click = on_click

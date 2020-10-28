@@ -254,54 +254,47 @@ class Bloom(ShowBase):
 
         self.mouseWatcherNode.setModifierButtons(core.ModifierButtons())
 
-        left_clicker = clicker.Clicker(
-            self.mouseWatcherNode,
+        left_clicker = self._make_clicker(
             [core.MouseButton.one()],
             on_click=self._select_object,
             on_click_move=self._pan_camera,
         )
         self._tickers['3d'].append(left_clicker.tick)
 
-        left_clicker = clicker.Clicker(
-            self.mouseWatcherNode,
+        left_clicker = self._make_clicker(
             [core.MouseButton.one()],
             on_click=self._select_object,
             on_click_move=self._pan_camera_2d,
         )
         self._tickers['2d'].append(left_clicker.tick)
 
-        left_clicker = clicker.Clicker(
-            self.mouseWatcherNode,
+        left_clicker = self._make_clicker(
             [core.KeyboardButton.control(), core.MouseButton.one()],
             on_click_after_move=lambda: self._map_editor.end_move_selection(),
             on_click_move=self._move_selected,
         )
         self._tickers['3d'].append(left_clicker.tick)
 
-        left_clicker = clicker.Clicker(
-            self.mouseWatcherNode,
+        left_clicker = self._make_clicker(
             [core.KeyboardButton.shift(), core.MouseButton.one()],
             on_click_after_move=lambda: self._map_editor.end_move_selection(),
             on_click_move=self._modified_move_selected,
         )
         self._tickers['3d'].append(left_clicker.tick)
 
-        right_clicker = clicker.Clicker(
-            self.mouseWatcherNode,
+        right_clicker = self._make_clicker(
             [core.MouseButton.three()],
             on_click_move=self._rotate_camera,
         )
         self._tickers['3d'].append(right_clicker.tick)
 
-        left_and_right_clicker = clicker.Clicker(
-            self.mouseWatcherNode,
+        left_and_right_clicker = self._make_clicker(
             [core.MouseButton.one(), core.MouseButton.three()],
             on_click_move=self._strafe_camera,
         )
         self._tickers['3d'].append(left_and_right_clicker.tick)
 
-        left_and_right_clicker = clicker.Clicker(
-            self.mouseWatcherNode,
+        left_and_right_clicker = self._make_clicker(
             [core.MouseButton.one(), core.MouseButton.three()],
             on_click_move=self._strafe_camera_2d,
         )
@@ -317,6 +310,22 @@ class Bloom(ShowBase):
         self.accept('v', self._change_tile)
 
         return task.done
+
+    def _make_clicker(
+        self,
+        mouse_buttons: typing.List[core.MouseButton],
+        on_click: typing.Callable[[], None] = None,
+        on_click_move: typing.Callable[[core.Vec2], None] = None,
+        on_click_after_move: typing.Callable[[], None] = None,
+    ):
+        return clicker.Clicker(
+            self.mouseWatcherNode,
+            self.task_mgr,
+            mouse_buttons,
+            on_click=on_click,
+            on_click_move=on_click_move,
+            on_click_after_move=on_click_after_move,
+        )
 
     def _update_selected_tile(self, picnum: int):
         self._map_editor.set_selected_picnum(picnum)
