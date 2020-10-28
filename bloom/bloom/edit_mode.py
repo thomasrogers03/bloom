@@ -28,6 +28,9 @@ class EditMode:
         self.set_mode(name)
 
     def pop_mode(self):
+        if len(self._mode_stack) < 1:
+            return
+
         mode_index, pop_callback = self._mode_stack.pop()
         self._current_mode_index = mode_index
         pop_callback()

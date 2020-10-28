@@ -236,6 +236,7 @@ class Bloom(ShowBase):
         self._display_region_2d.set_sort(1000)
         self._display_region_2d.set_active(False)
         self.accept('tab', self._toggle_2d_view)
+        self.accept('escape', self._tickers.pop_mode)
 
         debug_node = bullet.BulletDebugNode('Debug')
         debug_node.show_wireframe(True)
