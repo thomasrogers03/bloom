@@ -103,6 +103,7 @@ class Bloom(ShowBase):
 
         view_menu = tkinter.Menu(menu_bar, tearoff=0)
         view_menu.add_command(label="Debug (1)", command=self._toggle_collision_debug)
+        view_menu.add_command(label="Screenshot (ctrl+p)", command=self._save_screenshot)
         menu_bar.add_cascade(label="View", menu=view_menu)
 
         self.tkRoot.config(menu=menu_bar)
@@ -290,12 +291,14 @@ class Bloom(ShowBase):
 
         self.accept('control-s', self._save_map)
         self.accept('control-o', self._open_map)
-        self.accept(
-            'control-p', lambda: self.screenshot('screenshot.png', defaultFilename=False))
+        self.accept('control-p', self._save_screenshot)
         self.accept('space', self._split_selection)
         self.accept('shift-space', self._extrude_selection)
 
         return task.done
+
+    def _save_screenshot(self):
+        self.screenshot('screenshot.png', defaultFilename=False)
 
     def _extrude_selection(self):
         self._map_editor.split_highlight(True)
