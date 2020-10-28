@@ -50,8 +50,10 @@ class TileDialog:
             frameSize=(-1.05, 1.05, -0.8, 0.88),
             frameColor=(0.65, 0.65, 0.65, 1),
             relief=DirectGuiGlobals.SUNKEN,
-            scrollBarWidth=0.04
+            scrollBarWidth=0.04,
+            state=DirectGuiGlobals.NORMAL
         )
+        self._bind_scroll(self._frame)
         self._canvas = self._frame.getCanvas()
 
         self._task_manager = task_manager
@@ -77,6 +79,7 @@ class TileDialog:
                     command=self._select_tile,
                     extraArgs=[picnum]
                 )
+                self._bind_scroll(frame)
                 self._tile_frames[picnum] = frame
 
                 callback = self._make_tile_callback(frame, left, self._top, picnum)
@@ -87,6 +90,22 @@ class TileDialog:
         self._frame['canvasSize'] = frame_size
 
         self._edit_mode['tiles'].append(self._tick)
+
+    def _bind_scroll(self, control):
+        control.bind(DirectGuiGlobals.WHEELUP, self._scroll_up)
+        control.bind(DirectGuiGlobals.WHEELDOWN, self._scroll_down)
+
+    def _scroll_up(self, event):
+        new_value = self._scroll_bar.getValue() - 0.01
+        if new_value < 0:
+            new_value = 0
+        self._scroll_bar.setValue(new_value)
+
+    def _scroll_down(self, event):
+        new_value = self._scroll_bar.getValue() + 0.01
+        if new_value > 1:
+            new_value = 1
+        self._scroll_bar.setValue(new_value)
 
     def _make_tile_callback(self, parent_frame: DirectGui.DirectFrame, left: float, top: float, picnum: int):
         def _callback(texture: core.Texture):
@@ -102,7 +121,7 @@ class TileDialog:
                 frame_height = 0.2
                 frame_width = (width / height) * 0.2
 
-            DirectGui.DirectButton(
+            tile = DirectGui.DirectButton(
                 parent=parent_frame,
                 frameSize=(0.01, frame_width - 0.01, -0.01, -(frame_height - 0.01)),
                 frameTexture=texture,
@@ -110,6 +129,7 @@ class TileDialog:
                 command=self._select_tile,
                 extraArgs=[picnum]
             )
+            self._bind_scroll(tile)
 
         return _callback
 
@@ -140,9 +160,12 @@ class TileDialog:
 
         self._select_tile(picnum)
 
-        scroll_bar: DirectGui.DirectScrollBar = self._frame.verticalScroll
         value = self._selected_tile.get_z() / self._top
-        scroll_bar.setValue(value)
+        self._scroll_bar.setValue(value)
+
+    @property
+    def _scroll_bar(self) -> DirectGui.DirectScrollBar:
+        return self._frame.verticalScroll
 
     def _confirm(self):
         self._hide()
