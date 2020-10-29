@@ -134,22 +134,13 @@ class EditMode(navigation_mode_3d.EditMode):
         self._do_move_selected(total_delta, delta, True)
 
     def _do_move_selected(self, total_delta: core.Vec2, delta: core.Vec2, modified: bool):
-        heading = self._builder_camera.get_h()
-
-        sin_theta = math.sin(math.radians(heading))
-        cos_theta = math.cos(math.radians(heading))
-
-        x_direction = sin_theta * delta.y + cos_theta * -delta.x
-        y_direction = cos_theta * delta.y - sin_theta * -delta.x
-        camera_delta = core.Vec2(x_direction, y_direction)
-
-        x_direction = sin_theta * total_delta.y + cos_theta * -total_delta.x
-        y_direction = cos_theta * total_delta.y - sin_theta * -total_delta.x
-        total_camera_delta = core.Vec2(x_direction, y_direction)
+        camera_delta = self._transform_to_camera_delta(delta)
+        total_camera_delta = self._transform_to_camera_delta(total_delta)
 
         self._editor.move_selection(
             total_delta * constants.TICK_SCALE,
             delta * constants.TICK_SCALE,
-            total_camera_delta * constants.TICK_SCALE,
-            camera_delta * constants.TICK_SCALE, modified
+            total_camera_delta,
+            camera_delta, 
+            modified
         )

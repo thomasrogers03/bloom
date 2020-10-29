@@ -1,17 +1,16 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import math
 import tkinter
 import typing
 
 from direct.showbase import DirectObject
 from panda3d import core
 
-from .. import clicker, edit_mode
+from .. import clicker, constants, edit_menu, edit_mode
 from ..editor import map_editor
 
-
-from .. import edit_menu
 
 class EditMode(DirectObject.DirectObject):
 
@@ -69,3 +68,14 @@ class EditMode(DirectObject.DirectObject):
     def tick(self):
         for ticker in self._tickers:
             ticker()
+
+    def _transform_to_camera_delta(self, delta: core.Vec2):
+        heading = self._builder_camera.get_h()
+
+        sin_theta = math.sin(math.radians(heading))
+        cos_theta = math.cos(math.radians(heading))
+
+        x_direction = sin_theta * delta.y + cos_theta * -delta.x
+        y_direction = cos_theta * delta.y - sin_theta * -delta.x
+        
+        return core.Vec2(x_direction, y_direction) * constants.TICK_SCALE
