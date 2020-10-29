@@ -210,6 +210,10 @@ class MapEditor:
     def snapper(self):
         return self._snapper
 
+    @property
+    def sectors(self):
+        return self._sectors
+
     def get_selected_picnum(self):
         if self._selection is None:
             return -1

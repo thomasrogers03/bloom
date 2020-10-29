@@ -79,7 +79,7 @@ class EditMode(navigation_mode_3d.EditMode):
         point = self._get_next_point()
         if point is not None:
             if len(self._points) > 0 and (point - self._points[0]).length_squared() < 1:
-                self._sector.split(self._points)
+                self._sector.split(self._editor.sectors, self._points)
                 self._edit_mode_selector.pop_mode()
             else:
                 self._points.append(point)

@@ -23,6 +23,7 @@ class EditorWall:
         self._other_side_sector: 'editor.sector.EditorSector' = None
         self._other_side_wall: EditorWall = None
         self._scene: core.NodePath = None
+        self._wall_scene: core.NodePath = None
         self._display: core.NodePath = None
         self._debug_display: core.NodePath = None
         self._vertex_format: core.GeomVertexFormat = None
@@ -44,12 +45,14 @@ class EditorWall:
     def setup_for_rendering(
         self,
         scene: core.NodePath,
+        wall_scene: core.NodePath,
         name: str,
         vertex_format: core.GeomVertexFormat,
         get_tile_callback: typing.Callable[[int], core.Texture]
     ):
         self._scene = scene
-        self._display = self._scene.attach_new_node(name)
+        self._wall_scene = scene
+        self._display = self._wall_scene.attach_new_node(name)
         self._vertex_format = vertex_format
         self._get_tile_callback = get_tile_callback
         self._texture_stage = core.TextureStage.get_default()
@@ -163,6 +166,7 @@ class EditorWall:
             self._get_tile_callback
         )
         sectors.append(new_sector)
+        new_sector.setup_geometry(self._collision_world)
         
         extrude_direction = self.get_normal() * 1024
 
@@ -207,19 +211,12 @@ class EditorWall:
                 None
             )
 
-            wall_index = new_sector.add_wall(new_wall)
-            new_wall.setup_for_rendering(
-                self._scene,
-                str(wall_index),
-                self._vertex_format,
-                self._get_tile_callback
-            )
+            new_sector.add_wall(new_wall)
         point_1._other_side_sector = self._sector
         point_1._other_side_wall = self
             
         self._sector.invalidate_geometry()
         self.invalidate_geometry()
-        new_sector.setup_geometry(self._collision_world)
 
     def split(self, where: core.Point2):
         self._do_split(where)
@@ -244,13 +241,7 @@ class EditorWall:
         self._wall_point_2.wall_previous_point = new_wall_point_2
         self._wall_point_2 = new_wall_point_2
 
-        wall_index = self._sector.add_wall(new_wall_point_2)
-        new_wall_point_2.setup_for_rendering(
-            self._scene,
-            str(wall_index),
-            self._vertex_format,
-            self._get_tile_callback
-        )
+        self._sector.add_wall(new_wall_point_2)
         new_wall_point_2.setup_geometry(self._sector, self._collision_world)
 
         return new_wall_point_2

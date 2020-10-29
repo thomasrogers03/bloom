@@ -83,13 +83,15 @@ class EditorSector:
         vertex_format: core.GeomVertexFormat,
         get_tile_callback: typing.Callable[[int], core.Texture]
     ):
-        self._display = scene.attach_new_node(name)
+        self._scene = scene
+        self._display = self._scene.attach_new_node(name)
         self._vertex_format = vertex_format
         self._get_tile_callback = get_tile_callback
 
         self._wall_display = self._display.attach_new_node('walls')
         for wall_index, editor_wall in enumerate(self._walls):
             editor_wall.setup_for_rendering(
+                self._scene,
                 self._wall_display,
                 str(wall_index),
                 vertex_format,
@@ -123,19 +125,21 @@ class EditorSector:
         if not self._needs_geometry_reset:
             return
 
-        floor_collision: bullet.BulletRigidBodyNode = self._display.find(
-            'floor_collision'
-        )
-        self._collision_world.remove(floor_collision.node())
-        self._floor.remove_node()
-        self._floor = None
+        if self._floor is not None:
+            floor_collision: core.NodePath = self._display.find(
+                'floor_collision'
+            )
+            self._collision_world.remove(floor_collision.node())
+            self._floor.remove_node()
+            self._floor = None
 
-        ceiling_collision: bullet.BulletRigidBodyNode = self._display.find(
-            'ceiling_collision'
-        )
-        self._collision_world.remove(ceiling_collision.node())
-        self._ceiling.remove_node()
-        self._ceiling = None
+        if self._ceiling is not None:
+            ceiling_collision: core.NodePath = self._display.find(
+                'ceiling_collision'
+            )
+            self._collision_world.remove(ceiling_collision.node())
+            self._ceiling.remove_node()
+            self._ceiling = None
 
         self._setup_sector_geometry()
 
@@ -181,9 +185,24 @@ class EditorSector:
     def hide_debug(self):
         pass
 
-    def split(self, points: typing.List[core.Point2]):
+    def split(
+        self, 
+        sectors: typing.List['editor.sector.EditorSector'], 
+        points: typing.List[core.Point2]
+    ):
         if len(points) < 3:
             return
+
+        new_sector = EditorSector(self._sector.copy())
+        new_sector_index = len(sectors)
+        new_sector.setup_for_rendering(
+            self._scene, 
+            str(new_sector_index),
+            self._vertex_format,
+            self._get_tile_callback
+        )
+        sectors.append(new_sector)
+        new_sector.setup_geometry(self._collision_world)
 
         angles = zip(points, (points[1:] + points[:1]), (points[2:] + points[:2]))
         winding = 1
@@ -198,6 +217,10 @@ class EditorSector:
             winding *= delta_1.cross(delta_2).z
         
         if winding > 0:
+            reversed_points = points
+            points = reversed(points)
+        else:
+            reversed_points = points
             points = reversed(points)
 
         wall_base = self._walls[0].blood_wall
@@ -211,24 +234,40 @@ class EditorSector:
             new_wall = wall.EditorWall(new_blood_wall)
             new_walls.append(new_wall)
 
-        segments = zip(new_walls, (new_walls[1:] + new_walls[:1]))
-        for point_1, point_2 in segments:
+        new_otherside_walls: typing.List[wall.EditorWall] = []
+        for point in reversed_points:
+            new_blood_wall = wall_base.copy()
+            new_blood_wall.wall.position_x = int(point.x)
+            new_blood_wall.wall.position_y = int(point.y)
+            
+            new_wall = wall.EditorWall(new_blood_wall)
+            new_otherside_walls.append(new_wall)
+
+        otherside_walls = reversed(new_otherside_walls[1:] + new_otherside_walls[:1])
+        segments = zip(otherside_walls, new_walls, (new_walls[1:] + new_walls[:1]))
+        for otherside_wall, point_1, point_2 in segments:
             point_1.setup(
                 point_2,
-                None,
-                None
+                new_sector,
+                otherside_wall
+            )
+            point_2.wall_previous_point = point_1
+
+        otherside_walls = reversed(new_walls[1:] + new_walls[:1])
+        segments = zip(otherside_walls, new_otherside_walls, (new_otherside_walls[1:] + new_otherside_walls[:1]))
+        for otherside_wall, point_1, point_2 in segments:
+            point_1.setup(
+                point_2,
+                self,
+                otherside_wall
             )
             point_2.wall_previous_point = point_1
 
         for new_wall in new_walls:
-            wall_index = self.add_wall(new_wall)
-            new_wall.setup_for_rendering(
-                self._wall_display,
-                str(wall_index),
-                self._vertex_format,
-                self._get_tile_callback
-            )
-            new_wall.setup_geometry(self, self._collision_world)
+            self.add_wall(new_wall)
+
+        for new_wall in new_otherside_walls:
+            new_sector.add_wall(new_wall)
 
         self.invalidate_geometry()
 
@@ -279,6 +318,9 @@ class EditorSector:
         return self._sector
 
     def _setup_sector_geometry(self):
+        if len(self._walls) < 1:
+            return
+
         self._floor = self._get_triangulated_sector_shape(
             'floor', self.floor_z_at_point,
             self.floor_x_panning,
@@ -342,12 +384,12 @@ class EditorSector:
             point = core.Point2(point.x, point.y)
             position_writer.add_data3(point.x, point.y, height_callback(point))
 
-            texture_coordinate_x = ((point.x + x_panning) * texture.get_x_size() ) / (1_000 * 128)
-            texture_coordinate_y = ((point.y + y_panning) * texture.get_y_size() ) / (1_000 * 128)
+            texture_coordinate_x = ((point.x + x_panning) * texture.get_x_size() ) / (1_000 * 64)
+            texture_coordinate_y = ((point.y + y_panning) * texture.get_y_size() ) / (1_000 * 64)
 
             if stat.expand:
-                texture_coordinate_x *= 2
-                texture_coordinate_y *= 2
+                texture_coordinate_x /= 2
+                texture_coordinate_y /= 2
 
             if stat.swapxy:
                 texcoord_writer.add_data2(texture_coordinate_y, texture_coordinate_x)
@@ -564,7 +606,14 @@ class EditorSector:
         new_wall_index = len(self._walls)
         self._walls.append(new_wall)
 
-        return new_wall_index
+        new_wall.setup_for_rendering(
+            self._scene,
+            self._wall_display,
+            str(new_wall_index),
+            self._vertex_format,
+            self._get_tile_callback
+        )
+        new_wall.setup_geometry(self, self._collision_world)
 
     def floor_z_at_point(self, point: core.Point2):
         if not self._sector.sector.floor_stat.groudraw:
