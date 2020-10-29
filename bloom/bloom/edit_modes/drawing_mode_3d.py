@@ -118,21 +118,46 @@ class EditMode(navigation_mode_3d.EditMode):
 
         segments = core.LineSegs()
         segments.set_thickness(4)
-        for point in self._points:
+
+        points = self._points
+        if self._current_point is not None:
+            points = points + [self._current_point]
+
+        if not points:
+            return
+
+        walls = zip(points, (points[1:] + points[:1]))
+
+        for point_1, point_2 in walls:
+            point_3d_1 = core.Point3(
+                point_1.x, 
+                point_1.y, 
+                self._sector.floor_z_at_point(point_1)
+            )
+            segments.draw_to(point_3d_1)
+            
             point_3d = core.Point3(
-                point.x, 
-                point.y, 
-                self._sector.floor_z_at_point(point)
+                point_1.x, 
+                point_1.y, 
+                self._sector.ceiling_z_at_point(point_1)
+            )
+            segments.draw_to(point_3d)
+            
+            point_3d = core.Point3(
+                point_2.x, 
+                point_2.y, 
+                self._sector.ceiling_z_at_point(point_2)
+            )
+            segments.draw_to(point_3d)
+            
+            point_3d = core.Point3(
+                point_2.x, 
+                point_2.y, 
+                self._sector.floor_z_at_point(point_2)
             )
             segments.draw_to(point_3d)
 
-        if self._current_point is not None:
-            point_3d = core.Point3(
-                self._current_point.x, 
-                self._current_point.y, 
-                self._sector.floor_z_at_point(self._current_point)
-            )
-            segments.draw_to(point_3d)
+            segments.draw_to(point_3d_1)
             
         debug_view_node = segments.create('debug')
 
