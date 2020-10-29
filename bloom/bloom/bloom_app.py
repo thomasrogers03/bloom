@@ -238,7 +238,6 @@ class Bloom(ShowBase):
         self._display_region_2d.set_camera(self._camera_2d)
         self._display_region_2d.set_sort(1000)
         self._display_region_2d.set_active(False)
-        self.accept('tab', self._toggle_2d_view)
         self.accept('escape', self._edit_mode_selector.pop_mode)
 
         debug_node = bullet.BulletDebugNode('Debug')
@@ -260,18 +259,6 @@ class Bloom(ShowBase):
 
         self.mouseWatcherNode.setModifierButtons(core.ModifierButtons())
 
-        self._mode_3d = edit_mode_3d.EditMode(
-            self._tile_dialog,
-            self.cam,
-            self.camLens,
-            render=self.render, 
-            scene=self._scene,
-            builder_camera_2d=self._builder_2d,
-            builder_camera=self._builder,
-            edit_mode_selector=self._edit_mode_selector
-        )
-        self._mode_3d.set_editor(self._map_editor)
-
         self._mode_2d = edit_mode_2d.EditMode(
             self._camera_2d,
             self._display_region_2d,
@@ -282,6 +269,19 @@ class Bloom(ShowBase):
             edit_mode_selector=self._edit_mode_selector
         )
         self._mode_2d.set_editor(self._map_editor)
+
+        self._mode_3d = edit_mode_3d.EditMode(
+            self._tile_dialog,
+            self.cam,
+            self.camLens,
+            self._mode_2d,
+            render=self.render, 
+            scene=self._scene,
+            builder_camera_2d=self._builder_2d,
+            builder_camera=self._builder,
+            edit_mode_selector=self._edit_mode_selector
+        )
+        self._mode_3d.set_editor(self._map_editor)
 
         self._edit_mode_selector.push_mode(self._mode_3d)
 
@@ -366,17 +366,6 @@ class Bloom(ShowBase):
             file.write(result)
 
         logger.info(f'Saved map to {self._path}')
-
-    def _toggle_2d_view(self):
-        self._edit_mode_selector.push_mode(self._mode_2d)
-        # if self._is_editing_2d():
-        #     self._edit_mode_selector.pop_mode()
-        # else:
-        #     self._edit_mode_selector.push_mode(
-        #         '2d', 
-        #         lambda: self._display_region_2d.set_active(False)
-        #     )
-        #     self._display_region_2d.set_active(True)
 
     def _toggle_collision_debug(self):
         if self._collision_debug.is_hidden():

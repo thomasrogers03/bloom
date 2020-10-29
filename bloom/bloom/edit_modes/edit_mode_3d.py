@@ -9,7 +9,7 @@ from panda3d import core
 
 from .. import clicker, constants, edit_mode, tile_dialog
 from ..editor import map_editor
-from . import base_edit_mode
+from . import base_edit_mode, edit_mode_2d
 
 
 class EditMode(base_edit_mode.EditMode):
@@ -19,6 +19,7 @@ class EditMode(base_edit_mode.EditMode):
         tile_selector: tile_dialog.TileDialog,
         camera: core.NodePath,
         lens: core.Lens,
+        mode_2d: edit_mode_2d.EditMode,
         *args, 
         **kwargs
     ):
@@ -27,6 +28,7 @@ class EditMode(base_edit_mode.EditMode):
         self._tile_selector = tile_selector
         self._camera = camera
         self._lens = lens
+        self._mode_2d = mode_2d
         self._mouse_watcher = self._edit_mode_selector.mouse_watcher
 
         self._tickers.append(self._mouse_collision_tests)
@@ -62,6 +64,13 @@ class EditMode(base_edit_mode.EditMode):
 
     def select_object(self):
         self._editor.perform_select()
+
+    def enter_mode(self):
+        super().enter_mode()
+        self.accept('tab', self._enter_2d_mode)
+
+    def _enter_2d_mode(self):
+        self._edit_mode_selector.push_mode(self._mode_2d)
 
     def _show_tile_selector(self):
         self._tile_selector.show(self._editor.get_selected_picnum())

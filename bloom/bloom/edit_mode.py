@@ -33,6 +33,7 @@ class EditMode:
     def push_mode(self, mode: base_edit_mode.EditMode):
         if self._current_edit_mode is not None:
             self._mode_stack.append(self._current_edit_mode)
+            self._current_edit_mode.exit_mode()
         self._current_edit_mode = mode
         self._current_edit_mode.enter_mode()
 
@@ -42,6 +43,7 @@ class EditMode:
 
         self._current_edit_mode.exit_mode()
         self._current_edit_mode = self._mode_stack.pop()
+        self._current_edit_mode.enter_mode()
 
     @property
     def current_mode(self):

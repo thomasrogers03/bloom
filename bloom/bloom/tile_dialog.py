@@ -11,6 +11,7 @@ from . import constants, edit_mode
 
 
 class TileDialog:
+    
     def __init__(
         self,
         parent: core.NodePath,

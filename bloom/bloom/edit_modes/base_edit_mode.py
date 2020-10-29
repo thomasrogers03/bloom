@@ -3,13 +3,14 @@
 
 import typing
 
+from direct.showbase import DirectObject
 from panda3d import core
 
 from .. import clicker, edit_mode
 from ..editor import map_editor
 
 
-class EditMode:
+class EditMode(DirectObject.DirectObject):
 
     def __init__(
         self,
@@ -19,6 +20,8 @@ class EditMode:
         builder_camera: core.NodePath,
         edit_mode_selector: 'bloom.edit_mode.EditMode'
     ):
+        super().__init__()
+
         self._render = render
         self._scene = scene
         self._builder_camera_2d = builder_camera_2d
@@ -38,7 +41,7 @@ class EditMode:
         pass
 
     def exit_mode(self):
-        pass
+        self.ignore_all()
 
     def _make_clicker(
         self,

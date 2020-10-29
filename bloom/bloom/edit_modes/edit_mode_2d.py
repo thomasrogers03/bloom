@@ -27,17 +27,24 @@ class EditMode(base_edit_mode.EditMode):
         )
 
     def enter_mode(self):
+        super().enter_mode()
+        self.accept('tab', lambda: self._edit_mode_selector.pop_mode())
         self._display_region.set_active(True)
 
     def exit_mode(self):
+        super().exit_mode()
         self._display_region.set_active(False)
 
     def _pan_camera_2d(self, total_delta: core.Vec2, delta: core.Vec2):
         x_direction = (delta.x * self._camera_2d.get_sx()) / 50
         y_direction = (delta.y * self._camera_2d.get_sx()) / 50
 
-        self._builder_camera_2d.set_x(self._builder_camera_2d, x_direction * constants.TICK_SCALE)
-        self._builder_camera_2d.set_y(self._builder_camera_2d, y_direction * constants.TICK_SCALE)
+        self._builder_camera_2d.set_x(
+            self._builder_camera_2d, 
+            x_direction * constants.TICK_SCALE
+        )
+        self._builder_camera_2d.set_y(
+            self._builder_camera_2d, y_direction * constants.TICK_SCALE)
 
     def _strafe_camera_2d(self, total_delta: core.Vec2, delta: core.Vec2):
         delta *= constants.TICK_SCALE / 100.0
@@ -57,5 +64,3 @@ class EditMode(base_edit_mode.EditMode):
 
         self._camera_2d.set_scale(new_zoom)
         self._builder_camera_2d.set_x(self._builder_camera_2d, delta.x * 512)
-
-
