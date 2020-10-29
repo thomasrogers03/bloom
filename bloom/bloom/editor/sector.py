@@ -1,6 +1,7 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import math
 import typing
 
 from panda3d import bullet, core
@@ -16,6 +17,7 @@ class EditorSector:
         sector: map_data.sector.Sector
     ):
         self._sector = sector
+        self._wall_display: core.NodePath = None
         self._walls: typing.List[wall.EditorWall] = []
         self._sprites: typing.List[sprite.EditorSprite] = []
         self._vertex_format: core.GeomVertexFormat = None
@@ -85,10 +87,10 @@ class EditorSector:
         self._vertex_format = vertex_format
         self._get_tile_callback = get_tile_callback
 
-        wall_display = self._display.attach_new_node('walls')
+        self._wall_display = self._display.attach_new_node('walls')
         for wall_index, editor_wall in enumerate(self._walls):
             editor_wall.setup_for_rendering(
-                wall_display,
+                self._wall_display,
                 str(wall_index),
                 vertex_format,
                 get_tile_callback
@@ -178,6 +180,57 @@ class EditorSector:
 
     def hide_debug(self):
         pass
+
+    def split(self, points: typing.List[core.Point2]):
+        if len(points) < 3:
+            return
+
+        angles = zip(points, (points[1:] + points[:1]), (points[2:] + points[:2]))
+        winding = 1
+        for point_1, point_2, point_3 in angles:
+            point_1_3d = core.Point3(point_1.x, point_1.y, 0)
+            point_2_3d = core.Point3(point_2.x, point_2.y, 0)
+            point_3_3d = core.Point3(point_3.x, point_3.y, 0)
+
+            delta_1 = point_2_3d - point_1_3d
+            delta_2 = point_3_3d - point_1_3d
+
+            winding *= delta_1.cross(delta_2).z
+        
+        if winding > 0:
+            points = reversed(points)
+
+        wall_base = self._walls[0].blood_wall
+
+        new_walls: typing.List[wall.EditorWall] = []
+        for point in points:
+            new_blood_wall = wall_base.copy()
+            new_blood_wall.wall.position_x = int(point.x)
+            new_blood_wall.wall.position_y = int(point.y)
+            
+            new_wall = wall.EditorWall(new_blood_wall)
+            new_walls.append(new_wall)
+
+        segments = zip(new_walls, (new_walls[1:] + new_walls[:1]))
+        for point_1, point_2 in segments:
+            point_1.setup(
+                point_2,
+                None,
+                None
+            )
+            point_2.wall_previous_point = point_1
+
+        for new_wall in new_walls:
+            wall_index = self.add_wall(new_wall)
+            new_wall.setup_for_rendering(
+                self._wall_display,
+                str(wall_index),
+                self._vertex_format,
+                self._get_tile_callback
+            )
+            new_wall.setup_geometry(self, self._collision_world)
+
+        self.invalidate_geometry()
 
     @staticmethod
     def prepare_to_persist(

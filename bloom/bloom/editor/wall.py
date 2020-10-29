@@ -294,6 +294,10 @@ class EditorWall:
         return self._sector
 
     @property
+    def blood_wall(self):
+        return self._wall
+
+    @property
     def wall_point_2(self):
         return self._wall_point_2
 
