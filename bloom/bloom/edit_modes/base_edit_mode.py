@@ -1,6 +1,7 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import tkinter
 import typing
 
 from direct.showbase import DirectObject
@@ -10,6 +11,8 @@ from .. import clicker, edit_mode
 from ..editor import map_editor
 
 
+from .. import edit_menu
+
 class EditMode(DirectObject.DirectObject):
 
     def __init__(
@@ -18,6 +21,7 @@ class EditMode(DirectObject.DirectObject):
         scene: core.NodePath,
         builder_camera_2d: core.NodePath,
         builder_camera: core.NodePath,
+        menu: edit_menu.EditMenu,
         edit_mode_selector: 'bloom.edit_mode.EditMode'
     ):
         super().__init__()
@@ -27,15 +31,16 @@ class EditMode(DirectObject.DirectObject):
         self._builder_camera_2d = builder_camera_2d
         self._builder_camera = builder_camera
         self._edit_mode_selector = edit_mode_selector
-        self._tickers: typing.List[typing.Callable[[], None]] = []
+        self._menu = menu
 
+        self._tickers: typing.List[typing.Callable[[], None]] = []
         self._editor: map_editor.MapEditor = None
 
     def set_editor(self, editor: map_editor.MapEditor):
         self._editor = editor
 
     def enter_mode(self):
-        pass
+        self._menu.clear()
 
     def tick(self):
         pass

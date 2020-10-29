@@ -19,7 +19,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d import bullet, core
 from panda3d.direct import init_app_for_gui
 
-from . import (art, clicker, constants, edit_mode, editor, game_map,
+from . import (art, clicker, constants, edit_menu, edit_mode, editor, game_map,
                tile_dialog, utils)
 from .edit_modes import edit_mode_2d, edit_mode_3d
 from .editor import map_editor
@@ -98,13 +98,7 @@ class Bloom(ShowBase):
         file_menu.add_command(label="Exit", command=self.tkRoot.quit)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
-        edit_menu = tkinter.Menu(menu_bar, tearoff=0)
-        # edit_menu.add_command(label="Split (space)", command=self._split_selection)
-        # edit_menu.add_command(label="Extrude (shift+space)",
-        #                       command=self._extrude_selection)
-        edit_menu.add_separator()
-        # edit_menu.add_command(label="Change tile (v)", command=self._change_tile)
-        menu_bar.add_cascade(label="Edit", menu=edit_menu)
+        self._edit_menu = edit_menu.EditMenu(menu_bar)
 
         view_menu = tkinter.Menu(menu_bar, tearoff=0)
         view_menu.add_command(
@@ -261,7 +255,8 @@ class Bloom(ShowBase):
             scene=self._scene,
             builder_camera_2d=self._builder_2d,
             builder_camera=self._builder,
-            edit_mode_selector=self._edit_mode_selector
+            edit_mode_selector=self._edit_mode_selector,
+            menu=self._edit_menu
         )
         self._mode_2d.set_editor(self._map_editor)
 
@@ -274,7 +269,8 @@ class Bloom(ShowBase):
             scene=self._scene,
             builder_camera_2d=self._builder_2d,
             builder_camera=self._builder,
-            edit_mode_selector=self._edit_mode_selector
+            edit_mode_selector=self._edit_mode_selector,
+            menu=self._edit_menu
         )
         self._mode_3d.set_editor(self._map_editor)
 

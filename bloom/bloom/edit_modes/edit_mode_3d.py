@@ -15,12 +15,12 @@ from . import base_edit_mode, edit_mode_2d
 class EditMode(base_edit_mode.EditMode):
 
     def __init__(
-        self, 
+        self,
         tile_selector: tile_dialog.TileDialog,
         camera: core.NodePath,
         lens: core.Lens,
         mode_2d: edit_mode_2d.EditMode,
-        *args, 
+        *args,
         **kwargs
     ):
         super().__init__(*args, **kwargs)
@@ -67,16 +67,25 @@ class EditMode(base_edit_mode.EditMode):
 
     def enter_mode(self):
         super().enter_mode()
+
+        self._menu.add_command(label="Split (space)", command=self._split_selection)
+        self._menu.add_command(
+            label="Extrude (shift+space)",
+            command=self._extrude_selection
+        )
+        self._menu.add_separator()
+        self._menu.add_command(label="Change tile (v)", command=self._show_tile_selector)
+
         self.accept('tab', self._enter_2d_mode)
         self.accept('space', self._split_selection)
         self.accept('shift-space', self._extrude_selection)
         self.accept('v', self._change_tile)
 
     def _extrude_selection(self):
-        self._map_editor.split_highlight(True)
+        self._editor.split_highlight(True)
 
     def _split_selection(self):
-        self._map_editor.split_highlight(False)
+        self._editor.split_highlight(False)
 
     def _enter_2d_mode(self):
         self._edit_mode_selector.push_mode(self._mode_2d)
@@ -115,8 +124,10 @@ class EditMode(base_edit_mode.EditMode):
         x_direction = -sin_theta * delta.y + cos_theta * delta.x
         y_direction = cos_theta * delta.y + sin_theta * delta.x
 
-        self._builder_camera_2d.set_x(self._builder_camera_2d, x_direction * constants.TICK_SCALE)
-        self._builder_camera_2d.set_y(self._builder_camera_2d, y_direction * constants.TICK_SCALE)
+        self._builder_camera_2d.set_x(
+            self._builder_camera_2d, x_direction * constants.TICK_SCALE)
+        self._builder_camera_2d.set_y(
+            self._builder_camera_2d, y_direction * constants.TICK_SCALE)
 
     def _strafe_camera(self, total_delta: core.Vec2, delta: core.Vec2):
         delta *= 100
@@ -170,4 +181,3 @@ class EditMode(base_edit_mode.EditMode):
             total_camera_delta * constants.TICK_SCALE,
             camera_delta * constants.TICK_SCALE, modified
         )
-
