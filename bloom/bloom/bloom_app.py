@@ -99,11 +99,11 @@ class Bloom(ShowBase):
         menu_bar.add_cascade(label="File", menu=file_menu)
 
         edit_menu = tkinter.Menu(menu_bar, tearoff=0)
-        edit_menu.add_command(label="Split (space)", command=self._split_selection)
-        edit_menu.add_command(label="Extrude (shift+space)",
-                              command=self._extrude_selection)
+        # edit_menu.add_command(label="Split (space)", command=self._split_selection)
+        # edit_menu.add_command(label="Extrude (shift+space)",
+        #                       command=self._extrude_selection)
         edit_menu.add_separator()
-        edit_menu.add_command(label="Change tile (v)", command=self._change_tile)
+        # edit_menu.add_command(label="Change tile (v)", command=self._change_tile)
         menu_bar.add_cascade(label="Edit", menu=edit_menu)
 
         view_menu = tkinter.Menu(menu_bar, tearoff=0)
@@ -114,10 +114,6 @@ class Bloom(ShowBase):
         menu_bar.add_cascade(label="View", menu=view_menu)
 
         self.tkRoot.config(menu=menu_bar)
-
-    def _change_tile(self):
-        self._mode_3d.select_object()
-        self._tile_dialog.show(self._map_editor.get_selected_picnum())
 
     def _tk_timer_callback(self):
         if not core.Thread.get_current_thread().get_current_task():
@@ -238,7 +234,6 @@ class Bloom(ShowBase):
         self._display_region_2d.set_camera(self._camera_2d)
         self._display_region_2d.set_sort(1000)
         self._display_region_2d.set_active(False)
-        self.accept('escape', self._edit_mode_selector.pop_mode)
 
         debug_node = bullet.BulletDebugNode('Debug')
         debug_node.show_wireframe(True)
@@ -288,9 +283,6 @@ class Bloom(ShowBase):
         self.accept('control-s', self._save_map)
         self.accept('control-o', self._open_map)
         self.accept('control-p', self._save_screenshot)
-        self.accept('space', self._split_selection)
-        self.accept('shift-space', self._extrude_selection)
-        self.accept('v', self._change_tile)
 
         return task.done
 
@@ -299,12 +291,6 @@ class Bloom(ShowBase):
 
     def _save_screenshot(self):
         self.screenshot('screenshot.png', defaultFilename=False)
-
-    def _extrude_selection(self):
-        self._map_editor.split_highlight(True)
-
-    def _split_selection(self):
-        self._map_editor.split_highlight(False)
 
     def _open_map(self):
         path = tkinter.filedialog.askopenfilename(

@@ -35,7 +35,7 @@ class EditMode(base_edit_mode.EditMode):
 
         self._make_clicker(
             [core.MouseButton.one()],
-            on_click=self.select_object,
+            on_click=self._select_object,
             on_double_click=self._show_tile_selector,
             on_click_move=self._pan_camera,
         )
@@ -62,15 +62,28 @@ class EditMode(base_edit_mode.EditMode):
             on_click_move=self._strafe_camera,
         )
 
-    def select_object(self):
+    def _select_object(self):
         self._editor.perform_select()
 
     def enter_mode(self):
         super().enter_mode()
         self.accept('tab', self._enter_2d_mode)
+        self.accept('space', self._split_selection)
+        self.accept('shift-space', self._extrude_selection)
+        self.accept('v', self._change_tile)
+
+    def _extrude_selection(self):
+        self._map_editor.split_highlight(True)
+
+    def _split_selection(self):
+        self._map_editor.split_highlight(False)
 
     def _enter_2d_mode(self):
         self._edit_mode_selector.push_mode(self._mode_2d)
+
+    def _change_tile(self):
+        self._select_object()
+        self._show_tile_selector()
 
     def _show_tile_selector(self):
         self._tile_selector.show(self._editor.get_selected_picnum())

@@ -3,6 +3,7 @@
 
 import typing
 
+from direct.showbase import DirectObject
 from direct.task import Task
 from panda3d import core
 
@@ -10,9 +11,11 @@ from . import constants
 from .edit_modes import base_edit_mode
 
 
-class EditMode:
+class EditMode(DirectObject.DirectObject):
 
     def __init__(self, mouse_watcher: core.MouseWatcher, task_manager: Task.TaskManager):
+        super().__init__()
+
         self._mouse_watcher = mouse_watcher
         self._task_manager = task_manager
 
@@ -21,6 +24,7 @@ class EditMode:
         self._mode_stack: typing.List[base_edit_mode.EditMode] = []
 
         self._task_manager.do_method_later(constants.TICK_RATE, self._tick, 'global_ticker')
+        self.accept('escape', self.pop_mode)
 
     @property
     def mouse_watcher(self):
