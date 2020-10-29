@@ -488,6 +488,10 @@ class EditorSector:
     def sector(self):
         return self._sector
 
+    @property
+    def is_geometry(self):
+        return True
+
     def get_picnum(self, part: str):
         if part == 'floor_collision':
             return self._sector.sector.floor_picnum

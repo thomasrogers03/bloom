@@ -256,6 +256,12 @@ class MapEditor:
 
         highlight.selector.split(self._last_hit_position, self._sectors, modified)
 
+    def get_selected(self):
+        if self._selection is None:
+            return None
+
+        return self._selection.selector.get_selected()
+
     def tick(self):
         for sector in self._sectors:
             sector.reset_geometry_if_necessary()

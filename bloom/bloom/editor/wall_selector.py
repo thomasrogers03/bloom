@@ -26,6 +26,9 @@ class Selector(empty_selector.Selector):
         self._start_point_1: core.Point2 = None
         self._start_point_2: core.Point2 = None
 
+    def get_selected(self):
+        return self._wall
+
     def get_picnum(self):
         return self._wall.get_picnum(self._part)
 

@@ -3,16 +3,14 @@
 
 
 import math
-import typing
 
 from panda3d import core
 
-from .. import clicker, constants, edit_mode, tile_dialog
-from ..editor import map_editor
-from . import base_edit_mode, edit_mode_2d
+from .. import clicker, constants, tile_dialog
+from . import drawing_mode_3d, edit_mode_2d, navigation_mode_3d
 
 
-class EditMode(base_edit_mode.EditMode):
+class EditMode(navigation_mode_3d.EditMode):
 
     def __init__(
         self,
@@ -23,12 +21,16 @@ class EditMode(base_edit_mode.EditMode):
         *args,
         **kwargs
     ):
-        super().__init__(*args, **kwargs)
+        super().__init__(camera, lens, *args, **kwargs)
 
         self._tile_selector = tile_selector
-        self._camera = camera
-        self._lens = lens
         self._mode_2d = mode_2d
+        self._drawing_mode = drawing_mode_3d.EditMode(
+            self._camera,
+            self._lens,
+            *args,
+            **kwargs
+        )
         self._mouse_watcher = self._edit_mode_selector.mouse_watcher
 
         self._tickers.append(self._mouse_collision_tests)
@@ -37,7 +39,6 @@ class EditMode(base_edit_mode.EditMode):
             [core.MouseButton.one()],
             on_click=self._select_object,
             on_double_click=self._show_tile_selector,
-            on_click_move=self._pan_camera,
         )
 
         self._make_clicker(
@@ -52,18 +53,12 @@ class EditMode(base_edit_mode.EditMode):
             on_click_move=self._modified_move_selected,
         )
 
-        self._make_clicker(
-            [core.MouseButton.three()],
-            on_click_move=self._rotate_camera,
-        )
-
-        self._make_clicker(
-            [core.MouseButton.one(), core.MouseButton.three()],
-            on_click_move=self._strafe_camera,
-        )
-
     def _select_object(self):
         self._editor.perform_select()
+
+    def set_editor(self, editor):
+        super().set_editor(editor)
+        self._drawing_mode.set_editor(editor)
 
     def enter_mode(self):
         super().enter_mode()
@@ -73,13 +68,29 @@ class EditMode(base_edit_mode.EditMode):
             label="Extrude (shift+space)",
             command=self._extrude_selection
         )
+        self._menu.add_command(
+            label="Start Drawing (insert)",
+            command=self._start_drawing
+        )
         self._menu.add_separator()
-        self._menu.add_command(label="Change tile (v)", command=self._show_tile_selector)
+        self._menu.add_command(
+            label="Change tile (v)",
+            command=self._show_tile_selector
+        )
 
         self.accept('tab', self._enter_2d_mode)
         self.accept('space', self._split_selection)
         self.accept('shift-space', self._extrude_selection)
+        self.accept('insert', self._start_drawing)
         self.accept('v', self._change_tile)
+
+    def _start_drawing(self):
+        self._editor.perform_select()
+        selected = self._editor.get_selected()
+        if selected is None or not selected.is_geometry:
+            return
+
+        self._edit_mode_selector.push_mode(self._drawing_mode)
 
     def _extrude_selection(self):
         self._editor.split_highlight(True)
@@ -115,45 +126,6 @@ class EditMode(base_edit_mode.EditMode):
             target = core.TransformState.make_pos(target)
 
             self._editor.highlight_mouse_hit(source, target)
-
-    def _pan_camera(self, total_delta: core.Vec2, delta: core.Vec2):
-        heading = self._builder_camera.get_h()
-
-        sin_theta = math.sin(math.radians(heading))
-        cos_theta = math.cos(math.radians(heading))
-        x_direction = -sin_theta * delta.y + cos_theta * delta.x
-        y_direction = cos_theta * delta.y + sin_theta * delta.x
-
-        self._builder_camera_2d.set_x(
-            self._builder_camera_2d, x_direction * constants.TICK_SCALE)
-        self._builder_camera_2d.set_y(
-            self._builder_camera_2d, y_direction * constants.TICK_SCALE)
-
-    def _strafe_camera(self, total_delta: core.Vec2, delta: core.Vec2):
-        delta *= 100
-
-        heading = self._builder_camera.get_h()
-
-        sin_theta = math.sin(math.radians(heading))
-        cos_theta = math.cos(math.radians(heading))
-        x_direction = cos_theta * delta.x
-        y_direction = sin_theta * delta.x
-
-        self._builder_camera.set_z(self._builder_camera.get_z() + delta.y * 512)
-
-        self._builder_camera_2d.set_x(self._builder_camera_2d, x_direction * 512)
-        self._builder_camera_2d.set_y(self._builder_camera_2d, y_direction * 512)
-
-    def _rotate_camera(self, total_delta: core.Vec2, delta: core.Vec2):
-        hpr = self._builder_camera.get_hpr()
-        hpr = core.Vec3(hpr.x - delta.x * 90, hpr.y + delta.y * 90, 0)
-
-        if hpr.y < -90:
-            hpr.y = -90
-        if hpr.y > 90:
-            hpr.y = 90
-
-        self._builder_camera.set_hpr(hpr)
 
     def _move_selected(self, total_delta: core.Vec2, delta: core.Vec2):
         self._do_move_selected(total_delta, delta, False)

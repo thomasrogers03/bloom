@@ -10,6 +10,9 @@ from .sector import EditorSector
 
 class Selector:
 
+    def get_selected(self):
+        pass
+
     def get_picnum(self):
         return -1
 

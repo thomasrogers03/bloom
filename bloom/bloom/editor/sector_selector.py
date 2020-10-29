@@ -17,6 +17,9 @@ class Selector(empty_selector.Selector):
         self._snapper = snapper
         self._start_height: float = None
 
+    def get_selected(self):
+        return self._sector
+
     def get_picnum(self):
         return self._sector.get_picnum(self._part)
 

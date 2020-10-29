@@ -312,6 +312,10 @@ class EditorWall:
     def point_2(self):
         return self._wall_point_2.point_1
 
+    @property
+    def is_geometry(self):
+        return False
+
     def get_picnum(self, part: str):
         if part == self._MASK_WALL_PART:
             return self._wall.wall.over_picnum

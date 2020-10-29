@@ -73,6 +73,14 @@ class EditorSprite:
     def y_repeat(self):
         return editor.to_sprite_repeat(self._sprite.sprite.repeat_y)
 
+    @property
+    def sector(self):
+        return self._sector
+
+    @property
+    def is_geometry(self):
+        return False
+
     def _make_sprite_part(self):
         texture = self._get_tile_callback(self._sprite.sprite.picnum)
         texture_width = texture.get_x_size()

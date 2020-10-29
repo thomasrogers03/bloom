@@ -21,6 +21,9 @@ class Selector(empty_selector.Selector):
         self._snapper = snapper
         self._start_position: core.Point3 = None
 
+    def get_selected(self):
+        return self._sprite
+
     def get_picnum(self):
         return -1
 
