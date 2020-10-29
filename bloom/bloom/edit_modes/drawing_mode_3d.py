@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+import math
 import typing
 
 from panda3d import bullet, core
@@ -49,8 +50,18 @@ class EditMode(navigation_mode_3d.EditMode):
         self._current_point = position_2d
         self._points = [self._current_point]
 
+        slope = self._sector.floor_slope_direction()
+        self._grid.set_hpr(
+            0,
+            slope.y,
+            slope.x
+        )
         self._grid.set_scale(self._editor.snapper.grid_size)
-        self._grid.set_z(self._sector.floor_z - 1)
+        self._grid.set_pos(
+            position_2d.x,
+            position_2d.y,
+            self._sector.floor_z_at_point(position_2d)
+        )
 
         self._edit_mode_selector.push_mode(self)
         self._update_debug_view()
@@ -111,7 +122,7 @@ class EditMode(navigation_mode_3d.EditMode):
         position = result.get_hit_pos()
         position = self._scene.get_relative_point(self._render, position)
         position_2d = core.Point2(position.x, position.y)
-        
+
         return self._editor.snapper.snap_to_grid_2d(position_2d)
 
     def _update_debug_view(self):
@@ -131,35 +142,35 @@ class EditMode(navigation_mode_3d.EditMode):
 
         for point_1, point_2 in walls:
             point_3d_1 = core.Point3(
-                point_1.x, 
-                point_1.y, 
+                point_1.x,
+                point_1.y,
                 self._sector.floor_z_at_point(point_1)
             )
             segments.draw_to(point_3d_1)
-            
+
             point_3d = core.Point3(
-                point_1.x, 
-                point_1.y, 
+                point_1.x,
+                point_1.y,
                 self._sector.ceiling_z_at_point(point_1)
             )
             segments.draw_to(point_3d)
-            
+
             point_3d = core.Point3(
-                point_2.x, 
-                point_2.y, 
+                point_2.x,
+                point_2.y,
                 self._sector.ceiling_z_at_point(point_2)
             )
             segments.draw_to(point_3d)
-            
+
             point_3d = core.Point3(
-                point_2.x, 
-                point_2.y, 
+                point_2.x,
+                point_2.y,
                 self._sector.floor_z_at_point(point_2)
             )
             segments.draw_to(point_3d)
 
             segments.draw_to(point_3d_1)
-            
+
         debug_view_node = segments.create('debug')
 
         self._debug_view = self._scene.attach_new_node(debug_view_node)

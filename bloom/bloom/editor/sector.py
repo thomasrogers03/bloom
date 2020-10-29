@@ -186,8 +186,8 @@ class EditorSector:
         pass
 
     def split(
-        self, 
-        sectors: typing.List['editor.sector.EditorSector'], 
+        self,
+        sectors: typing.List['editor.sector.EditorSector'],
         points: typing.List[core.Point2]
     ):
         if len(points) < 3:
@@ -196,7 +196,7 @@ class EditorSector:
         new_sector = EditorSector(self._sector.copy())
         new_sector_index = len(sectors)
         new_sector.setup_for_rendering(
-            self._scene, 
+            self._scene,
             str(new_sector_index),
             self._vertex_format,
             self._get_tile_callback
@@ -215,7 +215,7 @@ class EditorSector:
             delta_2 = point_3_3d - point_1_3d
 
             winding *= delta_1.cross(delta_2).z
-        
+
         if winding > 0:
             reversed_points = points
             points = reversed(points)
@@ -230,7 +230,7 @@ class EditorSector:
             new_blood_wall = wall_base.copy()
             new_blood_wall.wall.position_x = int(point.x)
             new_blood_wall.wall.position_y = int(point.y)
-            
+
             new_wall = wall.EditorWall(new_blood_wall)
             new_walls.append(new_wall)
 
@@ -239,7 +239,7 @@ class EditorSector:
             new_blood_wall = wall_base.copy()
             new_blood_wall.wall.position_x = int(point.x)
             new_blood_wall.wall.position_y = int(point.y)
-            
+
             new_wall = wall.EditorWall(new_blood_wall)
             new_otherside_walls.append(new_wall)
 
@@ -547,13 +547,16 @@ class EditorSector:
         return editor.to_heinum(self._sector.sector.ceiling_heinum)
 
     def ceiling_z_at_point(self, point: core.Point2):
-        if not self._sector.sector.ceiling_stat.groudraw:
+        if not self._sector.sector.ceiling_stat.groudraw or len(self._walls) < 1:
             return self.ceiling_z
 
         normal = self._walls[0].get_normal()
         delta = point - self._walls[0].point_1
 
         return self.ceiling_z + -self.ceiling_heinum * delta.dot(normal)
+
+    def ceiling_slope_direction(self) -> core.Vec2:
+        raise NotImplementedError()
 
     @property
     def floor_x_panning(self):
@@ -616,13 +619,26 @@ class EditorSector:
         new_wall.setup_geometry(self, self._collision_world)
 
     def floor_z_at_point(self, point: core.Point2):
-        if not self._sector.sector.floor_stat.groudraw:
+        if not self._sector.sector.floor_stat.groudraw or len(self._walls) < 1:
             return self.floor_z
 
         normal = self._walls[0].get_normal()
         delta = point - self._walls[0].point_1
 
         return self.floor_z + -self.floor_heinum * delta.dot(normal)
+
+    def floor_slope_direction(self) -> core.Vec2:
+        point_2d = self._walls[0].point_1
+        point_2d_x = self._walls[0].point_1 + core.Point2(1, 0)
+        point_2d_y = self._walls[0].point_1 + core.Point2(0, 1)
+
+        x_z = self.floor_z_at_point(point_2d_x)
+        y_z = self.floor_z_at_point(point_2d_y)
+
+        theta_x = -math.atan2(x_z - self.floor_z, 1)
+        theta_y = math.atan2(y_z - self.floor_z, 1)
+
+        return core.Vec2(math.degrees(theta_x), math.degrees(theta_y))
 
     def vector_in_sector(self, position: core.Vec3):
         if position.z > self.floor_z or position.z < self.ceiling_z:
