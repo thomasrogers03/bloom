@@ -18,6 +18,7 @@ class EditMode(DirectObject.DirectObject):
 
         self._mouse_watcher = mouse_watcher
         self._task_manager = task_manager
+        self._cancel_tick = False
 
         self._current_edit_mode: base_edit_mode.EditMode = None
         self._always_tickers: typing.List[typing.Callable[[], None]] = []
@@ -41,6 +42,8 @@ class EditMode(DirectObject.DirectObject):
         self._current_edit_mode = mode
         self._current_edit_mode.enter_mode()
 
+        self._cancel_tick = False
+
     def pop_mode(self):
         if len(self._mode_stack) < 1:
             return
@@ -49,9 +52,15 @@ class EditMode(DirectObject.DirectObject):
         self._current_edit_mode = self._mode_stack.pop()
         self._current_edit_mode.enter_mode()
 
+        self._cancel_tick = True
+
     @property
     def current_mode(self):
         return self._current_edit_mode
+
+    @property
+    def tick_cancelled(self):
+        return self._cancel_tick
 
     def always_run(self, callback: typing.Callable[[], None]):
         self._always_tickers.append(callback)
@@ -63,4 +72,5 @@ class EditMode(DirectObject.DirectObject):
         if self._current_edit_mode is not None:
             self._current_edit_mode.tick()
 
+        self._cancel_tick = False
         return task.again

@@ -11,8 +11,12 @@ from .. import editor
 class GridSnapper:
 
     def __init__(self):
-        self._grid_size = 64
+        self._grid_size = 256
         self._angular_grid_size = 15
+
+    @property
+    def grid_size(self):
+        return self._grid_size
 
     def snap_to_grid(self, value: float):
         return editor.snap_to_grid(value, self._grid_size)

@@ -6,7 +6,7 @@ import tkinter
 import typing
 
 from direct.showbase import DirectObject
-from panda3d import core
+from panda3d import bullet, core
 
 from .. import clicker, constants, edit_menu, edit_mode
 from ..editor import map_editor
@@ -18,6 +18,7 @@ class EditMode(DirectObject.DirectObject):
         self,
         render: core.NodePath,
         scene: core.NodePath,
+        collision_world: bullet.BulletWorld,
         builder_camera_2d: core.NodePath,
         builder_camera: core.NodePath,
         menu: edit_menu.EditMenu,
@@ -27,6 +28,7 @@ class EditMode(DirectObject.DirectObject):
 
         self._render = render
         self._scene = scene
+        self._collision_world = collision_world
         self._builder_camera_2d = builder_camera_2d
         self._builder_camera = builder_camera
         self._edit_mode_selector = edit_mode_selector
@@ -68,6 +70,8 @@ class EditMode(DirectObject.DirectObject):
     def tick(self):
         for ticker in self._tickers:
             ticker()
+            if self._edit_mode_selector.tick_cancelled:
+                break
 
     def _transform_to_camera_delta(self, delta: core.Vec2):
         heading = self._builder_camera.get_h()

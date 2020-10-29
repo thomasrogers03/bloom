@@ -85,11 +85,11 @@ class EditMode(navigation_mode_3d.EditMode):
 
     def _start_drawing(self):
         self._editor.perform_select()
-        selected = self._editor.get_selected()
+        selected, hit_point = self._editor.get_selected_and_last_hit_position()
         if selected is None or not selected.is_geometry:
             return
 
-        self._drawing_mode.start_drawing(selected)
+        self._drawing_mode.start_drawing(selected, hit_point)
 
     def _extrude_selection(self):
         self._editor.split_highlight(True)

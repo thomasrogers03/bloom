@@ -83,7 +83,7 @@ class Clicker:
                         if self._on_click_after_move is not None:
                             self._on_click_after_move()
                     else:
-                        if self._mouse_button_released:
+                        if self._mouse_button_released and self._on_double_click is not None:
                             self._on_double_click()
                         else:
                             self._mouse_button_released = True

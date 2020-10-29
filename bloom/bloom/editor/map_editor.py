@@ -206,6 +206,10 @@ class MapEditor:
                 self._selected_is_highlighted = False
                 self._highlight = found_highlight
 
+    @property
+    def snapper(self):
+        return self._snapper
+
     def get_selected_picnum(self):
         if self._selection is None:
             return -1
@@ -256,11 +260,11 @@ class MapEditor:
 
         highlight.selector.split(self._last_hit_position, self._sectors, modified)
 
-    def get_selected(self):
+    def get_selected_and_last_hit_position(self):
         if self._selection is None:
-            return None
+            return None, None
 
-        return self._selection.selector.get_selected()
+        return self._selection.selector.get_selected(), self._last_hit_position
 
     def tick(self):
         for sector in self._sectors:
