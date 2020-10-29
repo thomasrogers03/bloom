@@ -6,7 +6,7 @@ import math
 
 from panda3d import core
 
-from .. import constants
+from .. import clicker, constants
 from . import base_edit_mode
 
 
@@ -23,6 +23,7 @@ class EditMode(base_edit_mode.EditMode):
 
         self._camera = camera
         self._lens = lens
+        self._mouse_watcher = self._edit_mode_selector.mouse_watcher
 
         self._make_clicker(
             [core.MouseButton.one()],
@@ -38,6 +39,27 @@ class EditMode(base_edit_mode.EditMode):
             [core.MouseButton.one(), core.MouseButton.three()],
             on_click_move=self._strafe_camera,
         )
+
+    def _extrude_mouse_to_render_transform(self, check_buttons = False):
+        if not self._mouse_watcher.has_mouse():
+            return None, None
+
+        if check_buttons and any(self._mouse_watcher.is_button_down(button) for button in clicker.Clicker.ALL_BUTTONS):
+            return None, None
+
+        mouse = self._mouse_watcher.get_mouse()
+        source = core.Point3()
+        target = core.Point3()
+
+        self._lens.extrude(mouse, source, target)
+
+        source = self._render.get_relative_point(self._camera, source)
+        target = self._render.get_relative_point(self._camera, target)
+
+        source = core.TransformState.make_pos(source)
+        target = core.TransformState.make_pos(target)
+
+        return source, target
 
     def _pan_camera(self, total_delta: core.Vec2, delta: core.Vec2):
         heading = self._builder_camera.get_h()

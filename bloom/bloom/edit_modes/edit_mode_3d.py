@@ -31,7 +31,6 @@ class EditMode(navigation_mode_3d.EditMode):
             *args,
             **kwargs
         )
-        self._mouse_watcher = self._edit_mode_selector.mouse_watcher
 
         self._tickers.append(self._mouse_collision_tests)
 
@@ -90,7 +89,7 @@ class EditMode(navigation_mode_3d.EditMode):
         if selected is None or not selected.is_geometry:
             return
 
-        self._edit_mode_selector.push_mode(self._drawing_mode)
+        self._drawing_mode.start_drawing(selected)
 
     def _extrude_selection(self):
         self._editor.split_highlight(True)
@@ -109,23 +108,11 @@ class EditMode(navigation_mode_3d.EditMode):
         self._tile_selector.show(self._editor.get_selected_picnum())
 
     def _mouse_collision_tests(self):
-        if self._mouse_watcher.has_mouse():
-            if any(self._mouse_watcher.is_button_down(button) for button in clicker.Clicker.ALL_BUTTONS):
-                return
+        source, target = self._extrude_mouse_to_render_transform(True)
+        if source is None or target is None:
+            return
 
-            mouse = self._mouse_watcher.get_mouse()
-            source = core.Point3()
-            target = core.Point3()
-
-            self._lens.extrude(mouse, source, target)
-
-            source = self._render.get_relative_point(self._camera, source)
-            target = self._render.get_relative_point(self._camera, target)
-
-            source = core.TransformState.make_pos(source)
-            target = core.TransformState.make_pos(target)
-
-            self._editor.highlight_mouse_hit(source, target)
+        self._editor.highlight_mouse_hit(source, target)
 
     def _move_selected(self, total_delta: core.Vec2, delta: core.Vec2):
         self._do_move_selected(total_delta, delta, False)
