@@ -33,3 +33,5 @@ class Sky:
             left += width
 
         card.remove_node()
+
+        self._display.hide()

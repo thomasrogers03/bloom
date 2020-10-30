@@ -46,7 +46,7 @@ class MapEditor:
         self._sky = sky.Sky(
             render2d,
             get_tile_callback,
-            0,
+            self._find_sky(map_to_load.sectors),
             map_to_load.sky_offsets
         )
 
@@ -102,6 +102,15 @@ class MapEditor:
         vertex_format.add_array(vertex_array_format)
 
         return core.GeomVertexFormat.register_format(vertex_format)
+
+    @staticmethod
+    def _find_sky(sectors: typing.List[map_data.sector.Sector]):
+        for sector in sectors:
+            if sector.sector.floor_stat.parallax:
+                return sector.sector.floor_picnum
+            if sector.sector.ceiling_stat.parallax:
+                return sector.sector.ceiling_picnum
+        return 0
 
     def attach_display_node_to_sector(self, sector_index: int, node: typing.Union[str, core.PandaNode]):
         return self._sectors[sector_index].attach_display_node(node)
