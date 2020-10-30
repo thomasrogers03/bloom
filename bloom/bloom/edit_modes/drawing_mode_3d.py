@@ -9,7 +9,8 @@ from panda3d import bullet, core
 
 from .. import clicker
 from ..editor.sector import EditorSector
-from . import grid, navigation_mode_3d
+from ..utils import grid
+from . import navigation_mode_3d
 
 
 class EditMode(navigation_mode_3d.EditMode):
