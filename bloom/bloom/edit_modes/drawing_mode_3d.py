@@ -76,11 +76,19 @@ class EditMode(navigation_mode_3d.EditMode):
         self._grid.show()
 
         self.accept('backspace', self._remove_last_point)
+        self.accept('enter', self._finish_shape)
 
     def exit_mode(self):
         super().exit_mode()
         self._grid.hide()
         self._clear_debug()
+
+    def _finish_shape(self):
+        if len(self._points) < 1:
+            return
+
+        self._sector.split(self._editor.sectors, self._points)
+        self._edit_mode_selector.pop_mode()
 
     def _remove_last_point(self):
         if len(self._points) > 0:
@@ -95,8 +103,7 @@ class EditMode(navigation_mode_3d.EditMode):
         point = self._get_next_point()
         if point is not None:
             if len(self._points) > 0 and (point - self._points[0]).length_squared() < 1:
-                self._sector.split(self._editor.sectors, self._points)
-                self._edit_mode_selector.pop_mode()
+                self._finish_shape()
             else:
                 self._points.append(point)
                 self._update_debug_view()
