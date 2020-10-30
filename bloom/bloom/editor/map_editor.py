@@ -264,6 +264,12 @@ class MapEditor:
 
         highlight.selector.split(self._last_hit_position, self._sectors, modified)
 
+    def get_selector(self):
+        if self._selection is None:
+            return None
+
+        return self._selection.selector
+
     def get_selected_and_last_hit_position(self):
         if self._selection is None:
             return None, None

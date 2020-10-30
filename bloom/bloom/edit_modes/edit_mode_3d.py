@@ -83,10 +83,19 @@ class EditMode(navigation_mode_3d.EditMode):
         self.accept('insert', self._start_drawing)
         self.accept('v', self._change_tile)
         self.accept('/', self._reset_panning_and_repeats)
+        self.accept('p', self._swap_parallax)
+
+    def _swap_parallax(self):
+        self._editor.perform_select()
+        selector = self._editor.get_selector()
+        if selector is None:
+            return
+
+        selector.swap_parallax()
 
     def _reset_panning_and_repeats(self):
         self._editor.perform_select()
-        selected, hit_point = self._editor.get_selected_and_last_hit_position()
+        selected, _ = self._editor.get_selected_and_last_hit_position()
         if selected is None:
             return
 

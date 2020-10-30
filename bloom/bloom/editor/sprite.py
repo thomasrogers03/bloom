@@ -84,6 +84,9 @@ class EditorSprite:
     def reset_panning_and_repeats(self):
         pass
 
+    def swap_parallax(self, part: str):
+        pass
+
     def _make_sprite_part(self):
         texture = self._get_tile_callback(self._sprite.sprite.picnum)
         texture_width = texture.get_x_size()

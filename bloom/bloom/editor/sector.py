@@ -188,6 +188,17 @@ class EditorSector:
     def reset_panning_and_repeats(self):
         pass
 
+    def swap_parallax(self, part: str):
+        if part == 'floor_collision':
+            self._sector.sector.floor_stat.parallax = int(not self._sector.sector.floor_stat.parallax)
+        else:
+            self._sector.sector.ceiling_stat.parallax = int(not self._sector.sector.ceiling_stat.parallax)
+
+        self.invalidate_geometry()
+        for portal in self.portal_walls():
+            portal.invalidate_geometry()
+            portal.other_side_sector.invalidate_geometry()
+
     def split(
         self,
         sectors: typing.List['editor.sector.EditorSector'],

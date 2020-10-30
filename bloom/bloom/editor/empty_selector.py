@@ -25,6 +25,9 @@ class Selector:
     def end_move(self):
         pass
 
+    def swap_parallax(self):
+        self.get_selected().swap_parallax(self._part)
+
     def move(
         self,
         total_delta: core.Vec2,

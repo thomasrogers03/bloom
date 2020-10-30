@@ -113,22 +113,24 @@ class EditorWall:
                 self._wall.wall.picnum
             )
         else:
-            self._make_wall_part(
-                'lower',
-                self._sector.floor_z,
-                self._other_side_sector.floor_z,
-                lambda point: self._sector.floor_z_at_point(point),
-                lambda point: self._other_side_sector.floor_z_at_point(point),
-                self._wall.wall.picnum
-            )
-            self._make_wall_part(
-                'upper',
-                self._other_side_sector.ceiling_z,
-                self._sector.ceiling_z,
-                lambda point: self._other_side_sector.ceiling_z_at_point(point),
-                lambda point: self._sector.ceiling_z_at_point(point),
-                self._wall.wall.picnum
-            )
+            if not self._other_side_sector.sector.sector.floor_stat.parallax:
+                self._make_wall_part(
+                    'lower',
+                    self._sector.floor_z,
+                    self._other_side_sector.floor_z,
+                    lambda point: self._sector.floor_z_at_point(point),
+                    lambda point: self._other_side_sector.floor_z_at_point(point),
+                    self._wall.wall.picnum
+                )
+            if not self._other_side_sector.sector.sector.ceiling_stat.parallax:
+                self._make_wall_part(
+                    'upper',
+                    self._other_side_sector.ceiling_z,
+                    self._sector.ceiling_z,
+                    lambda point: self._other_side_sector.ceiling_z_at_point(point),
+                    lambda point: self._sector.ceiling_z_at_point(point),
+                    self._wall.wall.picnum
+                )
             if self._wall.wall.stat.masking > 0 and self._wall.wall.over_picnum > 0:
                 middle = self._make_wall_part(
                     self._MASK_WALL_PART,
@@ -425,6 +427,9 @@ class EditorWall:
 
     def get_length(self):
         return self.get_direction().length()
+
+    def swap_parallax(self, part: str):
+        pass
 
     def reset_panning_and_repeats(self):
         self.invalidate_geometry()
