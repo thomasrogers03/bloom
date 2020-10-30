@@ -39,8 +39,8 @@ setuptools.setup(
                 '**/*.jpg',
                 '**/*.egg',
             ],
-            'gui_apps': {'bloom': 'run_bloom.py'},
-            'console_apps': [
+            'console_apps': {'bloom': 'run_bloom.py'},
+            'plugins': [
                 'pandagl',
                 'p3tinydisplay',
                 'pandadx9',
