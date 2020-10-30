@@ -210,6 +210,7 @@ class EditorWall:
                 None,
                 None
             )
+            new_wall.reset_panning_and_repeats()
 
             new_sector.add_wall(new_wall)
         point_1._other_side_sector = self._sector
@@ -395,6 +396,17 @@ class EditorWall:
     @property
     def y_panning(self):
         return editor.to_panning_y(self._wall.wall.panning_y)
+
+    def reset_panning_and_repeats(self):
+        self.invalidate_geometry()
+
+        self._wall.wall.panning_x = 0
+        self._wall.wall.panning_y = 0
+        
+        self._wall.wall.repeat_y = 8
+
+        length = self.get_direction().length()
+        self._wall.wall.repeat_x = editor.to_build_repeat_x(length / 16)
 
     def _make_wall_part(
         self,

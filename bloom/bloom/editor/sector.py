@@ -185,6 +185,9 @@ class EditorSector:
     def hide_debug(self):
         pass
 
+    def reset_panning_and_repeats(self):
+        pass
+
     def split(
         self,
         sectors: typing.List['editor.sector.EditorSector'],
@@ -258,9 +261,11 @@ class EditorSector:
 
         for new_wall in new_walls:
             self.add_wall(new_wall)
+            new_wall.reset_panning_and_repeats()
 
         for new_wall in new_otherside_walls:
             new_sector.add_wall(new_wall)
+            new_wall.reset_panning_and_repeats()
 
         self.invalidate_geometry()
 

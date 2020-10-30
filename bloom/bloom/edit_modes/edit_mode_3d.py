@@ -82,6 +82,15 @@ class EditMode(navigation_mode_3d.EditMode):
         self.accept('shift-space', self._extrude_selection)
         self.accept('insert', self._start_drawing)
         self.accept('v', self._change_tile)
+        self.accept('/', self._reset_panning_and_repeats)
+
+    def _reset_panning_and_repeats(self):
+        self._editor.perform_select()
+        selected, hit_point = self._editor.get_selected_and_last_hit_position()
+        if selected is None:
+            return
+
+        selected.reset_panning_and_repeats()
 
     def _start_drawing(self):
         self._editor.perform_select()
