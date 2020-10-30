@@ -60,7 +60,7 @@ class Bloom(ShowBase):
                 file.write(yaml.dump(self._config))
 
         self.task_mgr.do_method_later(0.1, self._initialize, 'initialize')
-
+        
     def _setup_window(self):
         ShowBase.__init__(self, windowType='none')
 
@@ -69,6 +69,7 @@ class Bloom(ShowBase):
         frame.state("zoomed")
         frame.title("Bloom")
         frame.bind("<Configure>", self._handle_resize)
+        frame.protocol("WM_DELETE_WINDOW", self._handle_exit)
 
         self.wantTk = True
         self.tkRoot = frame
@@ -157,6 +158,9 @@ class Bloom(ShowBase):
                 self.win.get_display_region(0)
             )
         )
+
+        if self._path is None:
+            self._path = self._config.get('last_map', None)
 
         if self._path is None or not os.path.exists(self._path):
             map_to_load = game_map.Map()
@@ -272,6 +276,7 @@ class Bloom(ShowBase):
         )
         if path:
             self._path = path
+            self._config['last_map']
             self._map_editor = None
             with open(self._path, 'rb') as file:
                 map_to_load = game_map.Map.load(self._path, file.read())
@@ -285,6 +290,7 @@ class Bloom(ShowBase):
                 title='Save map to...',
                 filetypes=(('Map files', '*.MAP'),)
             )
+            self._config['last_map']
             if not self._path:
                 return
 
@@ -367,3 +373,9 @@ class Bloom(ShowBase):
 
             tile_to_load, callback = self._tile_loads.get_nowait()
             callback(self._get_tile(tile_to_load))
+
+    def _handle_exit(self):
+        logger.info('Shutting down...')
+        with open(self._CONFIG_PATH, 'w+') as file:
+            file.write(yaml.dump(self._config))
+        self.tkRoot.destroy()
