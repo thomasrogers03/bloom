@@ -204,21 +204,14 @@ class EditorSector:
         sectors.append(new_sector)
         new_sector.setup_geometry(self._collision_world)
 
-        angles = zip(points, (points[1:] + points[:1]), (points[2:] + points[:2]))
-        winding = 1
-        for point_1, point_2, point_3 in angles:
-            point_1_3d = core.Point3(point_1.x, point_1.y, 0)
-            point_2_3d = core.Point3(point_2.x, point_2.y, 0)
-            point_3_3d = core.Point3(point_3.x, point_3.y, 0)
-
-            delta_1 = point_2_3d - point_1_3d
-            delta_2 = point_3_3d - point_1_3d
-
-            winding *= delta_1.cross(delta_2).z
+        angles = zip(points, (points[1:] + points[:1]))
+        winding = 0
+        for point_1, point_2 in angles:
+            delta = point_2 - point_1
+            winding += (point_2.x - point_1.x) * (point_2.y + point_1.y)
 
         if winding > 0:
-            reversed_points = points
-            points = reversed(points)
+            reversed_points = reversed(points)
         else:
             reversed_points = points
             points = reversed(points)

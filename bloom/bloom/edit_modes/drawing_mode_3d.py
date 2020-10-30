@@ -56,13 +56,18 @@ class EditMode(navigation_mode_3d.EditMode):
             slope.y,
             slope.x
         )
-        self._grid.set_scale(self._editor.snapper.grid_size)
         self._grid.set_pos(
             position_2d.x,
             position_2d.y,
             self._sector.floor_z_at_point(position_2d)
         )
-
+        self._grid.set_scale(1)
+        inverse_scale = self._scene.get_relative_vector(self._grid, core.Vec3(1, 1, 0))
+        self._grid.set_scale(
+            self._editor.snapper.grid_size / inverse_scale.x,
+            self._editor.snapper.grid_size / inverse_scale.y,
+            1
+        )
         self._edit_mode_selector.push_mode(self)
         self._update_debug_view()
 
