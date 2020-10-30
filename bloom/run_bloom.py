@@ -1,8 +1,11 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
-from bloom.main import main
 
 if __name__ == '__main__':
-    main()
+    try:
+        from bloom.main import main
 
+        main()
+    except Exception as error:
+        print(f'Unable to run Bloom due to {error}')
