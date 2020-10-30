@@ -428,7 +428,11 @@ class EditorSector:
         node.add_geom(geometry)
         sector_shape: core.NodePath = collision.attach_new_node(node)
         sector_shape.set_bin('opaque', 2)
-        sector_shape.set_texture(texture, 1)
+        if stat.parallax:
+            collision.set_color_scale(1, 1, 1, 0)
+            sector_shape.set_transparency(True)
+        else:
+            sector_shape.set_texture(texture, 1)
 
         return sector_shape
 
