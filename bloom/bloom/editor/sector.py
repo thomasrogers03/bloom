@@ -334,7 +334,8 @@ class EditorSector:
             return
 
         self._floor = self._get_triangulated_sector_shape(
-            'floor', self.floor_z_at_point,
+            'floor',
+            self.floor_z_at_point,
             self.floor_x_panning,
             self.floor_y_panning,
             self._sector.sector.floor_stat,
@@ -347,7 +348,8 @@ class EditorSector:
         )
 
         self._ceiling = self._get_triangulated_sector_shape(
-            'ceiling', self.ceiling_z_at_point,
+            'ceiling',
+            self.ceiling_z_at_point,
             self.ceiling_x_panning,
             self.ceiling_y_panning,
             self._sector.sector.ceiling_stat,
