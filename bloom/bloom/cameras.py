@@ -1,3 +1,6 @@
+# Copyright 2020 Thomas Rogers
+# SPDX-License-Identifier: Apache-2.0
+
 from typing import NamedTuple
 
 from panda3d import core
@@ -17,11 +20,13 @@ class Cameras:
         self,
         window: core.GraphicsWindow,
         render: core.NodePath,
+        render_2d: core.NodePath,
         scene: core.NodePath,
         default_camera: Camera
     ):
         self._window = window
         self._render = render
+        self._render_2d = render_2d
         self._scene = scene
         self._builder_2d: core.NodePath = self._scene.attach_new_node('builder_2d')
         self._builder: core.NodePath = self._builder_2d.attach_new_node('builder_3d')
@@ -49,6 +54,10 @@ class Cameras:
     @property
     def render(self):
         return self._render
+
+    @property
+    def render_2d(self):
+        return self._render_2d
 
     @property
     def scene(self):

@@ -15,6 +15,8 @@ from .sector import EditorSector
 from .sprite import EditorSprite
 from .wall import EditorWall
 
+from .. import cameras
+
 logger = logging.getLogger(__name__)
 
 
@@ -22,17 +24,15 @@ class MapEditor:
 
     def __init__(
         self,
-        render: core.NodePath,
-        render2d: core.NodePath,
-        scene: core.NodePath,
+        camera_collection: cameras.Cameras,
         map_to_load: game_map.Map,
         get_tile_callback: typing.Callable[[int], core.Texture],
         collision_world: bullet.BulletWorld
     ):
         logger.info('Setting up sector editor')
 
-        self._render = render
-        self._scene = scene
+        self._camera_collection = camera_collection
+        self._scene: core.NodePath = self._camera_collection.scene.attach_new_node('3d_view')
         self._get_tile_callback = get_tile_callback
         self._texture_stage = core.TextureStage.get_default()
         self._collision_world = collision_world
@@ -44,7 +44,7 @@ class MapEditor:
         self._snapper = grid_snapper.GridSnapper()
 
         self._sky = sky.Sky(
-            render2d,
+            self._camera_collection.render_2d,
             get_tile_callback,
             self._find_sky(map_to_load.sectors),
             map_to_load.sky_offsets
@@ -56,13 +56,15 @@ class MapEditor:
         split_segment.draw_to(core.Vec3(0, 0, 1))
         split_segment_node = split_segment.create()
         self._splitter_display: core.NodePath = self._scene.attach_new_node(
-            split_segment_node)
+            split_segment_node
+        )
         self._splitter_display.set_depth_offset(2, 1)
         self._splitter_display.hide()
 
         self._sectors = [
             EditorSector(map_to_load.sectors[sector_index]).load(
-                sector_index, map_to_load)
+                sector_index, map_to_load
+            )
             for sector_index in range(len(map_to_load.sectors))
         ]
         self._last_builder_sector: EditorSector = None
@@ -81,6 +83,10 @@ class MapEditor:
                 self._get_tile_callback
             )
             sector.setup_geometry(self._collision_world)
+
+    def unload(self):
+        self._scene.remove_node()
+        self._scene = None
 
     @staticmethod
     def _create_vertex_format():
@@ -178,7 +184,7 @@ class MapEditor:
                         return
 
                 position = result.get_hit_pos()
-                position = self._scene.get_relative_point(self._render, position)
+                position = self._scene.get_relative_point(self._camera_collection.render, position)
                 self._last_hit_position = position
 
                 self._splitter_display.hide()

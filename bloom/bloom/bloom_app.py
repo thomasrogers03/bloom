@@ -148,6 +148,7 @@ class Bloom(ShowBase):
         self._camera_collection = cameras.Cameras(
             self.win,
             self.render,
+            self.render2d,
             self._scene,
             cameras.Camera(
                 self.cam,
@@ -168,16 +169,6 @@ class Bloom(ShowBase):
             self.task_mgr
         )
 
-        self._sectors: core.NodePath = self._scene.attach_new_node('sectors')
-        self._map_editor = map_editor.MapEditor(
-            self.render,
-            self.render2d,
-            self._sectors,
-            map_to_load,
-            self._get_tile,
-            self._collision_world
-        )
-
         self._tile_loads = queue.Queue()
         self._tile_dialog = tile_dialog.TileDialog(
             self.aspect2d,
@@ -187,6 +178,25 @@ class Bloom(ShowBase):
             self.task_mgr,
             self._update_selected_tile
         )
+
+        self._mode_2d = edit_mode_2d.EditMode(
+            camera_collection=self._camera_collection,
+            collision_world=self._collision_world,
+            edit_mode_selector=self._edit_mode_selector,
+            menu=self._edit_menu
+        )
+
+        self._mode_3d = edit_mode_3d.EditMode(
+            self._tile_dialog,
+            self._mode_2d,
+            camera_collection=self._camera_collection,
+            collision_world=self._collision_world,
+            edit_mode_selector=self._edit_mode_selector,
+            menu=self._edit_menu
+        )
+
+        self._map_editor: map_editor.MapEditor = None
+        self._load_map_into_editor(map_to_load)
 
         position = core.Vec3(*map_to_load.start_position)
         self._camera_collection.builder_2d.set_pos(position.x, position.y, 0)
@@ -224,24 +234,6 @@ class Bloom(ShowBase):
 
         self.mouseWatcherNode.setModifierButtons(core.ModifierButtons())
 
-        self._mode_2d = edit_mode_2d.EditMode(
-            camera_collection=self._camera_collection,
-            collision_world=self._collision_world,
-            edit_mode_selector=self._edit_mode_selector,
-            menu=self._edit_menu
-        )
-        self._mode_2d.set_editor(self._map_editor)
-
-        self._mode_3d = edit_mode_3d.EditMode(
-            self._tile_dialog,
-            self._mode_2d,
-            camera_collection=self._camera_collection,
-            collision_world=self._collision_world,
-            edit_mode_selector=self._edit_mode_selector,
-            menu=self._edit_menu
-        )
-        self._mode_3d.set_editor(self._map_editor)
-
         self._edit_mode_selector.push_mode(self._mode_3d)
 
         self.accept('control-s', self._save_map)
@@ -256,6 +248,21 @@ class Bloom(ShowBase):
     def _save_screenshot(self):
         self.screenshot('screenshot.png', defaultFilename=False)
 
+    def _load_map_into_editor(self, map_to_load: game_map.Map):
+        if self._map_editor is not None:
+            self._map_editor.unload()
+        for body in self._collision_world.get_rigid_bodies():
+            self._collision_world.remove(body)
+
+        self._map_editor = map_editor.MapEditor(
+            self._camera_collection,
+            map_to_load,
+            self._get_tile,
+            self._collision_world
+        )
+        self._mode_3d.set_editor(self._map_editor)
+        self._mode_2d.set_editor(self._map_editor)
+
     def _open_map(self):
         path = tkinter.filedialog.askopenfilename(
             initialdir=self._config['blood_path'],
@@ -264,23 +271,11 @@ class Bloom(ShowBase):
         )
         if path:
             self._path = path
-            self._sectors.remove_node()
             self._map_editor = None
-            for body in self._collision_world.get_rigid_bodies():
-                self._collision_world.remove(body)
-            self._sectors: core.NodePath = self._scene.attach_new_node('sectors')
             with open(self._path, 'rb') as file:
                 map_to_load = game_map.Map.load(self._path, file.read())
-            self._map_editor = map_editor.MapEditor(
-                self.render,
-                self.render2d,
-                self._sectors,
-                map_to_load,
-                self._get_tile,
-                self._collision_world
-            )
-            self._mode_3d.set_editor(self._map_editor)
-            self._mode_2d.set_editor(self._map_editor)
+
+            self._load_map_into_editor(map_to_load)
 
     def _save_map(self):
         if not self._path:
