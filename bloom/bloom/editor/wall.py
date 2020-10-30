@@ -11,6 +11,7 @@ from .. import constants, editor, game_map, map_data
 
 class EditorWall:
     _MASK_WALL_PART = 'middle_collision'
+    _LENGTH_REPEAT_SCALE = 1 / 16.0
 
     def __init__(
         self,
@@ -83,7 +84,7 @@ class EditorWall:
         self._debug_display.set_billboard_axis()
         self._debug_display.set_scale(-96)
         self._debug_display.hide()
-        
+
         segments_2d = core.LineSegs()
         segments_2d.set_thickness(2)
         segments_2d.draw_to(
@@ -160,14 +161,14 @@ class EditorWall:
         new_sector = EditorSector(self._sector.sector.copy())
         new_sector_index = len(sectors)
         new_sector.setup_for_rendering(
-            self._scene, 
+            self._scene,
             str(new_sector_index),
             self._vertex_format,
             self._get_tile_callback
         )
         sectors.append(new_sector)
         new_sector.setup_geometry(self._collision_world)
-        
+
         extrude_direction = self.get_normal() * 1024
 
         blood_point_1 = self._wall.copy()
@@ -181,13 +182,21 @@ class EditorWall:
         point_2 = EditorWall(blood_point_2)
 
         blood_point_3 = self._wall.copy()
-        blood_point_3.wall.position_x = int(self._wall.wall.position_x + extrude_direction.x)
-        blood_point_3.wall.position_y = int(self._wall.wall.position_y + extrude_direction.y)
+        blood_point_3.wall.position_x = int(
+            self._wall.wall.position_x + extrude_direction.x
+        )
+        blood_point_3.wall.position_y = int(
+            self._wall.wall.position_y + extrude_direction.y
+        )
         point_3 = EditorWall(blood_point_3)
 
         blood_point_4 = self._wall.copy()
-        blood_point_4.wall.position_x = int(self._wall_point_2._wall.wall.position_x + extrude_direction.x)
-        blood_point_4.wall.position_y = int(self._wall_point_2._wall.wall.position_y + extrude_direction.y)
+        blood_point_4.wall.position_x = int(
+            self._wall_point_2._wall.wall.position_x + extrude_direction.x
+        )
+        blood_point_4.wall.position_y = int(
+            self._wall_point_2._wall.wall.position_y + extrude_direction.y
+        )
         point_4 = EditorWall(blood_point_4)
 
         self._other_side_wall = point_1
@@ -199,9 +208,9 @@ class EditorWall:
         point_4.wall_previous_point = point_3
 
         new_segments = [
-            (point_1, point_2), 
-            (point_2, point_3), 
-            (point_3, point_4), 
+            (point_1, point_2),
+            (point_2, point_3),
+            (point_3, point_4),
             (point_4, point_1)
         ]
         for new_wall, new_wall_point_2 in new_segments:
@@ -215,7 +224,7 @@ class EditorWall:
             new_sector.add_wall(new_wall)
         point_1._other_side_sector = self._sector
         point_1._other_side_wall = self
-            
+
         self._sector.invalidate_geometry()
         self.invalidate_geometry()
 
@@ -248,9 +257,11 @@ class EditorWall:
         return new_wall_point_2
 
     def move_point_1_to(self, position: core.Point2):
+        initial_point_1 = self.point_1
+
         if self._other_side_wall is not None:
             self._other_side_wall.wall_point_2._do_move_point_1_to(position)
-        elif self.wall_previous_point._other_side_wall is not None:
+        if self.wall_previous_point._other_side_wall is not None:
             self.wall_previous_point._other_side_wall._do_move_point_1_to(position)
 
         self._do_move_point_1_to(position)
@@ -259,10 +270,25 @@ class EditorWall:
         self._wall_point_2.move_point_1_to(position)
 
     def _do_move_point_1_to(self, position: core.Point2):
+        self._update_repeats_from_length_change(position)
+        self.wall_previous_point._update_repeats_from_length_change(
+            position, is_point_2=True
+        )
+
         self._sector.invalidate_geometry()
 
         self._wall.wall.position_x = int(position.x)
         self._wall.wall.position_y = int(position.y)
+
+    def _update_repeats_from_length_change(self, new_position: core.Point2, is_point_2=False):
+        if is_point_2:
+            end_point = self.point_1
+        else:
+            end_point = self.point_2
+
+        delta_length = (end_point - new_position).length() - self.get_length()
+        new_x_repeat = self.x_repeat + delta_length * self._LENGTH_REPEAT_SCALE
+        self._wall.wall.repeat_x = editor.to_build_repeat_x(new_x_repeat        )
 
     def reset_geometry_if_necessary(self):
         if not self._needs_geometry_reset:
@@ -397,16 +423,20 @@ class EditorWall:
     def y_panning(self):
         return editor.to_panning_y(self._wall.wall.panning_y)
 
+    def get_length(self):
+        return self.get_direction().length()
+
     def reset_panning_and_repeats(self):
         self.invalidate_geometry()
 
         self._wall.wall.panning_x = 0
         self._wall.wall.panning_y = 0
-        
+
         self._wall.wall.repeat_y = 8
 
-        length = self.get_direction().length()
-        self._wall.wall.repeat_x = editor.to_build_repeat_x(length / 16)
+        self._wall.wall.repeat_x = editor.to_build_repeat_x(
+            self.get_length() * self._LENGTH_REPEAT_SCALE
+        )
 
     def _make_wall_part(
         self,

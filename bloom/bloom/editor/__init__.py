@@ -6,7 +6,7 @@ def to_degrees(build_angle: int) -> float:
 
 
 def to_build_angle(degrees: float) -> int:
-    return int(((degrees + 90) * 1024) / 180)
+    return round(((degrees + 90) * 1024) / 180)
 
 
 def to_height(build_height: int) -> float:
@@ -14,7 +14,7 @@ def to_height(build_height: int) -> float:
 
 
 def to_build_height(height: float) -> int:
-    return int(height * (1 << 4))
+    return round(height * (1 << 4))
 
 
 def to_heinum(build_height: int) -> float:
@@ -22,7 +22,7 @@ def to_heinum(build_height: int) -> float:
 
 
 def to_build_heinum(height: float) -> int:
-    return int(height * (1 << 12))
+    return round(height * (1 << 12))
 
 
 def to_sprite_repeat(build_sprite_repeat: int) -> float:
@@ -30,7 +30,7 @@ def to_sprite_repeat(build_sprite_repeat: int) -> float:
 
 
 def to_build_sprite_repeat(sprite_repeat: float) -> int:
-    return int(sprite_repeat * 4)
+    return round(sprite_repeat * 4)
 
 
 def to_repeat_x(build_repeat_x: int) -> float:
@@ -38,7 +38,7 @@ def to_repeat_x(build_repeat_x: int) -> float:
 
 
 def to_build_repeat_x(repeat_x: float) -> int:
-    return int(repeat_x / 8)
+    return round(repeat_x / 8)
 
 
 def to_repeat_y(build_repeat_y: int) -> float:
@@ -46,7 +46,7 @@ def to_repeat_y(build_repeat_y: int) -> float:
 
 
 def to_build_repeat_y(repeat_y: float) -> int:
-    return int(repeat_y * 128)
+    return round(repeat_y * 128)
 
 
 def to_panning_x(panning_x: int) -> float:
@@ -54,7 +54,7 @@ def to_panning_x(panning_x: int) -> float:
 
 
 def to_build_panning_x(panning_x: float) -> int:
-    return int(panning_x)
+    return round(panning_x)
 
 
 def to_panning_y(build_panning_y: int) -> float:
@@ -62,7 +62,7 @@ def to_panning_y(build_panning_y: int) -> float:
 
 
 def to_build_panning_y(build_panning_y: float) -> int:
-    return int(build_panning_y * 2)
+    return round(build_panning_y * 2)
 
 
 def snap_to_grid(value: float, grid_size: float):
