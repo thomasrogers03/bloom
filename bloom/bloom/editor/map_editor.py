@@ -8,6 +8,7 @@ import typing
 from panda3d import bullet, core
 
 from .. import constants, data_loading, edit_mode, editor, game_map, map_data
+from ..utils import sky
 from . import (grid_snapper, highlight, sector_selector, sprite_selector,
                wall_bunch, wall_selector)
 from .sector import EditorSector
@@ -22,6 +23,7 @@ class MapEditor:
     def __init__(
         self,
         render: core.NodePath,
+        render2d: core.NodePath,
         scene: core.NodePath,
         map_to_load: game_map.Map,
         get_tile_callback: typing.Callable[[int], core.Texture],
@@ -40,6 +42,13 @@ class MapEditor:
         self._selected_is_highlighted = False
         self._ticks = 0
         self._snapper = grid_snapper.GridSnapper()
+
+        self._sky = sky.Sky(
+            render2d,
+            get_tile_callback,
+            0,
+            map_to_load.sky_offsets
+        )
 
         split_segment = core.LineSegs('splitter')
         split_segment.set_thickness(4)

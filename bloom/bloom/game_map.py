@@ -323,3 +323,7 @@ class Map:
     @property
     def start_theta(self):
         return self._header_1.player_theta
+
+    @property
+    def sky_offsets(self) -> typing.List[int]:
+        return self._sky_offsets

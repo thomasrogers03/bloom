@@ -160,6 +160,7 @@ class Bloom(ShowBase):
         self._sectors: core.NodePath = self._scene.attach_new_node('sectors')
         self._map_editor = map_editor.MapEditor(
             self.render,
+            self.render2d,
             self._sectors,
             map_to_load,
             self._get_tile,
@@ -307,6 +308,7 @@ class Bloom(ShowBase):
                 map_to_load = game_map.Map.load(self._path, file.read())
             self._map_editor = map_editor.MapEditor(
                 self.render,
+                self.render2d,
                 self._sectors,
                 map_to_load,
                 self._get_tile,
@@ -398,7 +400,7 @@ class Bloom(ShowBase):
 
     def _process_loading_tiles(self):
         now = time.time()
-        while (time.time() - now) < constants.TICK_RATE / 4:
+        while (time.time() - now) < constants.TICK_RATE / 8:
             if self._tile_loads.empty():
                 break
 
