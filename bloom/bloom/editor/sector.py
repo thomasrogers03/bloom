@@ -190,9 +190,11 @@ class EditorSector:
 
     def swap_parallax(self, part: str):
         if part == 'floor_collision':
-            self._sector.sector.floor_stat.parallax = int(not self._sector.sector.floor_stat.parallax)
+            self._sector.sector.floor_stat.parallax = int(
+                not self._sector.sector.floor_stat.parallax)
         else:
-            self._sector.sector.ceiling_stat.parallax = int(not self._sector.sector.ceiling_stat.parallax)
+            self._sector.sector.ceiling_stat.parallax = int(
+                not self._sector.sector.ceiling_stat.parallax)
 
         self.invalidate_geometry()
         for portal in self.portal_walls():
@@ -261,7 +263,8 @@ class EditorSector:
             point_2.wall_previous_point = point_1
 
         otherside_walls = reversed(new_walls[1:] + new_walls[:1])
-        segments = zip(otherside_walls, new_otherside_walls, (new_otherside_walls[1:] + new_otherside_walls[:1]))
+        segments = zip(otherside_walls, new_otherside_walls,
+                       (new_otherside_walls[1:] + new_otherside_walls[:1]))
         for otherside_wall, point_1, point_2 in segments:
             point_1.setup(
                 point_2,
@@ -347,7 +350,8 @@ class EditorSector:
             'ceiling', self.ceiling_z_at_point,
             self.ceiling_x_panning,
             self.ceiling_y_panning,
-            self._sector.sector.ceiling_stat,self._sector.sector.ceiling_picnum
+            self._sector.sector.ceiling_stat,
+            self._sector.sector.ceiling_picnum
         )
         self._ceiling.hide(constants.SCENE_2D)
 
@@ -393,8 +397,10 @@ class EditorSector:
             point = core.Point2(point.x, point.y)
             position_writer.add_data3(point.x, point.y, height_callback(point))
 
-            texture_coordinate_x = ((point.x + x_panning) * texture.get_x_size() ) / (1_000 * 64)
-            texture_coordinate_y = ((point.y + y_panning) * texture.get_y_size() ) / (1_000 * 64)
+            texture_coordinate_x = ((point.x + x_panning) *
+                                    texture.get_x_size()) / (1_000 * 64)
+            texture_coordinate_y = ((point.y + y_panning) *
+                                    texture.get_y_size()) / (1_000 * 64)
 
             if stat.expand:
                 texture_coordinate_x /= 2
@@ -440,8 +446,8 @@ class EditorSector:
         sector_shape: core.NodePath = collision.attach_new_node(node)
         sector_shape.set_bin('opaque', 2)
         if stat.parallax:
-            collision.set_color_scale(1, 1, 1, 0)
             sector_shape.set_transparency(True)
+            collision.set_color_scale(1, 1, 1, 0)
         else:
             sector_shape.set_texture(texture, 1)
 
@@ -609,7 +615,6 @@ class EditorSector:
         return self._sector.sector.ceiling_picnum
 
     def set_picnum(self, part: str, picnum: int):
-        print(part, picnum)
         self.invalidate_geometry()
         if part == 'floor_collision':
             self._sector.sector.floor_picnum = picnum

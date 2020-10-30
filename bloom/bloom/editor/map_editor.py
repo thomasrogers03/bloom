@@ -7,15 +7,14 @@ import typing
 
 from panda3d import bullet, core
 
-from .. import constants, data_loading, edit_mode, editor, game_map, map_data
+from .. import (cameras, constants, data_loading, edit_mode, editor, game_map,
+                map_data)
 from ..utils import sky
 from . import (grid_snapper, highlight, sector_selector, sprite_selector,
                wall_bunch, wall_selector)
 from .sector import EditorSector
 from .sprite import EditorSprite
 from .wall import EditorWall
-
-from .. import cameras
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +43,7 @@ class MapEditor:
         self._snapper = grid_snapper.GridSnapper()
 
         self._sky = sky.Sky(
-            self._camera_collection.render_2d,
+            self._camera_collection,
             get_tile_callback,
             self._find_sky(map_to_load.sectors),
             map_to_load.sky_offsets

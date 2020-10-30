@@ -152,6 +152,7 @@ class Bloom(ShowBase):
             self._scene,
             cameras.Camera(
                 self.cam,
+                self.cam.node(),
                 self.camLens,
                 self.win.get_display_region(0)
             )

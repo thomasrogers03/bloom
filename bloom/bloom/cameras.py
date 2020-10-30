@@ -10,6 +10,7 @@ from . import constants
 
 class Camera(NamedTuple):
     camera: core.NodePath
+    camera_node: core.Camera
     lens: core.Lens
     display_region: core.DisplayRegion
 
@@ -77,8 +78,33 @@ class Cameras:
     def get_builder_2d_position(self) -> core.Point3:
         return self._builder_2d.get_pos(self._scene)
 
-    def make_gui_camera(self, name: str):
-        pass
+    def make_gui_camera(self, name: str) -> Camera:
+        lens = core.OrthographicLens()
+        lens.set_film_size(1, 1)
+        lens.set_near_far(-1, 1)
+
+        camera_node = core.Camera(f'{name}_camera')
+        camera_node.set_scene(self._scene)
+        camera_node.set_lens(lens)
+        camera_node.set_camera_mask(constants.SCENE_2D)
+        camera: core.NodePath = self.render.attach_new_node(camera_node)
+
+        display_region: core.DisplayRegion = self._window.make_display_region(
+            0, 1, 0, 1
+        )
+        display_region.set_camera(camera)
+        display_region.set_sort(1000)
+        display_region.set_active(False)
+
+        camera = Camera(
+            camera,
+            camera_node,
+            lens,
+            display_region
+        )
+        self._cameras[name] = camera
+
+        return camera
 
     def make_2d_camera(self, name: str) -> Camera:
         lens = core.OrthographicLens()
@@ -104,6 +130,7 @@ class Cameras:
 
         camera = Camera(
             camera,
+            camera_node,
             lens,
             display_region
         )
