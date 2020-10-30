@@ -42,6 +42,8 @@ setuptools.setup(
             'gui_apps': {'bloom': 'run_bloom.py'},
             'plugins': [
                 'pandagl',
+                'p3tinydisplay',
+                'pandadx9',
                 'p3openal_audio',
             ],
             'platforms': ['win_amd64']
