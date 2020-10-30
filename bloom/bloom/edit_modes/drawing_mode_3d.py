@@ -17,18 +17,16 @@ class EditMode(navigation_mode_3d.EditMode):
 
     def __init__(
         self,
-        camera: core.NodePath,
-        lens: core.Lens,
         *args,
         **kwargs
     ):
-        super().__init__(camera, lens, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._sector: EditorSector = None
         self._points: typing.List[core.Point2] = None
         self._current_point: core.Point2 = None
         self._debug_view: core.NodePath = None
         self._grid = grid.make_grid(
-            self._scene,
+            self._camera_collection.scene,
             'drawing_grid',
             2,
             100,

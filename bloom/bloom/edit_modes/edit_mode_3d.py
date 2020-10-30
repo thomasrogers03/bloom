@@ -9,30 +9,37 @@ from panda3d import core
 from .. import clicker, constants, tile_dialog
 from . import drawing_mode_3d, edit_mode_2d, navigation_mode_3d
 
+from ..utils import grid
 
 class EditMode(navigation_mode_3d.EditMode):
 
     def __init__(
         self,
         tile_selector: tile_dialog.TileDialog,
-        camera: core.NodePath,
-        lens: core.Lens,
         mode_2d: edit_mode_2d.EditMode,
         *args,
         **kwargs
     ):
-        super().__init__(camera, lens, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+
+        self._grid = grid.make_grid(
+            self._camera_collection.scene,
+            'drawing_grid',
+            2,
+            100,
+            core.Vec4(0.5, 0.55, 0.6, 0.85)
+        )
+        self._grid.hide()
 
         self._tile_selector = tile_selector
         self._mode_2d = mode_2d
         self._drawing_mode = drawing_mode_3d.EditMode(
-            self._camera,
-            self._lens,
             *args,
             **kwargs
         )
 
         self._tickers.append(self._mouse_collision_tests)
+        self._tickers.append(self._grid.hide)
 
         self._make_clicker(
             [core.MouseButton.one()],
@@ -139,6 +146,10 @@ class EditMode(navigation_mode_3d.EditMode):
         self._do_move_selected(total_delta, delta, True)
 
     def _do_move_selected(self, total_delta: core.Vec2, delta: core.Vec2, modified: bool):
+        self._grid.set_scale(self._editor.snapper.grid_size)
+        self._grid.set_pos(self._editor.get_selected_and_last_hit_position()[1])
+        self._grid.show()
+
         camera_delta = self._transform_to_camera_delta(delta)
         total_camera_delta = self._transform_to_camera_delta(total_delta)
 

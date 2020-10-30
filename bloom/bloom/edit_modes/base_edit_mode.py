@@ -11,26 +11,22 @@ from panda3d import bullet, core
 from .. import clicker, constants, edit_menu, edit_mode
 from ..editor import map_editor
 
+from .. import cameras
+
 
 class EditMode(DirectObject.DirectObject):
 
     def __init__(
         self,
-        render: core.NodePath,
-        scene: core.NodePath,
+        camera_collection: cameras.Cameras,
         collision_world: bullet.BulletWorld,
-        builder_camera_2d: core.NodePath,
-        builder_camera: core.NodePath,
         menu: edit_menu.EditMenu,
         edit_mode_selector: 'bloom.edit_mode.EditMode'
     ):
         super().__init__()
 
-        self._render = render
-        self._scene = scene
+        self._camera_collection = camera_collection
         self._collision_world = collision_world
-        self._builder_camera_2d = builder_camera_2d
-        self._builder_camera = builder_camera
         self._edit_mode_selector = edit_mode_selector
         self._menu = menu
 
@@ -74,7 +70,7 @@ class EditMode(DirectObject.DirectObject):
                 break
 
     def _transform_to_camera_delta(self, delta: core.Vec2):
-        heading = self._builder_camera.get_h()
+        heading = self._camera_collection.builder.get_h()
 
         sin_theta = math.sin(math.radians(heading))
         cos_theta = math.cos(math.radians(heading))

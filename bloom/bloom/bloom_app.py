@@ -19,8 +19,8 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d import bullet, core
 from panda3d.direct import init_app_for_gui
 
-from . import (art, clicker, constants, edit_menu, edit_mode, editor, game_map,
-               tile_dialog, utils)
+from . import (art, cameras, clicker, constants, edit_menu, edit_mode, editor,
+               game_map, tile_dialog, utils)
 from .edit_modes import edit_mode_2d, edit_mode_3d
 from .editor import map_editor
 from .rff import RFF
@@ -141,16 +141,27 @@ class Bloom(ShowBase):
         self._art_manager = art.ArtManager(self._rff, art_paths)
         self._tiles: typing.Dict[int, core.Texture] = {}
 
+        self._scene: core.NodePath = self.render.attach_new_node('scene')
+        self._scene.set_scale(1.0 / 100)
+        self._collision_world.set_gravity(core.Vec3(0, 0, -9.81 / 100.0))
+
+        self._camera_collection = cameras.Cameras(
+            self.win,
+            self.render,
+            self._scene,
+            cameras.Camera(
+                self.cam,
+                self.camLens,
+                self.win.get_display_region(0)
+            )
+        )
+
         if self._path is None or not os.path.exists(self._path):
             map_to_load = game_map.Map()
             map_to_load.new()
         else:
             with open(self._path, 'rb') as file:
                 map_to_load = game_map.Map.load(self._path, file.read())
-
-        self._scene: core.NodePath = self.render.attach_new_node('scene')
-        self._scene.set_scale(1.0 / 100)
-        self._collision_world.set_gravity(core.Vec3(0, 0, -9.81 / 100.0))
 
         self._edit_mode_selector = edit_mode.EditMode(
             self.mouseWatcherNode,
@@ -177,58 +188,22 @@ class Bloom(ShowBase):
             self._update_selected_tile
         )
 
-        self._builder_2d: core.NodePath = self._scene.attach_new_node('builder')
         position = core.Vec3(*map_to_load.start_position)
-        self._builder_2d.set_pos(position.x, position.y, 0)
-        self._builder_2d.set_scale(-1, 1, -1)
+        self._camera_collection.builder_2d.set_pos(position.x, position.y, 0)
+        self._camera_collection.builder_2d.set_scale(-1, 1, -1)
 
-        self._builder: core.NodePath = self._builder_2d.attach_new_node('builder')
-        self._builder.set_z(editor.to_height(position.z))
-        self._builder.set_h(editor.to_degrees(map_to_load.start_theta))
-
-        builder_camera: core.NodePath = self._builder.attach_new_node(
-            'builder_camera'
-        )
-        builder_camera.hide(constants.SCENE_3D)
-        builder_camera.set_depth_write(False)
-        builder_camera.set_depth_test(False)
-        builder_camera.set_bin('fixed', 1000)
-        builder_camera.set_scale(500)
+        self._camera_collection.builder.set_z(editor.to_height(position.z))
+        self._camera_collection.builder.set_h(editor.to_degrees(map_to_load.start_theta))
 
         self._edit_mode_selector.always_run(self._update_builder_sector)
         self._edit_mode_selector.always_run(lambda: self._map_editor.hide_sectors())
         self._edit_mode_selector.always_run(self._show_traceable_sectors)
         self._edit_mode_selector.always_run(self._process_loading_tiles)
 
-        self.camera.reparent_to(self._builder)
-        self.cam.node().set_camera_mask(constants.SCENE_3D)
         self.disable_mouse()
 
-        self.camLens.set_fov(90)
-        self.camLens.set_near_far(1, 1 << 17)
-
-        self._lens_2d = core.OrthographicLens()
-        film_size = self.camLens.get_film_size()
-        self._lens_2d.set_film_size(film_size.x * 1280, film_size.y * 1280)
-        self._lens_2d.set_near_far(16, 1_024_000)
-        camera_2d_node = core.Camera('camera_2d')
-        camera_2d_node.set_scene(self._scene)
-        camera_2d_node.set_lens(self._lens_2d)
-        camera_2d_node.set_camera_mask(constants.SCENE_2D)
-        self._camera_2d: core.NodePath = self._builder_2d.attach_new_node(
-            camera_2d_node
-        )
-        self._camera_2d.set_scale(32)
-        self._camera_2d.set_hpr(180, -90, 0)
-        self._camera_2d.set_z(512_000)
-
-        window: core.GraphicsWindow = self.win
-        self._display_region_2d: core.DisplayRegion = window.make_display_region(
-            0, 1, 0, 1
-        )
-        self._display_region_2d.set_camera(self._camera_2d)
-        self._display_region_2d.set_sort(1000)
-        self._display_region_2d.set_active(False)
+        camera = self._camera_collection.make_2d_camera('editor_2d')
+        camera.camera.reparent_to(self._camera_collection.builder_2d)
 
         debug_node = bullet.BulletDebugNode('Debug')
         debug_node.show_wireframe(True)
@@ -250,13 +225,8 @@ class Bloom(ShowBase):
         self.mouseWatcherNode.setModifierButtons(core.ModifierButtons())
 
         self._mode_2d = edit_mode_2d.EditMode(
-            self._camera_2d,
-            self._display_region_2d,
-            render=self.render, 
-            scene=self._scene,
+            camera_collection=self._camera_collection,
             collision_world=self._collision_world,
-            builder_camera_2d=self._builder_2d,
-            builder_camera=self._builder,
             edit_mode_selector=self._edit_mode_selector,
             menu=self._edit_menu
         )
@@ -264,14 +234,9 @@ class Bloom(ShowBase):
 
         self._mode_3d = edit_mode_3d.EditMode(
             self._tile_dialog,
-            self.cam,
-            self.camLens,
             self._mode_2d,
-            render=self.render, 
-            scene=self._scene,
+            camera_collection=self._camera_collection,
             collision_world=self._collision_world,
-            builder_camera_2d=self._builder_2d,
-            builder_camera=self._builder,
             edit_mode_selector=self._edit_mode_selector,
             menu=self._edit_menu
         )
@@ -360,7 +325,7 @@ class Bloom(ShowBase):
             self._collision_debug.hide()
 
     def _update_builder_sector(self):
-        self._map_editor.update_builder_sector(self._builder.get_pos(self._scene))
+        self._map_editor.update_builder_sector(self._camera_collection.get_builder_position())
 
     def _show_traceable_sectors(self):
         self._map_editor.show_traceable_sectors(self._project_point)

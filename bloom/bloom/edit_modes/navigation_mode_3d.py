@@ -14,15 +14,10 @@ class EditMode(base_edit_mode.EditMode):
 
     def __init__(
         self,
-        camera: core.NodePath,
-        lens: core.Lens,
         *args,
         **kwargs
     ):
         super().__init__(*args, **kwargs)
-
-        self._camera = camera
-        self._lens = lens
         self._mouse_watcher = self._edit_mode_selector.mouse_watcher
 
         self._make_clicker(
@@ -40,7 +35,7 @@ class EditMode(base_edit_mode.EditMode):
             on_click_move=self._strafe_camera,
         )
 
-    def _extrude_mouse_to_render_transform(self, check_buttons = False):
+    def _extrude_mouse_to_render_transform(self, check_buttons=False):
         if not self._mouse_watcher.has_mouse():
             return None, None
 
@@ -51,10 +46,10 @@ class EditMode(base_edit_mode.EditMode):
         source = core.Point3()
         target = core.Point3()
 
-        self._lens.extrude(mouse, source, target)
+        self._camera.lens.extrude(mouse, source, target)
 
-        source = self._render.get_relative_point(self._camera, source)
-        target = self._render.get_relative_point(self._camera, target)
+        source = self._camera_collection.render.get_relative_point(self._camera.camera, source)
+        target = self._camera_collection.render.get_relative_point(self._camera.camera, target)
 
         source = core.TransformState.make_pos(source)
         target = core.TransformState.make_pos(target)
@@ -62,35 +57,47 @@ class EditMode(base_edit_mode.EditMode):
         return source, target
 
     def _pan_camera(self, total_delta: core.Vec2, delta: core.Vec2):
-        heading = self._builder_camera.get_h()
+        heading = self._camera_collection.builder.get_h()
 
         sin_theta = math.sin(math.radians(heading))
         cos_theta = math.cos(math.radians(heading))
         x_direction = -sin_theta * delta.y + cos_theta * delta.x
         y_direction = cos_theta * delta.y + sin_theta * delta.x
 
-        self._builder_camera_2d.set_x(
-            self._builder_camera_2d, x_direction * constants.TICK_SCALE)
-        self._builder_camera_2d.set_y(
-            self._builder_camera_2d, y_direction * constants.TICK_SCALE)
+        self._camera_collection.builder_2d.set_x(
+            self._camera_collection.builder_2d,
+            x_direction * constants.TICK_SCALE
+        )
+        self._camera_collection.builder_2d.set_y(
+            self._camera_collection.builder_2d,
+            y_direction * constants.TICK_SCALE
+        )
 
     def _strafe_camera(self, total_delta: core.Vec2, delta: core.Vec2):
         delta *= 100
 
-        heading = self._builder_camera.get_h()
+        heading = self._camera_collection.builder.get_h()
 
         sin_theta = math.sin(math.radians(heading))
         cos_theta = math.cos(math.radians(heading))
         x_direction = cos_theta * delta.x
         y_direction = sin_theta * delta.x
 
-        self._builder_camera.set_z(self._builder_camera.get_z() + delta.y * 512)
+        self._camera_collection.builder.set_z(
+            self._camera_collection.builder.get_z() + delta.y * 512
+        )
 
-        self._builder_camera_2d.set_x(self._builder_camera_2d, x_direction * 512)
-        self._builder_camera_2d.set_y(self._builder_camera_2d, y_direction * 512)
+        self._camera_collection.builder_2d.set_x(
+            self._camera_collection.builder_2d,
+            x_direction * 512
+        )
+        self._camera_collection.builder_2d.set_y(
+            self._camera_collection.builder_2d,
+            y_direction * 512
+        )
 
     def _rotate_camera(self, total_delta: core.Vec2, delta: core.Vec2):
-        hpr = self._builder_camera.get_hpr()
+        hpr = self._camera_collection.builder.get_hpr()
         hpr = core.Vec3(hpr.x - delta.x * 90, hpr.y + delta.y * 90, 0)
 
         if hpr.y < -90:
@@ -98,4 +105,8 @@ class EditMode(base_edit_mode.EditMode):
         if hpr.y > 90:
             hpr.y = 90
 
-        self._builder_camera.set_hpr(hpr)
+        self._camera_collection.builder.set_hpr(hpr)
+
+    @property
+    def _camera(self):
+        return self._camera_collection['default']
