@@ -28,9 +28,9 @@ jobs:
       - run:
           command: |
             env\Scripts\activate.ps1
-            cd bloom && .\python\tools\python.exe setup.py bdist_apps && \
-            cd bloom && .\python\tools\python.exe setup.py bdist_wheel && \
-            cd bloom && .\python\tools\python.exe setup.py --version > dist/version.txt
+            cd bloom && ..\python\tools\python.exe setup.py bdist_apps
+            cd bloom && ..\python\tools\python.exe setup.py bdist_wheel
+            cd bloom && ..\python\tools\python.exe setup.py --version > dist/version.txt
           name: Build application
       - store_artifacts:
           path: bloom\dist     
