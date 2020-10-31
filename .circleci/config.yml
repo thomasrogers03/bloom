@@ -13,26 +13,35 @@ jobs:
       - run:
           name: install python
           command: |
-            Invoke-WebRequest https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe -OutFile .\Miniconda3-latest-Windows-x86_64.exe
-            start /wait "" Miniconda3-latest-Windows-x86_64.exe /InstallationType=JustMe /RegisterPython=0 /S /D=.\Miniconda3
-            .\Miniconda3\Scripts\conda create --quiet --yes --name bloom python=3.6
+            set -eou pipefail
+
+            curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe --output ./Miniconda3-latest-Windows-x86_64.exe
+            ./Miniconda3-latest-Windows-x86_64.exe /InstallationType=JustMe /RegisterPython=0 /S /D=.\\Miniconda3
+            ./Miniconda3/Scripts/conda create --quiet --yes --name bloom python=3.6
+          shell: bash.exe
 
       - run:
           name: install dependencies
           command: |
-            .\Miniconda3\Scripts\conda activate bloom
+            set -eou pipefail
+
+            ./Miniconda3/Scripts/conda activate bloom
 
             python -m pip install wheel
             python -m pip install -r requirements.txt
+          shell: bash.exe
             
       - run:
           command: |
-            .\Miniconda3\Scripts\conda activate bloom
+            set -eou pipefail
+            
+            ./Miniconda3/Scripts/conda activate bloom
             
             python setup.py bdist_apps
             python setup.py bdist_wheel
             copy version.txt dist\
           name: Build application
+          shell: bash.exe
       - store_artifacts:
           path: dist     
       - persist_to_workspace:
