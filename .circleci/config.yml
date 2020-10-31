@@ -23,15 +23,9 @@ jobs:
           shell: powershell.exe
 
       - run:
-          name: initialize conda
-          command: |
-            ~/Miniconda3/Scripts/conda init bash
-          shell: bash.exe
-
-      - run:
           name: install python
           command: |
-            conda create --quiet --yes --name bloom python=3.6
+            ~/Miniconda3/Scripts/conda.bat create --quiet --yes --name bloom python=3.6
           shell: bash.exe
 
       - run:
@@ -39,7 +33,7 @@ jobs:
           command: |
             set -eou pipefail
 
-            conda activate bloom
+            ~/Miniconda3/Scripts/conda.bat activate bloom
 
             python -m pip install wheel
             python -m pip install -r requirements.txt
@@ -49,7 +43,7 @@ jobs:
           command: |
             set -eou pipefail
 
-            conda activate bloom
+            ~/Miniconda3/Scripts/conda.bat activate bloom
             
             python setup.py bdist_apps
             python setup.py bdist_wheel
