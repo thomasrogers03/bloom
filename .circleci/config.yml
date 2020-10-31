@@ -13,13 +13,14 @@ jobs:
       - checkout
 
       - run:
-          name: install python and create virtualenv
+          name: install python
           command: |
             nuget install python -Version $env:PYTHON -ExcludeVersion -OutputDirectory .
 
       - run:
           name: install dependencies
           command: |
+            .\python\tools\python.exe -m pip install wheel
             .\python\tools\python.exe -m pip install -r requirements.txt
             
       - run:
