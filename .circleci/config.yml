@@ -31,7 +31,7 @@ jobs:
             cd bloom
             python setup.py bdist_apps
             python setup.py bdist_wheel
-            python setup.py --version > dist/version.txt
+            copy version.txt dist\
           name: Build application
       - store_artifacts:
           path: bloom\dist     

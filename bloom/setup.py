@@ -17,9 +17,17 @@ def _install_requires():
         ]
     return lines
 
+def _get_version():
+    directory = os.path.dirname(__file__)
+    version_path = os.path.join(directory, 'version.txt')
+    
+    with open(version_path, 'r') as file:
+        return file.readlines()[0].strip()
+
+
 setuptools.setup(
     name="bloom",
-    version="0.0.0",
+    version=_get_version(),
     author="Thomas Rogers",
     author_email="thomasrogers03@gmail.com",
     description="Blood Modding Suite",
