@@ -24,6 +24,7 @@ jobs:
 
       - run:
           name: install python
+          command: |
             ~/Miniconda3/Scripts/conda create --quiet --yes --name bloom python=3.6
           shell: bash.exe
 
