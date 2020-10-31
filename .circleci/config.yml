@@ -25,7 +25,7 @@ jobs:
       - run:
           name: install python
           command: |
-            ~/Miniconda3/Scripts/conda.bat create --quiet --yes --name bloom python=3.6
+            ~/Miniconda3/Scripts/conda create --quiet --yes --name bloom python=3.6
           shell: bash.exe
 
       - run:
@@ -33,7 +33,7 @@ jobs:
           command: |
             set -eou pipefail
 
-            ~/Miniconda3/Scripts/conda.bat activate bloom
+            ~/Miniconda3/Scripts/activate bloom
 
             python -m pip install wheel
             python -m pip install -r requirements.txt
@@ -43,7 +43,7 @@ jobs:
           command: |
             set -eou pipefail
 
-            ~/Miniconda3/Scripts/conda.bat activate bloom
+            ~/Miniconda3/Scripts/activate bloom
             
             python setup.py bdist_apps
             python setup.py bdist_wheel
