@@ -20,7 +20,7 @@ jobs:
       - run:
           command: |
             cd bloom && \
-              python3 setup.py --quiet bdist_apps && \
+              python3 setup.py bdist_apps && \
               python3 setup.py bdist_wheel && \
               (python3 setup.py --version > dist/version.txt)
           name: Build application
