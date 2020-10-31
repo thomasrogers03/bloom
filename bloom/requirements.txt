@@ -1,6 +1,0 @@
-# Copyright 2020 Thomas Rogers
-# SPDX-License-Identifier: Apache-2.0
-
-panda3d==1.10.7
-numpy==1.17.2
-pyyaml==5.1

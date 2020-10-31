@@ -28,17 +28,16 @@ jobs:
       - run:
           command: |
             env\Scripts\activate.ps1
-            cd bloom
             python setup.py bdist_apps
             python setup.py bdist_wheel
             copy version.txt dist\
           name: Build application
       - store_artifacts:
-          path: bloom\dist     
+          path: dist     
       - persist_to_workspace:
           root: .
           paths:
-            - bloom\dist
+            - dist
   publish-github-release:
     executor: python/default
     docker:
@@ -48,8 +47,8 @@ jobs:
           at: ./artifacts
       - run:
           command: |
-            VERSION=$(cat ./artifacts/bloom/dist/version.txt)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/bloom/dist/
+            VERSION=$(cat ./artifacts/dist/version.txt)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/dist/
           name: Create release    
 
 workflows:
