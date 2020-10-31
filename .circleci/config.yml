@@ -1,36 +1,45 @@
 version: 2.1
 
 orbs:
+  win: circleci/windows@2.2.0
   python: circleci/python@0.2.1
 
 jobs:
   build:
-    executor: python/default
-    docker:
-      - image: circleci/python:3.6.12
-        environment:
-          - ENV: CIRCLE
+    executor: win/default
+    environment:
+      PYTHON: 3.6.4
     steps:
       - checkout
-      - python/load-cache
+
+      - run:
+          name: install python and create virtualenv
+          command: |
+            nuget install python -Version $env:PYTHON -ExcludeVersion -OutputDirectory .
+            .\python\tools\python.exe -m pip install virtualenv
+            .\python\tools\python.exe -m virtualenv env
+
+      - run:
+          name: install dependencies
+          command: |
+            env\Scripts\activate.ps1
+            pip install -r requirements.txt
+            
       - run:
           command: |
-            python3 -m pip install -r requirements.txt
-      - python/save-cache
-      - run:
-          command: |
-            cd bloom && \
-              python3 setup.py bdist_apps && \
-              python3 setup.py bdist_wheel && \
-              (python3 setup.py --version > dist/version.txt)
+            env\Scripts\activate.ps1
+            cd bloom && .\python\tools\python.exe setup.py bdist_apps && \
+            cd bloom && .\python\tools\python.exe setup.py bdist_wheel && \
+            cd bloom && .\python\tools\python.exe setup.py --version > dist/version.txt
           name: Build application
       - store_artifacts:
-          path: bloom/dist     
+          path: bloom\dist     
       - persist_to_workspace:
           root: .
           paths:
-            - bloom/dist
+            - bloom\dist
   publish-github-release:
+    executor: python/default
     docker:
       - image: cibuilds/github:0.10
     steps:
