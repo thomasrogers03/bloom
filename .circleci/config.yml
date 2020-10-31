@@ -8,7 +8,7 @@ jobs:
   build:
     executor: win/default
     environment:
-      PYTHON: 3.6.12
+      PYTHON: 3.6
     steps:
       - checkout
 
