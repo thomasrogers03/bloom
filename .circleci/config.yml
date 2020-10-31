@@ -23,9 +23,14 @@ jobs:
           shell: powershell.exe
 
       - run:
-          name: install python
+          name: initialize conda
           command: |
             ~/Miniconda3/Scripts/conda init bash
+          shell: bash.exe
+
+      - run:
+          name: install python
+          command: |
             conda create --quiet --yes --name bloom python=3.6
           shell: bash.exe
 
