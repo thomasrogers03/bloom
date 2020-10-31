@@ -39,7 +39,7 @@ jobs:
           command: |
             set -eou pipefail
 
-            ~/Miniconda3/Scripts/conda activate bloom
+            conda activate bloom
 
             python -m pip install wheel
             python -m pip install -r requirements.txt
@@ -49,7 +49,7 @@ jobs:
           command: |
             set -eou pipefail
 
-            ~/Miniconda3/Scripts/conda activate bloom
+            conda activate bloom
             
             python setup.py bdist_apps
             python setup.py bdist_wheel
