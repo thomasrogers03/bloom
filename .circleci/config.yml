@@ -8,7 +8,7 @@ jobs:
   build:
     executor: win/default
     environment:
-      PYTHON: 3.6
+      PYTHON: 3.6.4
     steps:
       - checkout
 
@@ -16,20 +16,16 @@ jobs:
           name: install python and create virtualenv
           command: |
             nuget install python -Version $env:PYTHON -ExcludeVersion -OutputDirectory .
-            .\python\tools\python.exe -m pip install virtualenv
-            .\python\tools\python.exe -m virtualenv env
 
       - run:
           name: install dependencies
           command: |
-            env\Scripts\activate.ps1
-            pip install -r requirements.txt
+            .\python\tools\python.exe -m pip install -r requirements.txt
             
       - run:
           command: |
-            env\Scripts\activate.ps1
-            python setup.py bdist_apps
-            python setup.py bdist_wheel
+            .\python\tools\python.exe setup.py bdist_apps
+            .\python\tools\python.exe setup.py bdist_wheel
             copy version.txt dist\
           name: Build application
       - store_artifacts:
