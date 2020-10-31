@@ -47,7 +47,7 @@ jobs:
             
             python setup.py bdist_apps
             python setup.py bdist_wheel
-            copy version.txt dist\
+            cp version.txt dist/
           name: Build application
           shell: bash.exe
       - store_artifacts:
