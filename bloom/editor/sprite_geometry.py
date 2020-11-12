@@ -27,7 +27,7 @@ class SpriteGeometry:
     def add_facing_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, centring: bool, one_sided: bool) -> core.NodePath:
         display = self._new_display(name, picnum, lookup, centring, one_sided)
         display.set_billboard_axis()
-        display.set_h(0)
+        display.set_h(180)
 
         return display
 
@@ -45,7 +45,7 @@ class SpriteGeometry:
         return display
 
     def _new_display(self, name: str, picnum: int, lookup: int, centring: bool, one_sided: bool):
-        parent_display = self._scene.attach_new_node(name)
+        parent_display: core.NodePath = self._scene.attach_new_node(name)
         display: core.NodePath = parent_display.attach_new_node(self._card_maker.generate())
         display.set_texture(self._tile_manager.get_tile(picnum, lookup), 1)
         animation_data = self._tile_manager.get_animation_data(picnum)
@@ -55,6 +55,19 @@ class SpriteGeometry:
         display.set_depth_offset(2, 1)
         display.set_transparency(True)
         display.set_bin('transparent', 1)
+
+        display_2d_segments = core.LineSegs('sprite_2d')
+        display_2d_segments.set_color(0, 0.5, 1, 0.75)
+        display_2d_segments.set_thickness(4)
+        
+        display_2d_segments.draw_to(0, -0.25, 0)
+        display_2d_segments.draw_to(0, 0.25, 0)
+        display_2d_segments.draw_to(-0.25, 0, 0)
+        display_2d_segments.draw_to(0, 0.25, 0)
+        display_2d_segments.draw_to(0.25, 0, 0)
+
+        display_2d_node = display_2d_segments.create()
+        display_2d: core.NodePath = parent_display.attach_new_node(display_2d_node)
 
         if centring:
             display.set_z(-0.5)

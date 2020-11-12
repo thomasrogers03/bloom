@@ -93,6 +93,21 @@ class Segment:
 
         return None
 
+    def point_on_line(self, point: core.Point2):
+        if self.is_empty or self.side_of_line(point) != 0:
+            return False
+
+        delta = point - self.point_1
+        direction = self.get_direction()
+        is_more_vertical = math.fabs(direction.y) > math.fabs(direction.x)
+
+        if is_more_vertical:
+            portion = delta.y / direction.y
+            return portion >= 0 and portion <= 1
+
+        portion = delta.x / direction.x
+        return portion >= 0 and portion <= 1
+
     def intersect_line(self, point: core.Point2, direction: core.Vec2):
         point_on_line = point + direction
         if self.side_of_line(point) <= 0:

@@ -112,6 +112,9 @@ class EditorSprite(empty_object.EmptyObject):
         direction = self.get_direction()
         return core.Vec2(direction.y, -direction.x)
 
+    def get_normal(self) -> core.Vec2:
+        return self.get_orthogonal().normalized()
+
     @property
     def rx_id(self):
         return self._sprite.data.rx_id
@@ -143,6 +146,14 @@ class EditorSprite(empty_object.EmptyObject):
     def is_geometry(self):
         return False
 
+    @property
+    def segment(self):
+        if self.is_directional:
+            half_width = self.size.x / 2
+            offset = self.get_normal() * half_width
+
+            return segment.Segment(self.origin_2d - offset, self.origin_2d + offset)
+
     def set_repeats(self, x_repeat: float, y_repeat: float):
         self.invalidate_geometry()
         self._sprite.sprite.repeat_x = editor.to_build_sprite_repeat(x_repeat)
@@ -163,6 +174,10 @@ class EditorSprite(empty_object.EmptyObject):
 
     def get_part_at_point(self, point: core.Point3):
         if self.is_facing or self.is_directional:
+            if self.is_directional:
+                if not self.segment.point_on_line(point.xy):
+                    return None
+
             half_height = self.size.y / 2
             if point.z <= self.position.z + half_height and \
                     point.z >= self.position.z - half_height:
@@ -299,7 +314,7 @@ class EditorSprite(empty_object.EmptyObject):
         sprite_collision.set_pos(self.position)
         sprite_collision.set_scale(
             texture_size.x * x_repeat,
-            1,
+            texture_size.x * x_repeat,
             texture_size.y * y_repeat,
         )
         sprite_collision.set_color(self.shade, self.shade, self.shade, 1)
