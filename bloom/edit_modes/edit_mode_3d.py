@@ -156,6 +156,8 @@ class EditMode(navigation_mode_3d.EditMode):
 
         self.accept('r', self._change_sprite_facing)
         self.accept('f', self._flip_sprite)
+        
+        self.accept('escape', self._highlighter.deselect_all)
 
         if constants.PORTALS_DEBUGGING_ENABLED:
             self.accept('1', self._toggle_view_clipping)

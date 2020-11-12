@@ -42,6 +42,7 @@ class MovingClicker3D:
 
         self._grid_parent: core.NodePath = camera_collection.scene.attach_new_node('grid_3d')
         self._grid_parent.set_transparency(True)
+        self._grid_parent.set_depth_offset(constants.HIGHLIGHT_DEPTH_OFFSET, 1)
         self._hide_grids()
 
         self._small_grid = grid.make_grid(
@@ -52,7 +53,6 @@ class MovingClicker3D:
             core.Vec4(0.5, 0.55, 0.6, 0.85)
         )
         self._small_grid.reparent_to(self._grid_parent)
-        self._small_grid.set_depth_offset(constants.HIGHLIGHT_DEPTH_OFFSET, 1)
 
         self._big_grid = grid.make_grid(
             camera_collection,
@@ -62,8 +62,16 @@ class MovingClicker3D:
             core.Vec4(1, 0, 0, 0.95)
         )
         self._big_grid.reparent_to(self._grid_parent)
-        self._big_grid.set_depth_offset(constants.HIGHLIGHT_DEPTH_OFFSET, 1)
         self._big_grid.set_scale(1024)
+
+        self._vertical_grid = grid.make_z_grid(
+            camera_collection,
+            'big_movement_grid',
+            2,
+            100,
+            core.Vec4(0, 0, 1, 0.95)
+        )
+        self._vertical_grid.reparent_to(self._grid_parent)
 
         self._mover: move.Move = None
 
@@ -105,10 +113,14 @@ class MovingClicker3D:
             self._show_grids()
 
     def _update_grids(self):
-        if len(self._object_highlighter.selected) < 1:
+        if len(self._object_highlighter.selected) > 0:
+            highlight = self._object_highlighter.selected[-1]
+        else:
+            highlight = self._object_highlighter.highlighted
+
+        if highlight is None:
             return
 
-        highlight = self._object_highlighter.selected[-1]
         hit_2d = core.Point2(
             highlight.hit_position.x,
             highlight.hit_position.y
@@ -121,12 +133,12 @@ class MovingClicker3D:
         )
 
         self._small_grid.set_scale(self._snapper.grid_size)
-        self._small_grid.set_pos(snapped_hit)
+        self._vertical_grid.set_scale(self._snapper.grid_size)
 
-        self._big_grid.set_pos(snapped_hit)
+        self._grid_parent.set_pos(snapped_hit)
 
     def _show_grids(self):
         self._grid_parent.set_color_scale(1, 1, 1, 1)
 
     def _hide_grids(self):
-        self._grid_parent.set_color_scale(1, 1, 1, 0.25)
+        self._grid_parent.set_color_scale(1, 1, 1, 0.35)

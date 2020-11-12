@@ -33,13 +33,17 @@ class Highlighter:
     def selected(self) -> typing.List[HighlightDetails]:
         return self._selected
 
+    @property
+    def highlighted(self) -> HighlightDetails:
+        return self._highlighted
+
     def select_append(self, no_append_if_not_selected=False, selected_type=None) -> typing.List[HighlightDetails]:
         if not self._highlight_valid(selected_type):
-            self._deselect_all()
+            self.deselect_all()
             return []
 
         if not self._selected_are_valid(selected_type):
-            self._deselect_all()
+            self.deselect_all()
             return []
 
         swap_index = self._higlight_selected_index_for_select()
@@ -48,7 +52,7 @@ class Highlighter:
             return self._selected
 
         if no_append_if_not_selected:
-            self._deselect_all()
+            self.deselect_all()
             self._selected = [self._highlighted]
             return self._selected
 
@@ -57,10 +61,10 @@ class Highlighter:
         
     def select(self, selected_type=None) -> HighlightDetails:
         if not self._highlight_valid(selected_type):
-            self._deselect_all()
+            self.deselect_all()
             return None
 
-        self._deselect_all()
+        self.deselect_all()
         self._selected = [self._highlighted]
         return self._selected[0]
 
@@ -97,7 +101,7 @@ class Highlighter:
             for selected in self._selected
         ) 
 
-    def _deselect_all(self):
+    def deselect_all(self):
         for selected in self._selected:
             selected.map_object.hide_highlight(selected.part)
         self._selected = []
@@ -150,4 +154,4 @@ class Highlighter:
 
     def clear(self):
         self._highlighted = None
-        self._deselect_all()
+        self.deselect_all()
