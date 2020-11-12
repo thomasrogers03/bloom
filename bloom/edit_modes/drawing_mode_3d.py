@@ -49,23 +49,16 @@ class EditMode(navigation_mode_3d.EditMode):
         self._current_point = position_2d
         self._points = [self._current_point]
 
-        slope = self._sector.floor_slope_direction()
-        self._grid.set_hpr(
-            0,
-            slope.y,
-            slope.x
+        grid.angle_grid(
+            self._camera_collection,
+            self._grid,
+            self._editor.snapper.grid_size,
+            self._sector.floor_slope_direction()
         )
         self._grid.set_pos(
             position_2d.x,
             position_2d.y,
             self._sector.floor_z_at_point(position_2d)
-        )
-        self._grid.set_scale(1)
-        inverse_scale = self._camera_collection.scene.get_relative_vector(self._grid, core.Vec3(1, 1, 0))
-        self._grid.set_scale(
-            self._editor.snapper.grid_size / inverse_scale.x,
-            self._editor.snapper.grid_size / inverse_scale.y,
-            1
         )
         self._edit_mode_selector.push_mode(self)
         self._update_debug_view()
@@ -113,7 +106,6 @@ class EditMode(navigation_mode_3d.EditMode):
         if source is None or target is None:
             return None
 
-        shape = bullet.BulletSphereShape(0.5)
         position = self._sector.floor_plane.intersect_line(
             source,
             target - source

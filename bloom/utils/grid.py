@@ -80,3 +80,22 @@ def make_z_grid(camera_collection: cameras.Cameras, name: str, thickness: float,
     grid.write_bam_file(cache_path)
 
     return grid
+
+def angle_grid(
+    camera_collection: cameras.Cameras, 
+    grid: core.NodePath,
+    grid_size: float, 
+    slope: core.Vec2
+):
+    grid.set_hpr(
+        0,
+        slope.y,
+        slope.x
+    )
+    grid.set_scale(1)
+    inverse_scale = camera_collection.scene.get_relative_vector(grid, core.Vec3(1, 1, 0))
+    grid.set_scale(
+        grid_size / inverse_scale.x,
+        grid_size / inverse_scale.y,
+        1
+    )

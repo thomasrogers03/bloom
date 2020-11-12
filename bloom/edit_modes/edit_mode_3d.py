@@ -88,6 +88,7 @@ class EditMode(navigation_mode_3d.EditMode):
         self._drawing_mode.set_editor(editor)
         self._highlighter = highlighter.Highlighter(editor)
         self._moving_clicker_3d = moving_clicker_3d.MovingClicker3D(
+            self._editor._scene,
             self._camera_collection,
             self._camera_collection.transform_to_camera_delta,
             self._highlighter,

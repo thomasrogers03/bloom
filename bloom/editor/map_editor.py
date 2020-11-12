@@ -90,6 +90,10 @@ class MapEditor:
         self._last_builder_sector: EditorSector = None
         self._builder_sector: EditorSector = None
 
+    @property
+    def scene(self):
+        return self._scene
+
     def unload(self):
         self._scene.remove_node()
         self._scene = None

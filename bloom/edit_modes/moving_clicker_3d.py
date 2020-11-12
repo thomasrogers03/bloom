@@ -14,9 +14,11 @@ from ..utils import grid
 
 class MovingClicker3D:
     _MOVE_SCALE = constants.TICK_SCALE
+    _LARGE_GRID_SIZE = 1024
 
     def __init__(
         self,
+        map_scene: core.NodePath,
         camera_collection: cameras.Cameras,
         transform_to_camera_delta: typing.Callable[[core.Vec2], core.Vec3],
         object_highlighter: highlighter.Highlighter,
@@ -24,6 +26,7 @@ class MovingClicker3D:
         snapper: grid_snapper.GridSnapper,
         all_sectors: map_objects.SectorCollection
     ):
+        self._camera_collection = camera_collection
         self._transform_to_camera_delta = transform_to_camera_delta
         self._object_highlighter = object_highlighter
         self._snapper = snapper
@@ -40,13 +43,13 @@ class MovingClicker3D:
             on_click_move=self._move_selected_modified,
         )
 
-        self._grid_parent: core.NodePath = camera_collection.scene.attach_new_node('grid_3d')
+        self._grid_parent: core.NodePath = map_scene.attach_new_node('grid_3d')
         self._grid_parent.set_transparency(True)
         self._grid_parent.set_depth_offset(constants.HIGHLIGHT_DEPTH_OFFSET, 1)
         self._hide_grids()
 
         self._small_grid = grid.make_grid(
-            camera_collection,
+            self._camera_collection,
             'movement_grid',
             2,
             100,
@@ -55,14 +58,14 @@ class MovingClicker3D:
         self._small_grid.reparent_to(self._grid_parent)
 
         self._big_grid = grid.make_grid(
-            camera_collection,
+            self._camera_collection,
             'big_movement_grid',
             4,
             100,
             core.Vec4(1, 0, 0, 0.95)
         )
         self._big_grid.reparent_to(self._grid_parent)
-        self._big_grid.set_scale(1024)
+        self._big_grid.set_scale(self._LARGE_GRID_SIZE)
 
         self._vertical_grid = grid.make_z_grid(
             camera_collection,
@@ -132,7 +135,21 @@ class MovingClicker3D:
             highlight.map_object.get_sector().floor_z_at_point(snapped_hit_2d)
         )
 
-        self._small_grid.set_scale(self._snapper.grid_size)
+        sector = highlight.map_object.get_sector()
+        slope = sector.floor_slope_direction()
+        grid.angle_grid(
+            self._camera_collection,
+            self._small_grid,
+            self._snapper.grid_size,
+            slope
+        )
+        grid.angle_grid(
+            self._camera_collection,
+            self._big_grid,
+            self._LARGE_GRID_SIZE,
+            slope
+        )
+
         self._vertical_grid.set_scale(self._snapper.grid_size)
 
         self._grid_parent.set_pos(snapped_hit)
