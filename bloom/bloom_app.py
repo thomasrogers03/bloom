@@ -5,8 +5,8 @@ import importlib
 import logging
 import math
 import os.path
+import pathlib
 import queue
-import subprocess
 import sys
 import time
 import tkinter
@@ -55,8 +55,7 @@ class Bloom(ShowBase):
                 tkinter.messagebox.showerror(title='Cannot load', message=message)
                 raise ValueError(message)
 
-            self._blood_path = blood_path
-
+            self._config['blood_path'] = blood_path
             with open(self._CONFIG_PATH, 'w+') as file:
                 file.write(yaml.dump(self._config))
 
@@ -152,7 +151,7 @@ class Bloom(ShowBase):
 
         self._scene: core.NodePath = self.render.attach_new_node('scene')
         self._scene.set_scale(1.0 / 100)
-        
+
         self._camera_collection = cameras.Cameras(
             self.loader,
             self.win,
@@ -172,7 +171,7 @@ class Bloom(ShowBase):
 
         if self._path is None:
             self._make_new_board()
-            
+
         if not os.path.exists(self._path):
             map_to_load = game_map.Map()
             map_to_load.new()
@@ -249,9 +248,16 @@ class Bloom(ShowBase):
         self.screenshot('screenshot.png', defaultFilename=False)
 
     def _run_map(self):
-        base_command = self._config['execute_command']
-        command = base_command + ['-map', self._path]
-        subprocess.run(command)
+        if 'executable_path' not in self._config:
+            path = tkinter.filedialog.askopenfilename(
+                initialdir=self._blood_path,
+                title='Path to Blood Executable',
+                filetypes=(('Executable Files', '*.EXE'),)
+            )
+            if not path:
+                return
+            self._config['executable_path'] = path
+        raise NotImplementedError()
 
     def _load_map_into_editor(self, map_to_load: game_map.Map):
         if self._map_editor is not None:
@@ -285,7 +291,7 @@ class Bloom(ShowBase):
 
     def _new_map(self):
         self._make_new_board()
-        
+
         map_to_load = game_map.Map()
         map_to_load.new()
         self._load_map_into_editor(map_to_load)
