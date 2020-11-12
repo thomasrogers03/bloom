@@ -1,0 +1,12 @@
+0:
+  name: Normal
+20:
+  name: Toggle Switch
+21:
+  name: 1-Way Switch
+500:
+  name: Wall Link
+501:
+  name: Wall Stack (Unsupported)
+511:
+  name: Gib Wall

@@ -1,0 +1,26 @@
+0:
+  name: Normal
+600:
+  name: Z Motion
+602:
+  name: Z Motion Sprite
+603:
+  name: Warp
+604:
+  name: Teleporter
+612:
+  name: Path Sector
+613:
+  name: Step Rotate
+614:
+  name: Slide Marked
+615:
+  name: Rotate Marked
+616:
+  name: Slide
+617:
+  name: Rotate
+618:
+  name: Damage Sector
+619:
+  name: Counter Sector
