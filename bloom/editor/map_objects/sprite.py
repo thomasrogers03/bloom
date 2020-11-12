@@ -73,7 +73,7 @@ class EditorSprite(empty_object.EmptyObject):
 
     @property
     def origin_2d(self):
-        return core.Point2(self.position.x, self.position.y)
+        return self.position.xy
 
     @property
     def origin(self):
@@ -205,7 +205,6 @@ class EditorSprite(empty_object.EmptyObject):
 
     def intersect_line(self, point: core.Point3, direction: core.Vec3) -> core.Point2:
         if self.is_facing:
-            point_2d = core.Point2(point.x, point.y)
             direction_2d = core.Vec2(direction.x, direction.y)
 
             orthogonal = core.Vec2(direction_2d.y, -direction_2d.x)
@@ -217,7 +216,7 @@ class EditorSprite(empty_object.EmptyObject):
             return segment.Segment(
                 self.position_2d + orthogonal,
                 self.position_2d - orthogonal
-            ).intersect_line(point_2d, direction_2d)
+            ).intersect_line(point.xy, direction_2d)
         elif self.is_floor:
             sprite_position = self.position
             sprite_direction = self.get_direction()
@@ -235,7 +234,7 @@ class EditorSprite(empty_object.EmptyObject):
             )
             intersection = sprite_plane.intersect_line(point, direction)
             if intersection is not None:
-                return core.Point2(intersection.x, intersection.y)
+                return intersection.xy
         else:
             sprite_position = self.position
             sprite_direction = self.get_orthogonal()
@@ -254,7 +253,7 @@ class EditorSprite(empty_object.EmptyObject):
             )
             intersection = sprite_plane.intersect_line(point, direction)
             if intersection is not None:
-                return core.Point2(intersection.x, intersection.y)
+                return intersection.xy
 
     @property
     def is_facing(self):

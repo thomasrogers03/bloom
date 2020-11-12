@@ -33,7 +33,7 @@ class SectorIntersect3D:
         else:
             hit = self._sector.ceiling_plane.intersect_line(
                 point, normalized_direction)
-        if hit is not None and self._sector.point_in_sector(core.Point2(hit.x, hit.y)):
+        if hit is not None and self._sector.point_in_sector(hit.xy):
             closest_object = self._sector
             closest_part = part
             closest_hit = hit
@@ -90,8 +90,7 @@ class SectorIntersect3D:
         normal_2d_length: float,
         normal: core.Vec3
     ):
-        point_2d = core.Point2(point.x, point.y)
-        line_portion = (intersection_2d - point_2d).length() / normal_2d_length
+        line_portion = (intersection_2d - point.xy).length() / normal_2d_length
 
         hit = core.Point3(
             intersection_2d.x,

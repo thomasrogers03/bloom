@@ -44,8 +44,7 @@ class EditMode(navigation_mode_3d.EditMode):
     def start_drawing(self, sector: EditorSector, hit_point: core.Point3):
         self._sector = sector
 
-        position_2d = core.Point2(hit_point.x, hit_point.y)
-        position_2d = self._editor.snapper.snap_to_grid_2d(position_2d)
+        position_2d = self._editor.snapper.snap_to_grid_2d(hit_point.xy)
         self._current_point = position_2d
         self._points = [self._current_point]
 
@@ -113,8 +112,7 @@ class EditMode(navigation_mode_3d.EditMode):
         if position is None:
             return None
 
-        position_2d = core.Point2(position.x, position.y)
-        return self._editor.snapper.snap_to_grid_2d(position_2d)
+        return self._editor.snapper.snap_to_grid_2d(position.xy)
 
     def _update_debug_view(self):
         self._clear_debug()

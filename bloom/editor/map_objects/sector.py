@@ -522,8 +522,8 @@ class EditorSector(empty_object.EmptyObject):
 
         texture_size = all_geometry.get_tile_dimensions(picnum)
         for point in triangulator.get_vertices():
-            point = core.Point2(point.x, point.y)
-            position_writer.add_data3(point.x, point.y, height_callback(point))
+            point_2d = core.Point2(point.x, point.y)
+            position_writer.add_data3(point_2d.x, point_2d.y, height_callback(point_2d))
             colour_writer.add_data4(shade, shade, shade, 1)
 
             if stat.swapxy:
@@ -792,12 +792,21 @@ class EditorSector(empty_object.EmptyObject):
         point_2_2d = core.Point2(point_1_2d.x + 1, point_1_2d.y)
         point_3_2d = core.Point2(point_1_2d.x, point_1_2d.y + 1)
         return plane.Plane(
-            core.Point3(point_1_2d.x, point_1_2d.y,
-                        self.floor_z_at_point(point_1_2d)),
-            core.Point3(point_2_2d.x, point_2_2d.y,
-                        self.floor_z_at_point(point_2_2d)),
-            core.Point3(point_3_2d.x, point_3_2d.y,
-                        self.floor_z_at_point(point_3_2d))
+            core.Point3(
+                point_1_2d.x, 
+                point_1_2d.y,
+                self.floor_z_at_point(point_1_2d)
+            ),
+            core.Point3(
+                point_2_2d.x, 
+                point_2_2d.y,
+                self.floor_z_at_point(point_2_2d)
+                ),
+            core.Point3(
+                point_3_2d.x, 
+                point_3_2d.y,
+                self.floor_z_at_point(point_3_2d)
+            )
         )
 
     @property
@@ -806,12 +815,21 @@ class EditorSector(empty_object.EmptyObject):
         point_2_2d = core.Point2(point_1_2d.x + 1, point_1_2d.y)
         point_3_2d = core.Point2(point_1_2d.x, point_1_2d.y + 1)
         return plane.Plane(
-            core.Point3(point_1_2d.x, point_1_2d.y,
-                        self.ceiling_z_at_point(point_1_2d)),
-            core.Point3(point_2_2d.x, point_2_2d.y,
-                        self.ceiling_z_at_point(point_2_2d)),
-            core.Point3(point_3_2d.x, point_3_2d.y,
-                        self.ceiling_z_at_point(point_3_2d))
+            core.Point3(
+                point_1_2d.x, 
+                point_1_2d.y,
+                self.ceiling_z_at_point(point_1_2d)
+            ),
+            core.Point3(
+                point_2_2d.x, 
+                point_2_2d.y,
+                self.ceiling_z_at_point(point_2_2d)
+            ),
+            core.Point3(
+                point_3_2d.x, 
+                point_3_2d.y,
+                self.ceiling_z_at_point(point_3_2d)
+            )
         )
 
     @property
@@ -933,7 +951,7 @@ class EditorSector(empty_object.EmptyObject):
         if position.z > self.floor_z or position.z < self.ceiling_z:
             return False
 
-        return self.point_in_sector(core.Point2(position.x, position.y))
+        return self.point_in_sector(position.xy)
 
     @property
     def can_see_above(self):

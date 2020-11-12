@@ -330,24 +330,21 @@ class EditorWall(empty_object.EmptyObject):
         return self.line_segment.side_of_line(point)
 
     def intersect_line(self, point: core.Point3, direction: core.Vec3) -> core.Point2:
-        point_2d = core.Point2(point.x, point.y)
         direction_2d = core.Vec2(direction.x, direction.y)
-
-        return self.line_segment.intersect_line(point_2d, direction_2d)
+        return self.line_segment.intersect_line(point.xy, direction_2d)
 
     def get_part_at_point(self, position: core.Point3):
         if self._other_side_wall is None:
             return f'{self._name}_full_highlight'
 
-        position_2d = core.Point2(position.x, position.y)
-        lower_bottom = self._sector.floor_z_at_point(position_2d)
-        lower_top = self.other_side_sector.floor_z_at_point(position_2d)
+        lower_bottom = self._sector.floor_z_at_point(position.xy)
+        lower_top = self.other_side_sector.floor_z_at_point(position.xy)
 
         if position.z <= lower_bottom and position.z >= lower_top:
             return f'{self._name}_lower_highlight'
 
-        upper_bottom = self.other_side_sector.ceiling_z_at_point(position_2d)
-        upper_top = self._sector.ceiling_z_at_point(position_2d)
+        upper_bottom = self.other_side_sector.ceiling_z_at_point(position.xy)
+        upper_top = self._sector.ceiling_z_at_point(position.xy)
 
         if position.z <= upper_bottom and position.z >= upper_top:
             return f'{self._name}_upper_highlight'

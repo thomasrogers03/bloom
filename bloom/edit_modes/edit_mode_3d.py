@@ -323,8 +323,7 @@ class EditMode(navigation_mode_3d.EditMode):
         if selected is None:
             return
 
-        where = core.Point2(selected.hit_position.x, selected.hit_position.y)
-        where = self._editor.snapper.snap_to_grid_2d(where)
+        where = self._editor.snapper.snap_to_grid_2d(selected.hit_position.xy)
         operations.wall_split.WallSplit(selected.map_object).split(where)
 
     def _enter_2d_mode(self):

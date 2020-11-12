@@ -76,7 +76,6 @@ class MovingClicker3D:
         self._vertical_grid.reparent_to(self._grid_parent)
 
         self._grid_parent.set_depth_offset(constants.DEPTH_OFFSET, 1)
-        self._grid_parent.set_bin('fixed', constants.FRONT_MOST)
         self._mover: move.Move = None
 
     def tick(self):
@@ -131,11 +130,7 @@ class MovingClicker3D:
         if highlight is None:
             return
 
-        hit_2d = core.Point2(
-            highlight.hit_position.x,
-            highlight.hit_position.y
-        )
-        snapped_hit_2d = self._snapper.snap_to_grid_2d(hit_2d)
+        snapped_hit_2d = self._snapper.snap_to_grid_2d(highlight.hit_position.xy)
         snapped_hit = core.Point3(
             snapped_hit_2d.x,
             snapped_hit_2d.y,
