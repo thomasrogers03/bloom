@@ -66,6 +66,7 @@ class MovingClicker3D:
     def tick(self):
         self._move_clicker.tick()
         self._move_clicker_modified.tick()
+        self._update_grids()
 
     def _end_move_selection(self):
         if self._mover is None:
@@ -73,8 +74,7 @@ class MovingClicker3D:
 
         self._mover.end_move()
         self._mover = None
-        self._small_grid.hide()
-        self._big_grid.hide()
+        self._hide_grids()
 
     def _move_selected(self, total_delta: core.Vec2, delta: core.Vec2):
         self._initialize_mover()
@@ -98,21 +98,33 @@ class MovingClicker3D:
                 self._snapper,
                 self._all_sectors
             )
+            self._show_grids()
 
-            hit_2d = core.Point2(
-                highlight.hit_position.x,
-                highlight.hit_position.y
-            )
-            snapped_hit_2d = self._snapper.snap_to_grid_2d(hit_2d)
-            snapped_hit = core.Point3(
-                snapped_hit_2d.x,
-                snapped_hit_2d.y,
-                highlight.map_object.get_sector().floor_z_at_point(snapped_hit_2d)
-            )
+    def _update_grids(self):
+        if len(self._object_highlighter.selected) < 1:
+            return
 
-            self._small_grid.set_scale(self._snapper.grid_size)
-            self._small_grid.set_pos(snapped_hit)
-            self._small_grid.show()
+        highlight = self._object_highlighter.selected[-1]
+        hit_2d = core.Point2(
+            highlight.hit_position.x,
+            highlight.hit_position.y
+        )
+        snapped_hit_2d = self._snapper.snap_to_grid_2d(hit_2d)
+        snapped_hit = core.Point3(
+            snapped_hit_2d.x,
+            snapped_hit_2d.y,
+            highlight.map_object.get_sector().floor_z_at_point(snapped_hit_2d)
+        )
 
-            self._big_grid.set_pos(snapped_hit)
-            self._big_grid.show()
+        self._small_grid.set_scale(self._snapper.grid_size)
+        self._small_grid.set_pos(snapped_hit)
+
+        self._big_grid.set_pos(snapped_hit)
+
+    def _show_grids(self):
+        self._small_grid.show()
+        self._big_grid.show()
+
+    def _hide_grids(self):
+        self._small_grid.hide()
+        self._big_grid.hide()
