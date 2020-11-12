@@ -10,7 +10,8 @@ def to_degrees(build_angle: int) -> float:
 
 
 def to_build_angle(degrees: float) -> int:
-    return round(((degrees - 90) * 1024) / 180)
+    value = round(((degrees - 90) * 1024) / 180)
+    return value % 2048
 
 
 def to_height(build_height: int) -> float:

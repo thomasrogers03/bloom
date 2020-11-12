@@ -60,11 +60,11 @@ class SpriteGeometry:
         display_2d_segments.set_color(0, 0.5, 1, 0.75)
         display_2d_segments.set_thickness(4)
         
-        display_2d_segments.draw_to(0, 0.25, 0)
-        display_2d_segments.draw_to(0, -0.25, 0)
-        display_2d_segments.draw_to(-0.25, 0, 0)
-        display_2d_segments.draw_to(0, -0.25, 0)
-        display_2d_segments.draw_to(0.25, 0, 0)
+        display_2d_segments.draw_to(0, 0.5, 0)
+        display_2d_segments.draw_to(0, -0.5, 0)
+        display_2d_segments.draw_to(-0.5, 0, 0)
+        display_2d_segments.draw_to(0, -0.5, 0)
+        display_2d_segments.draw_to(0.5, 0, 0)
 
         display_2d_node = display_2d_segments.create()
         display_2d: core.NodePath = top_level_display.attach_new_node(display_2d_node)
@@ -74,6 +74,6 @@ class SpriteGeometry:
         if not one_sided:
             display.set_two_sided(True)
 
-        parent_display.set_h(theta)
+        top_level_display.set_h(theta)
         return top_level_display, parent_display
 

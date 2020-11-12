@@ -161,11 +161,22 @@ class EditMode(navigation_mode_3d.EditMode):
         self.accept('escape', self._highlighter.deselect_all)
         self.accept('g', self._toggle_grid)
 
+        self.accept(',', self._decrease_sprite_angle)
+        self.accept('.', self._increase_sprite_angle)
+
         if constants.PORTALS_DEBUGGING_ENABLED:
             self.accept('1', self._toggle_view_clipping)
 
     def _toggle_grid(self):
         self._moving_clicker_3d.toggle_grid()
+
+    def _decrease_sprite_angle(self):
+        for selected_item in self._select_sprites():
+            operations.sprite_angle_update.SpriteAngleUpdate(selected_item.map_object).increment(-15)
+
+    def _increase_sprite_angle(self):
+        for selected_item in self._select_sprites():
+            operations.sprite_angle_update.SpriteAngleUpdate(selected_item.map_object).increment(15)
 
     def _update_mover(self):
         self._moving_clicker_3d.tick()

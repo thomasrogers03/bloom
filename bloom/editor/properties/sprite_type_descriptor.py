@@ -109,6 +109,7 @@ class SpriteTypeDescriptor:
             'Pickup': SpriteProperty(self.BOOLEAN_PROPERTY, data.pickup, 0, None),
             'Touch': SpriteProperty(self.BOOLEAN_PROPERTY, data.touch, 0, None),
             'Sight': SpriteProperty(self.BOOLEAN_PROPERTY, data.sight, 0, None),
+            'Proximity': SpriteProperty(self.BOOLEAN_PROPERTY, data.proximity, 0, None),
             'Monsters Cannot Use': SpriteProperty(self.BOOLEAN_PROPERTY, data.dude_lockout, 0, None),
             'Skill 1': SpriteProperty(self.BOOLEAN_PROPERTY, data.launch_1, True, None),
             'Skill 2': SpriteProperty(self.BOOLEAN_PROPERTY, data.launch_2, True, None),
@@ -175,6 +176,7 @@ class SpriteTypeDescriptor:
         data.pickup = int(values['Pickup'])
         data.touch = int(values['Touch'])
         data.sight = int(values['Sight'])
+        data.proximity = int(values['Proximity'])
         data.dude_lockout = int(values['Monsters Cannot Use'])
         data.launch_1 = int(values['Skill 1'])
         data.launch_2 = int(values['Skill 2'])
