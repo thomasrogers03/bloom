@@ -8,6 +8,8 @@ from .. import map_objects
 
 
 class SectorIntersect3D:
+    _SPRITE_BIAS = 16
+    _SPRITE_BIAS_SQUARED = _SPRITE_BIAS * _SPRITE_BIAS
 
     def __init__(self, sector: map_objects.EditorSector):
         self._sector = sector
@@ -70,6 +72,7 @@ class SectorIntersect3D:
                     normalized_direction
                 )
                 if hit is not None:
+                    distance_squared -= self._SPRITE_BIAS_SQUARED
                     if distance_squared < closest_distance_squared:
                         part = editor_sprite.get_part_at_point(hit)
                         if part is not None:

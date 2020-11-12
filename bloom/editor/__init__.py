@@ -81,16 +81,16 @@ def snap_to_grid(value: float, grid_size: float):
     return round(value / grid_size) * grid_size
 
 
-def side_of_line(point: core.Point2, line_point_1: core.Point2, line_point_3: core.Point2):
+def side_of_line(point: core.Point2, line_point_1: core.Point2, line_point_3: core.Point2, tolerance = 0.0):
     line_direction = line_point_3 - line_point_1
     orthogonal = core.Vec2(line_direction.y, -line_direction.x)
 
     relative_point = point - line_point_1
     direction = orthogonal.dot(relative_point)
 
-    if direction > 0:
+    if direction > tolerance:
         return 1
-    elif direction < 0:
+    elif direction < -tolerance:
         return -1
     return 0
 

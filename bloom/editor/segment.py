@@ -27,8 +27,8 @@ class Segment:
     def get_centre(self) -> core.Point2:
         return (self._point_1 + self._point_2) / 2
 
-    def side_of_line(self, point: core.Point2):
-        return editor.side_of_line(point, self._point_1, self._point_2)
+    def side_of_line(self, point: core.Point2, tolerance = 0.0):
+        return editor.side_of_line(point, self._point_1, self._point_2, tolerance=tolerance)
 
     def get_normal(self) -> core.Vec2:
         return self.get_orthogonal_vector().normalized()
@@ -94,7 +94,7 @@ class Segment:
         return None
 
     def point_on_line(self, point: core.Point2):
-        if self.is_empty or self.side_of_line(point) != 0:
+        if self.is_empty or self.side_of_line(point, tolerance=16) != 0:
             return False
 
         delta = point - self.point_1

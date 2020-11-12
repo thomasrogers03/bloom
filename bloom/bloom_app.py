@@ -6,6 +6,7 @@ import logging
 import math
 import os.path
 import queue
+import subprocess
 import sys
 import time
 import tkinter
@@ -224,6 +225,7 @@ class Bloom(ShowBase):
         self.accept('control-o', self._open_map)
         self.accept('control-s', self._save_map)
         self.accept('control-p', self._save_screenshot)
+        self.accept('f9', self._run_map)
 
         self.task_mgr.add(self._update_for_frame, 'frame_update')
 
@@ -245,6 +247,11 @@ class Bloom(ShowBase):
 
     def _save_screenshot(self):
         self.screenshot('screenshot.png', defaultFilename=False)
+
+    def _run_map(self):
+        base_command = self._config['execute_command']
+        command = base_command + ['-map', self._path]
+        subprocess.run(command)
 
     def _load_map_into_editor(self, map_to_load: game_map.Map):
         if self._map_editor is not None:
