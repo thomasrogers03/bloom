@@ -27,7 +27,7 @@ class SpriteGeometry:
     def add_facing_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, centring: bool, one_sided: bool) -> core.NodePath:
         display = self._new_display(name, picnum, lookup, centring, one_sided)
         display.set_billboard_axis()
-        display.set_h(180)
+        display.set_h(0)
 
         return display
 
@@ -40,7 +40,7 @@ class SpriteGeometry:
     def add_floor_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, centring: bool, one_sided: bool, theta: float) -> core.NodePath:
         display = self._new_display(name, picnum, lookup, centring, one_sided)
         display.set_h(theta)
-        display.set_p(90)
+        display.set_p(-90)
         
         return display
 
@@ -52,7 +52,7 @@ class SpriteGeometry:
         if animation_data is not None:
             display.set_name('animated_geometry')
             display.set_python_tag('animation_data', (animation_data, lookup))
-        display.set_depth_offset(2, 1)
+        display.set_depth_offset(constants.DEPTH_OFFSET, 1)
         display.set_transparency(True)
         display.set_bin('transparent', 1)
 
@@ -60,10 +60,10 @@ class SpriteGeometry:
         display_2d_segments.set_color(0, 0.5, 1, 0.75)
         display_2d_segments.set_thickness(4)
         
+        display_2d_segments.draw_to(0, 0.25, 0)
         display_2d_segments.draw_to(0, -0.25, 0)
-        display_2d_segments.draw_to(0, 0.25, 0)
         display_2d_segments.draw_to(-0.25, 0, 0)
-        display_2d_segments.draw_to(0, 0.25, 0)
+        display_2d_segments.draw_to(0, -0.25, 0)
         display_2d_segments.draw_to(0.25, 0, 0)
 
         display_2d_node = display_2d_segments.create()
