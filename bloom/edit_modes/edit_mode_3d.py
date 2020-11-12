@@ -311,6 +311,7 @@ class EditMode(navigation_mode_3d.EditMode):
                 selected.part
             )
             extrustion.extrude(self._editor.find_unused_sprite_data_1())
+        self._editor.invalidate_view_clipping()
 
     def _split_selection(self):
         selected = self._highlighter.select(selected_type=map_objects.EditorWall)

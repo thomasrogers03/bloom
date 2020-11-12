@@ -263,7 +263,7 @@ class ViewClipping:
                 sector.sector_below_floor,
                 self._camera_collection,
                 self._clipping_debug,
-                sector.get_above_draw_offset()
+                self._sector_offset + sector.get_above_draw_offset()
             )
             ror_clipper._visible_sectors = self._visible_sectors
             ror_clipper.clip()
@@ -273,7 +273,7 @@ class ViewClipping:
                 sector.sector_above_ceiling,
                 self._camera_collection,
                 self._clipping_debug,
-                sector.get_below_draw_offset()
+                self._sector_offset + sector.get_below_draw_offset()
             )
             ror_clipper._visible_sectors = self._visible_sectors
             ror_clipper.clip()
