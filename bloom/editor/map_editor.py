@@ -160,22 +160,6 @@ class MapEditor:
 
         self._builder_sector = self._last_builder_sector
 
-    def _show_targets(self, source, colour: core.Vec4, seen: set):
-        if source in seen:
-            return
-        seen.add(source)
-
-        for target_index, target in enumerate(source.targets):
-            segments = core.LineSegs(str(target_index))
-            segments.set_thickness(2)
-            segments.set_color(colour)
-            
-            segments.draw_to(source.origin)
-            segments.draw_to(target.origin)
-
-            self._tx_rx_debug.attach_new_node(segments.create())
-            self._show_targets(target, core.Vec4(0, 0.5, 1, colour.w / 2), seen)
-
     @property
     def snapper(self):
         return self._snapper

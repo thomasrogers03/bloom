@@ -7,7 +7,7 @@ import typing
 from panda3d import core
 
 from . import map_editor
-from .highlighting import sector_intersect_3d
+from .highlighting import sector_intersect_3d, target_view
 from .map_objects import empty_object, sector, sprite, wall
 
 
@@ -27,6 +27,7 @@ class Highlighter:
 
     def __init__(self, editor: map_editor.MapEditor):
         self._editor = editor
+        self._selected_target_view = target_view.TargetView(self._editor.scene)
         self._highlighted: HighlightDetails = None
         self._selected: typing.List[HighlightDetails] = []
 
@@ -39,6 +40,8 @@ class Highlighter:
         return self._highlighted
 
     def select_append(self, no_append_if_not_selected=False, selected_type=None) -> typing.List[HighlightDetails]:
+        self._selected_target_view.reset()
+
         if not self._highlight_valid(selected_type):
             self.deselect_all()
             return []
@@ -50,24 +53,34 @@ class Highlighter:
         swap_index = self._higlight_selected_index_for_select()
         if swap_index is not None:
             self._move_highlight_to_top_selected(swap_index)
+            self._update_selected_target_view()
             return self._selected
 
         if no_append_if_not_selected:
             self.deselect_all()
             self._selected = [self._highlighted]
+            self._update_selected_target_view()
             return self._selected
 
         self._selected.append(self._highlighted)
+        self._update_selected_target_view()
         return self._selected
         
     def select(self, selected_type=None) -> HighlightDetails:
+        self._selected_target_view.reset()
+
         if not self._highlight_valid(selected_type):
             self.deselect_all()
             return None
 
         self.deselect_all()
         self._selected = [self._highlighted]
+        self._update_selected_target_view()
         return self._selected[0]
+
+    def _update_selected_target_view(self):
+        for selected in self._selected:
+            self._selected_target_view.show_targets(selected.map_object)
 
     def _higlight_selected_index_for_select(self):
         if len(self._selected) < 2:
