@@ -33,8 +33,8 @@ class BuildSprite(data_loading.CustomStruct):
     palette: data_loading.UInt8
     clip_distance: data_loading.UInt8
     filler: data_loading.UInt8
-    repeat_x: data_loading.Int8
-    repeat_y: data_loading.Int8
+    repeat_x: data_loading.UInt8
+    repeat_y: data_loading.UInt8
     offset_x: data_loading.Int8
     offset_y: data_loading.Int8
     sector_index: data_loading.Int16

@@ -312,9 +312,9 @@ class EditorSprite(empty_object.EmptyObject):
         )
         sprite_collision.set_color(self.shade, self.shade, self.shade, 1)
 
-        texture_scale = core.Vec2(1, 1)
+        texture_scale = core.Vec2(-1, 1)
         if self._sprite.sprite.stat.xflip:
-            texture_scale.x = -1
+            texture_scale.x = 1
         if self._sprite.sprite.stat.yflip:
             texture_scale.y = -1
         sprite_collision.set_tex_scale(

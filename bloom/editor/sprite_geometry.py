@@ -20,7 +20,7 @@ class SpriteGeometry:
         self._tile_manager = tile_manager
 
         self._card_maker = core.CardMaker('geometry')
-        self._card_maker.set_frame(0.5, -0.5, 0, 1)
+        self._card_maker.set_frame(-0.5, 0.5, 0, 1)
 
         self._sprites: typing.List[core.NodePath] = []
 
@@ -33,7 +33,6 @@ class SpriteGeometry:
 
     def add_directional_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, centring: bool, one_sided: bool, theta: float) -> core.NodePath:
         display, display_3d = self._new_display(name, picnum, lookup, centring, one_sided, theta)
-        display_3d.set_h(180)
         
         return display
 
