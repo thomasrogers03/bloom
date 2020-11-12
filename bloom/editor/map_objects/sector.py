@@ -394,10 +394,10 @@ class EditorSector(empty_object.EmptyObject):
             point_2.wall_previous_point = point_1
 
         for new_wall in new_walls:
-            new_wall.reset_panning_and_repeats()
+            new_wall.reset_panning_and_repeats(None)
 
         for new_wall in new_otherside_walls:
-            new_wall.reset_panning_and_repeats()
+            new_wall.reset_panning_and_repeats(None)
 
         new_sector.invalidate_geometry()
         self.invalidate_geometry()
