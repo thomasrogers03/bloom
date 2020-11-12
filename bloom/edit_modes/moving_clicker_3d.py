@@ -83,6 +83,12 @@ class MovingClicker3D:
         self._move_clicker_modified.tick()
         self._update_grids()
 
+    def toggle_grid(self):
+        if self._grid_parent.is_hidden():
+            self._grid_parent.show()
+        else:
+            self._grid_parent.hide()
+
     def _end_move_selection(self):
         if self._mover is None:
             return

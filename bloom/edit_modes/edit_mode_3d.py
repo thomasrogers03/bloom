@@ -157,11 +157,15 @@ class EditMode(navigation_mode_3d.EditMode):
 
         self.accept('r', self._change_sprite_facing)
         self.accept('f', self._flip_sprite)
-        
+
         self.accept('escape', self._highlighter.deselect_all)
+        self.accept('g', self._toggle_grid)
 
         if constants.PORTALS_DEBUGGING_ENABLED:
             self.accept('1', self._toggle_view_clipping)
+
+    def _toggle_grid(self):
+        self._moving_clicker_3d.toggle_grid()
 
     def _update_mover(self):
         self._moving_clicker_3d.tick()
@@ -300,7 +304,7 @@ class EditMode(navigation_mode_3d.EditMode):
         selected = self._highlighter.select()
         if selected is None:
             return
-        
+
         if isinstance(selected.map_object, map_objects.EditorWall):
             operations.wall_extrude.WallExtrude(
                 selected.map_object,
@@ -308,7 +312,7 @@ class EditMode(navigation_mode_3d.EditMode):
             ).extrude()
         elif isinstance(selected.map_object, map_objects.EditorSector):
             extrustion = operations.sector_extrude.SectorExtrude(
-                selected.map_object, 
+                selected.map_object,
                 selected.part
             )
             extrustion.extrude(self._editor.find_unused_sprite_data_1())
