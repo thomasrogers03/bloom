@@ -52,7 +52,8 @@ class ViewClipping:
                 self._transformation_matrix)
 
             self._clip_view: core.NodePath = self._clipping_debug.attach_new_node(
-                'clip_view')
+                'clip_view'
+            )
             self._clip_view.set_transparency(True)
             self._clip_view.set_bin('fixed', constants.FRONT_MOST)
 
@@ -109,12 +110,14 @@ class ViewClipping:
 
         screen_left = core.Point3(left, 0, depth)
         left_3d = self._inverse_transformation_matrix.xform_point_general(
-            screen_left)
+            screen_left
+        )
         left_3d.z = builder_pos.z
 
         screen_right = core.Point3(right, 0, depth)
         right_3d = self._inverse_transformation_matrix.xform_point_general(
-            screen_right)
+            screen_right
+        )
         right_3d.z = builder_pos.z
 
         z_offset = core.Vec3(0, 0, -1024)
