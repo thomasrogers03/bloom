@@ -34,7 +34,7 @@ class Move:
                 previous_wall = selected.map_object.wall_previous_point
                 if previous_wall.line_segment.is_empty:
                     operations.wall_delete.WallDelete(previous_wall).delete()
-                
+
                 next_wall = selected.map_object.wall_point_2
                 if next_wall.line_segment.is_empty:
                     operations.wall_delete.WallDelete(next_wall).delete()
@@ -53,10 +53,8 @@ class Move:
         self._do_move(core.Vec3(delta.x, delta.y, 0))
 
     def _do_move(self, delta: core.Vec3):
-        delta = self._snapper.snap_to_grid_3d(delta)
-
         for mover in self._movers:
-            mover.move(delta)
+            mover.move(delta, self._snapper)
 
     def _mover_for_object(self, details: highlighter.HighlightDetails):
         if isinstance(details.map_object, map_objects.wall.EditorWall):

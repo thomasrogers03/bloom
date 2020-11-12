@@ -19,6 +19,11 @@ class SpriteMove(empty_move.EmptyMove):
     def get_move_direction(self) -> core.Vec3:
         return core.Vec3(0, 0, -1)
 
-    def move(self, move_delta: core.Vec3):
+    def move(self, move_delta: core.Vec3, snapper: grid_snapper.GridSnapper):
+
         new_position = self._start_position + move_delta
+        if move_delta.z != 0:
+            new_position.z = snapper.snap_to_grid(new_position.z)
+        else:
+            new_position.xy = snapper.snap_to_grid_2d(new_position.xy)
         self._sprite.move_to(new_position)

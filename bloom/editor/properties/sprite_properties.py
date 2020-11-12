@@ -94,7 +94,7 @@ class SpriteDialog:
         category_names = sorted(category_names)
         category_names = list(category_names)
         self._sprite_categories: _SPRITE_CATEGORIES_TYPE = {
-            category_name: [] 
+            category_name: []
             for category_name in category_names
         }
         for descriptor in self._sprite_types.values():
@@ -146,6 +146,11 @@ class SpriteDialog:
 
     def _save_changes(self):
         new_values = self._properties.get_values()
+
+        new_picnum = self._properties.get_current_tile()
+        if new_picnum is not None:
+            self._current_picnum = new_picnum
+
         self._sprite.sprite.sprite.tags[0] = self._current_descriptor.sprite_type
         self._current_descriptor.apply_sprite_properties(self._sprite, new_values)
         self._sprite.sprite.sprite.picnum = self._current_picnum
@@ -188,8 +193,8 @@ class SpriteDialog:
 
         self._selected_descriptor = descriptor
         self._task_manager.do_method_later(
-            constants.DOUBLE_CLICK_TIMEOUT, 
-            self._reset_selected_sprite_type, 
+            constants.DOUBLE_CLICK_TIMEOUT,
+            self._reset_selected_sprite_type,
             'reset_double_click_sprite_type'
         )
 

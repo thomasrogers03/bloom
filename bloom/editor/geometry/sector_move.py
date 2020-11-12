@@ -24,8 +24,9 @@ class SectorMove(empty_move.EmptyMove):
     def get_move_direction(self) -> core.Vec3:
         return core.Vec3(0, 0, -1)
 
-    def move(self, move_delta: core.Vec3):
+    def move(self, move_delta: core.Vec3, snapper: grid_snapper.GridSnapper):
         new_z = self._start_z + move_delta.z
+        new_z = snapper.snap_to_grid(new_z)
         if self._part == EditorSector.FLOOR_PART:
             self._sector.move_floor_to(new_z)
         else:

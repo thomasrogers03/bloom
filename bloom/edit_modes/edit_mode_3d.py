@@ -27,6 +27,7 @@ class EditMode(navigation_mode_3d.EditMode):
         self._dialogs = editor_dialogs
         self._mode_2d = mode_2d
         self._copy_picnum: int = None
+        self._copy_sprite: map_objects.EditorSprite = None
         self._highlighter: highlighter.Highlighter = None
         self._drawing_mode = drawing_mode_3d.EditMode(
             *args,
@@ -61,7 +62,10 @@ class EditMode(navigation_mode_3d.EditMode):
     def _copy_selected_picnum(self):
         selected = self._highlighter.select()
         if selected is not None:
-            self._copy_picnum = selected.map_object.get_picnum(selected.part)
+            if isinstance(selected.map_object, map_objects.EditorSprite):
+                self._copy_sprite = selected.map_object
+            else:
+                self._copy_picnum = selected.map_object.get_picnum(selected.part)
 
     def _paste_selected_picnum(self):
         if self._copy_picnum is not None:
@@ -286,7 +290,12 @@ class EditMode(navigation_mode_3d.EditMode):
         if selected is None:
             return
 
-        selected.map_object.add_new_sprite(selected.hit_position)
+        if self._copy_sprite is None:
+            selected.map_object.add_new_sprite(selected.hit_position)
+        else:
+            blood_sprite = self._copy_sprite.sprite.copy()
+            sprite = selected.map_object.add_sprite(blood_sprite)
+            sprite.move_to(selected.hit_position)
 
     def _delete_selected(self):
         selected = self._highlighter.select_append(no_append_if_not_selected=True)

@@ -23,8 +23,8 @@ class WallMove(empty_move.EmptyMove):
         normal = self._wall.get_normal()
         return core.Vec3(normal.x, normal.y, 0)
 
-    def move(self, move_delta: core.Vec3):
-        move_delta_2d = core.Vec2(move_delta.x, move_delta.y)
+    def move(self, move_delta: core.Vec3, snapper: grid_snapper.GridSnapper):
+        move_delta_2d = snapper.snap_to_grid_2d(move_delta.xy)
 
         new_point_1 = self._start_point_1 + move_delta_2d
         new_point_2 = self._start_point_2 + move_delta_2d

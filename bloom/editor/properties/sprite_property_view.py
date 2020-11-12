@@ -40,6 +40,7 @@ class SpritePropertyView:
         self._default_tile = default_tile
         self._properties = properties
         self._update_tile = update_tile
+        self.get_current_tile: typing.Callable[[], int] = lambda: None
 
         property_list: _PROPERTY_LIST_TYPE = list(self._properties.items())
         property_count = len(property_list)
@@ -100,16 +101,23 @@ class SpritePropertyView:
                 setter['state'] = DirectGuiGlobals.NORMAL
                 setter['extraArgs'] = [descriptor]
                 if descriptor.tile_link_type == SpriteTypeDescriptor.TILE_LINK_OFFSET:
-                    if descriptor.property_type != SpriteTypeDescriptor.INTEGER_PROPERTY:
-                        message = f'Invalid property type for tile offset {descriptor.property_type}'
-                        raise ValueError(message)
+                    self._setup_tile_link_offset_setter(setter, descriptor)
 
-                    setter['command'] = self._update_with_offset
-                    setter['focusOutCommand'] = lambda: self._update_with_offset(setter.get(), descriptor)
+    def _setup_tile_link_offset_setter(self, setter: DirectGui.DirectEntry, descriptor: SpriteProperty):
+        if descriptor.property_type != SpriteTypeDescriptor.INTEGER_PROPERTY:
+            message = f'Invalid property type for tile offset {descriptor.property_type}'
+            raise ValueError(message)
 
-    def _update_with_offset(self, value, descriptor: SpriteProperty):
-        value = int(value) + descriptor.offset
-        self._update_tile(self._default_tile + value)
+        setter['command'] = self._update_with_offset
+        setter['focusOutCommand'] = lambda: self._update_with_offset(setter.get(), descriptor)
+        self.get_current_tile = lambda: self._get_offset_tile(setter.get(), descriptor)
+
+    def _update_with_offset(self, value: str, descriptor: SpriteProperty):
+        value = self._get_offset_tile(value, descriptor)
+        self._update_tile(value)
+
+    def _get_offset_tile(self, value: str, descriptor: SpriteProperty):
+        return self._default_tile + int(value) + descriptor.offset
 
     def get_values(self):
         new_values: typing.Dict[str, typing.Union[bool, int]] = {}

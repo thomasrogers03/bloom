@@ -4,6 +4,9 @@
 1:
   name: Player Start
   category: player
+  repeats:
+    x: 16
+    y: 16
   tile_config:
     start_tile: 2522
   properties:
@@ -15,6 +18,9 @@
 2:
   name: Bloodbath Start
   category: player
+  repeats:
+    x: 16
+    y: 16
   tile_config:
     start_tile: 2522
     from_data: 1
@@ -650,205 +656,319 @@
 200:
   name: Random Creature
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 832
 201:
   name: Cultist w/ Tommy
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 2820
   palette: 3
 202:
   name: Cultist w/ Shotgun
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 2820
 203:
   name: Axe Zombie
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1170
 204:
   name: Fat Zombie
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1370
 205:
   name: Earth Zombie
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 3054
 206:
   name: Flesh Gargoyle
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1470
 207:
   name: Stone Gargoyle
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1470
   palette: 5
 208:
   name: Flesh Statue
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1530
 209:
   name: Stone Statue
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1530
   palette: 5
 210:
   name: Phantasm
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 3060
 211:
   name: Hound
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1270
 212:
   name: Hand
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1980
 213:
   name: Brown Spider
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1920
   palette: 7
 214:
   name: Red Spider
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1920
   palette: 4
 215:
   name: Black Spider
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1920
   palette: 4
 216:
   name: Mother Spider
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1920
 217:
   name: Gill Beast
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1570
 218:
   name: Eel
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1870
 219:
   name: Bat
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1912
 220:
   name: Rat
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1745
 221:
   name: Green Pod
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1792
 222:
   name: Green Tentacle
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1797
 223:
   name: Fire Pod
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1792
   palette: 2
 224:
   name: Fire Tentacle
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1797
   palette: 2
 225:
   name: Mother Pod
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1792
   palette: 6
 226:
   name: Mother Tentacle
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1797
   palette: 6
 227:
   name: Cerberus
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 2680
 229:
   name: Tchernobog
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 3140
 230:
   name: Tommy Cultist Prone
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 3385
   palette: 3
 244:
   name: Sleep Zombie
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 1209
 245:
   name: Innocent
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 3798
 246:
   name: Shotgun Cultist Prone
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 3385
 247:
   name: Cultist w/ Tesla
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 2820
   palette: 11
 212:
   name: Cultist w/ Dynamite
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 2820
   palette: 13
 249:
   name: Beast Cultist
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 2820
   palette: 12
 250:
   name: Tiny Caleb
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 3870
 251:
   name: Beast
   category: monsters
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 2690
 416:
