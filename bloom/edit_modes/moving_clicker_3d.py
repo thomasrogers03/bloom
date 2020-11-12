@@ -50,7 +50,7 @@ class MovingClicker3D:
             'movement_grid',
             2,
             100,
-            core.Vec4(0.5, 0.55, 0.6, 0.85)
+            core.Vec4(0.5, 0.55, 0.8, 0.85)
         )
         self._small_grid.reparent_to(self._grid_parent)
 

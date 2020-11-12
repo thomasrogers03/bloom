@@ -7,6 +7,7 @@ import typing
 from panda3d import core
 
 from . import map_editor
+from .highlighting import sector_intersect_3d
 from .map_objects import empty_object, sector, sprite, wall
 
 
@@ -120,7 +121,8 @@ class Highlighter:
         direction = end_position - start_position
         search_sector = self._editor.builder_sector
         while True:
-            intersect_object, part, hit = search_sector.closest_object_intersecting_line(
+            tester = sector_intersect_3d.SectorIntersect3D(search_sector)
+            intersect_object, part, hit = tester.closest_object_intersecting_line(
                 start_position, direction
             )
             if intersect_object is None:

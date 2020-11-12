@@ -24,7 +24,7 @@ class GridSnapper:
             self._grid_size = 1
 
     def increase_grid(self):
-        self._grid_size *= 512
+        self._grid_size *= 2
         if self._grid_size > 512:
             self._grid_size = 512
 
