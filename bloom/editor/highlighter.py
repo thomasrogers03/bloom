@@ -116,6 +116,7 @@ class Highlighter:
         ) 
 
     def deselect_all(self):
+        self._selected_target_view.reset()
         for selected in self._selected:
             selected.map_object.hide_highlight(selected.part)
         self._selected = []
