@@ -45,7 +45,6 @@ class MovingClicker3D:
 
         self._grid_parent: core.NodePath = map_scene.attach_new_node('grid_3d')
         self._grid_parent.set_transparency(True)
-        self._grid_parent.set_depth_offset(constants.HIGHLIGHT_DEPTH_OFFSET, 1)
         self._hide_grids()
 
         self._small_grid = grid.make_grid(
@@ -76,6 +75,8 @@ class MovingClicker3D:
         )
         self._vertical_grid.reparent_to(self._grid_parent)
 
+        self._grid_parent.set_depth_offset(constants.DEPTH_OFFSET, 1)
+        self._grid_parent.set_bin('fixed', constants.FRONT_MOST)
         self._mover: move.Move = None
 
     def tick(self):

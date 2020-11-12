@@ -66,7 +66,7 @@ REALLY_BIG_NUMBER = 1 << 17
 BIG_NUMBER = 1 << 16
 
 BACK_MOST = -1000
-FRONT_MOST = -1000
+FRONT_MOST = 1000
 
 DIRECT_GUI_WHEELUP = core.PGButton.get_release_prefix() + core.MouseButton.wheel_up().get_name() + '-'
 DIRECT_GUI_WHEELDOWN = core.PGButton.get_release_prefix() + core.MouseButton.wheel_down().get_name() + '-'
