@@ -305,10 +305,17 @@ class EditorSprite(empty_object.EmptyObject):
             )
 
         sprite_collision.set_pos(self.position)
+        if self.is_floor:
+            y_scale = texture_size.y * self.y_repeat
+            z_scale = texture_size.x * self.x_repeat
+        else:
+            y_scale = texture_size.x * self.x_repeat
+            z_scale = texture_size.y * self.y_repeat
+
         sprite_collision.set_scale(
             texture_size.x * self.x_repeat,
-            texture_size.x * self.x_repeat,
-            texture_size.y * self.y_repeat,
+            y_scale,
+            z_scale,
         )
         sprite_collision.set_color(self.shade, self.shade, self.shade, 1)
 

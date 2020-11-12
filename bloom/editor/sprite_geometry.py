@@ -43,7 +43,9 @@ class SpriteGeometry:
         return display
 
     def _new_display(self, name: str, picnum: int, lookup: int, centring: bool, one_sided: bool, theta: float):
-        parent_display: core.NodePath = self._scene.attach_new_node(name)
+        top_level_display: core.NodePath = self._scene.attach_new_node(name)
+
+        parent_display: core.NodePath = top_level_display.attach_new_node(name)
         display: core.NodePath = parent_display.attach_new_node(self._card_maker.generate())
         display.set_texture(self._tile_manager.get_tile(picnum, lookup), 1)
         animation_data = self._tile_manager.get_animation_data(picnum)
@@ -65,7 +67,7 @@ class SpriteGeometry:
         display_2d_segments.draw_to(0.25, 0, 0)
 
         display_2d_node = display_2d_segments.create()
-        display_2d: core.NodePath = parent_display.attach_new_node(display_2d_node)
+        display_2d: core.NodePath = top_level_display.attach_new_node(display_2d_node)
 
         if centring:
             display.set_z(-0.5)
@@ -73,5 +75,5 @@ class SpriteGeometry:
             display.set_two_sided(True)
 
         parent_display.set_h(theta)
-        return parent_display, display
+        return top_level_display, parent_display
 

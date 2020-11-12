@@ -6,7 +6,7 @@ import typing
 
 from panda3d import core
 
-from .. import cameras, clicker_factory, constants
+from .. import cameras, clicker_factory, constants, editor
 from ..editor import grid_snapper, highlighter, map_objects
 from ..editor.geometry import move
 from ..utils import grid
@@ -154,7 +154,12 @@ class MovingClicker3D:
 
         self._vertical_grid.set_scale(self._snapper.grid_size)
 
-        self._grid_parent.set_pos(snapped_hit)
+        self._small_grid.set_pos(snapped_hit)
+        self._vertical_grid.set_pos(snapped_hit)
+
+        big_snap_x = editor.snap_to_grid(snapped_hit.x, self._LARGE_GRID_SIZE)
+        big_snap_y = editor.snap_to_grid(snapped_hit.y, self._LARGE_GRID_SIZE)
+        self._big_grid.set_pos(big_snap_x, big_snap_y, snapped_hit.z)
 
     def _show_grids(self):
         self._grid_parent.set_color_scale(1, 1, 1, 1)
