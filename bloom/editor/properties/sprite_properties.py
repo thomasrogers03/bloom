@@ -27,6 +27,8 @@ class SpriteDialog:
         task_manager: Task.TaskManager,
         tile_viewer: tile_dialog.TileDialog
     ):
+        self._task_manager = task_manager
+
         self._dialog = DirectGui.DirectFrame(
             parent=parent,
             pos=core.Vec3(-1.1, -0.9),
@@ -70,6 +72,7 @@ class SpriteDialog:
         self._edit_mode = edit_mode
 
         self._sprite: map_objects.EditorSprite = None
+        self._selected_descriptor: sprite_type_descriptor.SpriteTypeDescriptor = None
         self._current_descriptor: sprite_type_descriptor.SpriteTypeDescriptor = None
         self._current_picnum: int = None
         self._current_palette: int = None
@@ -179,12 +182,27 @@ class SpriteDialog:
         self._sprite_type_list.set_current_type(self._current_descriptor)
 
     def _select_sprite_type(self, descriptor: sprite_type_descriptor.SpriteTypeDescriptor):
-        if self._current_descriptor != descriptor:
+        if self._selected_descriptor == descriptor:
+            self._save_changes()
+            return
+
+        self._selected_descriptor = descriptor
+        self._task_manager.do_method_later(
+            constants.DOUBLE_CLICK_TIMEOUT, 
+            self._reset_selected_sprite_type, 
+            'reset_double_click_sprite_type'
+        )
+
+        if self._current_descriptor != self._selected_descriptor:
             self._current_descriptor = descriptor
             self._current_palette = self._get_current_palette()
             self._update_sprite_tile(descriptor.default_tile)
             self._update_available_tiles()
             self._update_property_view()
+
+    def _reset_selected_sprite_type(self, task):
+        self._selected_descriptor = None
+        return task.done
 
     def _get_current_palette(self):
         if self._current_descriptor.palette is not None:
