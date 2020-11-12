@@ -34,8 +34,8 @@ class BuildWall(data_loading.CustomStruct):
     over_picnum: data_loading.Int16
     shade: data_loading.Int8
     palette: data_loading.UInt8
-    repeat_x: data_loading.Int8
-    repeat_y: data_loading.Int8
+    repeat_x: data_loading.UInt8
+    repeat_y: data_loading.UInt8
     panning_x: data_loading.Int8
     panning_y: data_loading.Int8
     tags: data_loading.SizedType(data_loading.Int16, 3)
