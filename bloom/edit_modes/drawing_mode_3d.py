@@ -63,17 +63,17 @@ class EditMode(navigation_mode_3d.EditMode):
         self._edit_mode_selector.push_mode(self)
         self._update_debug_view()
 
-    def enter_mode(self):
-        super().enter_mode()
+    def enter_mode(self, state: dict):
+        super().enter_mode(state)
         self._grid.show()
 
         self.accept('backspace', self._remove_last_point)
         self.accept('enter', self._finish_shape)
 
     def exit_mode(self):
-        super().exit_mode()
         self._grid.hide()
         self._clear_debug()
+        return super().exit_mode()
 
     def _finish_shape(self):
         if len(self._points) < 1:

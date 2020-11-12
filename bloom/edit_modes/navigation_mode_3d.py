@@ -35,8 +35,8 @@ class EditMode(base_edit_mode.EditMode):
             on_click_move=self._strafe_camera,
         )
 
-    def enter_mode(self):
-        super().enter_mode()
+    def enter_mode(self, state: dict):
+        super().enter_mode(state)
         keyboard_camera.KeyboardCamera(
             self._camera_collection,
             self._editor,

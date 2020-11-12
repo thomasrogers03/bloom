@@ -97,8 +97,8 @@ class EditMode(navigation_mode_3d.EditMode):
             self._editor.sectors
         )
 
-    def enter_mode(self):
-        super().enter_mode()
+    def enter_mode(self, state: dict):
+        super().enter_mode(state)
 
         self._menu.add_command(
             label="Enter 2d edit mode (tab)",

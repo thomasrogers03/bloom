@@ -7,7 +7,7 @@ class EditMode:
     def set_editor(self, editor):
         raise NotImplementedError
 
-    def enter_mode(self):
+    def enter_mode(self, state: dict):
         raise NotImplementedError
 
     def tick(self):

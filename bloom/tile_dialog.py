@@ -90,12 +90,13 @@ class TileDialog:
 
         self._tiles.set_selected(picnum)
 
-    def enter_mode(self):
+    def enter_mode(self, state: dict):
         pass
 
     def exit_mode(self):
         self._dialog.hide()
         self._tile_selected = None
+        return {}
 
     def _confirm(self):
         self._selected_picnum = self._tiles.get_selected()

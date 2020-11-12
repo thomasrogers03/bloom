@@ -26,7 +26,7 @@ class EditMode(DirectObject.DirectObject):
 
         self._current_edit_mode: empty_edit_mode.EditMode = None
         self._always_tickers: typing.List[typing.Callable[[], None]] = []
-        self._mode_stack: typing.List[empty_edit_mode.EditMode] = []
+        self._mode_stack: typing.List[typing.Tuple[empty_edit_mode.EditMode, dict]] = []
         self._current_pstats_name = 'App:Show code:global_ticker'
 
         self._task_manager.do_method_later(
@@ -57,10 +57,10 @@ class EditMode(DirectObject.DirectObject):
 
     def push_mode(self, mode: empty_edit_mode.EditMode):
         if self._current_edit_mode is not None:
-            self._mode_stack.append(self._current_edit_mode)
-            self._current_edit_mode.exit_mode()
+            last_state = self._current_edit_mode.exit_mode()
+            self._mode_stack.append((self._current_edit_mode, last_state))
         self._current_edit_mode = mode
-        self._current_edit_mode.enter_mode()
+        self._current_edit_mode.enter_mode({})
 
         self._cancel_tick = False
 
@@ -69,8 +69,8 @@ class EditMode(DirectObject.DirectObject):
             return
 
         self._current_edit_mode.exit_mode()
-        self._current_edit_mode = self._mode_stack.pop()
-        self._current_edit_mode.enter_mode()
+        self._current_edit_mode, last_state = self._mode_stack.pop()
+        self._current_edit_mode.enter_mode(last_state)
 
         self._cancel_tick = True
 

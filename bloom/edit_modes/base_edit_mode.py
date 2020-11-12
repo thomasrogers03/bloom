@@ -37,7 +37,7 @@ class EditMode(DirectObject.DirectObject):
     def set_editor(self, editor: map_editor.MapEditor):
         self._editor = editor
 
-    def enter_mode(self):
+    def enter_mode(self, state: dict):
         self._menu.clear()
         self._menu.add_command(
             label="Exit current mode (esc)",
@@ -50,6 +50,7 @@ class EditMode(DirectObject.DirectObject):
 
     def exit_mode(self):
         self.ignore_all()
+        return {}
 
     def _exit_current_mode(self):
         self._edit_mode_selector.pop_mode()

@@ -217,11 +217,12 @@ class SpriteDialog:
         else:
             self._change_tile_button.hide()
 
-    def enter_mode(self):
+    def enter_mode(self, state: dict):
         self._dialog.show()
 
     def exit_mode(self):
         self._dialog.hide()
+        return {}
 
     def _hide(self):
         self._edit_mode.pop_mode()

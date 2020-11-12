@@ -24,8 +24,8 @@ class EditMode(base_edit_mode.EditMode):
             on_click_move=self._strafe_camera_2d,
         )
 
-    def enter_mode(self):
-        super().enter_mode()
+    def enter_mode(self, state: dict):
+        super().enter_mode(state)
         self.accept('tab', lambda: self._edit_mode_selector.pop_mode())
         self._camera.display_region.set_active(True)
         keyboard_camera.KeyboardCamera(
@@ -35,8 +35,8 @@ class EditMode(base_edit_mode.EditMode):
         )
 
     def exit_mode(self):
-        super().exit_mode()
         self._camera.display_region.set_active(False)
+        return super().exit_mode()
 
     def _pan_camera_2d(self, total_delta: core.Vec2, delta: core.Vec2):
         x_direction = (delta.x * self._camera.camera.get_sx()) / 50
