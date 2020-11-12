@@ -281,6 +281,7 @@ class EditorSprite(empty_object.EmptyObject):
                 self._sprite.sprite.palette,
                 self._sprite.sprite.stat.centring,
                 self._sprite.sprite.stat.one_sided,
+                self.theta
             )
         elif self.is_floor:
             sprite_collision = all_geometry.sprite_geometry.add_floor_sprite(
@@ -303,20 +304,23 @@ class EditorSprite(empty_object.EmptyObject):
                 self.theta
             )
 
-        x_repeat = self.x_repeat
-        if self._sprite.sprite.stat.xflip:
-            x_repeat = -x_repeat
-        y_repeat = self.y_repeat
-        if self._sprite.sprite.stat.yflip:
-            y_repeat = -y_repeat
-
         sprite_collision.set_pos(self.position)
         sprite_collision.set_scale(
-            texture_size.x * x_repeat,
-            texture_size.x * x_repeat,
-            texture_size.y * y_repeat,
+            texture_size.x * self.x_repeat,
+            texture_size.x * self.x_repeat,
+            texture_size.y * self.y_repeat,
         )
         sprite_collision.set_color(self.shade, self.shade, self.shade, 1)
+
+        texture_scale = core.Vec2(1, 1)
+        if self._sprite.sprite.stat.xflip:
+            texture_scale.x = -1
+        if self._sprite.sprite.stat.yflip:
+            texture_scale.y = -1
+        sprite_collision.set_tex_scale(
+            core.TextureStage.get_default(),
+            texture_scale
+        )
 
         self._sprite_collision = sprite_collision
         self._needs_geometry_reset = False

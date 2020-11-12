@@ -6,13 +6,11 @@ from panda3d import core
 
 
 def to_degrees(build_angle: int) -> float:
-    value = (180 * build_angle) / 1024 - 90
-    return 180 - value
+    return (180 * build_angle) / 1024 + 90
 
 
 def to_build_angle(degrees: float) -> int:
-    degrees = 180 - degrees
-    return round(((degrees + 90) * 1024) / 180)
+    return round(((degrees - 90) * 1024) / 180)
 
 
 def to_height(build_height: int) -> float:

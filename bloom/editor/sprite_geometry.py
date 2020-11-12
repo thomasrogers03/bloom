@@ -24,27 +24,26 @@ class SpriteGeometry:
 
         self._sprites: typing.List[core.NodePath] = []
 
-    def add_facing_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, centring: bool, one_sided: bool) -> core.NodePath:
-        display = self._new_display(name, picnum, lookup, centring, one_sided)
-        display.set_billboard_axis()
-        display.set_h(0)
+    def add_facing_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, centring: bool, one_sided: bool, theta: float) -> core.NodePath:
+        display, display_3d = self._new_display(name, picnum, lookup, centring, one_sided, theta)
+        display_3d.set_billboard_axis()
+        display_3d.set_h(0)
 
         return display
 
     def add_directional_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, centring: bool, one_sided: bool, theta: float) -> core.NodePath:
-        display = self._new_display(name, picnum, lookup, centring, one_sided)
-        display.set_h(theta)
+        display, display_3d = self._new_display(name, picnum, lookup, centring, one_sided, theta)
+        display_3d.set_h(180)
         
         return display
 
     def add_floor_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, centring: bool, one_sided: bool, theta: float) -> core.NodePath:
-        display = self._new_display(name, picnum, lookup, centring, one_sided)
-        display.set_h(theta)
-        display.set_p(-90)
+        display, display_3d = self._new_display(name, picnum, lookup, centring, one_sided, theta)
+        display_3d.set_p(-90)
         
         return display
 
-    def _new_display(self, name: str, picnum: int, lookup: int, centring: bool, one_sided: bool):
+    def _new_display(self, name: str, picnum: int, lookup: int, centring: bool, one_sided: bool, theta: float):
         parent_display: core.NodePath = self._scene.attach_new_node(name)
         display: core.NodePath = parent_display.attach_new_node(self._card_maker.generate())
         display.set_texture(self._tile_manager.get_tile(picnum, lookup), 1)
@@ -74,5 +73,6 @@ class SpriteGeometry:
         if not one_sided:
             display.set_two_sided(True)
 
-        return parent_display
+        parent_display.set_h(theta)
+        return parent_display, display
 
