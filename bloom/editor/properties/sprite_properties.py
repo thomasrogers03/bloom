@@ -50,10 +50,12 @@ class SpriteDialog:
             relief=DirectGuiGlobals.SUNKEN,
             borderWidth=(0.01, 0.01)
         )
-        self._current_tile_frame = DirectGui.DirectFrame(
+        self._current_tile_frame = DirectGui.DirectButton(
             pos=core.Vec3(0.01, 0.01),
             parent=current_tile_frame_parent,
-            frameSize=(0, self._TILE_FRAME_SIZE, self._TILE_FRAME_SIZE, 0)
+            frameSize=(0, self._TILE_FRAME_SIZE, self._TILE_FRAME_SIZE, 0),
+            relief=DirectGuiGlobals.FLAT,
+            command=self._show_tiles
         )
         self._current_tile_frame.set_transparency(True)
         self._change_tile_button = DirectGui.DirectButton(
