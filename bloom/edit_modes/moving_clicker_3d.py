@@ -40,6 +40,9 @@ class MovingClicker3D:
             on_click_move=self._move_selected_modified,
         )
 
+        self._grid_parent = camera_collection.scene.attach_new_node('grid_3d')
+        self._hide_grids()
+
         self._small_grid = grid.make_grid(
             camera_collection,
             'movement_grid',
@@ -47,8 +50,8 @@ class MovingClicker3D:
             100,
             core.Vec4(0.5, 0.55, 0.6, 0.85)
         )
+        self._small_grid.reparent_to(self._grid_parent)
         self._small_grid.set_depth_offset(constants.HIGHLIGHT_DEPTH_OFFSET, 1)
-        self._small_grid.hide()
 
         self._big_grid = grid.make_grid(
             camera_collection,
@@ -57,9 +60,9 @@ class MovingClicker3D:
             100,
             core.Vec4(1, 0, 0, 0.95)
         )
+        self._big_grid.reparent_to(self._grid_parent)
         self._big_grid.set_depth_offset(constants.HIGHLIGHT_DEPTH_OFFSET, 1)
         self._big_grid.set_scale(1024)
-        self._big_grid.hide()
 
         self._mover: move.Move = None
 
@@ -122,9 +125,7 @@ class MovingClicker3D:
         self._big_grid.set_pos(snapped_hit)
 
     def _show_grids(self):
-        self._small_grid.show()
-        self._big_grid.show()
+        self._grid_parent.show()
 
     def _hide_grids(self):
-        self._small_grid.hide()
-        self._big_grid.hide()
+        self._grid_parent.hide()
