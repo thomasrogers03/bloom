@@ -8,6 +8,7 @@ import typing
 from panda3d import bullet, core
 
 from .. import clicker, constants
+from ..editor import operations
 from ..editor.map_objects.sector import EditorSector
 from ..utils import grid
 from . import navigation_mode_3d
@@ -78,7 +79,7 @@ class EditMode(navigation_mode_3d.EditMode):
         if len(self._points) < 1:
             return
 
-        self._sector.split(self._points)
+        operations.sector_split.SectorSplit(self._sector).split(self._points)
         self._edit_mode_selector.pop_mode()
         self._editor.invalidate_view_clipping()
 
