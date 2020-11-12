@@ -29,7 +29,7 @@ class TargetView:
         self._display.set_transparency(True)
 
     def show_targets(self, source: map_objects.empty_object.EmptyObject):
-        self._show_targets(source, core.Vec4(1, 0.25, 0.15, 1))
+        self._show_targets(source, core.Vec4(1, 0.25, 0.15, 0.8))
 
     def _show_targets(
         self, 
@@ -44,7 +44,7 @@ class TargetView:
 
         for target_index, target in enumerate(source.targets):
             segments = core.LineSegs(str(target_index))
-            segments.set_thickness(2)
+            segments.set_thickness(8)
             
             segments.set_color(colour)
             segments.draw_to(source.origin)
