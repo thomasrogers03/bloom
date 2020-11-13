@@ -98,21 +98,22 @@ class MovingClicker3D:
         self._hide_grids()
 
     def _move_selected(self, total_delta: core.Vec2, delta: core.Vec2):
-        self._initialize_mover()
-
-        total_camera_delta = self._transform_to_camera_delta(total_delta)
-        self._mover.move(total_camera_delta * self._MOVE_SCALE)
+        if self._initialize_mover():
+            total_camera_delta = self._transform_to_camera_delta(total_delta)
+            self._mover.move(total_camera_delta * self._MOVE_SCALE)
 
     def _move_selected_modified(self, total_delta: core.Vec2, delta: core.Vec2):
-        self._initialize_mover()
-
-        total_camera_delta = self._transform_to_camera_delta(total_delta)
-        self._mover.move_modified(total_camera_delta * self._MOVE_SCALE)
+        if self._initialize_mover():
+            total_camera_delta = self._transform_to_camera_delta(total_delta)
+            self._mover.move_modified(total_camera_delta * self._MOVE_SCALE)
 
     def _initialize_mover(self):
         if self._mover is None:
-            self._object_highlighter.select_append(no_append_if_not_selected=True)
-            highlight = self._object_highlighter.selected[-1]
+            selected = self._object_highlighter.select_append(no_append_if_not_selected=True)
+            if len(selected) < 1:
+                return False
+
+            highlight = selected[-1]
             self._mover = move.Move(
                 self._object_highlighter.selected,
                 highlight,
@@ -120,6 +121,7 @@ class MovingClicker3D:
                 self._all_sectors
             )
             self._show_grids()
+        return True
 
     def _update_grids(self):
         if len(self._object_highlighter.selected) > 0:
