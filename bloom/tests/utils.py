@@ -4,11 +4,15 @@
 import typing
 
 import cv2
+import numpy
 from panda3d import core
 
 from .. import map_data
 from ..editor import map_objects
 from ..editor.operations import sector_draw
+
+_IMAGE_SIZE = 256
+_IMAGE_POINT_SCALE = 64
 
 
 def find_wall_on_point(sector: map_objects.EditorSector, point: core.Point2):
@@ -89,6 +93,40 @@ def assert_sector_has_point(sector: map_objects.EditorSector, point: core.Point2
             return
 
     raise AssertionError(f'Point, {point}, not found in {points}')
+
+def save_sector_images(base_name: str, sector: map_objects.EditorSector):
+    seen_walls: typing.Set[map_objects.EditorWall] = set()
+    
+    image_count = 0
+    for wall in sector.walls:
+        if wall in seen_walls:
+            continue
+            
+        image = numpy.zeros((256, 256, 3), 'uint8')
+    
+        next_wall = wall.wall_point_2
+        while next_wall != wall:
+            point_1 = _image_point(next_wall.point_1)
+            point_2 = _image_point(next_wall.point_2)
+            image = cv2.line(image, point_1, point_2, (255, 255, 255), 4)
+
+            seen_walls.add(next_wall)
+            next_wall = next_wall.wall_point_2
+
+        point_1 = _image_point(next_wall.point_1)
+        point_2 = _image_point(next_wall.point_2)
+        image = cv2.line(image, point_1, point_2, (255, 255, 255), 4)
+        seen_walls.add(next_wall)
+
+        path = f'test_results/{base_name}-{image_count}.png'
+        cv2.imwrite(path, image)
+        image_count += 1
+
+def _image_point(point: core.Point2) -> typing.Tuple[int, int]:
+    x = point.x * _IMAGE_POINT_SCALE + _IMAGE_SIZE / 2
+    y = -point.y * _IMAGE_POINT_SCALE + _IMAGE_SIZE / 2
+    
+    return (int(x), int(y))
 
 def _get_wall_bunch_directions(start_wall: map_objects.EditorWall):
     result: typing.List[core.Vec2] = []

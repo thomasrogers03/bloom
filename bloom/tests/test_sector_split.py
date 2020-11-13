@@ -26,6 +26,11 @@ class TestSectorSplit(unittest.TestCase):
             mock_suggest_sky
         )
 
+    def tearDown(self):
+        test_id = self.id()
+        for sector_index, sector in enumerate(self._sectors.sectors):
+            utils.save_sector_images(f'{test_id}-sector_{sector_index}', sector)
+
     def test_can_split(self):
         sector = self._build_rectangular_sector(-1, 1, -1, 1)
         self._do_split(
