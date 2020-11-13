@@ -157,15 +157,15 @@ class TestSectorSplit(unittest.TestCase):
         self.assertEqual(3, len(self._sectors.sectors))
 
         self.assertEqual(12, len(sector.walls))
-        utils.assert_wall_bunch_clockwise(sector, core.Point2(-3, -3))
-        utils.assert_wall_bunch_not_clockwise(sector, core.Point2(-1, 0))
+        utils.assert_wall_bunch_not_clockwise(sector, core.Point2(-3, -3))
+        utils.assert_wall_bunch_clockwise(sector, core.Point2(-1, 0))
         self._assert_does_not_have_point(sector, core.Point2(-1, 1))
         self._assert_does_not_have_point(sector, core.Point2(1, 1))
         self._assert_has_point(sector, core.Point2(-1, -1))
         self._assert_has_point(sector, core.Point2(1, -1))
 
         new_sector = self._sectors.sectors[2]
-        utils.assert_wall_bunch_clockwise(new_sector, core.Point2(1, 1))
+        utils.assert_wall_bunch_not_clockwise(new_sector, core.Point2(1, 1))
         self.assertEqual(8, len(new_sector.walls))
         
         self._assert_has_point(new_sector, core.Point2(-1, 1))
@@ -174,6 +174,11 @@ class TestSectorSplit(unittest.TestCase):
         self._assert_does_not_have_point(new_sector, core.Point2(1, -1))
         self._assert_does_not_have_point(new_sector, core.Point2(-1, -1))
         self._assert_does_not_have_point(new_sector, core.Point2(1, -1))
+
+
+    @unittest.skip
+    def test_can_split_with_multiple_islands(self):
+        raise AssertionError()
 
     def _do_split(
         self,
