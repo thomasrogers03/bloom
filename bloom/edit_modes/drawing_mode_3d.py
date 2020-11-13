@@ -134,7 +134,10 @@ class EditMode(navigation_mode_3d.EditMode):
         if not points:
             return
 
-        walls = zip(points, (points[1:] + points[:1]))
+        second_points = points[1:]
+        if self._insert:
+            second_points += points[:1]
+        walls = zip(points, second_points)
 
         for point_1, point_2 in walls:
             point_3d_1 = core.Point3(
