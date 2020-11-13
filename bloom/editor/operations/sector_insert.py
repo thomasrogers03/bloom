@@ -41,7 +41,6 @@ class SectorInsert:
         otherside_walls = new_otherside_points[1:] + new_otherside_points[:1]
         for editor_wall, otherside_wall in zip(new_points, otherside_walls):
             editor_wall.link(otherside_wall)
-            otherside_wall.link(editor_wall)
 
         self._join_walls(new_points)
         self._join_walls(reversed(new_otherside_points))
