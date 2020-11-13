@@ -50,6 +50,7 @@ class EditorWall(empty_object.EmptyObject):
 
         self.invalidate_geometry()
         self._other_side_wall = otherside_wall
+        otherside_wall._other_side_wall = self
 
     def unlink(self):
         self.invalidate_geometry()
@@ -232,6 +233,7 @@ class EditorWall(empty_object.EmptyObject):
 
     def set_wall_point_2(self, value: 'EditorWall'):
         self._wall_point_2 = value
+        value.wall_previous_point = self
 
     @property
     def other_side_sector(self):
