@@ -11,7 +11,7 @@ from .. import map_data
 from ..editor import map_objects
 from ..editor.operations import sector_draw
 
-_IMAGE_SIZE = 256
+_IMAGE_SIZE = 512
 _IMAGE_POINT_SCALE = 64
 
 
@@ -102,7 +102,7 @@ def save_sector_images(base_name: str, sector: map_objects.EditorSector):
         if wall in seen_walls:
             continue
             
-        image = numpy.zeros((256, 256, 3), 'uint8')
+        image = numpy.zeros((_IMAGE_SIZE, _IMAGE_SIZE, 3), 'uint8')
     
         next_wall = wall.wall_point_2
         while next_wall != wall:
