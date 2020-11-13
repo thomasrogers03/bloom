@@ -8,12 +8,12 @@ from panda3d import core
 from .. import map_objects
 
 
-class SectorSplit:
+class SectorInsert:
 
     def __init__(self, sector_to_split: map_objects.EditorSector):
         self._sector_to_split = sector_to_split
 
-    def split(
+    def insert(
         self,
         points: typing.List[core.Point2]
     ):

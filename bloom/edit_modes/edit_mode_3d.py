@@ -317,11 +317,22 @@ class EditMode(navigation_mode_3d.EditMode):
             selected_item.map_object.reset_panning_and_repeats(selected_item.part)
 
     def _start_drawing(self):
-        selected = self._highlighter.select(selected_type=map_objects.EditorSector)
+        selected = self._highlighter.select()
         if selected is None:
             return
 
-        self._drawing_mode.start_drawing(selected.map_object, selected.hit_position)
+        if isinstance(selected.map_object, map_objects.EditorSector):
+            insert = True
+        elif isinstance(selected.map_object, map_objects.EditorWall):
+            insert = False
+        else:
+            return
+
+        self._drawing_mode.start_drawing(
+            selected.map_object.get_sector(),
+            selected.hit_position,
+            insert
+        )
 
     def _extrude_selection(self):
         selected = self._highlighter.select()

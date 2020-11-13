@@ -23,6 +23,7 @@ class EditMode(navigation_mode_3d.EditMode):
     ):
         super().__init__(*args, **kwargs)
         self._sector: EditorSector = None
+        self._insert = True
         self._points: typing.List[core.Point2] = None
         self._current_point: core.Point2 = None
         self._debug_view: core.NodePath = None
@@ -42,8 +43,9 @@ class EditMode(navigation_mode_3d.EditMode):
 
         self._tickers.append(self._show_next_point)
 
-    def start_drawing(self, sector: EditorSector, hit_point: core.Point3):
+    def start_drawing(self, sector: EditorSector, hit_point: core.Point3, insert: bool):
         self._sector = sector
+        self._insert = insert
 
         position_2d = self._editor.snapper.snap_to_grid_2d(hit_point.xy)
         self._current_point = position_2d
@@ -80,7 +82,10 @@ class EditMode(navigation_mode_3d.EditMode):
         if len(self._points) < 1:
             return
 
-        operations.sector_split.SectorSplit(self._sector).split(self._points)
+        if self._insert:
+            operations.sector_insert.SectorInsert(self._sector).insert(self._points)
+        else:
+            raise NotImplementedError()
         self._edit_mode_selector.pop_mode()
         self._editor.invalidate_view_clipping()
 
