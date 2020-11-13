@@ -42,9 +42,7 @@ class SectorSplit:
         wall_split.WallSplit(first_wall).split(points[0])
         wall_split.WallSplit(last_wall).split(points[-1])
 
-        first_wall = first_wall.wall_point_2
         new_sector = self._sector_to_split.new_sector()
-
         self._migrate_new_walls(new_sector, points[0], points[-1])
 
         new_points = sector_draw.make_wall_points(
