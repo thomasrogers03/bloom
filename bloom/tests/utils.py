@@ -30,13 +30,13 @@ def build_rectangular_sector(
     point_1.teleport_point_1_to(core.Point2(left, bottom))
 
     point_2 = sector.add_wall(map_data.wall.Wall())
-    point_2.teleport_point_1_to(core.Point2(left, top))
+    point_2.teleport_point_1_to(core.Point2(right, bottom))
 
     point_3 = sector.add_wall(map_data.wall.Wall())
     point_3.teleport_point_1_to(core.Point2(right, top))
 
     point_4 = sector.add_wall(map_data.wall.Wall())
-    point_4.teleport_point_1_to(core.Point2(right, bottom))
+    point_4.teleport_point_1_to(core.Point2(left, top))
 
     point_1.set_wall_point_2(point_2)
     point_2.set_wall_point_2(point_3)

@@ -38,19 +38,19 @@ class TestSectorSplit(unittest.TestCase):
         self.assertEqual(2, len(self._sectors.sectors))
 
         self.assertEqual(4, len(sector.walls))
-        utils.assert_wall_bunch_clockwise(sector, core.Point2(-1, -1))
-        self._assert_has_point(sector, core.Point2(-1, -1))
-        self._assert_has_point(sector, core.Point2(-1, 0))
+        utils.assert_wall_bunch_not_clockwise(sector, core.Point2(1, 1))
         self._assert_has_point(sector, core.Point2(1, 0))
-        self._assert_has_point(sector, core.Point2(1, -1))
+        self._assert_has_point(sector, core.Point2(1, 1))
+        self._assert_has_point(sector, core.Point2(-1, 1))
+        self._assert_has_point(sector, core.Point2(-1, 0))
 
         new_sector = self._sectors.sectors[1]
         self.assertEqual(4, len(new_sector.walls))
-        utils.assert_wall_bunch_clockwise(new_sector, core.Point2(-1, 1))
-        self._assert_has_point(new_sector, core.Point2(-1, 1))
-        self._assert_has_point(new_sector, core.Point2(-1, 0))
-        self._assert_has_point(new_sector, core.Point2(1, 1))
+        utils.assert_wall_bunch_not_clockwise(new_sector, core.Point2(-1, -1))
+        self._assert_has_point(new_sector, core.Point2(-1, -1))
+        self._assert_has_point(new_sector, core.Point2(1, -1))
         self._assert_has_point(new_sector, core.Point2(1, 0))
+        self._assert_has_point(new_sector, core.Point2(-1, 0))
 
         split_wall = utils.find_wall_on_point(sector, core.Point2(-1, 0))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(1, 0))
@@ -72,19 +72,19 @@ class TestSectorSplit(unittest.TestCase):
         self.assertEqual(2, len(self._sectors.sectors))
 
         self.assertEqual(4, len(sector.walls))
-        utils.assert_wall_bunch_clockwise(sector, core.Point2(1, -1))
-        self._assert_has_point(sector, core.Point2(0, 1))
-        self._assert_has_point(sector, core.Point2(1, 1))
-        self._assert_has_point(sector, core.Point2(1, -1))
+        utils.assert_wall_bunch_not_clockwise(sector, core.Point2(-1, 1))
+        self._assert_has_point(sector, core.Point2(-1, 1))
+        self._assert_has_point(sector, core.Point2(-1, -1))
         self._assert_has_point(sector, core.Point2(0, -1))
+        self._assert_has_point(sector, core.Point2(0, 1))
 
         new_sector = self._sectors.sectors[1]
         self.assertEqual(4, len(new_sector.walls))
-        utils.assert_wall_bunch_clockwise(new_sector, core.Point2(-1, -1))
-        self._assert_has_point(new_sector, core.Point2(0, -1))
-        self._assert_has_point(new_sector, core.Point2(-1, -1))
-        self._assert_has_point(new_sector, core.Point2(-1, 1))
+        utils.assert_wall_bunch_not_clockwise(new_sector, core.Point2(1, -1))
+        self._assert_has_point(new_sector, core.Point2(1, -1))
+        self._assert_has_point(new_sector, core.Point2(1, 1))
         self._assert_has_point(new_sector, core.Point2(0, 1))
+        self._assert_has_point(new_sector, core.Point2(0, -1))
 
         split_wall = utils.find_wall_on_point(sector, core.Point2(0, -1))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(0, 1))
@@ -107,14 +107,14 @@ class TestSectorSplit(unittest.TestCase):
         self.assertEqual(2, len(self._sectors.sectors))
 
         self.assertEqual(5, len(sector.walls))
-        utils.assert_wall_bunch_clockwise(sector, core.Point2(-1, -1))
+        utils.assert_wall_bunch_not_clockwise(sector, core.Point2(-1, 1))
         self._assert_has_point(sector, core.Point2(-1, 0))
         self._assert_has_point(sector, core.Point2(0, 0))
         self._assert_has_point(sector, core.Point2(1, 0))
 
         new_sector = self._sectors.sectors[1]
         self.assertEqual(5, len(new_sector.walls))
-        utils.assert_wall_bunch_clockwise(new_sector, core.Point2(-1, 1))
+        utils.assert_wall_bunch_not_clockwise(new_sector, core.Point2(-1, -1))
         self._assert_has_point(new_sector, core.Point2(-1, 0))
         self._assert_has_point(new_sector, core.Point2(0, 0))
         self._assert_has_point(new_sector, core.Point2(1, 0))

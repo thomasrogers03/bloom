@@ -25,7 +25,6 @@ class TestSectorInsert(unittest.TestCase):
             mock_suggest_sky
         )
 
-    @unittest.skip
     def test_can_draw(self):
         sector = utils.build_rectangular_sector(self._sectors, -3, 3, -3, 3)
         operations.sector_insert.SectorInsert(sector).insert(
@@ -38,8 +37,8 @@ class TestSectorInsert(unittest.TestCase):
         )
 
         self.assertEqual(2, len(self._sectors.sectors))
-        utils.assert_wall_bunch_clockwise(sector, core.Point2(-3, -3))
-        utils.assert_wall_bunch_not_clockwise(sector, core.Point2(-1, -1))
+        utils.assert_wall_bunch_not_clockwise(sector, core.Point2(-3, -3))
+        utils.assert_wall_bunch_clockwise(sector, core.Point2(-1, -1))
 
         new_sector = self._sectors.sectors[1]
-        utils.assert_wall_bunch_clockwise(new_sector, core.Point2(-1, -1))
+        utils.assert_wall_bunch_not_clockwise(new_sector, core.Point2(-1, -1))
