@@ -26,8 +26,6 @@ class SectorSplit:
         if len(points) < 2:
             return
 
-        if sector_draw.are_points_clockwise(points):
-            points = list(reversed(points))
         other_side_points = list(reversed(points))
 
         first_wall = self._find_wall_for_point(points[0])
@@ -100,14 +98,14 @@ class SectorSplit:
         current_wall = self._find_split_sector_wall_on_point(first_point)
         stop_wall = self._find_split_sector_wall_on_point(last_point)
 
-        if sector_draw.is_sector_section_clockwise(current_wall):
-            while current_wall != stop_wall:
-                self._sector_to_split.migrate_wall_to_other_sector(current_wall, new_sector)
-                current_wall = current_wall.wall_previous_point
-        else:
-            while current_wall != stop_wall:
-                self._sector_to_split.migrate_wall_to_other_sector(current_wall, new_sector)
-                current_wall = current_wall.wall_point_2
+        # if sector_draw.is_sector_section_clockwise(current_wall):
+        #     while current_wall != stop_wall:
+        #         self._sector_to_split.migrate_wall_to_other_sector(current_wall, new_sector)
+        #         current_wall = current_wall.wall_previous_point
+        # else:
+        while current_wall != stop_wall:
+            self._sector_to_split.migrate_wall_to_other_sector(current_wall, new_sector)
+            current_wall = current_wall.wall_point_2
 
     def _get_walls_to_join_points_to_current_sector(
         self, 
