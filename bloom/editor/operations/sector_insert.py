@@ -23,7 +23,7 @@ class SectorInsert:
 
         new_sector = self._sector_to_split.new_sector()
 
-        if not sector_draw.is_sector_clockwise(points):
+        if not sector_draw.are_points_clockwise(points):
             points = reversed(points)
         points = list(points)
 

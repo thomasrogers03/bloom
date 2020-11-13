@@ -158,6 +158,8 @@ class TestSectorSplit(unittest.TestCase):
         self.assertEqual(12, len(sector.walls))
         self._assert_sector_clockwise(sector)
         self._assert_wall_bunch_not_clockwise(sector, core.Point2(-1, 0))
+        self._assert_does_not_have_point(sector, core.Point2(-1, 1))
+        self._assert_does_not_have_point(sector, core.Point2(1, 1))
         self._assert_has_point(sector, core.Point2(-1, -1))
         self._assert_has_point(sector, core.Point2(1, -1))
 
@@ -218,16 +220,7 @@ class TestSectorSplit(unittest.TestCase):
 
     @staticmethod
     def _assert_sector_clockwise(sector: map_objects.EditorSector):
-        points: typing.List[core.Point2] = []
-
-        first_wall = sector.walls[0]
-        wall = first_wall.wall_point_2
-        while wall != first_wall:
-            points.append(wall.point_1)
-            wall = wall.wall_point_2
-        points.append(wall.point_1)
-
-        if not sector_draw.is_sector_clockwise(points):
+        if not sector_draw.is_sector_section_clockwise(sector.walls[0]):
             raise AssertionError('Sector was not clockwise')
 
     @staticmethod
@@ -235,16 +228,8 @@ class TestSectorSplit(unittest.TestCase):
         sector: map_objects.EditorSector, 
         start_point: core.Point2
     ):
-        points: typing.List[core.Point2] = []
-
         first_wall = TestSectorSplit._find_wall_on_point(sector, start_point)
-        wall = first_wall.wall_point_2
-        while wall != first_wall:
-            points.append(wall.point_1)
-            wall = wall.wall_point_2
-        points.append(wall.point_1)
-
-        if sector_draw.is_sector_clockwise(points):
+        if sector_draw.is_sector_section_clockwise(first_wall):
             raise AssertionError('Sector was clockwise')
 
     @staticmethod

@@ -9,13 +9,24 @@ from ...map_data import wall
 from .. import map_objects
 
 
-def is_sector_clockwise(points: typing.List[core.Point2]):
+def are_points_clockwise(points: typing.List[core.Point2]):
     winding = 0
     segments = zip(points, (points[1:] + points[:1]))
     for point_1, point_2 in segments:
         winding += (point_2.x - point_1.x) * (point_2.y + point_1.y)
 
     return winding > 0
+
+def is_sector_section_clockwise(start_wall: map_objects.EditorWall):
+    points: typing.List[core.Point2] = []
+    current_wall = start_wall.wall_point_2
+    
+    while current_wall != start_wall:
+        points.append(current_wall.point_1)
+        current_wall = current_wall.wall_point_2
+    points.append(current_wall.point_1)
+
+    return are_points_clockwise(points)
 
 def make_wall_points(
     blood_wall_base: wall.Wall,
