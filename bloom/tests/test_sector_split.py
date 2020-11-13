@@ -83,11 +83,13 @@ class TestSectorSplit(unittest.TestCase):
         self._assert_has_point(new_sector, core.Point2(1, -1))
         self._assert_has_point(new_sector, core.Point2(0, -1))
 
-        first_split_wall = self._find_wall_on_point(new_sector, core.Point2(0, -1))
-        self.assertEqual(first_split_wall.other_side_wall.point_1, core.Point2(0, 1))
+        split_wall = self._find_wall_on_point(new_sector, core.Point2(0, -1))
+        self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(0, 1))
+        self.assertEqual(split_wall.other_side_wall.get_sector(), sector)
 
-        second_split_wall = self._find_wall_on_point(sector, core.Point2(0, 1))
-        self.assertEqual(second_split_wall.other_side_wall.point_1, core.Point2(0, -1))
+        split_wall = self._find_wall_on_point(sector, core.Point2(0, 1))
+        self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(0, -1))
+        self.assertEqual(split_wall.other_side_wall.get_sector(), new_sector)
 
     def test_can_split_multiple_points(self):
         sector = self._build_rectangular_sector(-1, 1, -1, 1)
@@ -126,12 +128,12 @@ class TestSectorSplit(unittest.TestCase):
         split_wall = self._find_wall_on_point(sector, core.Point2(0, 0))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(-1, 0))
 
-    @staticmethod
     def _do_split(
+        self,
         sector: map_objects.EditorSector,
         split_points: typing.List[core.Point2]
     ):
-        split = operations.sector_split.SectorSplit(sector)
+        split = operations.sector_split.SectorSplit(sector, self._sectors)
         split.split(split_points)
 
     def _build_rectangular_sector(
