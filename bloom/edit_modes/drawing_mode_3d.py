@@ -85,7 +85,10 @@ class EditMode(navigation_mode_3d.EditMode):
         if self._insert:
             operations.sector_insert.SectorInsert(self._sector).insert(self._points)
         else:
-            operations.sector_split.SectorSplit(self._sector).split(self._points)
+            operations.sector_split.SectorSplit(
+                self._sector, 
+                self._editor.sectors
+            ).split(self._points)
         self._edit_mode_selector.pop_mode()
         self._editor.invalidate_view_clipping()
 

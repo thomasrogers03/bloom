@@ -6,13 +6,18 @@ import typing
 from panda3d import core
 
 from .. import map_objects
-from . import sector_draw, wall_split
+from . import sector_draw, sprite_find_sector, wall_split
 
 
 class SectorSplit:
 
-    def __init__(self, sector_to_split: map_objects.EditorSector):
+    def __init__(
+        self, 
+        sector_to_split: map_objects.EditorSector,
+        all_sectors: map_objects.SectorCollection
+    ):
         self._sector_to_split = sector_to_split
+        self._all_sectors = all_sectors
 
     def split(
         self,
@@ -83,6 +88,12 @@ class SectorSplit:
         new_other_side_points = reversed(new_other_side_points)
         for new_wall, new_other_side_wall in zip(new_points, new_other_side_points):
             new_wall.link(new_other_side_wall)
+
+        for sprite in self._sector_to_split.sprites:
+            sprite_find_sector.SpriteFindSector(
+                sprite,
+                self._all_sectors
+            ).update_sector()
 
     @staticmethod
     def _join_walls(walls: typing.List[map_objects.EditorWall]):

@@ -138,6 +138,11 @@ class EditorSprite(empty_object.EmptyObject):
     def get_sector(self):
         return self._sector
 
+    def set_sector(self, value, new_name: str):
+        self._sector = value
+        self._name = new_name
+        self.invalidate_geometry()
+
     @property
     def sprite(self):
         return self._sprite

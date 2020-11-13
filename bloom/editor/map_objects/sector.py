@@ -843,6 +843,22 @@ class EditorSector(empty_object.EmptyObject):
         new_name = str(len(new_sector._walls))
         wall_to_move.set_sector(new_sector, new_name)
 
+    def migrate_sprite_to_other_sector(
+        self, 
+        sprite_to_move: sprite.EditorSprite,
+        new_sector: 'EditorSector'
+    ):
+        self.invalidate_geometry()
+        new_sector.invalidate_geometry()
+
+        self._sprites.remove(sprite_to_move)
+        for sprite_index, editor_sprite in enumerate(self._sprites):
+            editor_sprite.set_sector(self, str(sprite_index))
+
+        new_sector._sprites.append(sprite_to_move)
+        new_name = str(len(new_sector._sprites))
+        sprite_to_move.set_sector(new_sector, new_name)
+
     def add_sprite(self, blood_sprite: map_data.sprite.Sprite):
         self.invalidate_geometry()
 
