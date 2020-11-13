@@ -57,6 +57,75 @@ class TestSectorSplit(unittest.TestCase):
         second_split_wall = self._find_wall_on_point(sector, core.Point2(1, 0))
         self.assertEqual(second_split_wall.other_side_wall.point_1, core.Point2(-1, 0))
 
+    def test_can_split_vertically(self):
+        sector = self._build_rectangular_sector(-1, 1, -1, 1)
+        self._do_split(
+            sector,
+            [
+                core.Point2(0, -1),
+                core.Point2(0, 1)
+            ]
+        )
+        self.assertEqual(2, len(self._sectors.sectors))
+
+        self.assertEqual(4, len(sector.walls))
+        self._assert_sector_clockwise(sector)
+        self._assert_has_point(sector, core.Point2(0, -1))
+        self._assert_has_point(sector, core.Point2(-1, -1))
+        self._assert_has_point(sector, core.Point2(-1, 1))
+        self._assert_has_point(sector, core.Point2(0, 1))
+
+        new_sector = self._sectors.sectors[1]
+        self.assertEqual(4, len(new_sector.walls))
+        self._assert_sector_clockwise(new_sector)
+        self._assert_has_point(new_sector, core.Point2(0, 1))
+        self._assert_has_point(new_sector, core.Point2(1, 1))
+        self._assert_has_point(new_sector, core.Point2(1, -1))
+        self._assert_has_point(new_sector, core.Point2(0, -1))
+
+        first_split_wall = self._find_wall_on_point(new_sector, core.Point2(0, -1))
+        self.assertEqual(first_split_wall.other_side_wall.point_1, core.Point2(0, 1))
+
+        second_split_wall = self._find_wall_on_point(sector, core.Point2(0, 1))
+        self.assertEqual(second_split_wall.other_side_wall.point_1, core.Point2(0, -1))
+
+    def test_can_split_multiple_points(self):
+        sector = self._build_rectangular_sector(-1, 1, -1, 1)
+        self._do_split(
+            sector,
+            [
+                core.Point2(-1, 0),
+                core.Point2(0, 0),
+                core.Point2(1, 0)
+            ]
+        )
+        self.assertEqual(2, len(self._sectors.sectors))
+
+        self.assertEqual(5, len(sector.walls))
+        self._assert_sector_clockwise(sector)
+        self._assert_has_point(sector, core.Point2(-1, 0))
+        self._assert_has_point(sector, core.Point2(0, 0))
+        self._assert_has_point(sector, core.Point2(1, 0))
+
+        new_sector = self._sectors.sectors[1]
+        self.assertEqual(5, len(new_sector.walls))
+        self._assert_sector_clockwise(new_sector)
+        self._assert_has_point(new_sector, core.Point2(-1, 0))
+        self._assert_has_point(new_sector, core.Point2(0, 0))
+        self._assert_has_point(new_sector, core.Point2(1, 0))
+
+        split_wall = self._find_wall_on_point(new_sector, core.Point2(-1, 0))
+        self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(0, 0))
+
+        split_wall = self._find_wall_on_point(new_sector, core.Point2(0, 0))
+        self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(1, 0))
+
+        split_wall = self._find_wall_on_point(sector, core.Point2(1, 0))
+        self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(0, 0))
+
+        split_wall = self._find_wall_on_point(sector, core.Point2(0, 0))
+        self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(-1, 0))
+
     @staticmethod
     def _do_split(
         sector: map_objects.EditorSector,

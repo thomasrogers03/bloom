@@ -80,7 +80,9 @@ class SectorSplit:
         last_wall.set_wall_point_2(new_other_side_points[0])
         new_other_side_points[0].wall_previous_point = last_wall
 
-        new_points[0].link(new_other_side_points[0])
+        new_other_side_points = reversed(new_other_side_points)
+        for new_wall, new_other_side_wall in zip(new_points, new_other_side_points):
+            new_wall.link(new_other_side_wall)
 
     @staticmethod
     def _join_walls(walls: typing.List[map_objects.EditorWall]):
