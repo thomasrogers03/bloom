@@ -61,20 +61,25 @@ class SectorSplit:
         self._join_walls(new_points)
         self._join_walls(new_other_side_points)
 
-        previous_wall, next_wall = self._get_walls_to_join_points_to_current_sector(
+        previous_wall_current_sector, next_wall_current_sector = self._get_walls_to_join_points_to_current_sector(
             new_sector,
             new_points[0],
             new_points[-1],
             points[-1]
         )
-        previous_wall.set_wall_point_2(new_points[0])
-        new_points[-1].set_wall_point_2(next_wall)
 
-        first_wall.wall_previous_point = new_other_side_points[-1]
-        new_other_side_points[-1].set_wall_point_2(first_wall)
+        previous_wall_new_sector, next_wall_new_sector = self._get_walls_to_join_points_to_new_sector(
+            new_sector,
+            new_other_side_points[0],
+            new_other_side_points[-1],
+            points[0]
+        )
 
-        last_wall.set_wall_point_2(new_other_side_points[0])
-        new_other_side_points[0].wall_previous_point = last_wall
+        previous_wall_current_sector.set_wall_point_2(new_points[0])
+        new_points[-1].set_wall_point_2(next_wall_current_sector)
+
+        previous_wall_new_sector.set_wall_point_2(new_other_side_points[0])
+        new_other_side_points[-1].set_wall_point_2(next_wall_new_sector)
 
         new_other_side_points = reversed(new_other_side_points)
         for new_wall, new_other_side_wall in zip(new_points, new_other_side_points):
@@ -109,6 +114,19 @@ class SectorSplit:
         old_point_2 = self._find_wall_on_point(new_sector, first_new_wall.point_1)
         first_wall: map_objects.EditorWall = old_point_2.wall_previous_point
         last_wall = self._find_split_sector_wall_on_point(last_point)
+
+        return first_wall, last_wall
+
+    def _get_walls_to_join_points_to_new_sector(
+        self, 
+        new_sector: map_objects.EditorSector,
+        first_new_wall: map_objects.EditorWall,
+        last_new_wall: map_objects.EditorWall,
+        last_point: core.Point2
+    ):
+        old_point_2 = self._find_split_sector_wall_on_point(first_new_wall.point_1)
+        first_wall: map_objects.EditorWall = old_point_2.wall_previous_point
+        last_wall = self._find_wall_on_point(new_sector, last_point)
 
         return first_wall, last_wall
 
