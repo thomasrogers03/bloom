@@ -26,7 +26,7 @@ class SectorSplit:
         if len(points) < 2:
             return
 
-        if not sector_draw.is_sector_clockwise(points):
+        if sector_draw.is_sector_clockwise(points):
             points = reversed(points)
         points = list(points)
         other_side_points = list(reversed(points))
