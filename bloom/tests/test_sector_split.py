@@ -130,7 +130,6 @@ class TestSectorSplit(unittest.TestCase):
         split_wall = self._find_wall_on_point(new_sector, core.Point2(0, 0))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(-1, 0))
 
-    @unittest.skip
     def test_can_split_with_island(self):
         sector = self._build_rectangular_sector(-3, 3, -3, 3)
         operations.sector_insert.SectorInsert(sector).insert(
