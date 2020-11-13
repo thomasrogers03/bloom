@@ -36,7 +36,7 @@ jobs:
             ~/Miniconda3/Scripts/activate bloom
 
             python -m pip install wheel
-            python -m pip install -r requirements.txt
+            python -m pip install -r dev_requirements.txt
           shell: bash.exe
             
       - run:

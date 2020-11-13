@@ -3,6 +3,7 @@
 
 import typing
 
+import cv2
 from panda3d import core
 
 from .. import map_data
