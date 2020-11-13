@@ -7,4 +7,4 @@ rm -rf dist/*
 python setup.py bdist_apps
 python setup.py bdist_wheel
 
-python -m unittest bloom.tests
+./run_tests.sh
