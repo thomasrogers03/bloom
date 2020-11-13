@@ -232,7 +232,10 @@ class EditorWall(empty_object.EmptyObject):
         return self._wall_point_2
 
     def set_wall_point_2(self, value: 'EditorWall'):
+        self.invalidate_geometry()
         self._wall_point_2 = value
+
+        value.invalidate_geometry()
         value.wall_previous_point = self
 
     @property
