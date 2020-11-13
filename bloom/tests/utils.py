@@ -45,10 +45,6 @@ def build_rectangular_sector(
 
     return sector
 
-def assert_sector_clockwise(sector: map_objects.EditorSector):
-    if not sector_draw.is_sector_section_clockwise(sector.walls[0]):
-        raise AssertionError('Sector was not clockwise')
-
 def assert_wall_bunch_not_clockwise(
     sector: map_objects.EditorSector, 
     start_point: core.Point2
@@ -56,7 +52,17 @@ def assert_wall_bunch_not_clockwise(
     first_wall = find_wall_on_point(sector, start_point)
     if sector_draw.is_sector_section_clockwise(first_wall):
         points = _get_wall_bunch_points(first_wall)
-        raise AssertionError(f'Sector wall starting at {start_point} was clockwise: {points}')
+        raise AssertionError(f'Sector wall bunch starting at {start_point} was clockwise: {points}')
+
+
+def assert_wall_bunch_clockwise(
+    sector: map_objects.EditorSector, 
+    start_point: core.Point2
+):
+    first_wall = find_wall_on_point(sector, start_point)
+    if not sector_draw.is_sector_section_clockwise(first_wall):
+        points = _get_wall_bunch_points(first_wall)
+        raise AssertionError(f'Sector wall bunch starting at {start_point} was not clockwise: {points}')
 
 
 def _get_wall_bunch_points(start_wall: map_objects.EditorWall):

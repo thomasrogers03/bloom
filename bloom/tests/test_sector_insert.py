@@ -31,15 +31,15 @@ class TestSectorInsert(unittest.TestCase):
         operations.sector_insert.SectorInsert(sector).insert(
             [
                 core.Point2(-1, -1),
-                core.Point2(-1, 1),
-                core.Point2(1, 1),
                 core.Point2(1, -1),
+                core.Point2(1, 1),
+                core.Point2(-1, 1),
             ]
         )
 
         self.assertEqual(2, len(self._sectors.sectors))
-        utils.assert_sector_clockwise(sector)
+        utils.assert_wall_bunch_clockwise(sector, core.Point2(-3, -3))
         utils.assert_wall_bunch_not_clockwise(sector, core.Point2(-1, -1))
 
         new_sector = self._sectors.sectors[1]
-        utils.assert_sector_clockwise(new_sector)
+        utils.assert_wall_bunch_clockwise(new_sector, core.Point2(-1, -1))
