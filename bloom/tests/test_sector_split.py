@@ -145,12 +145,12 @@ class TestSectorSplit(unittest.TestCase):
         self._do_split(
             sector,
             [
-                core.Point2(1, 0),
-                core.Point2(2, 0),
-                core.Point2(2, 2),
-                core.Point2(-2, 2),
+                core.Point2(-1, 0),
                 core.Point2(-2, 0),
-                core.Point2(-1, 0)
+                core.Point2(-2, 2),
+                core.Point2(2, 2),
+                core.Point2(2, 0),
+                core.Point2(1, 0)
             ]
         )
         self.assertEqual(3, len(self._sectors.sectors))

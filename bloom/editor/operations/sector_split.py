@@ -26,6 +26,8 @@ class SectorSplit:
         if len(points) < 2:
             return
 
+        if sector_draw.are_points_clockwise(points):
+            points = list(reversed(points))
         other_side_points = list(reversed(points))
 
         first_wall = self._find_wall_for_point(points[0])
