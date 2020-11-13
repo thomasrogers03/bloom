@@ -93,8 +93,8 @@ class Segment:
 
         return None
 
-    def point_on_line(self, point: core.Point2):
-        if self.is_empty or self.side_of_line(point, tolerance=16) != 0:
+    def point_on_line(self, point: core.Point2, tolerance=16):
+        if self.is_empty or self.side_of_line(point, tolerance=tolerance) != 0:
             return False
 
         delta = point - self.point_1

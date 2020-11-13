@@ -17,7 +17,7 @@ class WallSplit:
 
         self._do_split(self._wall_to_split, where)
         if self._wall_to_split.other_side_wall is not None:
-            split = other_side_wall = self._do_split(
+            split = self._do_split(
                 self._wall_to_split.other_side_wall, 
                 where
             )
