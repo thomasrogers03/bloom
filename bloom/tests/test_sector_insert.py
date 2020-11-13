@@ -1,7 +1,6 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
-import typing
 import unittest
 from unittest import mock
 
@@ -10,6 +9,7 @@ from panda3d import core
 from .. import game_map, map_data
 from ..editor import map_objects, operations
 from ..editor.operations import sector_draw
+from . import utils
 
 
 class TestSectorInsert(unittest.TestCase):
@@ -25,5 +25,21 @@ class TestSectorInsert(unittest.TestCase):
             mock_suggest_sky
         )
 
+    @unittest.skip
     def test_can_draw(self):
-        pass
+        sector = utils.build_rectangular_sector(self._sectors, -3, 3, -3, 3)
+        operations.sector_insert.SectorInsert(sector).insert(
+            [
+                core.Point2(-1, -1),
+                core.Point2(-1, 1),
+                core.Point2(1, 1),
+                core.Point2(1, -1),
+            ]
+        )
+
+        self.assertEqual(2, len(self._sectors.sectors))
+        utils.assert_sector_clockwise(sector)
+        utils.assert_wall_bunch_not_clockwise(sector, core.Point2(-1, -1))
+
+        new_sector = self._sectors.sectors[1]
+        utils.assert_sector_clockwise(new_sector)

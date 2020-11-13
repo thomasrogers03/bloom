@@ -38,7 +38,7 @@ class TestSectorSplit(unittest.TestCase):
         self.assertEqual(2, len(self._sectors.sectors))
 
         self.assertEqual(4, len(sector.walls))
-        self._assert_sector_clockwise(sector)
+        utils.assert_sector_clockwise(sector)
         self._assert_has_point(sector, core.Point2(-1, -1))
         self._assert_has_point(sector, core.Point2(-1, 0))
         self._assert_has_point(sector, core.Point2(1, 0))
@@ -46,7 +46,7 @@ class TestSectorSplit(unittest.TestCase):
 
         new_sector = self._sectors.sectors[1]
         self.assertEqual(4, len(new_sector.walls))
-        self._assert_sector_clockwise(new_sector)
+        utils.assert_sector_clockwise(new_sector)
         self._assert_has_point(new_sector, core.Point2(-1, 1))
         self._assert_has_point(new_sector, core.Point2(-1, 0))
         self._assert_has_point(new_sector, core.Point2(1, 1))
@@ -72,7 +72,7 @@ class TestSectorSplit(unittest.TestCase):
         self.assertEqual(2, len(self._sectors.sectors))
 
         self.assertEqual(4, len(sector.walls))
-        self._assert_sector_clockwise(sector)
+        utils.assert_sector_clockwise(sector)
         self._assert_has_point(sector, core.Point2(0, 1))
         self._assert_has_point(sector, core.Point2(1, 1))
         self._assert_has_point(sector, core.Point2(1, -1))
@@ -80,7 +80,7 @@ class TestSectorSplit(unittest.TestCase):
 
         new_sector = self._sectors.sectors[1]
         self.assertEqual(4, len(new_sector.walls))
-        self._assert_sector_clockwise(new_sector)
+        utils.assert_sector_clockwise(new_sector)
         self._assert_has_point(new_sector, core.Point2(0, -1))
         self._assert_has_point(new_sector, core.Point2(-1, -1))
         self._assert_has_point(new_sector, core.Point2(-1, 1))
@@ -107,14 +107,14 @@ class TestSectorSplit(unittest.TestCase):
         self.assertEqual(2, len(self._sectors.sectors))
 
         self.assertEqual(5, len(sector.walls))
-        self._assert_sector_clockwise(sector)
+        utils.assert_sector_clockwise(sector)
         self._assert_has_point(sector, core.Point2(-1, 0))
         self._assert_has_point(sector, core.Point2(0, 0))
         self._assert_has_point(sector, core.Point2(1, 0))
 
         new_sector = self._sectors.sectors[1]
         self.assertEqual(5, len(new_sector.walls))
-        self._assert_sector_clockwise(new_sector)
+        utils.assert_sector_clockwise(new_sector)
         self._assert_has_point(new_sector, core.Point2(-1, 0))
         self._assert_has_point(new_sector, core.Point2(0, 0))
         self._assert_has_point(new_sector, core.Point2(1, 0))
@@ -157,15 +157,15 @@ class TestSectorSplit(unittest.TestCase):
         self.assertEqual(3, len(self._sectors.sectors))
 
         self.assertEqual(12, len(sector.walls))
-        self._assert_sector_clockwise(sector)
-        self._assert_wall_bunch_not_clockwise(sector, core.Point2(-1, 0))
+        utils.assert_sector_clockwise(sector)
+        utils.assert_wall_bunch_not_clockwise(sector, core.Point2(-1, 0))
         self._assert_does_not_have_point(sector, core.Point2(-1, 1))
         self._assert_does_not_have_point(sector, core.Point2(1, 1))
         self._assert_has_point(sector, core.Point2(-1, -1))
         self._assert_has_point(sector, core.Point2(1, -1))
 
         new_sector = self._sectors.sectors[2]
-        self._assert_sector_clockwise(new_sector)
+        utils.assert_sector_clockwise(new_sector)
         self.assertEqual(8, len(new_sector.walls))
         
         self._assert_has_point(new_sector, core.Point2(-1, 1))
@@ -197,20 +197,6 @@ class TestSectorSplit(unittest.TestCase):
             bottom,
             top
         )
-
-    @staticmethod
-    def _assert_sector_clockwise(sector: map_objects.EditorSector):
-        if not sector_draw.is_sector_section_clockwise(sector.walls[0]):
-            raise AssertionError('Sector was not clockwise')
-
-    @staticmethod
-    def _assert_wall_bunch_not_clockwise(
-        sector: map_objects.EditorSector, 
-        start_point: core.Point2
-    ):
-        first_wall = utils.find_wall_on_point(sector, start_point)
-        if sector_draw.is_sector_section_clockwise(first_wall):
-            raise AssertionError('Sector was clockwise')
 
     @staticmethod
     def _assert_has_point(sector: map_objects.EditorSector, point: core.Point2):

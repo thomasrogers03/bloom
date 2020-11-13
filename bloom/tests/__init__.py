@@ -2,3 +2,4 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from .test_sector_split import TestSectorSplit
+from .test_sector_insert import TestSectorInsert
