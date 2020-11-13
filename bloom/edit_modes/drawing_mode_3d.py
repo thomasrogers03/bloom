@@ -68,6 +68,7 @@ class EditMode(navigation_mode_3d.EditMode):
         self._grid.show()
 
         self.accept('backspace', self._remove_last_point)
+        self.accept('space', self._insert_point)
         self.accept('enter', self._finish_shape)
 
     def exit_mode(self):
