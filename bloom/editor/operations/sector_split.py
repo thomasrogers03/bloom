@@ -111,7 +111,7 @@ class SectorSplit:
         last_new_wall: map_objects.EditorWall,
         last_point: core.Point2
     ):
-        old_point_2 = self._find_wall_on_point(new_sector, first_new_wall.point_1)
+        old_point_2 = sector_draw.find_wall_on_point(new_sector, first_new_wall.point_1)
         first_wall: map_objects.EditorWall = old_point_2.wall_previous_point
         last_wall = self._find_split_sector_wall_on_point(last_point)
 
@@ -126,7 +126,7 @@ class SectorSplit:
     ):
         old_point_2 = self._find_split_sector_wall_on_point(first_new_wall.point_1)
         first_wall: map_objects.EditorWall = old_point_2.wall_previous_point
-        last_wall = self._find_wall_on_point(new_sector, last_point)
+        last_wall = sector_draw.find_wall_on_point(new_sector, last_point)
 
         return first_wall, last_wall
 
@@ -154,19 +154,11 @@ class SectorSplit:
         return False
 
     def _find_split_sector_wall_on_point(self, point: core.Point2):
-        return self._find_wall_on_point(self._sector_to_split, point)
+        return sector_draw.find_wall_on_point(self._sector_to_split, point)
 
     def _find_wall_for_point(self, point: core.Point2):
         for wall in self._sector_to_split.walls:
             if wall.line_segment.point_on_line(point, tolerance=0):
-                return wall
-
-        return None
-
-    @staticmethod
-    def _find_wall_on_point(sector: map_objects.EditorSector, point: core.Point2):
-        for wall in sector.walls:
-            if wall.point_1 == point:
                 return wall
 
         return None

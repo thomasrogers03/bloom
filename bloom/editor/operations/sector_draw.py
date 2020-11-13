@@ -18,6 +18,10 @@ def are_points_clockwise(points: typing.List[core.Point2]):
     return winding > 0
 
 def is_sector_section_clockwise(start_wall: map_objects.EditorWall):
+    points = get_wall_bunch_points(start_wall)
+    return are_points_clockwise(points)
+
+def get_wall_bunch_points(start_wall: map_objects.EditorWall):
     points: typing.List[core.Point2] = []
     current_wall = start_wall.wall_point_2
     
@@ -26,7 +30,7 @@ def is_sector_section_clockwise(start_wall: map_objects.EditorWall):
         current_wall = current_wall.wall_point_2
     points.append(current_wall.point_1)
 
-    return are_points_clockwise(points)
+    return points
 
 def make_wall_points(
     blood_wall_base: wall.Wall,
@@ -42,3 +46,10 @@ def make_wall_points(
         new_wall = editor_sector.add_wall(new_blood_wall)
         result.append(new_wall)
     return result
+
+def find_wall_on_point(sector: map_objects.EditorSector, point: core.Point2):
+    for wall in sector.walls:
+        if wall.point_1 == point:
+            return wall
+
+    return None
