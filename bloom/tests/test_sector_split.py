@@ -10,6 +10,7 @@ from panda3d import core
 from .. import game_map, map_data
 from ..editor import map_objects, operations
 from ..editor.operations import sector_draw
+from . import utils
 
 
 class TestSectorSplit(unittest.TestCase):
@@ -51,11 +52,11 @@ class TestSectorSplit(unittest.TestCase):
         self._assert_has_point(new_sector, core.Point2(1, 1))
         self._assert_has_point(new_sector, core.Point2(1, 0))
 
-        split_wall = self._find_wall_on_point(sector, core.Point2(-1, 0))
+        split_wall = utils.find_wall_on_point(sector, core.Point2(-1, 0))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(1, 0))
         self.assertEqual(split_wall.other_side_wall.get_sector(), new_sector)
 
-        split_wall = self._find_wall_on_point(new_sector, core.Point2(1, 0))
+        split_wall = utils.find_wall_on_point(new_sector, core.Point2(1, 0))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(-1, 0))
         self.assertEqual(split_wall.other_side_wall.get_sector(), sector)
 
@@ -85,11 +86,11 @@ class TestSectorSplit(unittest.TestCase):
         self._assert_has_point(new_sector, core.Point2(-1, 1))
         self._assert_has_point(new_sector, core.Point2(0, 1))
 
-        split_wall = self._find_wall_on_point(sector, core.Point2(0, -1))
+        split_wall = utils.find_wall_on_point(sector, core.Point2(0, -1))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(0, 1))
         self.assertEqual(split_wall.other_side_wall.get_sector(), new_sector)
 
-        split_wall = self._find_wall_on_point(new_sector, core.Point2(0, 1))
+        split_wall = utils.find_wall_on_point(new_sector, core.Point2(0, 1))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(0, -1))
         self.assertEqual(split_wall.other_side_wall.get_sector(), sector)
 
@@ -118,16 +119,16 @@ class TestSectorSplit(unittest.TestCase):
         self._assert_has_point(new_sector, core.Point2(0, 0))
         self._assert_has_point(new_sector, core.Point2(1, 0))
 
-        split_wall = self._find_wall_on_point(sector, core.Point2(-1, 0))
+        split_wall = utils.find_wall_on_point(sector, core.Point2(-1, 0))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(0, 0))
 
-        split_wall = self._find_wall_on_point(sector, core.Point2(0, 0))
+        split_wall = utils.find_wall_on_point(sector, core.Point2(0, 0))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(1, 0))
 
-        split_wall = self._find_wall_on_point(new_sector, core.Point2(1, 0))
+        split_wall = utils.find_wall_on_point(new_sector, core.Point2(1, 0))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(0, 0))
 
-        split_wall = self._find_wall_on_point(new_sector, core.Point2(0, 0))
+        split_wall = utils.find_wall_on_point(new_sector, core.Point2(0, 0))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(-1, 0))
 
     @unittest.skip
@@ -145,12 +146,12 @@ class TestSectorSplit(unittest.TestCase):
         self._do_split(
             sector,
             [
-                core.Point2(-1, 0),
-                core.Point2(-2, 0),
-                core.Point2(-2, 2),
-                core.Point2(2, 2),
+                core.Point2(1, 0),
                 core.Point2(2, 0),
-                core.Point2(1, 0)
+                core.Point2(2, 2),
+                core.Point2(-2, 2),
+                core.Point2(-2, 0),
+                core.Point2(-1, 0)
             ]
         )
         self.assertEqual(3, len(self._sectors.sectors))
@@ -189,34 +190,13 @@ class TestSectorSplit(unittest.TestCase):
         bottom: float,
         top: float
     ):
-        sector = self._sectors.new_sector(map_data.sector.Sector())
-
-        point_1 = sector.add_wall(map_data.wall.Wall())
-        point_1.teleport_point_1_to(core.Point2(left, bottom))
-
-        point_2 = sector.add_wall(map_data.wall.Wall())
-        point_2.teleport_point_1_to(core.Point2(left, top))
-
-        point_3 = sector.add_wall(map_data.wall.Wall())
-        point_3.teleport_point_1_to(core.Point2(right, top))
-
-        point_4 = sector.add_wall(map_data.wall.Wall())
-        point_4.teleport_point_1_to(core.Point2(right, bottom))
-
-        point_1.set_wall_point_2(point_2)
-        point_2.set_wall_point_2(point_3)
-        point_3.set_wall_point_2(point_4)
-        point_4.set_wall_point_2(point_1)
-
-        return sector
-
-    @staticmethod
-    def _find_wall_on_point(sector: map_objects.EditorSector, point: core.Point2):
-        for wall in sector.walls:
-            if wall.point_1 == point:
-                return wall
-
-        raise ValueError('Point not found')
+        return utils.build_rectangular_sector(
+            self._sectors,
+            left,
+            right,
+            bottom,
+            top
+        )
 
     @staticmethod
     def _assert_sector_clockwise(sector: map_objects.EditorSector):
@@ -228,7 +208,7 @@ class TestSectorSplit(unittest.TestCase):
         sector: map_objects.EditorSector, 
         start_point: core.Point2
     ):
-        first_wall = TestSectorSplit._find_wall_on_point(sector, start_point)
+        first_wall = utils.find_wall_on_point(sector, start_point)
         if sector_draw.is_sector_section_clockwise(first_wall):
             raise AssertionError('Sector was clockwise')
 
