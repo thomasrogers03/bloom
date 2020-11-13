@@ -306,7 +306,10 @@ class EditMode(navigation_mode_3d.EditMode):
             elif isinstance(selected_item.map_object, map_objects.EditorWall):
                 operations.wall_delete.WallDelete(selected_item.map_object).delete()
             else:
-                raise NotImplementedError()
+                operations.sector_delete.SectorDelete(
+                    selected_item.map_object,
+                    self._editor.sectors
+                ).delete()
 
     def _reset_panning_and_repeats(self):
         selected = self._highlighter.select_append(no_append_if_not_selected=True)

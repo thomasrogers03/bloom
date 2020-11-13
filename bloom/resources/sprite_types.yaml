@@ -323,9 +323,13 @@
 73:
   name: Tesla Charge
   category: ammo
+  tile_config:
+    tile: 548
 76:
   name: Flares
   category: ammo
+  tile_config:
+    tile: 816
 79:
   name: Gasoline Can
   category: ammo

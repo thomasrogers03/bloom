@@ -48,9 +48,11 @@ class EditorWall(empty_object.EmptyObject):
             message = 'Tried to link to a wall when we are already linking to one'
             raise AssertionError(message)
 
+        self.invalidate_geometry()
         self._other_side_wall = otherside_wall
 
     def unlink(self):
+        self.invalidate_geometry()
         self._other_side_wall = None
 
     def setup_geometry(self, all_geometry: sector_geometry.SectorGeometry):
