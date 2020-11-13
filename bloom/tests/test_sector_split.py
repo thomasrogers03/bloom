@@ -130,6 +130,7 @@ class TestSectorSplit(unittest.TestCase):
         split_wall = self._find_wall_on_point(new_sector, core.Point2(0, 0))
         self.assertEqual(split_wall.other_side_wall.point_1, core.Point2(-1, 0))
 
+    @unittest.skip
     def test_can_split_with_island(self):
         sector = self._build_rectangular_sector(-3, 3, -3, 3)
         operations.sector_insert.SectorInsert(sector).insert(
@@ -144,12 +145,12 @@ class TestSectorSplit(unittest.TestCase):
         self._do_split(
             sector,
             [
-                core.Point2(-1, 0),
-                core.Point2(-2, 0),
-                core.Point2(-2, 2),
-                core.Point2(2, 2),
+                core.Point2(1, 0),
                 core.Point2(2, 0),
-                core.Point2(1, 0)
+                core.Point2(2, 2),
+                core.Point2(-2, 2),
+                core.Point2(-2, 0),
+                core.Point2(-1, 0)
             ]
         )
         self.assertEqual(3, len(self._sectors.sectors))
@@ -157,10 +158,19 @@ class TestSectorSplit(unittest.TestCase):
         self.assertEqual(12, len(sector.walls))
         self._assert_sector_clockwise(sector)
         self._assert_wall_bunch_not_clockwise(sector, core.Point2(-1, 0))
+        self._assert_has_point(sector, core.Point2(-1, -1))
+        self._assert_has_point(sector, core.Point2(1, -1))
 
         new_sector = self._sectors.sectors[2]
         self._assert_sector_clockwise(new_sector)
         self.assertEqual(8, len(new_sector.walls))
+        
+        self._assert_has_point(new_sector, core.Point2(-1, 1))
+        self._assert_has_point(new_sector, core.Point2(1, 1))
+        self._assert_does_not_have_point(new_sector, core.Point2(-1, -1))
+        self._assert_does_not_have_point(new_sector, core.Point2(1, -1))
+        self._assert_does_not_have_point(new_sector, core.Point2(-1, -1))
+        self._assert_does_not_have_point(new_sector, core.Point2(1, -1))
 
     def _do_split(
         self,
@@ -246,3 +256,11 @@ class TestSectorSplit(unittest.TestCase):
                 return
 
         raise AssertionError(f'Point, {point}, not found in {points}')
+
+    @staticmethod
+    def _assert_does_not_have_point(sector: map_objects.EditorSector, point: core.Point2):
+        points: typing.List[core.Point2] = []
+        for wall in sector.walls:
+            points.append(wall.point_1)
+            if wall.point_1 == point:
+                raise AssertionError(f'Point, {point}, found in {points}')
