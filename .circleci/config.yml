@@ -56,6 +56,14 @@ jobs:
           root: .
           paths:
             - dist
+      - run:
+          command: |
+            set -eou pipefail
+
+            ~/Miniconda3/Scripts/activate bloom
+
+            python -m unittest bloom.tests
+          name: Run Tests
   publish-github-release:
     executor: python/default
     docker:
