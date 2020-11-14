@@ -10,7 +10,7 @@ from .. import map_objects
 
 class SectorExtrude:
     _OFFSET = 512
-    _WALL_OFFSET = core.Vec2(512, 512)
+    _WALL_OFFSET = core.Vec2(256, 256)
 
     def __init__(self, sector: map_objects.EditorSector, part: str):
         self._sector = sector
