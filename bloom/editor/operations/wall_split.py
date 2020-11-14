@@ -12,7 +12,7 @@ class WallSplit:
         self._wall_to_split = wall_to_split
 
     def split(self, where: core.Point2):
-        if where == self._wall_to_split.point_1 or self._wall_to_split.point_2:
+        if where == self._wall_to_split.point_1 or where == self._wall_to_split.point_2:
             return
 
         self._do_split(where)
