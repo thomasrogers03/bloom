@@ -31,6 +31,8 @@ class WallDelete:
             else:
                 other_side_remove_wall.teleport_point_1_to(self._previous_wall.point_1)
                 other_side_wall.link(self._previous_wall)
+        elif self._previous_wall.other_side_wall is not None:
+            self._previous_wall.other_side_wall.teleport_point_1_to(self._wall.point_2)
 
     @property
     def _other_side_wall(self) -> map_objects.EditorWall:

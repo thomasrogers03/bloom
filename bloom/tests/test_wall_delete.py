@@ -75,3 +75,15 @@ class TestWallDelete(unittest.TestCase):
         wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
         self.assertEqual(wall.wall_point_2.point_1, core.Point2(-1, 2))
         self.assertEqual(wall.other_side_wall.point_1, core.Point2(-1, 2))
+
+    def test_can_delete_with_previous_having_other_side(self):
+        sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
+        other_side_sector = utils.build_rectangular_sector(self._sectors, -1, 1, 1, 2)
+
+        wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
+        operations.wall_link.SectorWallLink(wall, self._sectors).try_link_wall()
+
+        other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(1, 1))
+        operations.wall_delete.WallDelete(other_side_wall).delete()
+
+        utils.assert_sector_has_point(sector, core.Point2(1, 2))
