@@ -12,8 +12,8 @@ class WallSplit:
         self._wall_to_split = wall_to_split
 
     def split(self, where: core.Point2):
-        if where == self._wall_to_split.point_1 or where == self._wall_to_split.point_2:
-            raise ValueError('Invalid split!')
+        if where == self._wall_to_split.point_1 or self._wall_to_split.point_2:
+            return
 
         self._do_split(where)
         if self._wall_to_split.other_side_wall is not None:
