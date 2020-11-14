@@ -198,14 +198,6 @@ class EditorWall(empty_object.EmptyObject):
         self._wall.wall.position_x = int(position.x)
         self._wall.wall.position_y = int(position.y)
 
-    def move_point_1_to(self, position: core.Point2):
-        if self._other_side_wall is not None:
-            self._other_side_wall.wall_point_2._do_move_point_1_to(position)
-        if self.wall_previous_point._other_side_wall is not None:
-            self.wall_previous_point._other_side_wall._do_move_point_1_to(position)
-
-        self._do_move_point_1_to(position)
-
     def move_point_2_to(self, position: core.Point2):
         self._wall_point_2.move_point_1_to(position)
 

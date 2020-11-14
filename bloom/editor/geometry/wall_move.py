@@ -29,5 +29,11 @@ class WallMove(empty_move.EmptyMove):
         new_point_1 = self._start_point_1 + move_delta_2d
         new_point_2 = self._start_point_2 + move_delta_2d
 
-        self._wall.move_point_1_to(new_point_1)
-        self._wall.move_point_2_to(new_point_2)
+        walls_at_point_1 = self._wall.all_walls_at_point_1()
+        walls_at_point_2 = self._wall.wall_point_2.all_walls_at_point_1()
+
+        for wall in walls_at_point_1:
+            wall.teleport_point_1_to(new_point_1)
+        
+        for wall in walls_at_point_2:
+            wall.teleport_point_1_to(new_point_2)
