@@ -36,15 +36,49 @@ class TestWallSplit(unittest.TestCase):
 
     def test_can_split(self):
         sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
-        operations.wall_split.WallSplit(sector.walls[0]).split(core.Point(-1, 0))
+        
+        wall_to_split = utils.find_wall_on_point(sector, core.Point2(-1, 1))
+        operations.wall_split.WallSplit(wall_to_split).split(core.Point2(-1, 0))
 
         self.assertEqual(5, len(sector.walls))
         utils.assert_sector_has_point(sector, core.Point2(-1, 0))
 
         split_wall = utils.find_wall_on_point(sector, core.Point2(-1, 0))
 
-        expected_previous = utils.find_wall_on_point(sector, core.Point2(-1, 1))
-        self.assertEqual(expected_previous, split_wall.wall_previous_point)
-        
-        expected_next = utils.find_wall_on_point(sector, core.Point2(-1, 1))
-        self.assertEqual(expected_next, split_wall.wall_point_2)
+        self.assertEqual(split_wall.wall_previous_point.point_1, core.Point2(-1, 1))
+        self.assertEqual(split_wall.wall_point_2.point_1, core.Point2(-1, -1))
+
+    @unittest.skip
+    def test_can_split_2_sided_wall(self):
+        sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
+        other_side_sector = utils.build_rectangular_sector(self._sectors, -1, 1, 1, 2)
+
+        wall_to_link = utils.find_wall_on_point(sector, core.Point2(1, 1))
+        other_side_wall_to_link = utils.find_wall_on_point(
+            other_side_sector, 
+            core.Point2(-1, 1)
+        )
+        wall_to_link.link(other_side_wall_to_link)
+
+        wall_to_split = utils.find_wall_on_point(sector, core.Point2(1, 1))
+        operations.wall_split.WallSplit(wall_to_split).split(core.Point2(0, 1))
+
+        wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
+        self.assertEqual(wall.wall_point_2.point_1, core.Point2(0, 1))
+        self.assertEqual(wall.other_side_wall.point_1, core.Point2(0, 1))
+        self.assertEqual(wall.other_side_wall.point_2, core.Point2(1, 1))
+
+        wall = utils.find_wall_on_point(sector, core.Point2(0, 1))
+        self.assertEqual(wall.wall_point_2.point_1, core.Point2(-1, 1))
+        self.assertEqual(wall.other_side_wall.point_1, core.Point2(-1, 1))
+        self.assertEqual(wall.other_side_wall.point_2, core.Point2(0, 1))
+
+        wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        self.assertEqual(wall.wall_point_2.point_1, core.Point2(0, 1))
+        self.assertEqual(wall.other_side_wall.point_1, core.Point2(0, 1))
+        self.assertEqual(wall.other_side_wall.point_2, core.Point2(-1, 1))
+
+        wall = utils.find_wall_on_point(other_side_sector, core.Point2(0, 1))
+        self.assertEqual(wall.wall_point_2.point_1, core.Point2(1, 1))
+        self.assertEqual(wall.other_side_wall.point_1, core.Point2(1, 1))
+        self.assertEqual(wall.other_side_wall.point_2, core.Point2(0, 1))
