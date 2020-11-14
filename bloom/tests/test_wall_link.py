@@ -43,3 +43,45 @@ class TestWallLink(unittest.TestCase):
 
         link_other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
         self.assertEqual(link_wall.other_side_wall, link_other_side_wall)
+
+    def test_can_link_bigger_to_smaller(self):
+        sector = utils.build_rectangular_sector(self._sectors, -2, 2, -1, 1)
+        other_side_sector = utils.build_rectangular_sector(self._sectors, -1, 1, 1, 2)
+
+        link_wall = utils.find_wall_on_point(sector, core.Point2(2, 1))
+        operations.wall_link.SectorWallLink(link_wall, self._sectors).try_link_wall()
+
+        split_wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
+        other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        self.assertEqual(split_wall.other_side_wall, other_side_wall)
+
+    def test_can_link_smaller_to_bigger_one_split_first_wall(self):
+        sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
+        other_side_sector = utils.build_rectangular_sector(self._sectors, -1, 2, 1, 2)
+
+        link_wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
+        operations.wall_link.SectorWallLink(link_wall, self._sectors).try_link_wall()
+
+        link_other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        self.assertEqual(link_wall.other_side_wall, link_other_side_wall)
+
+    def test_can_link_smaller_to_bigger_one_split_second_wall(self):
+        sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
+        other_side_sector = utils.build_rectangular_sector(self._sectors, -2, 1, 1, 2)
+
+        link_wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
+        operations.wall_link.SectorWallLink(link_wall, self._sectors).try_link_wall()
+
+        link_other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        self.assertEqual(link_wall.other_side_wall, link_other_side_wall)
+
+    @unittest.skip
+    def test_can_link_smaller_to_bigger_two_splits(self):
+        sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
+        other_side_sector = utils.build_rectangular_sector(self._sectors, -2, 2, 1, 2)
+
+        link_wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
+        operations.wall_link.SectorWallLink(link_wall, self._sectors).try_link_wall()
+
+        link_other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        self.assertEqual(link_wall.other_side_wall, link_other_side_wall)
