@@ -181,7 +181,7 @@ def _draw_wall(wall: map_objects.EditorWall, offset: core.Vec2, scale: float, co
 
 def _image_point(point: core.Point2, offset: core.Vec2, scale: float) -> typing.Tuple[int, int]:
     x = (point.x + offset.x) * scale
-    y = (point.y + offset.y) * scale
+    y = _IMAGE_SIZE - (point.y + offset.y) * scale - 1
 
     return (int(x), int(y))
 

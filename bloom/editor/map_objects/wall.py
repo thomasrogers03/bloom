@@ -43,8 +43,8 @@ class EditorWall(empty_object.EmptyObject):
         self._other_side_wall = other_side_wall
         self._targets = targets
 
-    def link(self, otherside_wall: 'EditorWall', force=False):
-        if not force and self._other_side_wall is not None:
+    def link(self, otherside_wall: 'EditorWall'):
+        if self._other_side_wall is not None:
             message = 'Tried to link to a wall when we are already linking to one'
             raise AssertionError(message)
 
@@ -54,7 +54,10 @@ class EditorWall(empty_object.EmptyObject):
 
     def unlink(self):
         self.invalidate_geometry()
+        other_side_wall = self._other_side_wall
         self._other_side_wall = None
+        if other_side_wall is not None:
+            other_side_wall.unlink()
 
     def setup_geometry(self, all_geometry: sector_geometry.SectorGeometry):
         debug_display_node = core.TextNode('debug')

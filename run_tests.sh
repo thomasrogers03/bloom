@@ -2,5 +2,6 @@
 
 set -eou pipefail
 
-mkdir test_results
+mkdir -p test_results
+rm -rf test_results/*
 python -m unittest bloom.tests

@@ -15,30 +15,29 @@ class WallSplit:
         if where == self._wall_to_split.point_1 or where == self._wall_to_split.point_2:
             raise ValueError('Invalid split!')
 
-        self._do_split(self._wall_to_split, where)
+        self._do_split(where)
         if self._wall_to_split.other_side_wall is not None:
-            split = self._do_split(
-                self._wall_to_split.other_side_wall, 
-                where
-            )
-            self._wall_to_split.link(split, force=True)
+            other_side_wall = self._wall_to_split.other_side_wall
+            other_side_wall.unlink()
+            WallSplit(other_side_wall).split(where)
 
-    def _do_split(self, wall_to_split: wall.EditorWall, where: core.Point2):
-        wall_to_split.invalidate_geometry()
+            self._wall_to_split.link(other_side_wall.wall_point_2)
 
-        new_blood_wall = wall_to_split.blood_wall.copy()
+            point_2 = self._wall_to_split.wall_point_2
+            point_2.link(other_side_wall)
+
+    def _do_split(self, where: core.Point2):
+        self._wall_to_split.invalidate_geometry()
+
+        new_blood_wall = self._wall_to_split.blood_wall.copy()
         new_blood_wall.wall.position_x = int(where.x)
         new_blood_wall.wall.position_y = int(where.y)
 
-        new_wall_point_2 = wall_to_split.sector.add_wall(new_blood_wall)
-        new_wall_point_2.wall_previous_point = wall_to_split
-        new_wall_point_2.setup(
-            wall_to_split.wall_point_2,
-            wall_to_split.other_side_wall,
-            []
-        )
+        new_wall_point_2 = self._wall_to_split.sector.add_wall(new_blood_wall)
+        new_wall_point_2.wall_previous_point = self._wall_to_split
+        new_wall_point_2.set_wall_point_2(self._wall_to_split.wall_point_2)
 
-        wall_to_split.wall_point_2.wall_previous_point = new_wall_point_2
-        wall_to_split.set_wall_point_2(new_wall_point_2)
+        self._wall_to_split.wall_point_2.wall_previous_point = new_wall_point_2
+        self._wall_to_split.set_wall_point_2(new_wall_point_2)
 
         return new_wall_point_2
