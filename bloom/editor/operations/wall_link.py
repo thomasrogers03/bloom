@@ -48,6 +48,8 @@ class SectorWallLink:
                     test_wall = test_wall.wall_point_2
             else:
                 wall_split.WallSplit(test_wall).split(overlap.point_1)
+                wall_split.WallSplit(test_wall).split(overlap.point_2)
+                test_wall = test_wall.wall_point_2
             test_wall._other_side_wall
             test_wall.link(wall_to_link)
             return True
