@@ -30,6 +30,31 @@ class Segment:
     def side_of_line(self, point: core.Point2, tolerance = 0.0):
         return editor.side_of_line(point, self._point_1, self._point_2, tolerance=tolerance)
 
+    def get_point_distance(self, point: core.Point2):
+        projected_point = self.project_point(point)
+        if projected_point is None:
+            return None
+
+        return (point - projected_point).length()
+
+    def project_point(self, point:core.Point2):
+        delta = point - self.point_1
+        direction = self.get_direction()
+        is_more_vertical = math.fabs(direction.y) > math.fabs(direction.x)
+
+        if is_more_vertical:
+            portion = delta.y / direction.y
+            if portion < 0 or portion > 1:
+                return None
+
+            return self.point_1 + direction * portion
+
+        portion = delta.x / direction.x
+        if portion < 0 or portion > 1:
+            return None
+
+        return self.point_1 + direction * portion
+
     def get_normal(self) -> core.Vec2:
         return self.get_orthogonal_vector().normalized()
 

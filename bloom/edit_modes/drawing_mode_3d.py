@@ -44,6 +44,17 @@ class EditMode(navigation_mode_3d.EditMode):
         self._tickers.append(self._show_next_point)
 
     def start_drawing(self, sector: EditorSector, hit_point: core.Point3, insert: bool):
+        if insert:
+            for editor_wall in sector.walls:
+                distance_to_wall = editor_wall.line_segment.get_point_distance(hit_point.xy)
+                if distance_to_wall is not None and \
+                        distance_to_wall < self._editor.snapper.grid_size:
+                    insert = False
+                    projected_point = editor_wall.line_segment.project_point(hit_point.xy)
+                    hit_point.x = projected_point.x
+                    hit_point.y = projected_point.y
+                    break
+
         self._sector = sector
         self._insert = insert
 

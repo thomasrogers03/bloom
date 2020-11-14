@@ -326,7 +326,7 @@ class EditMode(navigation_mode_3d.EditMode):
         elif isinstance(selected.map_object, map_objects.EditorWall):
             insert = False
         else:
-            return
+            insert = True
 
         self._drawing_mode.start_drawing(
             selected.map_object.get_sector(),
