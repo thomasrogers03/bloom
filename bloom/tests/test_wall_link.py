@@ -84,3 +84,7 @@ class TestWallLink(unittest.TestCase):
 
         link_other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
         self.assertEqual(link_wall.other_side_wall, link_other_side_wall)
+
+    @unittest.skip
+    def test_does_not_link_adjacent_wall(self):
+        raise NotImplementedError()
