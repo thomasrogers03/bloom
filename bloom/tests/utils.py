@@ -12,7 +12,6 @@ from ..editor import map_objects
 from ..editor.operations import sector_draw
 
 _IMAGE_SIZE = 512
-_IMAGE_POINT_SCALE = 64
 
 
 def find_wall_on_point(sector: map_objects.EditorSector, point: core.Point2):
@@ -99,6 +98,35 @@ def save_sector_images(
     sector: map_objects.EditorSector,
     all_sectors: map_objects.SectorCollection
 ):
+    rectangle = core.Point4(65536, -65536, 65536, -65536)
+    for wall in sector.walls:
+        if wall.point_1.x < rectangle.x:
+            rectangle.x = wall.point_1.x
+        if wall.point_1.x > rectangle.y:
+            rectangle.y = wall.point_1.x
+        
+        if wall.point_1.y < rectangle.z:
+            rectangle.z = wall.point_1.y
+        if wall.point_1.y > rectangle.w:
+            rectangle.w = wall.point_1.y
+
+    x_offset = (rectangle.y - rectangle.x) * 0.35
+    y_offset = (rectangle.w - rectangle.z) * 0.35
+    rectangle.x -= x_offset
+    rectangle.y += x_offset
+    rectangle.z -= y_offset
+    rectangle.w += y_offset
+
+    offset = -core.Vec2(rectangle.x, rectangle.z)
+
+    scale_x = _IMAGE_SIZE / (rectangle.y - rectangle.x)
+    scale_y = _IMAGE_SIZE / (rectangle.w - rectangle.z)
+
+    if scale_y < scale_x:
+        scale = scale_y
+    else:
+        scale = scale_x
+
     image = numpy.zeros((_IMAGE_SIZE, _IMAGE_SIZE, 3), 'uint8')
     image = cv2.putText(
         image, 
@@ -112,20 +140,17 @@ def save_sector_images(
     )
 
     for wall in sector.walls:
-        point_1 = _image_point(wall.point_1)
-        point_2 = _image_point(wall.point_2)
-        image = _draw_wall(wall, (255, 255, 255), 4, image)
+        image = _draw_wall(wall, offset, scale, (255, 255, 255), 4, image)
 
     for wall in sector.walls:
-        point_1 = _image_point(wall.point_1)
+        point_1 = _image_point(wall.point_1, offset, scale)
         if wall.other_side_sector is not None:
-            image = _draw_wall(wall.other_side_wall, (0, 0, 255), 2, image)
+            image = _draw_wall(wall.other_side_wall, offset, scale, (0, 0, 255), 2, image)
 
             text = str(all_sectors.sectors.index(wall.other_side_sector))
             text_point = wall.origin_2d + wall.get_direction() / 2
             text_point = text_point + wall.get_normal() * 0.25
-            text_point = _image_point(text_point)
-            image = cv2.arrowedLine(image, point_1, text_point, (255, 255, 255), 2)
+            text_point = _image_point(text_point, offset, scale)
             image = cv2.putText(
                 image, 
                 text, 
@@ -140,23 +165,24 @@ def save_sector_images(
     path = f'test_results/{base_name}.png'
     cv2.imwrite(path, image)
 
-def _draw_wall(wall: map_objects.EditorWall, colour, thickness, image):
-    point_1 = _image_point(wall.point_1)
-    point_2 = _image_point(wall.point_2)
+def _draw_wall(wall: map_objects.EditorWall, offset: core.Vec2, scale: float, colour, thickness, image):
+    point_1 = _image_point(wall.point_1, offset, scale)
+    point_2 = _image_point(wall.point_2, offset, scale)
 
     image = cv2.arrowedLine(image, point_1, point_2, colour, thickness)
     
     centre = wall.point_1 + wall.get_direction() / 2
-    normal = centre - wall.get_normal() * 0.25
+    normal = centre - (wall.get_normal() * 16) / scale
 
-    centre = _image_point(centre)
-    normal = _image_point(normal)
+    centre = _image_point(centre, offset, scale)
+    normal = _image_point(normal, offset, scale)
+
     return cv2.arrowedLine(image, centre, normal, colour, thickness)
 
-def _image_point(point: core.Point2) -> typing.Tuple[int, int]:
-    x = point.x * _IMAGE_POINT_SCALE + _IMAGE_SIZE / 2
-    y = -point.y * _IMAGE_POINT_SCALE + _IMAGE_SIZE / 2
-    
+def _image_point(point: core.Point2, offset: core.Vec2, scale: float) -> typing.Tuple[int, int]:
+    x = (point.x + offset.x) * scale
+    y = (point.y + offset.y) * scale
+
     return (int(x), int(y))
 
 def _get_wall_bunch_directions(start_wall: map_objects.EditorWall):
