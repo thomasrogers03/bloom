@@ -59,6 +59,20 @@ class EditorWall(empty_object.EmptyObject):
         if other_side_wall is not None:
             other_side_wall.unlink()
 
+    def all_walls_at_point_1(self):
+        result = [self]
+
+        if self.other_side_wall is not None:
+            result.append(self.other_side_wall.wall_point_2)
+
+        if self.wall_previous_point.other_side_wall is not None:
+            result.append(self.wall_previous_point.other_side_wall)
+            wall = self.wall_previous_point.other_side_wall
+            if wall.wall_previous_point.other_side_wall is not None:
+                result.append(wall.wall_previous_point.other_side_wall)
+
+        return result
+
     def setup_geometry(self, all_geometry: sector_geometry.SectorGeometry):
         debug_display_node = core.TextNode('debug')
         text = f'Angle: {self.get_direction_theta()}\n'
