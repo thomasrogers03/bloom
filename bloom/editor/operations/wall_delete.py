@@ -18,18 +18,15 @@ class WallDelete:
         self._wall.destroy()
 
         if self._other_side_wall is not None:
+            other_side_wall = self._other_side_wall
             self._other_side_wall.unlink()
 
-            other_side_remove_wall = self._other_side_wall.wall_point_2
+            other_side_remove_wall = other_side_wall.wall_point_2
             if other_side_remove_wall.other_side_wall is not None:
-                self._other_side_wall.link(other_side_remove_wall.other_side_wall)
-                other_side_remove_wall.other_side_wall.link(
-                    self._other_side_wall, 
-                    force=True
-                )
-            self._other_side_wall.set_wall_point_2(other_side_remove_wall.wall_point_2)
-            other_side_remove_wall.wall_point_2.wall_previous_point = self._other_side_wall
-            self._other_side_wall.sector.remove_wall(other_side_remove_wall)
+                other_side_wall.link(other_side_remove_wall.other_side_wall)
+            other_side_wall.set_wall_point_2(other_side_remove_wall.wall_point_2)
+            other_side_remove_wall.wall_point_2.wall_previous_point = other_side_wall
+            other_side_wall.sector.remove_wall(other_side_remove_wall)
             other_side_remove_wall.destroy()
 
     @property
