@@ -38,6 +38,11 @@ class Move:
                 next_wall = selected.map_object.wall_point_2
                 if next_wall.line_segment.is_empty:
                     operations.wall_delete.WallDelete(next_wall).delete()
+
+                if previous_wall.other_side_wall is not None:
+                    wall: map_objects.EditorWall = previous_wall.other_side_wall.wall_previous_point
+                    if wall.line_segment.is_empty:
+                        operations.wall_delete.WallDelete(wall).delete()
             
             elif isinstance(selected.map_object, map_objects.EditorSprite):
                 operations.sprite_find_sector.SpriteFindSector(
