@@ -36,7 +36,10 @@ class TestWallLink(unittest.TestCase):
 
     def test_can_link(self):
         sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
-        utils.build_rectangular_sector(self._sectors, -1, 1, 1, 2)
+        other_side_sector = utils.build_rectangular_sector(self._sectors, -1, 1, 1, 2)
 
         link_wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
         operations.wall_link.SectorWallLink(link_wall, self._sectors).try_link_wall()
+
+        link_other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        self.assertEqual(link_wall.other_side_wall, link_other_side_wall)
