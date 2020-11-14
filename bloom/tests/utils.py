@@ -94,33 +94,64 @@ def assert_sector_has_point(sector: map_objects.EditorSector, point: core.Point2
 
     raise AssertionError(f'Point, {point}, not found in {points}')
 
-def save_sector_images(base_name: str, sector: map_objects.EditorSector):
-    seen_walls: typing.Set[map_objects.EditorWall] = set()
-    
-    image_count = 0
+def save_sector_images(
+    base_name: str, 
+    sector: map_objects.EditorSector,
+    all_sectors: map_objects.SectorCollection
+):
+    image = numpy.zeros((_IMAGE_SIZE, _IMAGE_SIZE, 3), 'uint8')
+    image = cv2.putText(
+        image, 
+        str(all_sectors.sectors.index(sector)), 
+        (_IMAGE_SIZE // 2, 32),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (255, 255, 255),
+        1,
+        cv2.LINE_AA
+    )
+
     for wall in sector.walls:
-        if wall in seen_walls:
-            continue
-            
-        image = numpy.zeros((_IMAGE_SIZE, _IMAGE_SIZE, 3), 'uint8')
+        point_1 = _image_point(wall.point_1)
+        point_2 = _image_point(wall.point_2)
+        image = _draw_wall(wall, (255, 255, 255), 4, image)
+
+    for wall in sector.walls:
+        point_1 = _image_point(wall.point_1)
+        if wall.other_side_sector is not None:
+            image = _draw_wall(wall.other_side_wall, (0, 0, 255), 2, image)
+
+            text = str(all_sectors.sectors.index(wall.other_side_sector))
+            text_point = wall.origin_2d + wall.get_direction() / 2
+            text_point = text_point + wall.get_normal() * 0.25
+            text_point = _image_point(text_point)
+            image = cv2.arrowedLine(image, point_1, text_point, (255, 255, 255), 2)
+            image = cv2.putText(
+                image, 
+                text, 
+                text_point,
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (255, 255, 255),
+                1,
+                cv2.LINE_AA
+            )
+
+    path = f'test_results/{base_name}.png'
+    cv2.imwrite(path, image)
+
+def _draw_wall(wall: map_objects.EditorWall, colour, thickness, image):
+    point_1 = _image_point(wall.point_1)
+    point_2 = _image_point(wall.point_2)
+
+    image = cv2.arrowedLine(image, point_1, point_2, colour, thickness)
     
-        next_wall = wall.wall_point_2
-        while next_wall != wall:
-            point_1 = _image_point(next_wall.point_1)
-            point_2 = _image_point(next_wall.point_2)
-            image = cv2.line(image, point_1, point_2, (255, 255, 255), 4)
+    centre = wall.point_1 + wall.get_direction() / 2
+    normal = centre - wall.get_normal() * 0.25
 
-            seen_walls.add(next_wall)
-            next_wall = next_wall.wall_point_2
-
-        point_1 = _image_point(next_wall.point_1)
-        point_2 = _image_point(next_wall.point_2)
-        image = cv2.line(image, point_1, point_2, (255, 255, 255), 4)
-        seen_walls.add(next_wall)
-
-        path = f'test_results/{base_name}-{image_count}.png'
-        cv2.imwrite(path, image)
-        image_count += 1
+    centre = _image_point(centre)
+    normal = _image_point(normal)
+    return cv2.arrowedLine(image, centre, normal, colour, thickness)
 
 def _image_point(point: core.Point2) -> typing.Tuple[int, int]:
     x = point.x * _IMAGE_POINT_SCALE + _IMAGE_SIZE / 2

@@ -29,7 +29,11 @@ class TestSectorSplit(unittest.TestCase):
     def tearDown(self):
         test_id = self.id()
         for sector_index, sector in enumerate(self._sectors.sectors):
-            utils.save_sector_images(f'{test_id}-sector_{sector_index}', sector)
+            utils.save_sector_images(
+                f'{test_id}-sector_{sector_index}', 
+                sector,
+                self._sectors
+            )
 
     def test_can_split(self):
         sector = self._build_rectangular_sector(-1, 1, -1, 1)

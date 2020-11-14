@@ -25,6 +25,15 @@ class TestSectorInsert(unittest.TestCase):
             mock_suggest_sky
         )
 
+    def tearDown(self):
+        test_id = self.id()
+        for sector_index, sector in enumerate(self._sectors.sectors):
+            utils.save_sector_images(
+                f'{test_id}-sector_{sector_index}', 
+                sector,
+                self._sectors
+            )
+
     def test_can_draw(self):
         sector = utils.build_rectangular_sector(self._sectors, -3, 3, -3, 3)
         operations.sector_insert.SectorInsert(sector).insert(
