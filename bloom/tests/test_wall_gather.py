@@ -72,6 +72,28 @@ class TestWallGather(unittest.TestCase):
 
         self._assert_got_all_walls()
 
+    def test_can_grab_walls_5_sectors(self):
+        operations.sector_split.SectorSplit(self._start_sector, self._sectors).split(
+            [
+                core.Point2(0, 0),
+                core.Point2(0, 1)
+            ]
+        )
+        operations.sector_split.SectorSplit(self._start_sector, self._sectors).split(
+            [
+                core.Point2(0, 0),
+                core.Point2(-1, 1)
+            ]
+        )
+        operations.sector_split.SectorSplit(self._sectors.sectors[1], self._sectors).split(
+            [
+                core.Point2(0, 0),
+                core.Point2(0, -1)
+            ]
+        )
+
+        self._assert_got_all_walls()
+
     def _assert_got_all_walls(self):
         start_wall = utils.find_wall_on_point(self._start_sector, core.Point2(0, 0))
         walls_at_point = start_wall.all_walls_at_point_1()

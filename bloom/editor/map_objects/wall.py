@@ -60,18 +60,21 @@ class EditorWall(empty_object.EmptyObject):
             other_side_wall.unlink()
 
     def all_walls_at_point_1(self):
-        result = [self]
+        result: typing.Set[EditorWall] = set()
+        self._gather_walls_at_point_1(result)
+        return list(result)
+
+    def _gather_walls_at_point_1(self, seen: typing.Set['EditorWall']):
+        if self in seen:
+            return
+
+        seen.add(self)
 
         if self.other_side_wall is not None:
-            result.append(self.other_side_wall.wall_point_2)
+            self.other_side_wall.wall_point_2._gather_walls_at_point_1(seen)
 
         if self.wall_previous_point.other_side_wall is not None:
-            result.append(self.wall_previous_point.other_side_wall)
-            wall = self.wall_previous_point.other_side_wall
-            if wall.wall_previous_point.other_side_wall is not None:
-                result.append(wall.wall_previous_point.other_side_wall)
-
-        return result
+            self.wall_previous_point.other_side_wall._gather_walls_at_point_1(seen)
 
     def setup_geometry(self, all_geometry: sector_geometry.SectorGeometry):
         debug_display_node = core.TextNode('debug')
