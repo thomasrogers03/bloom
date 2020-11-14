@@ -24,10 +24,13 @@ class WallDelete:
             other_side_remove_wall = other_side_wall.wall_point_2
             if other_side_remove_wall.other_side_wall is not None:
                 other_side_wall.link(other_side_remove_wall.other_side_wall)
-            other_side_wall.set_wall_point_2(other_side_remove_wall.wall_point_2)
-            other_side_remove_wall.wall_point_2.wall_previous_point = other_side_wall
-            other_side_wall.sector.remove_wall(other_side_remove_wall)
-            other_side_remove_wall.destroy()
+                other_side_wall.set_wall_point_2(other_side_remove_wall.wall_point_2)
+                other_side_remove_wall.wall_point_2.wall_previous_point = other_side_wall
+                other_side_wall.sector.remove_wall(other_side_remove_wall)
+                other_side_remove_wall.destroy()
+            else:
+                other_side_remove_wall.teleport_point_1_to(self._previous_wall.point_1)
+                other_side_wall.link(self._previous_wall)
 
     @property
     def _other_side_wall(self) -> map_objects.EditorWall:

@@ -62,7 +62,6 @@ class TestWallDelete(unittest.TestCase):
         self.assertEqual(wall.point_2, core.Point2(-1, 1))
         self.assertEqual(wall.other_side_wall.point_1, core.Point2(-1, 1))
 
-    @unittest.skip
     def test_can_delete_with_other_side(self):
         sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
         other_side_sector = utils.build_rectangular_sector(self._sectors, -1, 1, 1, 2)
@@ -75,3 +74,4 @@ class TestWallDelete(unittest.TestCase):
 
         wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
         self.assertEqual(wall.wall_point_2.point_1, core.Point2(-1, 2))
+        self.assertEqual(wall.other_side_wall.point_1, core.Point2(-1, 2))
