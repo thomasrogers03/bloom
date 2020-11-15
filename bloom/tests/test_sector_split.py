@@ -314,8 +314,28 @@ class TestSectorSplit(unittest.TestCase):
         )
 
     @unittest.skip
-    def test_can_split_with_multiple_islands(self):
-        raise AssertionError()
+    def test_can_split_with_solid_island(self):
+        sector = self._build_rectangular_sector(-3, 3, -3, 3)
+        operations.sector_insert.SectorInsert(sector).insert(
+            [
+                core.Point2(-2, 2),
+                core.Point2(-1, 2),
+                core.Point2(-1, 1),
+                core.Point2(-2, 1),
+            ]
+        )
+        operations.sector_delete.SectorDelete(
+            self._sectors.sectors[1],
+            self._sectors
+        ).delete()
+
+        self._do_split(
+            sector,
+            [
+                core.Point2(-3, 0),
+                core.Point2(3, 0),
+            ]
+        )
 
     def _do_split(
         self,
