@@ -69,11 +69,6 @@ class SectorSplit:
             other_side_points[:-1]
         )
         self._allocated_walls |= set(new_other_side_points)
-
-        if not sector_draw.are_points_clockwise(points):
-            remaining_walls = set(self._sector_to_split.walls) - self._allocated_walls
-            for wall in remaining_walls:
-                self._sector_to_split.migrate_wall_to_other_sector(wall, new_sector)
     
         self._join_walls(new_points)
         self._join_walls(new_other_side_points)
@@ -97,6 +92,36 @@ class SectorSplit:
 
         previous_wall_new_sector.set_wall_point_2(new_other_side_points[0])
         new_other_side_points[-1].set_wall_point_2(next_wall_new_sector)
+
+        if sector_draw.is_sector_section_clockwise(new_other_side_points[0]):
+            outer_bunch: map_objects.EditorWall = None
+            seen_walls: typing.Set[map_objects.EditorWall] = set(self._allocated_walls)
+            for wall in self._sector_to_split.walls:
+                if wall in seen_walls:
+                    continue
+
+                if not sector_draw.is_sector_section_clockwise(wall):
+                    outer_bunch = wall
+                    break
+
+                for sub_wall in wall.iterate_wall_bunch():
+                    seen_walls.add(sub_wall)
+
+            for wall in outer_bunch.iterate_wall_bunch():
+                self._sector_to_split.migrate_wall_to_other_sector(wall, new_sector)
+        else:
+            walls_to_migrate = []
+            for wall in self._sector_to_split.walls:
+                if wall in self._allocated_walls:
+                    continue
+
+                if new_sector.point_in_sector(wall.point_2):
+                    for sub_wall in wall.iterate_wall_bunch():
+                        self._allocated_walls.add(sub_wall)
+                        walls_to_migrate.append(sub_wall)
+
+            for wall in walls_to_migrate:
+                self._sector_to_split.migrate_wall_to_other_sector(wall, new_sector)
 
         new_other_side_points = reversed(new_other_side_points)
         for new_wall, new_other_side_wall in zip(new_points, new_other_side_points):

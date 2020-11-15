@@ -64,6 +64,13 @@ class EditorWall(empty_object.EmptyObject):
         self._gather_walls_at_point_1(result)
         return list(result)
 
+    def iterate_wall_bunch(self) -> typing.Iterable:
+        yield self
+        current_wall = self.wall_point_2
+        while current_wall != self:
+            yield current_wall
+            current_wall = current_wall.wall_point_2
+
     def _gather_walls_at_point_1(self, seen: typing.Set['EditorWall']):
         if self in seen:
             return

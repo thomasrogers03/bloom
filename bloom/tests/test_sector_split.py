@@ -313,7 +313,6 @@ class TestSectorSplit(unittest.TestCase):
             core.Point2(-1, -1),
         )
 
-    @unittest.skip
     def test_can_split_with_solid_island(self):
         sector = self._build_rectangular_sector(-3, 3, -3, 3)
         operations.sector_insert.SectorInsert(sector).insert(
@@ -335,6 +334,27 @@ class TestSectorSplit(unittest.TestCase):
                 core.Point2(-3, 0),
                 core.Point2(3, 0),
             ]
+        )
+
+        utils.assert_sector_has_shape(
+            sector,
+            core.Point2(-3, 0),
+            core.Point2(3, 0),
+            core.Point2(3, 3),
+            core.Point2(-3, 3),
+
+            core.Point2(-2, 2),
+            core.Point2(-1, 2),
+            core.Point2(-1, 1),
+            core.Point2(-2, 1),
+        )
+
+        utils.assert_sector_has_shape(
+            self._sectors.sectors[1],
+            core.Point2(-3, -3),
+            core.Point2(3, -3),
+            core.Point2(3, 0),
+            core.Point2(-3, 0),
         )
 
     def _do_split(
