@@ -423,122 +423,99 @@ class EditorSector(empty_object.EmptyObject):
         lookup: int,
         shade: float
     ):
-        polygon, holes = self._get_polygon_and_holes()
+        for sub_sector in drawing_sector.Sector(self._walls).get_sub_sectors():
+            polygon = drawing_sector.Sector.get_wall_bunch_points(sub_sector.outer_wall)
+            self._cleanup_polygon(polygon)
 
-        triangulator = core.Triangulator()
-        for point in polygon:
-            index = triangulator.add_vertex(point.x, point.y)
-            triangulator.add_polygon_vertex(index)
-
-        for hole in holes:
-            triangulator.begin_hole()
-            for point in hole:
-                index = triangulator.add_vertex(point.x, point.y)
-                triangulator.add_hole_vertex(index)
-        triangulator.triangulate()
-
-        vertex_data = core.GeomVertexData(
-            'shape',
-            constants.VERTEX_FORMAT,
-            core.Geom.UH_static
-        )
-        vertex_data.set_num_rows(triangulator.get_num_vertices())
-        position_writer = core.GeomVertexWriter(vertex_data, 'vertex')
-        colour_writer = core.GeomVertexWriter(vertex_data, 'color')
-        texcoord_writer = core.GeomVertexWriter(
-            vertex_data,
-            'texcoord'
-        )
-
-        texture_size = all_geometry.get_tile_dimensions(picnum)
-        for point in triangulator.get_vertices():
-            point_2d = core.Point2(point.x, point.y)
-            position_writer.add_data3(point_2d.x, point_2d.y, height_callback(point_2d))
-            colour_writer.add_data4(shade, shade, shade, 1)
-
-            if stat.swapxy:
-                y_offset = point.x + x_panning
-                x_offset = point.y + y_panning
-            else:
-                x_offset = point.x + x_panning
-                y_offset = point.y + y_panning
-
-            if stat.xflip:
-                x_offset = -x_offset
-            if stat.yflip:
-                y_offset = -y_offset
-
-            texture_coordinate_x = (x_offset / texture_size.x) / 16
-            texture_coordinate_y = (y_offset / texture_size.y) / 16
-
-            if stat.expand:
-                texture_coordinate_x /= 2
-                texture_coordinate_y /= 2
-
-            texcoord_writer.add_data2(texture_coordinate_x, texture_coordinate_y)
-
-        if part == 'floor':
-            is_floor = True
-        else:
-            is_floor = False
-
-        primitive = core.GeomTriangles(core.Geom.UH_static)
-        if is_floor:
-            for triangle_index in range(triangulator.get_num_triangles()):
-                primitive.add_vertices(
-                    triangulator.get_triangle_v2(triangle_index),
-                    triangulator.get_triangle_v1(triangle_index),
-                    triangulator.get_triangle_v0(triangle_index)
-                )
-        else:
-            for triangle_index in range(triangulator.get_num_triangles()):
-                primitive.add_vertices(
-                    triangulator.get_triangle_v0(triangle_index),
-                    triangulator.get_triangle_v1(triangle_index),
-                    triangulator.get_triangle_v2(triangle_index)
-                )
-        primitive.close_primitive()
-
-        geometry = core.Geom(vertex_data)
-        geometry.add_primitive(primitive)
-
-        if not stat.parallax and picnum != 504:
-            all_geometry.add_geometry(geometry, picnum, lookup)
-        all_geometry.add_highlight_geometry(
-            geometry,
-            part
-        )
-
-    def _get_polygon_and_holes(self):
-        outer_most_wall = self._get_outer_most_wall()
-        used_walls: typing.Set[wall.EditorWall] = set()
-
-        polygon: typing.List[core.Vec2] = list(
-            self._closed_polygon_from_wall(
-                outer_most_wall,
-                used_walls
-            )
-        )
-        self._cleanup_polygon(polygon)
-
-        holes: typing.List[typing.List[core.Vec2]] = []
-        for editor_wall in self._walls:
-            if editor_wall not in used_walls:
-                hole = list(
-                    self._closed_polygon_from_wall(
-                        editor_wall, used_walls
-                    )
-                )
+            holes = []
+            for wall in sub_sector.inner_walls:
+                hole = drawing_sector.Sector.get_wall_bunch_points(wall)
                 self._cleanup_polygon(hole)
                 holes.append(hole)
 
-        return polygon, holes
+            triangulator = core.Triangulator()
+            for point in polygon:
+                index = triangulator.add_vertex(point.x, point.y)
+                triangulator.add_polygon_vertex(index)
 
-    def _closed_polygon_from_wall(self, editor_wall: wall.EditorWall, used_walls: typing.Set[wall.EditorWall]):
-        while editor_wall not in used_walls:
-            used_walls.add(editor_wall)
-            yield editor_wall.point_1
-            editor_wall = editor_wall.wall_point_2
+            for hole in holes:
+                triangulator.begin_hole()
+                for point in hole:
+                    index = triangulator.add_vertex(point.x, point.y)
+                    triangulator.add_hole_vertex(index)
+            triangulator.triangulate()
+
+            vertex_data = core.GeomVertexData(
+                'shape',
+                constants.VERTEX_FORMAT,
+                core.Geom.UH_static
+            )
+            vertex_data.set_num_rows(triangulator.get_num_vertices())
+            position_writer = core.GeomVertexWriter(vertex_data, 'vertex')
+            colour_writer = core.GeomVertexWriter(vertex_data, 'color')
+            texcoord_writer = core.GeomVertexWriter(
+                vertex_data,
+                'texcoord'
+            )
+
+            texture_size = all_geometry.get_tile_dimensions(picnum)
+            for point in triangulator.get_vertices():
+                point_2d = core.Point2(point.x, point.y)
+                position_writer.add_data3(point_2d.x, point_2d.y, height_callback(point_2d))
+                colour_writer.add_data4(shade, shade, shade, 1)
+
+                if stat.swapxy:
+                    y_offset = point.x + x_panning
+                    x_offset = point.y + y_panning
+                else:
+                    x_offset = point.x + x_panning
+                    y_offset = point.y + y_panning
+
+                if stat.xflip:
+                    x_offset = -x_offset
+                if stat.yflip:
+                    y_offset = -y_offset
+
+                texture_coordinate_x = (x_offset / texture_size.x) / 16
+                texture_coordinate_y = (y_offset / texture_size.y) / 16
+
+                if stat.expand:
+                    texture_coordinate_x /= 2
+                    texture_coordinate_y /= 2
+
+                texcoord_writer.add_data2(texture_coordinate_x, texture_coordinate_y)
+
+            if part == 'floor':
+                is_floor = True
+            else:
+                is_floor = False
+
+            primitive = core.GeomTriangles(core.Geom.UH_static)
+            if is_floor:
+                for triangle_index in range(triangulator.get_num_triangles()):
+                    primitive.add_vertices(
+                        triangulator.get_triangle_v2(triangle_index),
+                        triangulator.get_triangle_v1(triangle_index),
+                        triangulator.get_triangle_v0(triangle_index)
+                    )
+            else:
+                for triangle_index in range(triangulator.get_num_triangles()):
+                    primitive.add_vertices(
+                        triangulator.get_triangle_v0(triangle_index),
+                        triangulator.get_triangle_v1(triangle_index),
+                        triangulator.get_triangle_v2(triangle_index)
+                    )
+            primitive.close_primitive()
+
+            geometry = core.Geom(vertex_data)
+            geometry.add_primitive(primitive)
+
+            if not stat.parallax and picnum != 504:
+                all_geometry.add_geometry(geometry, picnum, lookup)
+            all_geometry.add_highlight_geometry(
+                geometry,
+                part
+            )
 
     @staticmethod
     def _cleanup_polygon(polygon: typing.List[core.Vec2]):
@@ -722,17 +699,17 @@ class EditorSector(empty_object.EmptyObject):
         point_3_2d = core.Point2(point_1_2d.x, point_1_2d.y + 1)
         return plane.Plane(
             core.Point3(
-                point_1_2d.x, 
+                point_1_2d.x,
                 point_1_2d.y,
                 self.floor_z_at_point(point_1_2d)
             ),
             core.Point3(
-                point_2_2d.x, 
+                point_2_2d.x,
                 point_2_2d.y,
                 self.floor_z_at_point(point_2_2d)
                 ),
             core.Point3(
-                point_3_2d.x, 
+                point_3_2d.x,
                 point_3_2d.y,
                 self.floor_z_at_point(point_3_2d)
             )
@@ -745,17 +722,17 @@ class EditorSector(empty_object.EmptyObject):
         point_3_2d = core.Point2(point_1_2d.x, point_1_2d.y + 1)
         return plane.Plane(
             core.Point3(
-                point_1_2d.x, 
+                point_1_2d.x,
                 point_1_2d.y,
                 self.ceiling_z_at_point(point_1_2d)
             ),
             core.Point3(
-                point_2_2d.x, 
+                point_2_2d.x,
                 point_2_2d.y,
                 self.ceiling_z_at_point(point_2_2d)
             ),
             core.Point3(
-                point_3_2d.x, 
+                point_3_2d.x,
                 point_3_2d.y,
                 self.ceiling_z_at_point(point_3_2d)
             )
@@ -826,9 +803,9 @@ class EditorSector(empty_object.EmptyObject):
         self._walls.append(new_wall)
 
         return new_wall
-    
+
     def migrate_wall_to_other_sector(
-        self, 
+        self,
         wall_to_move: wall.EditorWall,
         new_sector: 'EditorSector'
     ):
@@ -844,7 +821,7 @@ class EditorSector(empty_object.EmptyObject):
         wall_to_move.set_sector(new_sector, new_name)
 
     def migrate_sprite_to_other_sector(
-        self, 
+        self,
         sprite_to_move: sprite.EditorSprite,
         new_sector: 'EditorSector'
     ):

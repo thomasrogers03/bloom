@@ -9,7 +9,7 @@ from ... import segment
 from ..wall import EditorWall
 
 
-class SubSector:
+class SubSector(typing.NamedTuple):
     outer_wall: EditorWall
     inner_walls: typing.List[EditorWall]
 
@@ -74,9 +74,9 @@ class Sector:
                     continue
                 
                 if self.point_in_shape(bunch_points, inner_wall.point_1):
-                    handled.add(inner_wall)
+                    sub_sector.inner_walls.append(inner_wall)
                     for wall in inner_wall.iterate_wall_bunch():
-                        sub_sector.inner_walls.append(wall)
+                        handled.add(wall)
 
         return result
 
@@ -87,7 +87,6 @@ class Sector:
             if wall in seen:
                 continue
 
-            seen.add(sub_wall)
             if not self.is_sector_section_clockwise(wall):
                 yield wall
 
@@ -102,9 +101,8 @@ class Sector:
             if wall in seen:
                 continue
 
-            seen.add(sub_wall)
             if self.is_sector_section_clockwise(wall):
-                result.append(result)
+                result.append(wall)
 
             for sub_wall in wall.iterate_wall_bunch():
                 seen.add(sub_wall)

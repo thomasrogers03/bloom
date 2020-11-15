@@ -19,21 +19,23 @@ class TargetView:
     def reset(self):
         if self._display is not None:
             self._display_node = None
-            
+
             self._display.remove_node()
             self._display = None
 
             self._seen.clear()
-        self._display_node = core.GeomNode('target_debug')
-        self._display = self._map_scene.attach_new_node(self._display_node)
-        self._display.set_transparency(True)
+
+        if not self._map_scene.is_empty():
+            self._display_node = core.GeomNode('target_debug')
+            self._display = self._map_scene.attach_new_node(self._display_node)
+            self._display.set_transparency(True)
 
     def show_targets(self, source: map_objects.empty_object.EmptyObject):
         self._show_targets(source, core.Vec4(1, 0.25, 0.15, 0.8))
 
     def _show_targets(
-        self, 
-        source: map_objects.empty_object.EmptyObject, 
+        self,
+        source: map_objects.empty_object.EmptyObject,
         colour: core.Vec4
     ):
         if source in self._seen:
@@ -45,7 +47,7 @@ class TargetView:
         for target_index, target in enumerate(source.targets):
             segments = core.LineSegs(str(target_index))
             segments.set_thickness(8)
-            
+
             segments.set_color(colour)
             segments.draw_to(source.origin)
             segments.set_color(next_colour)
