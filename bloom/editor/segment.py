@@ -55,6 +55,15 @@ class Segment:
 
         return self.point_1 + direction * portion
 
+    def get_point_portion_of_line(self, point: core.Point2):
+        delta = point - self.point_1
+        direction = self.get_direction()
+        is_more_vertical = math.fabs(direction.y) > math.fabs(direction.x)
+
+        if is_more_vertical:
+            return delta.y / direction.y
+        return delta.x / direction.x
+
     def get_normal(self) -> core.Vec2:
         return self.get_orthogonal_vector().normalized()
 

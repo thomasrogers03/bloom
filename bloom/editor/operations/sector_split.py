@@ -39,8 +39,18 @@ class SectorSplit:
         if not self._can_path_to_wall(first_wall, last_wall):
             return
 
-        wall_split.WallSplit(first_wall).split(points[0])
-        wall_split.WallSplit(last_wall).split(points[-1])
+        if first_wall == last_wall:
+            first_point_portion = first_wall.line_segment.get_point_portion_of_line(points[0])
+            last_point_portion = first_wall.line_segment.get_point_portion_of_line(points[-1])
+            if last_point_portion > first_point_portion:
+                wall_split.WallSplit(first_wall).split(points[-1])
+                wall_split.WallSplit(first_wall).split(points[0])
+            else:
+                wall_split.WallSplit(first_wall).split(points[0])
+                wall_split.WallSplit(first_wall).split(points[-1])
+        else:
+            wall_split.WallSplit(first_wall).split(points[0])
+            wall_split.WallSplit(last_wall).split(points[-1])
 
         new_sector = self._sector_to_split.new_sector()
         self._migrate_new_walls(new_sector, points[0], points[-1])
