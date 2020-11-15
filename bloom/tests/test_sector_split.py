@@ -199,6 +199,46 @@ class TestSectorSplit(unittest.TestCase):
 
 
     @unittest.skip
+    def test_can_split_same_wall(self):
+        sector = self._build_rectangular_sector(-2, 2, -1, 1)
+        self._do_split(
+            sector,
+            [
+                core.Point2(1, 1),
+                core.Point2(1, 0),
+                core.Point2(-1, 0),
+                core.Point2(-1, 1),
+            ]
+        )
+
+        utils.assert_sector_has_shape(
+            sector,
+            core.Point2(1, 1),
+            core.Point2(1, 0),
+            core.Point2(-1, 0),
+            core.Point2(-1, 1)
+        )
+
+        wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
+        self.assertEqual(wall.wall_point_2.point_1, core.Point2(-1, 1))
+
+        new_sector = self._sectors.sectors[1]
+        utils.assert_sector_has_shape(
+            new_sector,
+            core.Point2(-2, -1),
+            core.Point2(2, -1),
+            core.Point2(2, 1),
+            core.Point2(1, 1),
+            core.Point2(1, 0),
+            core.Point2(-1, 0),
+            core.Point2(-1, 1),
+            core.Point2(-2, 1)
+        )
+
+        wall = utils.find_wall_on_point(new_sector, core.Point2(2, 1))
+        self.assertEqual(wall.wall_point_2.point_1, core.Point2(1, 1))
+
+    @unittest.skip
     def test_can_split_with_multiple_islands(self):
         raise AssertionError()
 
