@@ -9,6 +9,7 @@ from panda3d import core
 
 from .. import map_data
 from ..editor import map_objects
+from ..editor.map_objects.drawing import sector as drawing_sector
 from ..editor.operations import sector_draw
 
 _IMAGE_SIZE = 512
@@ -54,7 +55,7 @@ def assert_wall_bunch_not_clockwise(
     start_point: core.Point2
 ):
     first_wall = find_wall_on_point(sector, start_point)
-    if sector_draw.is_sector_section_clockwise(first_wall):
+    if drawing_sector.Sector.is_sector_section_clockwise(first_wall):
         directions = _get_wall_bunch_directions(first_wall)
         directions_string = _join_lines(directions)
         message = f'Sector wall bunch starting at {start_point} was clockwise:\n{directions_string}'
@@ -66,7 +67,7 @@ def assert_wall_bunch_clockwise(
     start_point: core.Point2
 ):
     first_wall = find_wall_on_point(sector, start_point)
-    if not sector_draw.is_sector_section_clockwise(first_wall):
+    if not drawing_sector.Sector.is_sector_section_clockwise(first_wall):
         directions = _get_wall_bunch_directions(first_wall)
         directions_string = _join_lines(directions)
         message = f'Sector wall bunch starting at {start_point} was not clockwise:\n{directions_string}'

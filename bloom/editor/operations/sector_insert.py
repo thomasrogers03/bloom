@@ -6,6 +6,7 @@ import typing
 from panda3d import core
 
 from .. import map_objects
+from ..map_objects.drawing import sector as drawing_sector
 from . import sector_draw
 
 
@@ -23,7 +24,7 @@ class SectorInsert:
 
         new_sector = self._sector_to_split.new_sector()
 
-        if not sector_draw.are_points_clockwise(points):
+        if not drawing_sector.Sector.are_points_clockwise(points):
             points = reversed(points)
         points = list(points)
 

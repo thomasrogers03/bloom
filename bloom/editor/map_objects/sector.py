@@ -10,6 +10,7 @@ from panda3d import bullet, core
 from ... import constants, editor, game_map, map_data
 from .. import plane, sector_geometry
 from . import empty_object, geometry_highlight, sprite, wall
+from .drawing import sector as drawing_sector
 
 
 class SectorCollection:
@@ -610,7 +611,6 @@ class EditorSector(empty_object.EmptyObject):
         for sprite_index, sprite in enumerate(map_to_load.sprites):
             if sprite.sprite.sector_index == sector_index:
                 yield sprite_index
-        pass
 
     def get_sector(self):
         return self

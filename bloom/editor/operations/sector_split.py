@@ -6,6 +6,7 @@ import typing
 from panda3d import core
 
 from .. import map_objects
+from ..map_objects.drawing import sector as drawing_sector
 from . import sector_draw, sprite_find_sector, wall_split
 
 
@@ -93,14 +94,14 @@ class SectorSplit:
         previous_wall_new_sector.set_wall_point_2(new_other_side_points[0])
         new_other_side_points[-1].set_wall_point_2(next_wall_new_sector)
 
-        if sector_draw.is_sector_section_clockwise(new_other_side_points[0]):
+        if drawing_sector.Sector.is_sector_section_clockwise(new_other_side_points[0]):
             outer_bunch: map_objects.EditorWall = None
             seen_walls: typing.Set[map_objects.EditorWall] = set(self._allocated_walls)
             for wall in self._sector_to_split.walls:
                 if wall in seen_walls:
                     continue
 
-                if not sector_draw.is_sector_section_clockwise(wall):
+                if not drawing_sector.Sector.is_sector_section_clockwise(wall):
                     outer_bunch = wall
                     break
 
