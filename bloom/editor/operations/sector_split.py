@@ -18,6 +18,7 @@ class SectorSplit:
     ):
         self._sector_to_split = sector_to_split
         self._all_sectors = all_sectors
+        self._allocated_walls: typing.Set[map_objects.EditorWall] = set()
 
     def split(
         self,
@@ -60,11 +61,19 @@ class SectorSplit:
             self._sector_to_split,
             points[:-1]
         )
+        self._allocated_walls |= set(new_points)
+
         new_other_side_points = sector_draw.make_wall_points(
             self._wall_base,
             new_sector,
             other_side_points[:-1]
         )
+        self._allocated_walls |= set(new_other_side_points)
+
+        if not sector_draw.are_points_clockwise(points):
+            remaining_walls = set(self._sector_to_split.walls) - self._allocated_walls
+            for wall in remaining_walls:
+                self._sector_to_split.migrate_wall_to_other_sector(wall, new_sector)
     
         self._join_walls(new_points)
         self._join_walls(new_other_side_points)
@@ -105,16 +114,17 @@ class SectorSplit:
         first_point: core.Point2, 
         last_point: core.Point2
     ):
-        current_wall = self._find_split_sector_wall_on_point(first_point)
+        start_wall = self._find_split_sector_wall_on_point(first_point)
         stop_wall = self._find_split_sector_wall_on_point(last_point)
 
-        # if sector_draw.is_sector_section_clockwise(current_wall):
-        #     while current_wall != stop_wall:
-        #         self._sector_to_split.migrate_wall_to_other_sector(current_wall, new_sector)
-        #         current_wall = current_wall.wall_previous_point
-        # else:
+        current_wall = start_wall
         while current_wall != stop_wall:
+            self._allocated_walls.add(current_wall)
             self._sector_to_split.migrate_wall_to_other_sector(current_wall, new_sector)
+            current_wall = current_wall.wall_point_2
+
+        while current_wall != start_wall:
+            self._allocated_walls.add(current_wall)
             current_wall = current_wall.wall_point_2
 
     def _get_walls_to_join_points_to_current_sector(
