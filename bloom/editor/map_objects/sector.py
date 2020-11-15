@@ -377,6 +377,17 @@ class EditorSector(empty_object.EmptyObject):
             return self.FLOOR_PART
         return self.CEILING_PART
 
+    def set_first_wall(self, editor_wall: wall.EditorWall):
+        index = self._walls.index(editor_wall)
+        if index == 0:
+            return
+
+        self.invalidate_geometry()
+
+        old_first_wall = self._walls[0]
+        self._walls[0] = editor_wall
+        self._walls[index] = old_first_wall
+
     def _prepare_to_persist(self, wall_mapping: typing.Dict[wall.EditorWall, int]) -> map_data.sector.Sector:
         self._sector.sector.first_wall_index = wall_mapping[self._walls[0]]
         self._sector.sector.wall_count = len(self._walls)

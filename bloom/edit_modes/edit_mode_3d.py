@@ -168,8 +168,10 @@ class EditMode(navigation_mode_3d.EditMode):
         self.accept(',', self._decrease_sprite_angle)
         self.accept('.', self._increase_sprite_angle)
 
+        self.accept('1', self._set_sector_first_wall)
+
         if constants.PORTALS_DEBUGGING_ENABLED:
-            self.accept('1', self._toggle_view_clipping)
+            self.accept('0', self._toggle_view_clipping)
 
     def _toggle_grid(self):
         self._moving_clicker_3d.toggle_grid()
@@ -274,6 +276,13 @@ class EditMode(navigation_mode_3d.EditMode):
             force=True
         )
         self._highlighter.clear()
+
+    def _set_sector_first_wall(self):
+        selected = self._highlighter.select(selected_type=map_objects.EditorWall)
+        if selected is None:
+            return
+
+        selected.map_object.get_sector().set_first_wall(selected.map_object)
 
     def _toggle_view_clipping(self):
         self._editor.toggle_view_clipping()
