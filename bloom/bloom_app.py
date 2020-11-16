@@ -25,7 +25,6 @@ logger = logging.getLogger(__name__)
 
 class Bloom(ShowBase):
     _CONFIG_PATH = 'config.yaml'
-    _SONG_PATH = 'cache/current_song.mid'
 
     def __init__(self, path: str):
         self._setup_window()
@@ -350,12 +349,16 @@ class Bloom(ShowBase):
 
             self._config['sound_font_path'] = sound_font_path
 
-        song_data = self._sounds_rff.data_for_entry(f'{song_name}.MID')
-        with open(self._SONG_PATH, 'w+b') as file:
-            file.write(song_data)
+        midi_path = f'cache/{song_name}.mid'
+        if not os.path.exists(midi_path):
+            song_data = self._sounds_rff.data_for_entry(f'{song_name}.MID')
+            with open(midi_path, 'w+b') as file:
+                file.write(song_data)
 
-        converter = midi_to_wav.MidiToWav(self._SONG_PATH)
-        song_path = converter.convert(self._fluid_synth_path, self._sound_font_path)
+        converter = midi_to_wav.MidiToWav(midi_path)
+        song_path = converter.output_path
+        if not os.path.exists(song_path):
+            converter.convert(self._fluid_synth_path, self._sound_font_path)
 
         self._song = self.loader.load_sfx(song_path)
         self._song.set_loop(True)

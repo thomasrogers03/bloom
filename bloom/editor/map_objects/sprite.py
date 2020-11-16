@@ -80,7 +80,7 @@ class EditorSprite(empty_object.EmptyObject):
 
     @property
     def z_at_bottom(self):
-        if self._sprite.sprite.stat.centring:
+        if self._sprite.sprite.stat.centring and not self.is_floor:
             return self._z + self.size.y / 2
         return self._z
 
