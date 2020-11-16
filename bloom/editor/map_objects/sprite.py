@@ -68,8 +68,22 @@ class EditorSprite(empty_object.EmptyObject):
         return core.Point3(
             self._sprite.sprite.position_x,
             self._sprite.sprite.position_y,
-            editor.to_height(self._sprite.sprite.position_z) - self._offsets.y,
+            self.z_at_bottom
         )
+
+    @property
+    def z(self):
+        return editor.to_height(self._sprite.sprite.position_z) - self._offsets.y
+
+    @property
+    def z_at_bottom(self):
+        if self._sprite.sprite.stat.centring:
+            return self.z - self.size.y / 2
+        return self.z
+
+    @property
+    def z_at_top(self):
+        return self.z_at_bottom - self.size.y
 
     @property
     def origin_2d(self):
@@ -284,7 +298,6 @@ class EditorSprite(empty_object.EmptyObject):
                 {'sprite': self},
                 self._sprite.sprite.picnum,
                 self._sprite.sprite.palette,
-                self._sprite.sprite.stat.centring,
                 self._sprite.sprite.stat.one_sided,
                 self.theta
             )
@@ -294,7 +307,6 @@ class EditorSprite(empty_object.EmptyObject):
                 {'sprite': self},
                 self._sprite.sprite.picnum,
                 self._sprite.sprite.palette,
-                self._sprite.sprite.stat.centring,
                 self._sprite.sprite.stat.one_sided,
                 self.theta
             )
@@ -304,7 +316,6 @@ class EditorSprite(empty_object.EmptyObject):
                 {'sprite': self},
                 self._sprite.sprite.picnum,
                 self._sprite.sprite.palette,
-                self._sprite.sprite.stat.centring,
                 self._sprite.sprite.stat.one_sided,
                 self.theta
             )

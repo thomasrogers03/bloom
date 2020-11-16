@@ -24,25 +24,25 @@ class SpriteGeometry:
 
         self._sprites: typing.List[core.NodePath] = []
 
-    def add_facing_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, centring: bool, one_sided: bool, theta: float) -> core.NodePath:
-        display, display_3d = self._new_display(name, picnum, lookup, centring, one_sided, theta)
+    def add_facing_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, one_sided: bool, theta: float) -> core.NodePath:
+        display, display_3d = self._new_display(name, picnum, lookup, one_sided, theta)
         display_3d.set_billboard_axis()
         display_3d.set_h(0)
 
         return display
 
-    def add_directional_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, centring: bool, one_sided: bool, theta: float) -> core.NodePath:
-        display, display_3d = self._new_display(name, picnum, lookup, centring, one_sided, theta)
+    def add_directional_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, one_sided: bool, theta: float) -> core.NodePath:
+        display, display_3d = self._new_display(name, picnum, lookup, one_sided, theta)
         
         return display
 
-    def add_floor_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, centring: bool, one_sided: bool, theta: float) -> core.NodePath:
-        display, display_3d = self._new_display(name, picnum, lookup, centring, one_sided, theta)
+    def add_floor_sprite(self, name: str, collision_tags: dict, picnum: int, lookup: int, one_sided: bool, theta: float) -> core.NodePath:
+        display, display_3d = self._new_display(name, picnum, lookup, one_sided, theta)
         display_3d.set_p(-90)
         
         return display
 
-    def _new_display(self, name: str, picnum: int, lookup: int, centring: bool, one_sided: bool, theta: float):
+    def _new_display(self, name: str, picnum: int, lookup: int, one_sided: bool, theta: float):
         top_level_display: core.NodePath = self._scene.attach_new_node(name)
 
         parent_display: core.NodePath = top_level_display.attach_new_node(name)
@@ -69,8 +69,6 @@ class SpriteGeometry:
         display_2d_node = display_2d_segments.create()
         display_2d: core.NodePath = top_level_display.attach_new_node(display_2d_node)
 
-        if centring:
-            display.set_z(-0.5)
         if not one_sided:
             display.set_two_sided(True)
 
