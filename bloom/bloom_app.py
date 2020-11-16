@@ -195,9 +195,9 @@ class Bloom(ShowBase):
         if not os.path.exists(self._path):
             map_to_load = game_map.Map()
             map_to_load.new()
+            self._load_map_into_editor(map_to_load)
         else:
             self._do_open_map()
-        self._do_open_map()
 
         self.disable_mouse()
 
