@@ -39,17 +39,18 @@ class Addon:
                 if map_name not in config:
                     continue
 
+                map_name = map_name.lower()
                 map_section = config[map_name]
                 map_definition = Map(
                     map_name,
                     map_section['Title'],
-                    map_section.get('Author', None),
-                    map_section.get('Song', None),
+                    map_section.get('Author', 'unknown'),
+                    map_section.get('Song', '').upper(),
                     [],
                     []
                 )
                 self._episodes[episode_number].maps[map_number] = map_definition
-                self._all_maps = map_definition
+                self._all_maps[map_name] = map_definition
             
     @staticmethod
     def _section_episode_number(section: str):
@@ -66,6 +67,7 @@ class Addon:
         return None
 
     def song_for_map(self, map_name: str):
+        map_name = map_name.lower()
         if map_name in self._all_maps:
             return self._all_maps[map_name].song
         return None
