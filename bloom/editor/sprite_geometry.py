@@ -20,7 +20,7 @@ class SpriteGeometry:
         self._tile_manager = tile_manager
 
         self._card_maker = core.CardMaker('geometry')
-        self._card_maker.set_frame(-0.5, 0.5, 0, 1)
+        self._card_maker.set_frame(-0.5, 0.5, -1, 0)
 
         self._sprites: typing.List[core.NodePath] = []
 

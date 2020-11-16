@@ -73,7 +73,7 @@ class EditorSprite(empty_object.EmptyObject):
 
     @property
     def z(self):
-        return editor.to_height(self._sprite.sprite.position_z) - self._offsets.y
+        return editor.to_height(self._sprite.sprite.position_z) + self._offsets.y
 
     @property
     def z_at_bottom(self):
@@ -354,7 +354,7 @@ class EditorSprite(empty_object.EmptyObject):
         self._sprite.sprite.position_x = int(position.x)
         self._sprite.sprite.position_y = int(position.y)
         self._sprite.sprite.position_z = editor.to_build_height(
-            position.z + self._offsets.y
+            position.z - self._offsets.y
         )
 
     def prepare_to_persist(
