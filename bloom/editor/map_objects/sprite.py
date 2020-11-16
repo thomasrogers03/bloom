@@ -72,18 +72,32 @@ class EditorSprite(empty_object.EmptyObject):
         )
 
     @property
-    def z(self):
+    def _z(self):
         return editor.to_height(self._sprite.sprite.position_z) + self._offsets.y
+
+    def _set_z(self, value: float):
+        if self._sprite_collision is not None:
+            self._sprite_collision.set_z(value)
+        self._sprite.sprite.position_z = editor.to_build_height(value - self._offsets.y)
 
     @property
     def z_at_bottom(self):
         if self._sprite.sprite.stat.centring:
-            return self.z - self.size.y / 2
-        return self.z
+            return self._z - self.size.y / 2
+        return self._z
+
+    def set_z_at_bottom(self, value: float):
+        if self._sprite.sprite.stat.centring:
+            self._set_z(value + self.size.y / 2)
+        else:
+            self._set_z(value)
 
     @property
     def z_at_top(self):
         return self.z_at_bottom - self.size.y
+
+    def set_z_at_top(self, value: float):
+        self.set_z_at_bottom(value + self.size.y)
 
     @property
     def origin_2d(self):
@@ -350,12 +364,11 @@ class EditorSprite(empty_object.EmptyObject):
 
     def move_to(self, position: core.Point3):
         if self._sprite_collision is not None:
-            self._sprite_collision.set_pos(position)
+            self._sprite_collision.set_x(position.x)
+            self._sprite_collision.set_y(position.y)
         self._sprite.sprite.position_x = int(position.x)
         self._sprite.sprite.position_y = int(position.y)
-        self._sprite.sprite.position_z = editor.to_build_height(
-            position.z - self._offsets.y
-        )
+        self.set_z_at_bottom(position.z)
 
     def prepare_to_persist(
         self,

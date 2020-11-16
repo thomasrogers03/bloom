@@ -229,30 +229,14 @@ class EditMode(navigation_mode_3d.EditMode):
             selected_object = selected_item.map_object
             editor_sector = selected_object.get_sector()
             new_z = editor_sector.floor_z_at_point(selected_object.origin_2d)
-            new_z -= selected_object.size.y / 2
-
-            selected_object.move_to(
-                core.Point3(
-                    selected_object.origin_2d.x,
-                    selected_object.origin_2d.y,
-                    new_z
-                )
-            )
+            selected_object.set_z_at_bottom(new_z)
 
     def _move_sprite_to_ceiling(self):
         for selected_item in self._select_sprites():
             selected_object = selected_item.map_object
             editor_sector = selected_object.get_sector()
             new_z = editor_sector.ceiling_z_at_point(selected_object.origin_2d)
-            new_z += selected_object.size.y / 2
-
-            selected_object.move_to(
-                core.Point3(
-                    selected_object.origin_2d.x,
-                    selected_object.origin_2d.y,
-                    new_z
-                )
-            )
+            selected_object.set_z_at_top(new_z)
 
     def _change_sprite_facing(self):
         for selected_item in self._select_sprites():
