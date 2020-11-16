@@ -290,7 +290,8 @@ class Bloom(ShowBase):
         self._map_editor = map_editor.MapEditor(
             self._camera_collection,
             map_to_load,
-            self._tile_manager,
+            self._audio_manager,
+            self._tile_manager
         )
         self._mode_3d.set_editor(self._map_editor)
         self._mode_2d.set_editor(self._map_editor)

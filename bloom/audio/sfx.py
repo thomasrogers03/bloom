@@ -3,7 +3,7 @@
 
 import wave
 
-from . import data_loading, rff
+from .. import data_loading, rff
 
 
 class SoundDescriptor(data_loading.CustomStruct):
@@ -15,7 +15,7 @@ class SoundDescriptor(data_loading.CustomStruct):
 
 
 class Sound:
-    
+
     def __init__(self, sound_descriptor_data: bytes, sound_raw_data: bytes):
         unpacker = data_loading.Unpacker(sound_descriptor_data)
         self._descriptor = unpacker.read_struct(SoundDescriptor)
@@ -31,9 +31,9 @@ class Sound:
     def load(sounds_rff: rff.RFF, sound_name: str):
         descriptor = sounds_rff.data_for_entry(f'{sound_name}.SFX')
         raw = sounds_rff.data_for_entry(f'{sound_name}.RAW')
-        
+
         return Sound(descriptor, raw)
-        
+
     @property
     def pitch(self):
         return self._descriptor.pitch / float(1 << 16)

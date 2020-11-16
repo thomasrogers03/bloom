@@ -7,7 +7,7 @@ from collections import defaultdict
 
 from panda3d import bullet, core
 
-from ... import constants, editor, game_map, map_data
+from ... import audio, constants, editor, game_map, map_data
 from .. import plane, sector_geometry
 from . import empty_object, geometry_highlight, sprite, wall
 from .drawing import sector as drawing_sector
@@ -20,9 +20,11 @@ class SectorCollection:
     def __init__(
         self,
         map_to_load: game_map.Map,
+        audio_manager: audio.Manager,
         geometry_factory: sector_geometry.SectorGeometryFactory,
         suggest_sky_picnum: typing.Callable[[int], int]
     ):
+        self._audio_manager = audio_manager
         self._geometry_factory = geometry_factory
         self._suggest_sky_picnum = suggest_sky_picnum
 
@@ -64,7 +66,12 @@ class SectorCollection:
         index = len(self._sectors)
 
         new_sector = EditorSector(
-            self, blood_sector, str(index), self._geometry_factory)
+            self, 
+            blood_sector, 
+            str(index), 
+            self._audio_manager,
+            self._geometry_factory
+        )
         self._sectors.append(new_sector)
 
         return new_sector
@@ -83,11 +90,13 @@ class EditorSector(empty_object.EmptyObject):
         sector_collection: SectorCollection,
         sector: map_data.sector.Sector,
         name: str,
+        audio_manager: audio.Manager,
         geometry_factory: sector_geometry.SectorGeometryFactory
     ):
         self._sector_collection = sector_collection
         self._sector = sector
         self._name = name
+        self._audio_manager = audio_manager
         self._geometry_factory = geometry_factory
         self._targets = []
 
