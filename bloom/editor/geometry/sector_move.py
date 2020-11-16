@@ -35,11 +35,11 @@ class SectorMove(empty_move.EmptyMove):
                 )
 
     def _sprite_should_move(self, sprite: map_objects.EditorSprite):
-        origin = sprite.origin
+        origin = sprite.origin_2d
         return (self._part == map_objects.EditorSector.FLOOR_PART and \
-                origin.z >= self._sector.floor_z_at_point(origin.xy)) or \
+                sprite.z_at_bottom >= self._sector.floor_z_at_point(origin)) or \
                 (self._part == map_objects.EditorSector.CEILING_PART and \
-                origin.z <= self._sector.ceiling_z_at_point(origin.xy))
+                sprite.z_at_top <= self._sector.ceiling_z_at_point(origin))
 
     def get_move_direction(self) -> core.Vec3:
         return core.Vec3(0, 0, -1)

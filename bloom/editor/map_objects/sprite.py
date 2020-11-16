@@ -73,22 +73,23 @@ class EditorSprite(empty_object.EmptyObject):
 
     @property
     def _z(self):
-        return editor.to_height(self._sprite.sprite.position_z) + self._offsets.y
+        return editor.to_height(self._sprite.sprite.position_z) - self._offsets.y
 
     def _set_z(self, value: float):
-        if self._sprite_collision is not None:
-            self._sprite_collision.set_z(value)
-        self._sprite.sprite.position_z = editor.to_build_height(value - self._offsets.y)
+        self._sprite.sprite.position_z = editor.to_build_height(value + self._offsets.y)
 
     @property
     def z_at_bottom(self):
         if self._sprite.sprite.stat.centring:
-            return self._z - self.size.y / 2
+            return self._z + self.size.y / 2
         return self._z
 
     def set_z_at_bottom(self, value: float):
+        if self._sprite_collision is not None:
+            self._sprite_collision.set_z(value)
+
         if self._sprite.sprite.stat.centring:
-            self._set_z(value + self.size.y / 2)
+            self._set_z(value - self.size.y / 2)
         else:
             self._set_z(value)
 
@@ -212,8 +213,7 @@ class EditorSprite(empty_object.EmptyObject):
                     return None
 
             half_height = self.size.y / 2
-            if point.z <= self.position.z + half_height and \
-                    point.z >= self.position.z - half_height:
+            if point.z <= self.z_at_bottom and point.z >= self.z_at_top:
                 return self._name
             return None
 

@@ -226,14 +226,14 @@ class EditMode(navigation_mode_3d.EditMode):
 
     def _move_sprite_to_floor(self):
         for selected_item in self._select_sprites():
-            selected_object = selected_item.map_object
+            selected_object: map_objects.EditorSprite = selected_item.map_object
             editor_sector = selected_object.get_sector()
             new_z = editor_sector.floor_z_at_point(selected_object.origin_2d)
             selected_object.set_z_at_bottom(new_z)
 
     def _move_sprite_to_ceiling(self):
         for selected_item in self._select_sprites():
-            selected_object = selected_item.map_object
+            selected_object: map_objects.EditorSprite = selected_item.map_object
             editor_sector = selected_object.get_sector()
             new_z = editor_sector.ceiling_z_at_point(selected_object.origin_2d)
             selected_object.set_z_at_top(new_z)
