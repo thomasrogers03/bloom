@@ -14,7 +14,8 @@ from panda3d import bullet, core
 from panda3d.direct import init_app_for_gui
 
 from . import (addon, cameras, clicker, constants, dialogs, edit_menu,
-               edit_mode, editor, game_map, midi_to_wav, tile_dialog, utils)
+               edit_mode, editor, game_map, tile_dialog, utils)
+from .audio import midi_to_wav
 from .edit_modes import edit_mode_2d, edit_mode_3d
 from .editor import map_editor
 from .rff import RFF
