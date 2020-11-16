@@ -28,9 +28,16 @@ class Sound:
         self._raw = sound_raw_data
 
     @staticmethod
-    def load(sounds_rff: rff.RFF, sound_name: str):
-        descriptor = sounds_rff.data_for_entry(f'{sound_name}.SFX')
+    def load(sounds_rff: rff.RFF, sound_sfx_name: str):
+        offset = -len('.SFX')
+        descriptor = sounds_rff.data_for_entry(sound_sfx_name)
+        if descriptor is None:
+            return None
+
+        sound_name = sound_sfx_name[:offset]
         raw = sounds_rff.data_for_entry(f'{sound_name}.RAW')
+        if raw is None:
+            return None
 
         return Sound(descriptor, raw)
 

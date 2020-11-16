@@ -6,7 +6,7 @@ import typing
 
 from panda3d import bullet, core
 
-from ... import constants, editor, game_map, map_data
+from ... import audio, constants, editor, game_map, map_data
 from ...tiles import manager
 from .. import plane, sector_geometry, segment
 from . import empty_object, sprite_highlight
@@ -14,20 +14,27 @@ from . import empty_object, sprite_highlight
 
 class EditorSprite(empty_object.EmptyObject):
     PART_NAME = 'sprite'
+    _AMBIENT_SFX_TYPE = 710
 
     def __init__(
         self,
         sprite: map_data.sprite.Sprite,
         name: str,
         sector: 'bloom.editor.map_objects.sector.EditorSector',
+        audio_manager: audio.Manager,
         tile_manager: manager.Manager
     ):
         self._sector = sector
         self._name = name
         self._sprite = sprite
+        self._audio_manager = audio_manager
         self._tile_manager = tile_manager
         self._sprite_collision: core.NodePath = None
         self._targets = []
+        self._sound: core.AudioSound = None
+
+        if self._sprite.sprite.tags[0] == self._AMBIENT_SFX_TYPE:
+            self._sound = self._audio_manager.load_sound(self._sprite.data.data1)
 
     def move_to_sector(self, new_sector: 'bloom.editor.map_objects.sector.EditorSector'):
         self._sector = new_sector
@@ -360,6 +367,9 @@ class EditorSprite(empty_object.EmptyObject):
         )
 
         self._sprite_collision = sprite_collision
+        if self._sound is not None:
+            self._audio_manager.manager_3d.attach_sound_to_object(self._sound, self._sprite_collision)
+            self._sound.play()
         self._needs_geometry_reset = False
 
     def move_to(self, position: core.Point3):

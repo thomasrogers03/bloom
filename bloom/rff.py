@@ -63,6 +63,9 @@ class RFF:
                 yield entry_name
 
     def data_for_entry(self, file_name: str) -> bytes:
+        if file_name not in self._entries:
+            return None
+
         entry = self._entries[file_name]
         self._unpacker.seek(entry.offset)
         data = bytearray(self._unpacker.get_bytes(entry.size))

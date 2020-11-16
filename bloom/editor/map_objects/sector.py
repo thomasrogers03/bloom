@@ -864,6 +864,7 @@ class EditorSector(empty_object.EmptyObject):
             blood_sprite,
             str(new_sprite_index),
             self,
+            self._audio_manager,
             self._geometry_factory.tile_manager
         )
         self._sprites.append(new_sprite)

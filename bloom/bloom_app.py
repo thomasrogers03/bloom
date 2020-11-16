@@ -167,13 +167,6 @@ class Bloom(ShowBase):
         self._addon = addon.Addon(f'{self._blood_path}/BLOOD.INI')
         self._song: core.AudioSound = None
 
-        self._audio_manager = audio.Manager(
-            self.loader, 
-            self._sounds_rff, 
-            self._fluid_synth_path, 
-            self._sound_font_path
-        )
-
         self._scene: core.NodePath = self.render.attach_new_node('scene')
         self._scene.set_scale(1.0 / 100)
 
@@ -189,6 +182,15 @@ class Bloom(ShowBase):
                 self.camLens,
                 self.win.get_display_region(0)
             )
+        )
+
+        self._audio_manager = audio.Manager(
+            self.loader, 
+            self.sfxManagerList[0],
+            self._camera_collection['default'].camera,
+            self._sounds_rff, 
+            self._fluid_synth_path, 
+            self._sound_font_path
         )
 
         if self._path is None:
