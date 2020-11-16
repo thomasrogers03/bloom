@@ -164,13 +164,6 @@ class Bloom(ShowBase):
         if self._path is None:
             self._make_new_board()
 
-        if not os.path.exists(self._path):
-            map_to_load = game_map.Map()
-            map_to_load.new()
-        else:
-            with open(self._path, 'rb') as file:
-                map_to_load = game_map.Map.load(self._path, file.read())
-
         self._edit_mode_selector = edit_mode.EditMode(
             self.mouseWatcherNode,
             self.task_mgr
@@ -199,7 +192,12 @@ class Bloom(ShowBase):
         )
 
         self._map_editor: map_editor.MapEditor = None
-        self._load_map_into_editor(map_to_load)
+        if not os.path.exists(self._path):
+            map_to_load = game_map.Map()
+            map_to_load.new()
+        else:
+            self._do_open_map()
+        self._do_open_map()
 
         self.disable_mouse()
 
@@ -297,10 +295,12 @@ class Bloom(ShowBase):
         if path:
             self._path = path
             self._config['last_map'] = self._path
-            with open(self._path, 'rb') as file:
-                map_to_load = game_map.Map.load(self._path, file.read())
+            self._do_open_map()
 
-            self._load_map_into_editor(map_to_load)
+    def _do_open_map(self):
+        with open(self._path, 'rb') as file:
+            map_to_load = game_map.Map.load(self._path, file.read())
+        self._load_map_into_editor(map_to_load)
 
     def _save_map_as(self):
         path = tkinter.filedialog.asksaveasfilename(
