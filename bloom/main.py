@@ -20,6 +20,7 @@ def main():
         core.load_prc_file_data('', 'disable-message-loop #t')
         core.load_prc_file_data('', 'tk-frame-rate 300')
         core.load_prc_file_data('', 'direct-gui-edit 1')
+        core.load_prc_file_data('', 'audio-library-name p3openal_audio')
         if options.performance_stats:
             core.load_prc_file_data('', 'want-pstats 1')
         if options.direct_tools:

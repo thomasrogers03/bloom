@@ -12,8 +12,8 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d import bullet, core
 from panda3d.direct import init_app_for_gui
 
-from . import (cameras, clicker, constants, dialogs, edit_menu, edit_mode,
-               editor, game_map, tile_dialog, utils)
+from . import (addon, cameras, clicker, constants, dialogs, edit_menu,
+               edit_mode, editor, game_map, tile_dialog, utils)
 from .edit_modes import edit_mode_2d, edit_mode_3d
 from .editor import map_editor
 from .rff import RFF
@@ -138,8 +138,8 @@ class Bloom(ShowBase):
             self.win.request_properties(props)
 
     def _initialize(self, task):
-        blood_path = self._blood_path
-        self._rff = RFF(f'{blood_path}/BLOOD.RFF')
+        self._rff = RFF(f'{self._blood_path}/BLOOD.RFF')
+        self._addon = addon.Addon(f'{self._blood_path}/BLOOD.INI')
 
         self._scene: core.NodePath = self.render.attach_new_node('scene')
         self._scene.set_scale(1.0 / 100)
@@ -176,7 +176,7 @@ class Bloom(ShowBase):
             self.task_mgr
         )
 
-        self._tile_manager = manager.Manager(blood_path, self._rff, self._edit_mode_selector)
+        self._tile_manager = manager.Manager(self._blood_path, self._rff, self._edit_mode_selector)
         self._dialogs = dialogs.Dialogs(
             self.aspect2d,
             self._tile_manager,
