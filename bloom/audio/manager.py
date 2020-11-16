@@ -5,6 +5,7 @@ import os.path
 
 from direct.showbase import Loader
 
+from . import sfx
 from .. import rff
 from . import midi_to_wav
 
@@ -33,3 +34,10 @@ class Manager:
             converter.convert(self._fluid_synth_path, self._sound_font_path)
 
         return self._loader.load_sfx(song_path)
+
+    def load_sound(self, sound_name: str):
+        sound_path = f'cache/{sound_name}.wav'
+        if not os.path.exists(sound_path):
+            sfx.Sound.load(self._rff, sound_name).create_wav(sound_path)
+
+        return self._loader.load_sfx(sound_path)
