@@ -13,7 +13,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d import bullet, core
 from panda3d.direct import init_app_for_gui
 
-from . import (addon, cameras, clicker, constants, dialogs, edit_menu,
+from . import (addon, audio, cameras, clicker, constants, dialogs, edit_menu,
                edit_mode, editor, game_map, tile_dialog, utils)
 from .audio import midi_to_wav
 from .edit_modes import edit_mode_2d, edit_mode_3d
@@ -52,6 +52,28 @@ class Bloom(ShowBase):
             self._config['blood_path'] = blood_path
             with open(self._CONFIG_PATH, 'w+') as file:
                 file.write(yaml.dump(self._config))
+
+        if self._fluid_synth_path is None:
+            fluid_synth_path = tkinter.filedialog.askopenfilename(
+                initialdir=self._blood_path,
+                title='Path to fluidsynth executable',
+                filetypes=(('Executable Files', '*.EXE'),)
+            )
+            if not fluid_synth_path:
+                return
+
+            self._config['fluid_synth_path'] = fluid_synth_path
+
+        if self._sound_font_path is None:
+            sound_font_path = tkinter.filedialog.askopenfilename(
+                initialdir=self._blood_path,
+                title='Specify Sound Font Path to Use for Conversion',
+                filetypes=(('Sound Font Files', '*.SF2'),)
+            )
+            if not sound_font_path:
+                return
+
+            self._config['sound_font_path'] = sound_font_path
 
         self.task_mgr.do_method_later(0.1, self._initialize, 'initialize')
 
@@ -144,6 +166,13 @@ class Bloom(ShowBase):
         self._sounds_rff = RFF(f'{self._blood_path}/SOUNDS.RFF')
         self._addon = addon.Addon(f'{self._blood_path}/BLOOD.INI')
         self._song: core.AudioSound = None
+
+        self._audio_manager = audio.Manager(
+            self.loader, 
+            self._sounds_rff, 
+            self._fluid_synth_path, 
+            self._sound_font_path
+        )
 
         self._scene: core.NodePath = self.render.attach_new_node('scene')
         self._scene.set_scale(1.0 / 100)
@@ -325,43 +354,7 @@ class Bloom(ShowBase):
         self._load_song(song_name)
 
     def _load_song(self, song_name: str):
-        if not song_name:
-            return
-
-        if self._fluid_synth_path is None:
-            fluid_synth_path = tkinter.filedialog.askopenfilename(
-                initialdir=self._blood_path,
-                title='Path to fluidsynth executable',
-                filetypes=(('Executable Files', '*.EXE'),)
-            )
-            if not fluid_synth_path:
-                return
-
-            self._config['fluid_synth_path'] = fluid_synth_path
-
-        if self._sound_font_path is None:
-            sound_font_path = tkinter.filedialog.askopenfilename(
-                initialdir=self._blood_path,
-                title='Specify Sound Font Path to Use for Conversion',
-                filetypes=(('Sound Font Files', '*.SF2'),)
-            )
-            if not sound_font_path:
-                return
-
-            self._config['sound_font_path'] = sound_font_path
-
-        midi_path = f'cache/{song_name}.mid'
-        if not os.path.exists(midi_path):
-            song_data = self._sounds_rff.data_for_entry(f'{song_name}.MID')
-            with open(midi_path, 'w+b') as file:
-                file.write(song_data)
-
-        converter = midi_to_wav.MidiToWav(midi_path)
-        song_path = converter.output_path
-        if not os.path.exists(song_path):
-            converter.convert(self._fluid_synth_path, self._sound_font_path)
-
-        self._song = self.loader.load_sfx(song_path)
+        self._song = self._audio_manager.load_music(song_name)
         self._song.set_loop(True)
         self._song.set_volume(1)
         self._song.play()
