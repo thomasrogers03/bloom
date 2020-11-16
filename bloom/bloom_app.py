@@ -3,6 +3,7 @@
 
 import logging
 import os.path
+import tempfile
 import tkinter
 import tkinter.filedialog
 import tkinter.messagebox
@@ -13,7 +14,7 @@ from panda3d import bullet, core
 from panda3d.direct import init_app_for_gui
 
 from . import (addon, cameras, clicker, constants, dialogs, edit_menu,
-               edit_mode, editor, game_map, tile_dialog, utils)
+               edit_mode, editor, game_map, midi_to_wav, tile_dialog, utils)
 from .edit_modes import edit_mode_2d, edit_mode_3d
 from .editor import map_editor
 from .rff import RFF
@@ -24,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 class Bloom(ShowBase):
     _CONFIG_PATH = 'config.yaml'
+    _SONG_PATH = 'cache/current_song.mid'
 
     def __init__(self, path: str):
         self._setup_window()
@@ -139,7 +141,9 @@ class Bloom(ShowBase):
 
     def _initialize(self, task):
         self._rff = RFF(f'{self._blood_path}/BLOOD.RFF')
+        self._sounds_rff = RFF(f'{self._blood_path}/SOUNDS.RFF')
         self._addon = addon.Addon(f'{self._blood_path}/BLOOD.INI')
+        self._song: core.AudioSound = None
 
         self._scene: core.NodePath = self.render.attach_new_node('scene')
         self._scene.set_scale(1.0 / 100)
@@ -279,6 +283,10 @@ class Bloom(ShowBase):
     def _blood_path(self):
         return self._config['blood_path']
 
+    @property
+    def _sound_font_path(self):
+        return self._config.get('sound_font_path', None)
+
     def _new_map(self):
         self._make_new_board()
 
@@ -301,6 +309,43 @@ class Bloom(ShowBase):
         with open(self._path, 'rb') as file:
             map_to_load = game_map.Map.load(self._path, file.read())
         self._load_map_into_editor(map_to_load)
+
+        if self._song is not None:
+            self._song.stop()
+            self.loader.unload_sfx(self._song)
+            self._song = None
+
+        extension_skip = -len('.MAP')
+        map_name = os.path.basename(self._path)[:extension_skip]
+        song_name = self._addon.song_for_map(map_name)
+        self._load_song(song_name)
+
+    def _load_song(self, song_name: str):
+        if not song_name:
+            return
+
+        if self._sound_font_path is None:
+            sound_font_path = tkinter.filedialog.askopenfilename(
+                initialdir=self._blood_path,
+                title='Specify Sound Font Path to Use for Conversion',
+                filetypes=(('Sound Font Files', '*.SF2'),)
+            )
+            if not sound_font_path:
+                return
+
+            self._config['sound_font_path'] = sound_font_path
+
+        song_data = self._sounds_rff.data_for_entry(f'{song_name}.MID')
+        with open(self._SONG_PATH, 'w+b') as file:
+            file.write(song_data)
+
+        converter = midi_to_wav.MidiToWav(self._SONG_PATH)
+        song_path = converter.convert(self._sound_font_path)
+
+        self._song = self.loader.load_sfx(song_path)
+        self._song.set_loop(True)
+        self._song.set_volume(1)
+        self._song.play()
 
     def _save_map_as(self):
         path = tkinter.filedialog.asksaveasfilename(
