@@ -16,9 +16,12 @@ class MidiToWav:
         path = pathlib.Path(path)
         self._output_path = str(path)
 
-    def convert(self, sound_font_path: str):
+    def convert(self, fluid_synth_path: str, sound_font_path: str):
+        fluid_synth_path = pathlib.Path(fluid_synth_path)
+        fluid_synth_path = str(fluid_synth_path)
+
         sound_font_path = pathlib.Path(sound_font_path)
         sound_font_path = str(sound_font_path)
 
-        subprocess.call(['fluidsynth', '-q', '-F', self._output_path, sound_font_path, self._path])
+        subprocess.call([fluid_synth_path, '-q', '-F', self._output_path, sound_font_path, self._path])
         return self._output_path

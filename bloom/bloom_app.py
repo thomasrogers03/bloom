@@ -284,6 +284,10 @@ class Bloom(ShowBase):
         return self._config['blood_path']
 
     @property
+    def _fluid_synth_path(self):
+        return self._config.get('fluid_synth_path', None)
+
+    @property
     def _sound_font_path(self):
         return self._config.get('sound_font_path', None)
 
@@ -324,6 +328,17 @@ class Bloom(ShowBase):
         if not song_name:
             return
 
+        if self._fluid_synth_path is None:
+            fluid_synth_path = tkinter.filedialog.askopenfilename(
+                initialdir=self._blood_path,
+                title='Path to fluidsynth executable',
+                filetypes=(('Executable Files', '*.EXE'),)
+            )
+            if not fluid_synth_path:
+                return
+
+            self._config['fluid_synth_path'] = fluid_synth_path
+
         if self._sound_font_path is None:
             sound_font_path = tkinter.filedialog.askopenfilename(
                 initialdir=self._blood_path,
@@ -340,7 +355,7 @@ class Bloom(ShowBase):
             file.write(song_data)
 
         converter = midi_to_wav.MidiToWav(self._SONG_PATH)
-        song_path = converter.convert(self._sound_font_path)
+        song_path = converter.convert(self._fluid_synth_path, self._sound_font_path)
 
         self._song = self.loader.load_sfx(song_path)
         self._song.set_loop(True)
