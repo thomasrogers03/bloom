@@ -34,7 +34,7 @@ class EditorSprite(empty_object.EmptyObject):
         self._sound: core.AudioSound = None
 
         if self._sprite.sprite.tags[0] == self._AMBIENT_SFX_TYPE:
-            self._sound = self._audio_manager.load_sound(self._sprite.data.data1)
+            self._sound = self._audio_manager.load_sound(self._sprite.data.data3)
 
     def move_to_sector(self, new_sector: 'bloom.editor.map_objects.sector.EditorSector'):
         self._sector = new_sector
@@ -219,7 +219,6 @@ class EditorSprite(empty_object.EmptyObject):
                 if not self.segment.point_on_line(point.xy):
                     return None
 
-            half_height = self.size.y / 2
             if point.z <= self.z_at_bottom and point.z >= self.z_at_top:
                 return self._name
             return None
@@ -369,6 +368,7 @@ class EditorSprite(empty_object.EmptyObject):
         self._sprite_collision = sprite_collision
         if self._sound is not None:
             self._audio_manager.manager_3d.attach_sound_to_object(self._sound, self._sprite_collision)
+            self._sound.set_loop(True)
             self._sound.play()
         self._needs_geometry_reset = False
 

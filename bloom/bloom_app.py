@@ -197,7 +197,7 @@ class Bloom(ShowBase):
         self._audio_manager = audio.Manager(
             self.loader, 
             self.sfxManagerList[0],
-            self._camera_collection['default'].camera,
+            self._camera_collection.builder,
             self._sounds_rff, 
             self._fluid_synth_path, 
             self._sound_font_path
@@ -368,9 +368,10 @@ class Bloom(ShowBase):
 
     def _load_song(self, song_name: str):
         self._song = self._audio_manager.load_music(song_name)
-        self._song.set_loop(True)
-        self._song.set_volume(1)
-        self._song.play()
+        if self._song is not None:
+            self._song.set_loop(True)
+            self._song.set_volume(1)
+            self._song.play()
 
     def _save_map_as(self):
         path = tkinter.filedialog.asksaveasfilename(

@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os.path
+import typing
 
 from direct.showbase import Audio3DManager, Loader
 from panda3d import core
@@ -16,19 +17,22 @@ class Manager:
         self,
         loader: Loader.Loader,
         sfx_manager: core.AudioManager,
-        camera: core.NodePath,
+        listener: core.NodePath,
         sounds_rff: rff.RFF,
         fluid_synth_path: str,
         sound_font_path: str
     ):
         self._loader = loader
         self._sfx_manager = sfx_manager
-        self._manager_3d = Audio3DManager.Audio3DManager(self._sfx_manager, camera)
+        self._manager_3d = Audio3DManager.Audio3DManager(self._sfx_manager, listener)
         self._rff = sounds_rff
         self._fluid_synth_path = fluid_synth_path
         self._sound_font_path = sound_font_path
 
-        self._sound_names = list(self._rff.find_matching_entries('*.SFX'))
+        self._sound_names: typing.Dict[int, str] = {
+            index: name 
+            for name, index in self._rff.find_matching_entries_with_indexes('*.SFX')
+        }
 
     @property
     def manager_3d(self):
@@ -53,11 +57,16 @@ class Manager:
 
     def load_sound(self, sound_index: int):
         sound_name = self._sound_names[sound_index]
-        sound_path = f'cache/{sound_name}.wav'
+        sound_path = f'cache/{sound_index}.wav'
+        sound = sfx.Sound.load(self._rff, sound_name)
         if not os.path.exists(sound_path):
-            sound = sfx.Sound.load(self._rff, sound_name)
             if sound is None:
                 return None
             sound.create_wav(sound_path)
 
-        return self._loader.load_sfx(sound_path)
+
+        result: core.AudioSound = self._manager_3d.load_sfx(sound_path)
+        if sound.is_looping:
+            result.set_loop(True)
+
+        return result

@@ -16,7 +16,7 @@ class SoundDescriptor(data_loading.CustomStruct):
 
 class Sound:
 
-    def __init__(self, sound_descriptor_data: bytes, sound_raw_data: bytes):
+    def __init__(self, sounds_rff: rff.RFF, sound_descriptor_data: bytes):
         unpacker = data_loading.Unpacker(sound_descriptor_data)
         self._descriptor = unpacker.read_struct(SoundDescriptor)
 
@@ -25,21 +25,16 @@ class Sound:
         else:
             self._sample_rate = 22050
 
-        self._raw = sound_raw_data
+        raw_name = unpacker.read_remaining().decode().rstrip('\x00').upper()
+        self._raw = sounds_rff.data_for_entry(f'{raw_name}.RAW')
 
     @staticmethod
     def load(sounds_rff: rff.RFF, sound_sfx_name: str):
-        offset = -len('.SFX')
         descriptor = sounds_rff.data_for_entry(sound_sfx_name)
         if descriptor is None:
             return None
 
-        sound_name = sound_sfx_name[:offset]
-        raw = sounds_rff.data_for_entry(f'{sound_name}.RAW')
-        if raw is None:
-            return None
-
-        return Sound(descriptor, raw)
+        return Sound(sounds_rff, descriptor)
 
     @property
     def pitch(self):
@@ -56,6 +51,10 @@ class Sound:
     @property
     def sample_count(self):
         return len(self._raw)
+
+    @property
+    def has_data(self):
+        return self._raw is not None
 
     def create_wav(self, path: str):
         with wave.open(path, 'wb') as wave_file:

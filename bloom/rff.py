@@ -23,7 +23,7 @@ class Entry(data_loading.CustomStruct):
     time: data_loading.UInt32
     flags: data_loading.UInt8
     name: data_loading.FixedLengthString(11)
-    unknown2: data_loading.UInt32
+    indexer: data_loading.UInt32
 
 
 class RFF:
@@ -57,10 +57,18 @@ class RFF:
         return list(self._entries.keys())
 
     def find_matching_entries(self, fnmatcher: str) -> typing.Iterable[str]:
+        for entry_name, _ in self._matching_entries(fnmatcher):
+            yield entry_name
+
+    def find_matching_entries_with_indexes(self, fnmatcher: str) -> typing.Iterable[typing.Tuple[str, int]]:
+        for entry_name, entry in self._matching_entries(fnmatcher):
+            yield entry_name, entry.indexer
+
+    def _matching_entries(self, fnmatcher: str) -> typing.Iterable[Entry]:
         fnmatcher = fnmatcher.upper()
-        for entry_name in self._entries.keys():
+        for entry_name, value in self._entries.items():
             if fnmatch(entry_name, fnmatcher):
-                yield entry_name
+                yield entry_name, value
 
     def data_for_entry(self, file_name: str) -> bytes:
         if file_name not in self._entries:

@@ -1132,7 +1132,11 @@
   category: sounds
   status_number: 12
   tile_config:
-    tile: 
+    tile: 2520
+  properties:
+    - name: Sound Number
+      type: int
+      from: data_3
 711:
   name: Player SFX
   category: sounds
