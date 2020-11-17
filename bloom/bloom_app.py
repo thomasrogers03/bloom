@@ -1,6 +1,7 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import distutils.spawn
 import logging
 import os.path
 import tempfile
@@ -54,13 +55,20 @@ class Bloom(ShowBase):
                 file.write(yaml.dump(self._config))
 
         if self._fluid_synth_path is None:
-            fluid_synth_path = tkinter.filedialog.askopenfilename(
-                initialdir=self._blood_path,
-                title='Path to fluidsynth executable',
-                filetypes=(('Executable Files', '*.EXE'),)
-            )
+            fluid_synth_path = distutils.spawn.find_executable("fluidsynth.exe")
             if not fluid_synth_path:
-                return
+                fluid_synth_path = distutils.spawn.find_executable("fluidsynth")
+
+            if not fluid_synth_path:
+                fluid_synth_path = tkinter.filedialog.askopenfilename(
+                    initialdir=self._blood_path,
+                    title='Path to fluidsynth executable',
+                    filetypes=(('Executable Files', '*.EXE'),)
+                )
+
+            if not fluid_synth_path:
+                message = 'Unable to play music without fluid synth, it will be disabled'
+                tkinter.messagebox.showwarning(title='Cannot play music', message=message)
 
             self._config['fluid_synth_path'] = fluid_synth_path
 
@@ -70,8 +78,10 @@ class Bloom(ShowBase):
                 title='Specify Sound Font Path to Use for Conversion',
                 filetypes=(('Sound Font Files', '*.SF2'),)
             )
+
             if not sound_font_path:
-                return
+                message = 'Unable to play music without a sound font, it will be disabled'
+                tkinter.messagebox.showwarning(title='Cannot play music', message=message)
 
             self._config['sound_font_path'] = sound_font_path
 

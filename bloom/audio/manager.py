@@ -40,7 +40,7 @@ class Manager:
 
         midi_path = f'cache/{song_name}.mid'
         if not os.path.exists(midi_path):
-            song_data = self._sounds_rff.data_for_entry(f'{song_name}.MID')
+            song_data = self._rff.data_for_entry(f'{song_name}.MID')
             with open(midi_path, 'w+b') as file:
                 file.write(song_data)
 
