@@ -11,6 +11,7 @@ from .. import map_objects, ror_constants
 class SectorExtrude:
     _OFFSET = 512
     _WALL_OFFSET = core.Vec2(256, 256)
+    _LINK_OFFSET = 64
 
     def __init__(self, sector: map_objects.EditorSector, all_sectors: map_objects.SectorCollection, part: str):
         self._sector = sector
@@ -21,16 +22,7 @@ class SectorExtrude:
         if self._link is not None:
             return
 
-        normal_1 = self._walls[0].get_normal()
-        normal_2 = self._walls[0].wall_point_2.get_normal()
-        average_normal = (normal_1 + normal_2).normalized()
-
-        link_sprite_offset_2d = -average_normal * self._OFFSET
-        link_sprite_offset = core.Vec3(
-            link_sprite_offset_2d.x,
-            link_sprite_offset_2d.y,
-            0
-        )
+        link_sprite_offset = self._get_link_offset()
 
         new_sector = self._all_sectors.create_sector(self._sector)
         new_sector.move_ceiling_to(self.new_ceiling_z)
@@ -55,7 +47,7 @@ class SectorExtrude:
             new_previous_wall = mapped_walls[old_wall.wall_previous_point]
             editor_wall.wall_previous_point = new_previous_wall
 
-        link_sprite_position = self._walls[1].origin + link_sprite_offset
+        link_sprite_position = self._walls[0].origin + link_sprite_offset
         link_sprite_position_for_new_sector = link_sprite_position + \
             core.Vec3(self._WALL_OFFSET.x, self._WALL_OFFSET.y, 0)
 
@@ -134,6 +126,16 @@ class SectorExtrude:
 
         self._sector.invalidate_geometry()
         new_sector.invalidate_geometry()
+
+    def _get_link_offset(self):
+        normal = self._walls[0].get_normal() * self._LINK_OFFSET
+        link_sprite_offset_2d = (self._walls[0].get_centre_2d() - normal) - self._walls[0].point_1
+
+        return core.Vec3(
+            link_sprite_offset_2d.x,
+            link_sprite_offset_2d.y,
+            0
+        )
 
     @property
     def _walls(self) -> typing.List[map_objects.EditorWall]:
