@@ -172,7 +172,11 @@ class SectorDrawer:
 
         wall_near_point = self._wall_near_point(point)
         if wall_near_point is not None:
-            return wall_near_point.line_segment.project_point(point)
+            point = wall_near_point.line_segment.project_point(point)
+            snapped_point = self._editor.snapper.snap_to_grid_2d(point)
+            if wall_near_point.line_segment.point_on_line(snapped_point, tolerance=0):
+                return snapped_point
+            return point
 
         return None
 

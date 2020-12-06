@@ -23,7 +23,8 @@ class SectorMoveWalls(empty_move.EmptyMove):
         move_delta_2d = snapper.snap_to_grid_2d(move_delta.xy)
         for wall, start_point in zip(self._sector.walls, self._wall_start_points):
             new_position = start_point + move_delta_2d
-            wall.teleport_point_1_to(new_position)
+            for sub_wall in wall.all_walls_at_point_1():
+                sub_wall.teleport_point_1_to(new_position)
 
         for sprite, start_point in zip(self._sector.sprites, self._sprite_start_points):
             new_position = core.Point3(
