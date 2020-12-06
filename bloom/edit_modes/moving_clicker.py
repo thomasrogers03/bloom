@@ -104,6 +104,9 @@ class MovingClicker:
         self._hide_grids()
 
     def _display_move_info(self):
+        if len(self._object_highlighter.selected) < 1:
+            return
+
         first_selected = self._object_highlighter.selected[0].map_object
         if isinstance(first_selected, map_objects.EditorSector):
             message = f'Floor: {first_selected.floor_z}, Ceiling: {first_selected.ceiling_z}'
