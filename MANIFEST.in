@@ -1,0 +1,3 @@
+recursive-include bloom/resources *
+recursive-include bloom/pre_cache *
+recursive-include bloom/examples *

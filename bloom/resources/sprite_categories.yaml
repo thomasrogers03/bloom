@@ -1,0 +1,32 @@
+ammo:
+  status_number: 3
+decoration:
+  status_number: 0
+environment:
+  status_number: 0
+gibbable:
+  status_number: 4
+items:
+  status_number: 3
+keys:
+  status_number: 3
+markers:
+  status_number: 10
+misc:
+  status_number: 0
+monsters:
+  status_number: 6
+multiplayer:
+  status_number: 3
+player:
+  status_number: 0
+sector links:
+  status_number: 0
+sounds:
+  status_number: 0
+switches:
+  status_number: 0
+traps:
+  status_number: 11
+weapons:
+  status_number: 3

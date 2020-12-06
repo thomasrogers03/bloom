@@ -1,0 +1,1255 @@
+0:
+  name: Decoration
+  category: decoration
+1:
+  name: Player Start
+  category: player
+  invisible: true
+  repeats:
+    x: 16
+    y: 16
+  tile_config:
+    start_tile: 2522
+  properties:
+    - name: Player Number
+      type: int
+      from: data_1
+      link_to_tile: offset
+      offset: -1
+2:
+  name: Bloodbath Start
+  category: player
+  invisible: true
+  repeats:
+    x: 16
+    y: 16
+  tile_config:
+    start_tile: 2522
+    from_data: 1
+  palette: 5
+  properties:
+    - name: Player Number
+      type: int
+      from: data_1
+      link_to_tile: offset
+      offset: -1
+3:
+  name: Off Marker
+  category: markers
+  invisible: true
+4:
+  name: On Marker
+  category: markers
+  invisible: true
+5:
+  name: Axis Marker
+  category: markers
+  invisible: true
+6:
+  name: Lower Link
+  category: sector links
+  invisible: true
+  tile_config:
+    tile: 2331
+7:
+  name: Upper Link
+  category: sector links
+  invisible: true
+  tile_config:
+    tile: 2332
+8:
+  name: Teleport Target
+  category: markers
+  invisible: true
+9:
+  name: Upper Water
+  category: sector links
+  invisible: true
+  tile_config:
+    tile: 2332
+10:
+  name: Lower Water
+  category: sector links
+  invisible: true
+  tile_config:
+    tile: 2331
+11:
+  name: Upper Stack
+  category: sector links
+  invisible: true
+  tile_config:
+    tile: 2332
+12:
+  name: Lower Stack
+  category: sector links
+  invisible: true
+  tile_config:
+    tile: 2331
+13:
+  name: Upper Goo
+  category: sector links
+  invisible: true
+  tile_config:
+    tile: 2332
+14:
+  name: Lower Goo
+  category: sector links
+  invisible: true
+  tile_config:
+    tile: 2331
+15:
+  name: Path Marker
+  category: markers
+  tile_config:
+    tile: 2319
+  properties:
+    - name: Marker ID
+      type: int
+      from: data_1
+    - name: Next Marker ID
+      type: int
+      from: data_2
+16:
+  name: Alignable Region
+  category: misc
+17:
+  name: Base Region
+  category: misc
+18:
+  name: Dude Spawn
+  category: misc
+  tile_config:
+    tile: 2077
+19:
+  name: Earthquake
+  category: misc
+  tile_config:
+    tile: 2072
+20:
+  name: Toggle Switch
+  category: switches
+  repeats:
+    x: 12
+    y: 12
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tiles:
+      - 318
+      - 982
+      - 1046
+      - 1012
+      - 1070
+      - 1072
+      - 1074
+      - 1076
+      - 1078
+  properties:
+    - name: Sound When Turning On
+      type: sound
+      from: data_1
+    - name: Sound When Turning Off
+      type: sound
+      from: data_2
+21:
+  name: 1-Way Switch
+  category: switches
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tiles:
+      - 318
+      - 982
+      - 1046
+      - 1012
+      - 1070
+      - 1072
+      - 1074
+      - 1076
+      - 1078
+22:
+  name: Combination Switch
+  category: switches
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tiles:
+      - 1161 
+      - 2532
+23:
+  name: Padlock (1-Shot)
+  category: switches
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 912
+30:
+  name: Torch
+  category: decoration
+  tile_config:
+    tile: 550
+32:
+  name: Candle
+  category: decoration
+  tile_config:
+    tile: 938
+40:
+  name: Random Weapon
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 832
+41:
+  name: Sawed Off
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 559
+42:
+  name: Tommy Gun
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 558
+43:
+  name: Flare Pistol
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 524
+44:
+  name: Voodoo Doll
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 525
+45:
+  name: Tesla Cannon
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 539
+46:
+  name: Napalm Launcher
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 526
+47:
+  name: Pitchfork
+  category: weapons
+12:
+  name: Spray Can
+  category: weapons
+49:
+  name: Dynamite
+  category: weapons
+50:
+  name: Life Leech
+  category: weapons
+  tile_config:
+    tile: 800 
+60:
+  name: Spray Can
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 618 
+62:
+  name: Bundle of TNT
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 589 
+63:
+  name: Case of TNT
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 809 
+64:
+  name: Proximity Detonator
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 811 
+65:
+  name: Remote Detonator
+  category: weapons
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 810 
+66:
+  name: Trapped Soul
+  category: ammo
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 820 
+67:
+  name: 4 Shotgun Shells
+  category:  ammo
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 619 
+68:
+  name: Box of Shotgun Shells
+  category: ammo
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 812
+69:
+  name: A Few Bullets
+  category: ammo
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 813 
+70:
+  name: Voodoo Doll
+  category: weapons
+72:
+  name: Full Drum of Bullets
+  category: ammo
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 817 
+73:
+  name: Tesla Charge
+  category: ammo
+  tile_config:
+    tile: 548
+76:
+  name: Flares
+  category: ammo
+  tile_config:
+    tile: 816
+79:
+  name: Gasoline Can
+  category: ammo
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 801 
+80:
+  name: Random Ammo
+  category: ammo
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 832
+100:
+  name: Skull Key
+  category: keys
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2552
+101:
+  name: Eye Key
+  category: keys
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2553
+102:
+  name: Fire Key
+  category: keys
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2554
+103:
+  name: Dagger Key
+  category: keys
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2555
+104:
+  name: Spider Key
+  category: keys
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2556
+105:
+  name: Moon Key
+  category: keys
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2557
+106:
+  name: Key 7
+  category: keys
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2558
+107:
+  name: Doctor's Bag
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 519
+108:
+  name: Medicine Pouch
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 822
+109:
+  name: Life Essence
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2169
+110:
+  name: Life Seed
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2433
+111:
+  name: Red Potion
+  category: items
+112:
+  name: Feather Fall
+  category: items
+113:
+  name: Limited Invisibility
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 896
+114:
+  name: Invulnerability
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 825 
+115:
+  name: Boots of Jumping
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 827
+116:
+  name: Raven Flight
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 828
+117:
+  name: Guns Akimbo
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 829 
+118:
+  name: Diving Suit
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 830 
+119:
+  name: Gas Mask
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 831
+120:
+  name: Clone
+  category: items
+121:
+  name: Crystal Ball
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 760
+122:
+  name: Decoy
+  category: items
+123:
+  name: Doppleganger
+  category: items
+124:
+  name: Reflective Shots
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2428
+125:
+  name: Beast Vision
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 839
+126:
+  name: Shadow Cloak
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 768
+127:
+  name: Rage Shroom
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 840
+128:
+  name: Delirium Shroom
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 841
+129:
+  name: Grow Shroom
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 842
+130:
+  name: Shrink Shroom
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 843
+131:
+  name: Death Mask
+  category: items
+132:
+  name: Wine Goblet
+  category: items
+133:
+  name: Wine Bottle
+  category: items
+134:
+  name: Skull Grail
+  category: items
+135:
+  name: Silver Grail
+  category: items
+136:
+  name: Tome
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 518
+137:
+  name: Black Chest
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 522
+138:
+  name: Wooden Chest
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 523
+139:
+  name: Asbestos Armor
+  category: items
+140:
+  name: Basic Armor
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2628
+141:
+  name: Body Armor
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2586
+142:
+  name: Fire Armor
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2578
+143:
+  name: Spirit Armor
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2602
+144:
+  name: Super Armor
+  category: items
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 2594
+145:
+  name: Blue Team Base
+  category: multiplayer
+146:
+  name: Red Team Base
+  category: multiplayer
+200:
+  name: Random Creature
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 832
+201:
+  name: Cultist w/ Tommy
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 2820
+  palette: 3
+202:
+  name: Cultist w/ Shotgun
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 2820
+203:
+  name: Axe Zombie
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1170
+204:
+  name: Fat Zombie
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1370
+205:
+  name: Earth Zombie
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 3054
+206:
+  name: Flesh Gargoyle
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1470
+207:
+  name: Stone Gargoyle
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1470
+  palette: 5
+208:
+  name: Flesh Statue
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1530
+209:
+  name: Stone Statue
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1530
+  palette: 5
+210:
+  name: Phantasm
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 3060
+211:
+  name: Hound
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1270
+212:
+  name: Hand
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1980
+213:
+  name: Brown Spider
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1920
+  palette: 7
+214:
+  name: Red Spider
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1920
+  palette: 4
+215:
+  name: Black Spider
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1920
+  palette: 4
+216:
+  name: Mother Spider
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1920
+217:
+  name: Gill Beast
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1570
+218:
+  name: Eel
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1870
+219:
+  name: Bat
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1912
+220:
+  name: Rat
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1745
+221:
+  name: Green Pod
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1792
+222:
+  name: Green Tentacle
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1797
+223:
+  name: Fire Pod
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1792
+  palette: 2
+224:
+  name: Fire Tentacle
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1797
+  palette: 2
+225:
+  name: Mother Pod
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1792
+  palette: 6
+226:
+  name: Mother Tentacle
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1797
+  palette: 6
+227:
+  name: Cerberus
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 2680
+229:
+  name: Tchernobog
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 3140
+230:
+  name: Tommy Cultist Prone
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 3385
+  palette: 3
+244:
+  name: Sleep Zombie
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1209
+245:
+  name: Innocent
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 3798
+246:
+  name: Shotgun Cultist Prone
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 3385
+247:
+  name: Cultist w/ Tesla
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 2820
+  palette: 11
+248:
+  name: Cultist w/ Dynamite
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 2820
+  palette: 13
+249:
+  name: Beast Cultist
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 2820
+  palette: 12
+250:
+  name: Tiny Caleb
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 3870
+251:
+  name: Beast
+  category: monsters
+  blocking: 1
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 2690
+416:
+  name: Gib Object
+  category: gibbable
+  blocking: 2
+417:
+  name: Explode Object
+  category: gibbable
+459:
+  name: Hidden Exploder
+  category: traps
+  repeats:
+    x: 1
+    y: 16
+  tile_config:
+    tile: 908
+511:
+  name: Gib Wall
+  category: gibbable
+  blocking: 2
+701:
+  name: Water Drip
+  category: environment
+702:
+  name: Blood Drip
+  category: environment
+706:
+  name: Bubble Generator
+  category: environment
+707:
+  name: Multi Bubble Generator
+  category: environment
+400:
+  name: TNT Barrel
+  category: gibbable
+  blocking: 2
+  tile_config:
+    tile: 907
+401:
+  name: Armed Proximity Bomb
+  category: gibbable
+  tile_config:
+    tile: 3444
+402:
+  name: Armed Remote
+  category: gibbable
+  tile_config:
+    tile: 3457
+403:
+  name: Blue Vase
+  category: decoration
+  blocking: 2
+404:
+  name: Brown Vase
+  category: decoration
+  blocking: 2
+405:
+  name: Crate Face
+  category: decoration
+  blocking: 2
+  tile_config:
+    tile: 462
+406:
+  name: Glass Window
+  category: environment
+  blocking: 2
+  tile_config:
+    tile: 266
+407:
+  name: Fluorescent Light
+  category: gibbable
+  blocking: 2
+  tile_config:
+    tile: 796
+408:
+  name: Wall Crack
+  category: gibbable
+  blocking: 2
+  tile_config:
+    tile: 1127
+409:
+  name: Wood Beam
+  category: environment
+  tile_config:
+    tile: 1142
+410:
+  name: Spider Web
+  category: gibbable
+  tile_config:
+    tile: 1069
+411:
+  name: Metal Grate 1
+  category: gibbable
+  tile_config:
+    tile: 123
+412:
+  name: Flammable Tree
+  category: gibbable
+413:
+  name: Machine Gun
+  category: gibbable
+414:
+  name: Falling Walk
+  category: gibbable
+415:
+  name: Kickable Pail
+  category: gibbable
+427:
+  name: Zombie Head
+  category: gibbable
+451:
+  name: Rock Trap
+  category: traps
+454:
+  name: Saw Blade
+  category: traps
+  tile_config:
+    tile: 655
+457:
+  name: Pendulum
+  category: traps
+  tile_config:
+    tile: 1080
+458:
+  name: Guillotine
+  category: traps
+  tile_config:
+    tile: 835 
+455:
+  name: Electric Zap
+  category: traps
+  tile_config:
+    tile: 1156
+456:
+  name: Switched Zap
+  category: traps
+  tile_config:
+    tile: 1156
+452:
+  name: Flame Trap
+  category: traps
+  tile_config:
+    tile: 2183
+700:
+  name: Trigger Generator
+  category: environment
+703:
+  name: Fireball Generator
+  category: environment
+704:
+  name: Ecto Skul Generator
+  category: environment
+705:
+  name: Dart Generator
+  category: environment
+708:
+  name: SFX Generator
+  category: sounds
+  invisible: true
+  tile_config:
+    tile: 2519
+709:
+  name: Sector SFX
+  category: sounds
+  invisible: true
+  tile_config:
+    tile: 2520
+  properties:
+    - name: Going On Sound
+      type: sound
+      from: data_1
+    - name: Going On Stop Sound
+      type: sound
+      from: data_2
+    - name: Going Off Sound
+      type: sound
+      from: data_3
+    - name: Going Off Stop Sound
+      type: sound
+      from: data_4
+710:
+  name: Ambient SFX
+  category: sounds
+  invisible: true
+  status_number: 12
+  tile_config:
+    tile: 2520
+  properties:
+    - name: Distance To Start Falling Off
+      type: int
+      from: data_1
+    - name: Distance To Stop Playing
+      type: int
+      from: data_2
+    - name: Sound Number
+      type: sound
+      from: data_3
+    - name: Max Volume
+      type: int
+      from: data_4
+711:
+  name: Player SFX
+  category: sounds
+  invisible: true
+  tile_config:
+    tile: 2519
+  palette: 5
+  properties:
+    - name: Sound To Play
+      type: sound
+      from: data_1

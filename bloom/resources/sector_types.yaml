@@ -1,0 +1,49 @@
+0:
+  name: Normal
+600:
+  name: Z Motion
+  marker_draw: z_motion
+602:
+  name: Z Motion Sprite
+  marker_draw: z_motion
+603:
+  name: Warp
+604:
+  name: Teleporter
+  marker_draw: point_with_angle
+  markers:
+    - type: 8
+612:
+  name: Path Sector
+  marker_draw: path
+613:
+  name: Step Rotate
+  marker_draw: arc
+  markers:
+    - type: 5
+614:
+  name: Slide Marked
+  marker_draw: arrow
+  markers:
+    - type: 3
+    - type: 4
+615:
+  name: Rotate Marked
+  marker_draw: arc
+  markers:
+    - type: 5
+616:
+  name: Slide
+  marker_draw: arrow
+  markers:
+    - type: 3
+    - type: 4
+617:
+  name: Rotate
+  marker_draw: arc
+  markers:
+    - type: 5
+618:
+  name: Damage Sector
+619:
+  name: Counter Sector
