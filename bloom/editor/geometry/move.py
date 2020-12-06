@@ -7,7 +7,8 @@ from panda3d import core
 
 from .. import grid_snapper, highlighter, map_objects, operations
 from ..highlighting import highlight_details
-from . import empty_move, sector_move, sprite_move, wall_move
+from . import (empty_move, sector_move, sector_move_walls, sprite_move,
+               wall_move)
 
 
 class Move:
@@ -17,9 +18,11 @@ class Move:
         selected_objects: typing.List[highlight_details.HighlightDetails],
         highlighted_object: highlight_details.HighlightDetails,
         snapper: grid_snapper.GridSnapper,
-        all_sectors: map_objects.SectorCollection
+        all_sectors: map_objects.SectorCollection,
+        move_sector_walls=False
     ):
         self._hit = highlighted_object.hit_position
+        self._move_sector_walls = move_sector_walls
         self._highlighted_mover = self._mover_for_object(highlighted_object)
         self._selected_objects = selected_objects
         self._movers: typing.List[empty_move.EmptyMove] = [
@@ -49,7 +52,7 @@ class Move:
                     wall: map_objects.EditorWall = previous_wall.other_side_wall.wall_previous_point
                     if wall.line_segment.is_empty:
                         operations.wall_delete.WallDelete(wall).delete()
-            
+
             elif isinstance(selected.map_object, map_objects.EditorSprite):
                 operations.sprite_find_sector.SpriteFindSector(
                     selected.map_object,
@@ -88,6 +91,11 @@ class Move:
             mover.move(delta, self._snapper)
 
     def _mover_for_object(self, details: highlight_details.HighlightDetails):
+        if self._move_sector_walls:
+            if not isinstance(details.map_object, map_objects.EditorSector):
+                raise ValueError('Invalid map object for sector wall move')
+            return sector_move_walls.SectorMoveWalls(details.map_object)
+
         if isinstance(details.map_object, map_objects.EditorWall):
             return wall_move.WallMove(details.map_object, details.part)
 

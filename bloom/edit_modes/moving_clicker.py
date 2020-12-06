@@ -9,6 +9,7 @@ from panda3d import core
 from .. import cameras, clicker_factory, constants, editor
 from ..editor import grid_snapper, highlighter, map_objects
 from ..editor.geometry import move
+from ..editor.highlighting import highlight_details
 from ..utils import shapes
 from . import grid_display
 
@@ -45,6 +46,16 @@ class MovingClicker:
             on_click_after_move=self._end_move_selection,
             on_click_move=self._move_selected_modified,
         )
+        self._move_clicker_full_sector = clickers.make_clicker(
+            [
+                core.KeyboardButton.control(),
+                core.KeyboardButton.shift(),
+                core.MouseButton.one()
+            
+            ],
+            on_click_after_move=self._end_move_selection,
+            on_click_move=self._move_entire_sector,
+        )
 
         self._mover: move.Move = None
 
@@ -69,6 +80,7 @@ class MovingClicker:
     def tick(self):
         self._move_clicker.tick()
         self._move_clicker_modified.tick()
+        self._move_clicker_full_sector.tick()
         self._update_grids()
 
     def _decrease_grid(self):
@@ -110,7 +122,7 @@ class MovingClicker:
         self._camera_collection.set_info_text(message)
 
     def _move_selected(self, total_delta: core.Vec2, delta: core.Vec2):
-        if self._initialize_mover():
+        if self._setup_mover():
             total_camera_delta = self._transform_to_camera_delta(total_delta)
             self._mover.move(total_camera_delta * self.MOVE_SCALE)
             self._display_move_info()
@@ -119,7 +131,7 @@ class MovingClicker:
                 self._updated_callback()
 
     def _move_selected_modified(self, total_delta: core.Vec2, delta: core.Vec2):
-        if self._initialize_mover():
+        if self._setup_mover():
             total_camera_delta = self._transform_to_camera_delta(total_delta)
             self._mover.move_modified(total_camera_delta * self.MOVE_SCALE)
             self._display_move_info()
@@ -127,7 +139,27 @@ class MovingClicker:
             if self._updated_callback is not None:
                 self._updated_callback()
 
-    def _initialize_mover(self):
+    def _move_entire_sector(self, total_delta: core.Vec2, delta: core.Vec2):
+        if self._setup_sector_wall_mover():
+            total_camera_delta = self._transform_to_camera_delta(total_delta)
+            self._mover.move_modified(total_camera_delta * self.MOVE_SCALE)
+            self._display_move_info()
+
+            if self._updated_callback is not None:
+                self._updated_callback()
+
+    def _setup_sector_wall_mover(self):
+        if self._mover is None:
+            selected = self._object_highlighter.select(
+                selected_type_or_types=map_objects.EditorSector
+            )
+            if selected is None:
+                return False
+
+            self._initialize_mover(selected, True)
+        return True
+
+    def _setup_mover(self):
         if self._mover is None:
             selected = self._object_highlighter.select_append(
                 no_append_if_not_selected=True,
@@ -136,15 +168,18 @@ class MovingClicker:
             if len(selected) < 1:
                 return False
 
-            highlight = selected[-1]
-            self._mover = move.Move(
-                self._object_highlighter.selected,
-                highlight,
-                self._snapper,
-                self._all_sectors
-            )
-            self._show_grids()
+            self._initialize_mover(selected[-1], False)
         return True
+
+    def _initialize_mover(self, highlight: highlight_details.HighlightDetails, move_sector_walls):
+        self._mover = move.Move(
+            self._object_highlighter.selected,
+            highlight,
+            self._snapper,
+            self._all_sectors,
+            move_sector_walls=move_sector_walls
+        )
+        self._show_grids()
 
     def _update_grids(self):
         if len(self._object_highlighter.selected) > 0:
