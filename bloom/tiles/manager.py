@@ -30,6 +30,7 @@ class Manager:
 
     def get_all_tiles(self) -> typing.List[int]:
         return sorted(self._art_manager.get_tile_indices())
+        
 
     def get_tile_dimensions(self, picnum: int):
         width, height = self._art_manager.get_tile_dimensions(picnum)
