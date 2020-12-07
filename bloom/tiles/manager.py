@@ -28,12 +28,8 @@ class Manager:
         self._art_manager = art.ArtManager(rff, art_paths)
         self._edit_mode_selector.always_run(self._process_loading_tiles)
 
-    @property
-    def tile_count(self):
-        return self._art_manager.tile_count
-
     def get_all_tiles(self) -> typing.List[int]:
-        return list(range(self.tile_count))
+        return sorted(self._art_manager.get_tile_indices())
 
     def get_tile_dimensions(self, picnum: int):
         width, height = self._art_manager.get_tile_dimensions(picnum)

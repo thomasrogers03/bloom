@@ -121,6 +121,11 @@ class Art:
     def count(self):
         return len(self._tiles)
 
+    def get_tile_indices(self):
+        return [
+            index for index in range(self._header.tile_start, self._header.tile_end)
+        ]
+
     def has_tile(self, tile_number):
         return tile_number >= self._header.tile_start and tile_number <= self._header.tile_end
 
@@ -148,9 +153,10 @@ class ArtManager:
         self._art = [Art(rff, path) for path in paths]
         self._tile_count = sum(art.count for art in self._art)
 
-    @property
-    def tile_count(self):
-        return self._tile_count
+    def get_tile_indices(self):
+        return [
+            index for art in self._art for index in art.get_tile_indices()
+        ]
 
     def get_tile_animation_data(self, tile_number: int):
         return self._get_art(tile_number).get_tile_animation_data(tile_number)
