@@ -108,6 +108,7 @@ class MovingClicker:
             return
 
         first_selected = self._object_highlighter.selected[0].map_object
+        message = ''
         if isinstance(first_selected, map_objects.EditorSector):
             message = f'Floor: {first_selected.floor_z}, Ceiling: {first_selected.ceiling_z}'
         elif isinstance(first_selected, map_objects.EditorWall):
@@ -122,7 +123,8 @@ class MovingClicker:
             point = first_selected.position
             point_message = f'(x: {point.x}, y: {point.y}, z: {point.z})'
             message = f'Position: {point_message}'
-        self._camera_collection.set_info_text(message)
+        if message:
+            self._camera_collection.set_info_text(message)
 
     def _move_selected(self, total_delta: core.Vec2, delta: core.Vec2):
         if self._setup_mover():
