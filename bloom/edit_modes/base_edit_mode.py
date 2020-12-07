@@ -31,6 +31,17 @@ class EditMode(DirectObject.DirectObject):
             self._edit_mode_selector.mouse_watcher,
             self._edit_mode_selector.task_manager
         )
+        self._events_enabled = True
+
+    def accept(self, event, method, extraArgs=[]):
+        new_handler = self._event_wrapper(method)
+        return super().accept(event, new_handler, extraArgs=extraArgs)
+
+    def disable_events(self):
+        self._events_enabled = False
+
+    def enable_events(self):
+        self._events_enabled = True
 
     def set_editor(self, editor: map_editor.MapEditor):
         self._editor = editor
@@ -49,6 +60,12 @@ class EditMode(DirectObject.DirectObject):
 
     def _exit_current_mode(self):
         self._edit_mode_selector.pop_mode()
+
+    def _event_wrapper(self, handler):
+        def _callback(*args, **kwargs):
+            if self._events_enabled:
+                return handler(*args, **kwargs)
+        return _callback
 
     def _make_clicker(
         self,
@@ -81,8 +98,10 @@ class EditMode(DirectObject.DirectObject):
 
         self._camera.lens.extrude(mouse, source, target)
 
-        source = self._camera_collection.scene.get_relative_point(self._camera.camera, source)
-        target = self._camera_collection.scene.get_relative_point(self._camera.camera, target)
+        source = self._camera_collection.scene.get_relative_point(
+            self._camera.camera, source)
+        target = self._camera_collection.scene.get_relative_point(
+            self._camera.camera, target)
 
         return source, target
 
@@ -95,8 +114,10 @@ class EditMode(DirectObject.DirectObject):
         raise NotImplementedError()
 
     def tick(self):
+        if not self._events_enabled:
+            return
+
         for ticker in self._tickers:
             ticker()
             if self._edit_mode_selector.tick_cancelled:
                 break
-
