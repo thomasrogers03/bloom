@@ -32,6 +32,7 @@ class EditMode(DirectObject.DirectObject):
             self._edit_mode_selector.task_manager
         )
         self._events_enabled = True
+        self._old_accept = super().accept
 
     def accept(self, event, method, extraArgs=[]):
         new_handler = self._event_wrapper(method)
@@ -53,6 +54,8 @@ class EditMode(DirectObject.DirectObject):
             command=self._exit_current_mode
         )
         self._menu.add_separator()
+        self._old_accept(constants.GUI_HAS_FOCUS, self.disable_events)
+        self._old_accept(constants.GUI_LOST_FOCUS, self.enable_events)
 
     def exit_mode(self):
         self.ignore_all()

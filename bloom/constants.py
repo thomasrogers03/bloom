@@ -79,3 +79,6 @@ HUGE_TEXT_SIZE = 0.08
 SCENE_SCALE = 1 / 100
 
 MAP_EXTENSION_SKIP = -len('.MAP')
+
+GUI_HAS_FOCUS = 'gui_has_focus'
+GUI_LOST_FOCUS = 'gui_lost_focus'

@@ -11,6 +11,7 @@ from ... import constants, map_data
 from ...editor import descriptors, map_objects
 from ...editor.descriptors import sector_type_descriptor
 from ...editor.properties import sprite_property_view
+from ...utils import gui
 
 
 class TypeSelector:
@@ -24,8 +25,10 @@ class TypeSelector:
             frameSize=(0, 0.56, 0, 0.2),
             relief=DirectGuiGlobals.RAISED,
             borderWidth=(0.01, 0.01),
-            frameColor=(0.85, 0.85, 0.85, 0.75)
+            frameColor=(0.85, 0.85, 0.85, 0.75),
+            state=DirectGuiGlobals.NORMAL
         )
+        gui.bind_gui_for_focus(self._frame)
         self._frame.hide()
 
         self._property_parent: core.NodePath = self._aspect_2d.attach_new_node('properties')
@@ -34,8 +37,10 @@ class TypeSelector:
             frameSize=(-0.02, 1.02, 0.02, 1.32),
             relief=DirectGuiGlobals.RAISED,
             borderWidth=(0.01, 0.01),
-            frameColor=(0.85, 0.85, 0.85, 0.75)
+            frameColor=(0.85, 0.85, 0.85, 0.75),
+            state=DirectGuiGlobals.NORMAL
         )
+        gui.bind_gui_for_focus(self._properties_frame)
         self._properties_frame.hide()
         self._properties: sprite_property_view.SpritePropertyView = None
 
