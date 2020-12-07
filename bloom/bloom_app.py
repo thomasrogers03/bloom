@@ -55,7 +55,7 @@ class Bloom(ShowBase):
             with open(self._CONFIG_PATH, 'w+') as file:
                 file.write(yaml.dump(self._config))
 
-        if self._fluid_synth_path is None:
+        if 'fluid_synth_path' not in self._config:
             fluid_synth_path = distutils.spawn.find_executable("fluidsynth.exe")
             if not fluid_synth_path:
                 fluid_synth_path = distutils.spawn.find_executable("fluidsynth")
@@ -73,10 +73,11 @@ class Bloom(ShowBase):
                     title='Cannot play music',
                     message=message
                 )
+                fluid_synth_path = None
 
             self._config['fluid_synth_path'] = fluid_synth_path
 
-        if self._sound_font_path is None:
+        if 'sound_font_path' not in self._config:
             sound_font_path = tkinter.filedialog.askopenfilename(
                 initialdir=self._blood_path,
                 title='Specify Sound Font Path to Use for Conversion',
@@ -89,6 +90,7 @@ class Bloom(ShowBase):
                     title='Cannot play music',
                     message=message
                 )
+                sound_font_path = None
 
             self._config['sound_font_path'] = sound_font_path
 
