@@ -5,10 +5,12 @@
 from direct.showbase import DirectObject
 from panda3d import core
 
-from .. import cameras, dialogs, edit_menu, edit_mode, editor
+from .. import cameras, dialogs, edit_menu, edit_mode, editor, map_data
 from .. import menu as context_menu
 from ..editor import highlighter, map_editor, map_objects, operations
 from ..editor.descriptors import constants as descriptor_constants
+from ..editor.descriptors import sprite_type_descriptor
+from ..editor.properties import sprite_properties
 from .sector_effects import property_editor
 
 
@@ -177,9 +179,13 @@ class ObjectEditor:
         category_menus = {}
         for category in descriptor_constants.sprite_category_descriptors.keys():
             category_menus[category] = add_sprites.add_sub_menu(category)
-        for sprite_descriptor in descriptor_constants.sprite_types.values():
+        for sprite_type, sprite_descriptor in descriptor_constants.sprite_types.items():
             category_menus[sprite_descriptor.category].add_command(
-                sprite_descriptor.name, None
+                sprite_descriptor.name, 
+                self._add_sprite_from_context_menu_callback(
+                    sprite_type,
+                    sprite_descriptor
+                )
             )
 
     def set_copy_sprite(self, sprite: map_objects.EditorSprite):
@@ -381,9 +387,33 @@ class ObjectEditor:
                     self._editor.sectors
                 ).delete()
 
-    def _add_sprite(self):
+    def _add_sprite_from_context_menu_callback(
+        self, 
+        sprite_type: int, 
+        descriptor: sprite_type_descriptor.SpriteTypeDescriptor
+    ):
+        def _callback():
+            selected = self._highlighter.select()
+            if selected is None:
+                return
+
+            blood_sprite = map_data.sprite.Sprite.new()
+            sprite = selected.map_object.add_sprite(blood_sprite)
+            sprite_properties.SpriteDialog.apply_sprite_properties(
+                sprite,
+                descriptor,
+                descriptor.default_tile,
+                descriptor.palette
+            )
+
+            hit_position = self._editor.snapper.snap_to_grid_3d(selected.hit_position)
+            sprite.move_to(hit_position)
+        return _callback
+
+    def _add_sprite(self, sprite_type = None):
         selected = self._highlighter.select(
-            selected_type_or_types=map_objects.EditorSector)
+            selected_type_or_types=map_objects.EditorSector
+        )
         if selected is None:
             return
 

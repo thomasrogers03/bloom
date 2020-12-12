@@ -184,14 +184,13 @@ class SpriteDialog:
         if new_picnum is not None:
             self._current_picnum = new_picnum
 
-        self._sprite.sprite.sprite.tags[0] = self._current_descriptor.sprite_type
         self._current_descriptor.apply_sprite_properties(self._sprite, new_values)
-        self._sprite.sprite.sprite.picnum = self._current_picnum
-        self._sprite.sprite.sprite.palette = self._get_current_palette()
-        self._sprite.sprite.sprite.status_number = self._current_descriptor.get_status_number(
-            descriptors.sprite_category_descriptors
+        self.apply_sprite_properties(
+            self._sprite, 
+            self._current_descriptor, 
+            self._current_picnum,
+            self._get_current_palette()
         )
-        self._sprite.sprite.sprite.stat.invisible = int(self._current_descriptor.invisible)
 
         target_special_value = self._special_target_menu.get()
         if target_special_value == 'Next Level':
@@ -209,20 +208,35 @@ class SpriteDialog:
                 self._sprite.source_event_grouping.special_receiver_id is not None:
             self._sprite.set_source_event_grouping(None)
 
-        repeats = self._current_descriptor.sprite_repeats
-        if repeats is not None:
-            self._sprite.set_repeats(repeats['x'], repeats['y'])
-
-        self._sprite.sprite.sprite.stat.blocking = 0
-        self._sprite.sprite.sprite.stat.blocking2 = 0
-        if self._current_descriptor.blocking == 1:
-            self._sprite.sprite.sprite.stat.blocking = 1
-        elif self._current_descriptor.blocking == 2:
-            self._sprite.sprite.sprite.stat.blocking2 = 1
-
         self._sprite.invalidate_geometry()
         self._sprite.update_ambient_sound()
         self._hide()
+
+    @staticmethod
+    def apply_sprite_properties(
+        sprite: map_objects.EditorSprite, 
+        descriptor: sprite_type_descriptor.SpriteTypeDescriptor,
+        picnum: int,
+        palette: int
+    ):
+        sprite.sprite.sprite.tags[0] = descriptor.sprite_type
+        sprite.sprite.sprite.picnum = picnum
+        sprite.sprite.sprite.palette = palette
+        sprite.sprite.sprite.status_number = descriptor.get_status_number(
+            descriptors.sprite_category_descriptors
+        )
+        sprite.sprite.sprite.stat.invisible = int(descriptor.invisible)
+
+        sprite.sprite.sprite.stat.blocking = 0
+        sprite.sprite.sprite.stat.blocking2 = 0
+        if descriptor.blocking == 1:
+            sprite.sprite.sprite.stat.blocking = 1
+        elif descriptor.blocking == 2:
+            sprite.sprite.sprite.stat.blocking2 = 1
+
+        repeats = descriptor.sprite_repeats
+        if repeats is not None:
+            sprite.set_repeats(repeats['x'], repeats['y'])
 
     def _clear_property_view(self):
         if self._properties is not None:
