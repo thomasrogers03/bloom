@@ -70,7 +70,7 @@ class EditMode(navigation_mode_2d.EditMode):
 
     def enter_mode(self, state: dict):
         super().enter_mode(state)
-        self._object_editor.setup_commands(self)
+        self._object_editor.setup_commands(self, self._context_menu)
 
         self.accept('tab', lambda: self._edit_mode_selector.pop_mode())
         self.accept('insert', self._start_drawing)

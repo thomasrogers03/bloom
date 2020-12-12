@@ -117,7 +117,7 @@ class EditMode(navigation_mode_3d.EditMode):
             command=self._enter_2d_mode
         )
         self._menu.add_separator()
-        self._object_editor.setup_commands(self)
+        self._object_editor.setup_commands(self, self._context_menu)
         self._menu.add_separator()
         self._menu.add_command(
             label="Start Drawing (insert)",

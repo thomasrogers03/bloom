@@ -6,14 +6,16 @@ from direct.showbase import DirectObject
 from panda3d import core
 
 from .. import cameras, dialogs, edit_menu, edit_mode, editor
+from .. import menu as context_menu
 from ..editor import highlighter, map_editor, map_objects, operations
+from ..editor.descriptors import constants as descriptor_constants
 from .sector_effects import property_editor
 
 
 class ObjectEditor:
 
     def __init__(
-        self, 
+        self,
         editor_dialogs: dialogs.Dialogs,
         make_clicker_callback,
         camera_collection: cameras.Cameras,
@@ -46,13 +48,12 @@ class ObjectEditor:
             on_click=self._select_object_append,
         )
 
-
     def setup(self, editor: map_editor.MapEditor, object_highlighter: highlighter.Highlighter):
         self._editor = editor
         self._property_editor.set_editor(self._editor)
         self._highlighter = object_highlighter
 
-    def setup_commands(self, event_handler: DirectObject.DirectObject):
+    def setup_commands(self, event_handler: DirectObject.DirectObject, menu: context_menu.Menu):
         self._menu.add_command(
             label="Join sectors (j)",
             command=self._join_sectors
@@ -172,6 +173,14 @@ class ObjectEditor:
         event_handler.accept('=', self._increase_shade)
         event_handler.accept('=-repeat', self._increase_shade)
 
+        add_sprites = menu.add_sub_menu('Add Sprite')
+        category_menus = {}
+        for category in descriptor_constants.sprite_category_descriptors.keys():
+            category_menus[category] = add_sprites.add_sub_menu(category)
+        for sprite_descriptor in descriptor_constants.sprite_types.values():
+            category_menus[sprite_descriptor.category].add_command(
+                sprite_descriptor.name, None
+            )
 
     def set_copy_sprite(self, sprite: map_objects.EditorSprite):
         self._copy_sprite = sprite
@@ -214,7 +223,7 @@ class ObjectEditor:
         for index, selected_item in enumerate(selected):
             shade = original_shades[index]
             selected_item.map_object.set_shade(selected_item.part, shade + amount)
-        
+
         if len(selected) > 0:
             first_selected = selected[0]
             shade = first_selected.map_object.get_shade(first_selected.part)
@@ -229,7 +238,8 @@ class ObjectEditor:
 
         for selected_item in selected:
             if isinstance(selected_item.map_object, map_objects.EditorSprite):
-                operations.sprite_facing.SpriteFacing(selected_item.map_object).change_facing()
+                operations.sprite_facing.SpriteFacing(
+                    selected_item.map_object).change_facing()
             else:
                 operations.sector_relative_swap.SectorRelativeSwap(
                     selected_item.map_object,
@@ -253,7 +263,8 @@ class ObjectEditor:
         receivers = selected[:-1]
 
         selected_objects = [item.map_object for item in receivers]
-        grouping = self._editor.sectors.event_groupings.get_grouping(transmitter.map_object, selected_objects)
+        grouping = self._editor.sectors.event_groupings.get_grouping(
+            transmitter.map_object, selected_objects)
         if grouping is None:
             return
 
@@ -267,7 +278,7 @@ class ObjectEditor:
         selected = self._highlighter.select_append(
             no_append_if_not_selected=True,
             selected_type_or_types=[
-                map_objects.EditorWall, 
+                map_objects.EditorWall,
                 map_objects.EditorSprite
             ]
         )
@@ -301,25 +312,29 @@ class ObjectEditor:
             self._camera_collection.set_info_text(f'Heinum: {build_heinum}')
 
     def _set_sector_first_wall(self):
-        selected = self._highlighter.select(selected_type_or_types=map_objects.EditorWall)
+        selected = self._highlighter.select(
+            selected_type_or_types=map_objects.EditorWall)
         if selected is None:
             return
 
         selected.map_object.get_sector().set_first_wall(selected.map_object)
 
     def _swap_lower_texture(self):
-        selected = self._highlighter.select(selected_type_or_types=map_objects.EditorWall)
+        selected = self._highlighter.select(
+            selected_type_or_types=map_objects.EditorWall)
         if selected is None:
             return
 
         operations.swap_wall_bottom.SwapWallBottom(selected.map_object).toggle()
 
     def _toggle_wall_peg(self):
-        selected = self._highlighter.select(selected_type_or_types=map_objects.EditorWall)
+        selected = self._highlighter.select(
+            selected_type_or_types=map_objects.EditorWall)
         if selected is None:
             return
-        
-        operations.swap_wall_peg.SwapWallPeg(selected.map_object, selected.part).toggle()
+
+        operations.swap_wall_peg.SwapWallPeg(
+            selected.map_object, selected.part).toggle()
 
     def _decrease_angle(self):
         selected = self._highlighter.select_append(
@@ -329,9 +344,11 @@ class ObjectEditor:
 
         for selected_item in selected:
             if isinstance(selected_item.map_object, map_objects.EditorSprite):
-                operations.sprite_angle_update.SpriteAngleUpdate(selected_item.map_object).increment(-15)
+                operations.sprite_angle_update.SpriteAngleUpdate(
+                    selected_item.map_object).increment(-15)
             elif isinstance(selected_item.map_object, map_objects.EditorSector):
-                operations.sector_rotate.SectorRotate(selected_item.map_object).rotate(-15)
+                operations.sector_rotate.SectorRotate(
+                    selected_item.map_object).rotate(-15)
 
     def _increase_angle(self):
         selected = self._highlighter.select_append(
@@ -341,9 +358,11 @@ class ObjectEditor:
 
         for selected_item in selected:
             if isinstance(selected_item.map_object, map_objects.EditorSprite):
-                operations.sprite_angle_update.SpriteAngleUpdate(selected_item.map_object).increment(15)
+                operations.sprite_angle_update.SpriteAngleUpdate(
+                    selected_item.map_object).increment(15)
             elif isinstance(selected_item.map_object, map_objects.EditorSector):
-                operations.sector_rotate.SectorRotate(selected_item.map_object).rotate(15)
+                operations.sector_rotate.SectorRotate(
+                    selected_item.map_object).rotate(15)
 
     def _delete_selected(self):
         selected = self._highlighter.select_append(no_append_if_not_selected=True)
@@ -363,7 +382,8 @@ class ObjectEditor:
                 ).delete()
 
     def _add_sprite(self):
-        selected = self._highlighter.select(selected_type_or_types=map_objects.EditorSector)
+        selected = self._highlighter.select(
+            selected_type_or_types=map_objects.EditorSector)
         if selected is None:
             return
 
@@ -439,7 +459,8 @@ class ObjectEditor:
         return _callback
 
     def _split_selection(self):
-        selected = self._highlighter.select(selected_type_or_types=map_objects.EditorWall)
+        selected = self._highlighter.select(
+            selected_type_or_types=map_objects.EditorWall)
         if selected is None:
             return
 
@@ -454,13 +475,14 @@ class ObjectEditor:
             self._do_join(selected[0].map_object, selected[1].map_object)
 
     def _do_join(self, sector_1: map_objects.EditorSector, sector_2: map_objects.EditorSector):
-        operations.sector_join.SectorJoin(self._editor.sectors, sector_1, sector_2).join()
+        operations.sector_join.SectorJoin(
+            self._editor.sectors, sector_1, sector_2).join()
         self._editor.update_builder_sector(
             self._camera_collection.get_builder_position(),
             force=True
         )
         self._highlighter.clear()
-    
+
     def _select_sprites(self):
         yield from self._highlighter.select_append(
             no_append_if_not_selected=True,

@@ -35,7 +35,7 @@ class EditMode(DirectObject.DirectObject):
         self._events_enabled = True
         self._old_accept = super().accept
 
-        self._context_menu = Menu(camera_collection.render_2d)
+        self._context_menu = Menu(camera_collection.aspect_2d)
         self._make_clicker(
             [core.MouseButton.three()],
             on_click=self._show_context_menu,
