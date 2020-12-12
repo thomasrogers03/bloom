@@ -30,8 +30,8 @@ class EditMode(DirectObject.DirectObject):
         self._current_pstats_name = 'App:Show code:global_ticker'
 
         self._task_manager.do_method_later(
-            constants.TICK_RATE, 
-            self._tick, 
+            constants.TICK_RATE,
+            self._tick,
             'global_ticker'
         )
         self.accept('escape', self.pop_mode)
