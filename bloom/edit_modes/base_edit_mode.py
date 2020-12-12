@@ -9,6 +9,7 @@ from panda3d import bullet, core
 from .. import (cameras, clicker, clicker_factory, constants, edit_menu,
                 edit_mode)
 from ..editor import map_editor
+from ..menu import Menu
 
 
 class EditMode(DirectObject.DirectObject):
@@ -34,6 +35,12 @@ class EditMode(DirectObject.DirectObject):
         self._events_enabled = True
         self._old_accept = super().accept
 
+        self._context_menu = Menu(camera_collection.render_2d)
+        self._make_clicker(
+            [core.MouseButton.three()],
+            on_click=self._show_context_menu,
+        )
+
     def accept(self, event, method, extraArgs=[]):
         new_handler = self._event_wrapper(method)
         return super().accept(event, new_handler, extraArgs=extraArgs)
@@ -54,12 +61,20 @@ class EditMode(DirectObject.DirectObject):
             command=self._exit_current_mode
         )
         self._menu.add_separator()
+        self._context_menu.clear()
         self._old_accept(constants.GUI_HAS_FOCUS, self.disable_events)
         self._old_accept(constants.GUI_LOST_FOCUS, self.enable_events)
 
     def exit_mode(self):
+        self._context_menu.hide()
         self.ignore_all()
         return {}
+
+    def _show_context_menu(self):
+        self._context_menu.show()
+
+    def _hide_context_menu(self):
+        self._context_menu.hide()
 
     def _exit_current_mode(self):
         self._edit_mode_selector.pop_mode()

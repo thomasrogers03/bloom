@@ -88,6 +88,9 @@ class Menu:
 
         return menu
 
+    def clear(self):
+        pass
+
     def _wrapped_command(self, command):
         def _wrapped(*args, **kwargs):
             self.hide(hide_parent=True)
