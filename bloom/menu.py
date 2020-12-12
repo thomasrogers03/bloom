@@ -12,7 +12,7 @@ from .utils import gui
 
 
 class Menu:
-    _TEXT_SIZE = constants.BIG_TEXT_SIZE
+    _TEXT_SIZE = constants.TEXT_SIZE
 
     def __init__(self, parent: core.NodePath, parent_menu: 'Menu' = None):
         self._parent = parent
