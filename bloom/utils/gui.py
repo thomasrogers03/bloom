@@ -37,13 +37,13 @@ def size_inside_square_for_texture(texture: core.Texture, square_size: float):
 
 def bind_gui_for_focus(control: DirectGuiBase.DirectGuiBase):
     control['state'] = DirectGuiGlobals.NORMAL
-    control.bind(DirectGuiGlobals.WITHIN, _dispatch_has_focus)
-    control.bind(DirectGuiGlobals.WITHOUT, _dispatch_lost_focus)
+    control.bind(DirectGuiGlobals.WITHIN, dispatch_has_focus)
+    control.bind(DirectGuiGlobals.WITHOUT, dispatch_lost_focus)
 
 
-def _dispatch_has_focus(event):
+def dispatch_has_focus(event):
     messenger.send(constants.GUI_HAS_FOCUS)
 
 
-def _dispatch_lost_focus(event):
+def dispatch_lost_focus(event):
     messenger.send(constants.GUI_LOST_FOCUS)
