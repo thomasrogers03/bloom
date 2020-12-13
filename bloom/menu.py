@@ -46,6 +46,14 @@ class Menu:
 
         self._auto_hide_task: Task.Task = None
 
+    def clear(self):
+        self._bottom = 0.0
+        self._width = 0.0
+
+        for child in self._frame.get_children():
+            child.remove_node()
+        self._sub_menus.clear()
+
     def hide(self, hide_parent=False):
         self._frame.hide()
 
@@ -87,9 +95,6 @@ class Menu:
         frame.bind(DirectGuiGlobals.WITHIN, self._show_sub_menu, extraArgs=[menu])
 
         return menu
-
-    def clear(self):
-        pass
 
     def _wrapped_command(self, command):
         def _wrapped(*args, **kwargs):
