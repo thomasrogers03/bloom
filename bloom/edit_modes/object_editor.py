@@ -175,21 +175,30 @@ class ObjectEditor:
         event_handler.accept('=', self._increase_shade)
         event_handler.accept('=-repeat', self._increase_shade)
 
-        add_sprites = menu.add_sub_menu('Add Sprite')
+        self._setup_context_menu(menu)
+
+    def set_copy_sprite(self, sprite: map_objects.EditorSprite):
+        self._copy_sprite = sprite
+
+    def _setup_context_menu(self, menu: context_menu.Menu):
+        self._setup_wall_context_menu(menu.add_sub_menu('Edit'))
+        self._setup_sprite_context_menu(menu.add_sub_menu('Add Sprite'))
+
+    def _setup_wall_context_menu(self, menu: context_menu.Menu):
+        menu.add_command('Extrude', self._extrude_selection)
+
+    def _setup_sprite_context_menu(self, menu: context_menu.Menu):
         category_menus = {}
         for category in descriptor_constants.sprite_category_descriptors.keys():
-            category_menus[category] = add_sprites.add_sub_menu(category)
+            category_menus[category] = menu.add_sub_menu(category)
         for sprite_type, sprite_descriptor in descriptor_constants.sprite_types.items():
             category_menus[sprite_descriptor.category].add_command(
-                sprite_descriptor.name, 
+                sprite_descriptor.name,
                 self._add_sprite_from_context_menu_callback(
                     sprite_type,
                     sprite_descriptor
                 )
             )
-
-    def set_copy_sprite(self, sprite: map_objects.EditorSprite):
-        self._copy_sprite = sprite
 
     def _edit_object_properties(self):
         selected = self._highlighter.select()
@@ -388,8 +397,8 @@ class ObjectEditor:
                 ).delete()
 
     def _add_sprite_from_context_menu_callback(
-        self, 
-        sprite_type: int, 
+        self,
+        sprite_type: int,
         descriptor: sprite_type_descriptor.SpriteTypeDescriptor
     ):
         def _callback():
@@ -410,7 +419,7 @@ class ObjectEditor:
             sprite.move_to(hit_position)
         return _callback
 
-    def _add_sprite(self, sprite_type = None):
+    def _add_sprite(self, sprite_type=None):
         selected = self._highlighter.select(
             selected_type_or_types=map_objects.EditorSector
         )
