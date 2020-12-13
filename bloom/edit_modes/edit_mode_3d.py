@@ -54,12 +54,12 @@ class EditMode(navigation_mode_3d.EditMode):
         )
 
         self._make_clicker(
-            [core.MouseButton.two()],
+            [core.KeyboardButton.control(), core.MouseButton.three()],
             on_click=self._copy_selected_picnum,
         )
 
         self._make_clicker(
-            [core.MouseButton.three()],
+            [core.KeyboardButton.shift(), core.MouseButton.three()],
             on_click=self._paste_selected_picnum,
         )
 
@@ -84,12 +84,14 @@ class EditMode(navigation_mode_3d.EditMode):
                 self._mode_2d.set_copy_sprite(selected.map_object)
             else:
                 self._copy_picnum = selected.map_object.get_picnum(selected.part)
+        self._camera_collection.set_info_text('Copied')
 
     def _paste_selected_picnum(self):
         if self._copy_picnum is not None:
             selected = self._highlighter.select()
             if selected is not None:
                 selected.map_object.set_picnum(selected.part, self._copy_picnum)
+        self._camera_collection.set_info_text('Pasted')
 
     def set_editor(self, editor):
         super().set_editor(editor)
