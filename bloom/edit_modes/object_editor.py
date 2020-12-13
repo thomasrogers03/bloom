@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+import typing
+
 from direct.showbase import DirectObject
 from panda3d import core
 
@@ -152,6 +154,11 @@ class ObjectEditor:
 
         event_handler.accept('home', self._move_selected_sprites_to_ceiling)
         event_handler.accept('end', self._move_selected_sprites_to_floor)
+
+        event_handler.accept('page_up', self._move_sector_up)
+        event_handler.accept('page_up-repeat', self._move_sector_up)
+        event_handler.accept('page_down', self._move_sector_down)
+        event_handler.accept('page_down-repeat', self._move_sector_down)
 
         event_handler.accept(',', self._decrease_angle)
         event_handler.accept(',-repeat', self._decrease_angle)
@@ -453,6 +460,35 @@ class ObjectEditor:
         editor_sector = sprite.get_sector()
         new_z = editor_sector.ceiling_z_at_point(sprite.origin_2d)
         sprite.set_z_at_top(new_z)
+
+    def _move_sector_up(self):
+        self._move_sector(-1)
+
+    def _move_sector_down(self):
+        self._move_sector(1)
+
+    def _move_sector(self, direction: float):
+        selected = self._highlighter.select_append()
+        
+        sectors: typing.Set[map_objects.EditorSector] = set()
+        for selected_object in selected:
+            if isinstance(selected_object.map_object, map_objects.EditorSector):
+                sectors.add(selected_object.map_object)
+
+        amount = direction * self._editor.snapper.grid_size
+        delta = core.Vec3(0, 0, amount)
+        for sector in sectors:
+            sector.move_floor_to(sector.floor_z + amount)
+            sector.move_ceiling_to(sector.ceiling_z + amount)
+
+            for marker in sector.floor_z_motion_markers:
+                marker.move_to(marker.origin + delta)
+
+            for marker in sector.ceiling_z_motion_markers:
+                marker.move_to(marker.origin + delta)
+
+            for sprite in sector.sprites:
+                sprite.move_to(sprite.origin + delta)
 
     def _change_tile(self):
         self._highlighter.select_append(no_append_if_not_selected=True)
