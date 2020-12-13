@@ -24,6 +24,14 @@ Default Movement: The first vertex of the wall will be move along the direction 
 
 Modified Movement: The first vertex of the wall will be moved along the x/y plane based on the movement of the mouse and the direction of the camera.
 
+### Floors and Ceilings
+
+Default Movement: The floor/ceiling will be moved up/down based on mouse movement.
+
+Modified Movement: None
+
+Additionally, it is possible to move everything up/down in a sector by pressing `Page Up` or `Page Down` on the floor or ceiling of the sector.
+
 ## Extruding Geometry
 
 It's possible to quickly create a new sector from a wall, for example to create a hallway. Simply select the wall and press shift + space. Doing so will "extrude" the wall outwards as shown below:
