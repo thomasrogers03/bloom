@@ -13,4 +13,4 @@ class SpriteAngleUpdate:
     def increment(self, amount):
         self._sprite.invalidate_geometry()
         new_value = self._sprite.theta + amount
-        self._sprite.sprite.sprite.theta = editor.to_build_angle(new_value)
+        self._sprite.set_theta(new_value)

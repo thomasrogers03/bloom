@@ -12,6 +12,7 @@ from .. import menu as context_menu
 from ..editor import highlighter, map_editor, map_objects, operations
 from ..editor.descriptors import constants as descriptor_constants
 from ..editor.descriptors import sprite_type_descriptor
+from ..editor.highlighting import highlight_details
 from ..editor.properties import sprite_properties
 from .sector_effects import property_editor
 
@@ -428,20 +429,35 @@ class ObjectEditor:
 
     def _add_sprite(self, sprite_type=None):
         selected = self._highlighter.select(
-            selected_type_or_types=map_objects.EditorSector
+            selected_type_or_types=[map_objects.EditorSector, map_objects.EditorWall]
         )
         if selected is None:
             return
 
+        sprite = self._add_sprite_to_sector(selected)
+        if selected.is_floor:
+            self._move_sprite_to_floor(sprite)
+        elif selected.is_ceiling:
+            self._move_sprite_to_ceiling(sprite)
+        elif selected.is_wall:
+            offset = selected.map_object.get_normal_3d() * 8
+            sprite.move_to(sprite.position - offset)
+            sprite.get_stat_for_part(None).facing = 1
+            theta = selected.map_object.line_segment.get_direction_theta()
+            sprite.set_theta(theta)
+            sprite.invalidate_geometry()
+
+    def _add_sprite_to_sector(self, selected: highlight_details.HighlightDetails):
+        sector = selected.get_sector()
         hit_position = self._editor.snapper.snap_to_grid_3d(selected.hit_position)
         if self._copy_sprite is None:
-            selected.map_object.add_new_sprite(hit_position)
+            return sector.add_new_sprite(hit_position)
         else:
             blood_sprite = self._copy_sprite.sprite.copy()
-            sprite = selected.map_object.add_sprite(blood_sprite)
-            sprite.move_to(hit_position)
+            sprite =  sector.add_sprite(blood_sprite)
             sprite.set_source_event_grouping(self._copy_sprite.source_event_grouping)
-            self._move_sprite_to_floor(sprite)
+            sprite.move_to(hit_position)
+            return sprite
 
     def _move_selected_sprites_to_floor(self):
         for selected_item in self._select_sprites():
@@ -469,7 +485,7 @@ class ObjectEditor:
 
     def _move_sector(self, direction: float):
         selected = self._highlighter.select_append()
-        
+
         sectors: typing.Set[map_objects.EditorSector] = set()
         for selected_object in selected:
             if isinstance(selected_object.map_object, map_objects.EditorSector):

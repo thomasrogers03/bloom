@@ -111,6 +111,10 @@ class EditorSprite(empty_object.EmptyObject):
     def theta(self):
         return editor.to_degrees(self._sprite.sprite.theta)
 
+    def set_theta(self, value: float):
+        self.invalidate_geometry()
+        self._sprite.sprite.theta = editor.to_build_angle(value)
+
     @property
     def shade(self):
         sprite_shade = self.get_shade(None)

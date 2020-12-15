@@ -381,6 +381,10 @@ class EditorWall(empty_object.EmptyObject):
     def get_normal(self) -> core.Vec2:
         return self.line_segment.get_normal()
 
+    def get_normal_3d(self) -> core.Vec3:
+        normal = self.get_normal()
+        return core.Vec3(normal.x, normal.y, 0)
+
     def get_orthogonal_vector(self) -> core.Vec2:
         return self.line_segment.get_orthogonal_vector()
 
