@@ -14,9 +14,9 @@ class ObjectBlocking:
         
         stat = self._map_object.get_stat_for_part(self._part)
         if stat.blocking2:
+            stat.blocking = 0
             stat.blocking2 = 0
         elif stat.blocking:
-            stat.blocking = 0
             stat.blocking2 = 1
         else:
             stat.blocking = 1

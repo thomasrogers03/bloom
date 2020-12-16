@@ -62,7 +62,7 @@ class SpriteGeometry:
         else:
             display_2d_segments.set_color(0, 0.5, 1, 0.75)
         
-        if blocking == 2:
+        if blocking == 3:
             display_2d_segments.set_thickness(16)
         else:
             display_2d_segments.set_thickness(4)

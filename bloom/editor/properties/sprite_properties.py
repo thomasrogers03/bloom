@@ -229,9 +229,9 @@ class SpriteDialog:
 
         sprite.sprite.sprite.stat.blocking = 0
         sprite.sprite.sprite.stat.blocking2 = 0
-        if descriptor.blocking == 1:
+        if descriptor.blocking >= 1:
             sprite.sprite.sprite.stat.blocking = 1
-        elif descriptor.blocking == 2:
+        if descriptor.blocking >= 2:
             sprite.sprite.sprite.stat.blocking2 = 1
 
         repeats = descriptor.sprite_repeats
