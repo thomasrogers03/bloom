@@ -196,7 +196,7 @@ class EditorSprite(empty_object.EmptyObject):
     def get_picnum(self, part: str):
         return self._sprite.sprite.picnum
 
-    def set_picnum(self, picnum: int):
+    def set_picnum(self, part: str, picnum: int):
         self._sprite.sprite.picnum = picnum
         self.invalidate_geometry()
 
