@@ -173,12 +173,12 @@ class EditorWall(empty_object.EmptyObject):
                     lambda point: self._sector.ceiling_z_at_point(point),
                     self._wall.wall.picnum
                 )
-            if self._wall.wall.stat.masking > 0 and self._wall.wall.over_picnum >= 0:
+            if self._has_wall_mask:
                 peg = self.other_side_sector.floor_z
 
                 self._make_wall_part(
                     all_geometry,
-                    self._MASK_WALL_PART,
+                    'middle',
                     peg,
                     lambda point: self.other_side_sector.floor_z_at_point(point),
                     lambda point: self.other_side_sector.ceiling_z_at_point(point),
@@ -348,7 +348,7 @@ class EditorWall(empty_object.EmptyObject):
     def get_picnum(self, part: str):
         if self._is_lower_swapped_part(part):
             return self._other_side_wall.get_picnum(None)
-        if part == self._MASK_WALL_PART:
+        if self._is_masking_part(part):
             return self._wall.wall.over_picnum
         return self._wall.wall.picnum
 
@@ -356,7 +356,7 @@ class EditorWall(empty_object.EmptyObject):
         self.invalidate_geometry()
         if self._is_lower_swapped_part(part):
             self._other_side_wall.set_picnum(None, picnum)
-        elif part == self._MASK_WALL_PART:
+        elif self._is_masking_part(part):
             self._wall.wall.over_picnum = picnum
         else:
             self._wall.wall.picnum = picnum
@@ -434,6 +434,9 @@ class EditorWall(empty_object.EmptyObject):
 
         if position.z <= upper_bottom and position.z >= upper_top:
             return f'{self._name}_upper_highlight'
+
+        if self._has_wall_mask:
+            return f'{self._name}_middle_highlight'
 
         return None
 
@@ -513,10 +516,17 @@ class EditorWall(empty_object.EmptyObject):
             self.get_length() * self._LENGTH_REPEAT_SCALE
         )
 
+    @property
+    def _has_wall_mask(self):
+        return self._wall.wall.stat.masking > 0 and self._wall.wall.over_picnum >= 0
+
     def _is_lower_swapped_part(self, part: str):
         return self._other_side_wall is not None and \
             self._wall.wall.stat.bottom_swap and \
             part == self._lower_wall_part
+
+    def _is_masking_part(self, part: str):
+        return part.endswith(self._MASK_WALL_PART)
 
     @property
     def _lower_wall_part(self):
