@@ -174,7 +174,16 @@ class EditorWall(empty_object.EmptyObject):
                     self._wall.wall.picnum
                 )
             if self._has_wall_mask:
-                peg = self.other_side_sector.floor_z
+                if self._wall.wall.stat.align:
+                    peg = min(
+                        self._sector.floor_z,
+                        self.other_side_sector.floor_z
+                    )
+                else:
+                    peg = max(
+                        self._sector.ceiling_z,
+                        self.other_side_sector.ceiling_z
+                    )
 
                 self._make_wall_part(
                     all_geometry,
