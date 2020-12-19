@@ -173,7 +173,7 @@ class EditorWall(empty_object.EmptyObject):
                     lambda point: self._sector.ceiling_z_at_point(point),
                     self._wall.wall.picnum
                 )
-            if self._wall.wall.stat.masking > 0 and self._wall.wall.over_picnum > 0:
+            if self._wall.wall.stat.masking > 0 and self._wall.wall.over_picnum >= 0:
                 peg = self.other_side_sector.floor_z
 
                 self._make_wall_part(

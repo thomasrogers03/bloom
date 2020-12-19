@@ -177,6 +177,7 @@ class ObjectEditor:
         event_handler.accept('r', self._change_sprite_facing_or_set_relative)
         event_handler.accept('f', self._flip)
         event_handler.accept('o', self._toggle_wall_peg)
+        event_handler.accept('m', self._toggle_wall_middle)
 
         event_handler.accept('-', self._decrease_shade)
         event_handler.accept('--repeat', self._decrease_shade)
@@ -352,12 +353,25 @@ class ObjectEditor:
 
     def _toggle_wall_peg(self):
         selected = self._highlighter.select(
-            selected_type_or_types=map_objects.EditorWall)
+            selected_type_or_types=map_objects.EditorWall
+        )
         if selected is None:
             return
 
         operations.swap_wall_peg.SwapWallPeg(
-            selected.map_object, selected.part).toggle()
+            selected.map_object, selected.part
+        ).toggle()
+
+    def _toggle_wall_middle(self):
+        selected = self._highlighter.select(
+            selected_type_or_types=map_objects.EditorWall
+        )
+        if selected is None:
+            return
+
+        operations.toggle_wall_middle.ToggleWallMiddle(
+            selected.map_object, selected.part
+        ).toggle()
 
     def _decrease_angle(self):
         selected = self._highlighter.select_append(
@@ -454,7 +468,7 @@ class ObjectEditor:
             return sector.add_new_sprite(hit_position)
         else:
             blood_sprite = self._copy_sprite.sprite.copy()
-            sprite =  sector.add_sprite(blood_sprite)
+            sprite = sector.add_sprite(blood_sprite)
             sprite.set_source_event_grouping(self._copy_sprite.source_event_grouping)
             sprite.move_to(hit_position)
             return sprite
