@@ -444,7 +444,7 @@ class ObjectEditor:
             sprite.move_to(sprite.position - offset)
             sprite.get_stat_for_part(None).facing = 1
             theta = selected.map_object.line_segment.get_direction_theta()
-            sprite.set_theta(theta)
+            sprite.set_theta(theta + 180)
             sprite.invalidate_geometry()
 
     def _add_sprite_to_sector(self, selected: highlight_details.HighlightDetails):
