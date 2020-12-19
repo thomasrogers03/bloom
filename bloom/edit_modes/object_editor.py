@@ -288,7 +288,9 @@ class ObjectEditor:
 
         selected_objects = [item.map_object for item in receivers]
         grouping = self._editor.sectors.event_groupings.get_grouping(
-            transmitter.map_object, selected_objects)
+            transmitter.map_object, 
+            selected_objects
+        )
         if grouping is None:
             return
 
@@ -312,6 +314,9 @@ class ObjectEditor:
                 selected_item.map_object,
                 selected_item.part
             ).toggle()
+
+            stat = selected_item.map_object.get_stat_for_part(selected_item.part)
+            self._camera_collection.set_info_text(f'Blocking: {stat.blocking}, Blocking 2: {stat.blocking2}')
 
     def _decrease_slope(self):
         self._increment_slope(-0.01)
