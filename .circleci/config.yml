@@ -76,7 +76,7 @@ jobs:
             set -xeou pipefail
 
             VERSION=$(cat ./artifacts/dist/version.txt)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_BRANCH}-${VERSION} ./artifacts/dist/
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -prerelease -draft -replace ${CIRCLE_BRANCH}-${VERSION} ./artifacts/dist/
           name: Create release    
 
 workflows:
