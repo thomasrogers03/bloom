@@ -59,7 +59,7 @@ class WallTypeDescriptor:
 
             value_from = descriptor['from']
             if value_from == 'data':
-                value = data.data1
+                value = data.data
             else:
                 raise ValueError(f'Unsupported property source {value_from}')
 
