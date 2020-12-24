@@ -189,7 +189,7 @@ class SpriteTypeDescriptor:
 
         for descriptor in self.property_descriptors:
             name = descriptor['name']
-            value = values[name]
+            value = int(values[name])
 
             value_from = descriptor['from']
             if value_from == 'data_1':
