@@ -219,6 +219,8 @@ class ObjectEditor:
         elif isinstance(selected.map_object, map_objects.EditorSector):
             self._property_editor.set_sector(selected.map_object)
             self._edit_mode_selector.push_mode(self._property_editor)
+        elif isinstance(selected.map_object, map_objects.EditorWall):
+            self._dialogs.wall_properties.show(selected.map_object)
 
         self._highlighter.update_selected_target_view()
 

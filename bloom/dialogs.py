@@ -42,6 +42,10 @@ class Dialogs:
             self._sound_view,
             self._tile_dialog
         )
+        self._wall_properties = properties.wall_properties.WallDialog(
+            parent,
+            edit_mode_selector
+        )
         self._ror_type_selector = ror_type_selector.RORTypeSelector(
             parent,
             edit_mode_selector
@@ -54,6 +58,10 @@ class Dialogs:
     @property
     def sprite_properties(self):
         return self._sprite_properties
+
+    @property
+    def wall_properties(self):
+        return self._wall_properties
 
     @property
     def sound_view(self):

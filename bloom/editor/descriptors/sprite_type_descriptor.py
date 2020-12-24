@@ -87,7 +87,7 @@ class SpriteTypeDescriptor:
     def get_sprite_properties(self, sprite: map_objects.EditorSprite):
         data = sprite.sprite.data
 
-        properties: typing.Dict[str, Property] = {
+        properties: typing.Dict[str, object_property.Property] = {
             'State': object_property.Property.create_enum(data.state, object_property.Property.STATE_ENUM),
             'Command': object_property.Property.create_enum(data.cmd, object_property.Property.COMMAND_ENUM),
             'Going On': object_property.Property.create_boolean(data.going_on),

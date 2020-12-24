@@ -32,7 +32,7 @@ class SectorTypeDescriptor:
     def get_sector_type_properties(self, sector: map_objects.EditorSector):
         data = sector.sector.data
 
-        properties: typing.Dict[str, Property] = {
+        properties: typing.Dict[str, object_property.Property] = {
             'State': object_property.Property.create_enum(data.state, object_property.Property.STATE_ENUM),
             'Command': object_property.Property.create_enum(data.cmd, object_property.Property.COMMAND_ENUM),
 

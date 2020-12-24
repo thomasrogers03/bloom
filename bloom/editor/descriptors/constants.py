@@ -6,7 +6,7 @@ import typing
 import yaml
 
 from ... import find_resource
-from . import sector_type_descriptor, sprite_type_descriptor
+from . import sector_type_descriptor, sprite_type_descriptor, wall_type_descriptor
 
 
 def _load_sprite_categories():
@@ -49,6 +49,26 @@ def _load_sector_descriptors():
     return result
 
 
+def _load_wall_descriptors():
+    result: typing.Dict[
+        int,
+        wall_type_descriptor.WallTypeDescriptor
+    ] = {}
+
+    path = find_resource('wall_types.yaml')
+    with open(path, 'r') as file:
+        wall_types: dict = yaml.safe_load(file.read())
+
+    for wall_type, descriptor in wall_types.items():
+        result[wall_type] = wall_type_descriptor.WallTypeDescriptor(
+            wall_type,
+            descriptor
+        )
+
+    return result
+
+
 sprite_category_descriptors = _load_sprite_categories()
 sprite_types = _load_sprite_descriptors()
 sector_types = _load_sector_descriptors()
+wall_types = _load_wall_descriptors()
