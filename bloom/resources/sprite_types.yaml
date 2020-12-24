@@ -1203,6 +1203,10 @@
   invisible: true
   tile_config:
     tile: 2519
+  properties:
+    - name: Sound To Play
+      type: sound
+      from: data_1
 709:
   name: Sector SFX
   category: sounds
