@@ -10,3 +10,7 @@
   name: Wall Stack (Unsupported)
 511:
   name: Gib Wall
+  properties:
+    - name: Unknown
+      type: int
+      from: data

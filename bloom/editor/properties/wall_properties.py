@@ -117,6 +117,9 @@ class WallDialog:
         else:
             self._special_source_menu.set('None')
 
+        type_name = self._current_descriptor.name
+        self._type_selector.set(type_name)
+
         self._update_property_view()
         self._edit_mode.push_mode(self)
 
@@ -168,9 +171,10 @@ class WallDialog:
         
     def _type_changed(self, value):
         type_index = self._type_lookup[value]
+        self._current_descriptor = descriptors.wall_types[type_index]
         self._update_property_view()
 
-        if self._wall.blood_wall.wall.tags[0] == type_index:
+        if self._wall.get_type() == type_index:
             return
 
         self._wall.blood_wall.wall.tags[0] = type_index
@@ -178,11 +182,6 @@ class WallDialog:
     def _reset_selected_wall_type(self, task):
         self._selected_descriptor = None
         return task.done
-
-    def _get_current_palette(self):
-        if self._current_descriptor.palette is not None:
-            return self._current_descriptor.palette
-        return self._current_palette
 
     def enter_mode(self, state: dict):
         self._dialog.show()
