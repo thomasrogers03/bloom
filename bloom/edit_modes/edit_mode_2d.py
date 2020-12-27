@@ -1,6 +1,7 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import typing
 
 from panda3d import core
 
@@ -81,6 +82,8 @@ class EditMode(navigation_mode_2d.EditMode):
 
         self._context_menu.add_command('Copy Sectors', self._copy_sectors)
         self._context_menu.add_command('Paste Sectors', self._paste_sectors)
+        self._context_menu.add_command('Flip Sectors Vertically', self._flip_sectors_vertically)
+        self._context_menu.add_command('Flip Sectors Horizontally', self._flip_sectors_horizontally)
 
         if 'grid_visible' in state:
             if state['grid_visible']:
@@ -100,11 +103,7 @@ class EditMode(navigation_mode_2d.EditMode):
         self._object_editor.set_copy_sprite(sprite)
 
     def _copy_sectors(self):
-        sectors: typing.Set[map_objects.EditorSector] = set()
-        for selected_item in self._highlighter.selected:
-            if selected_item.is_sector:
-                sectors.add(selected_item.map_object)
-
+        sectors = self._gather_selected_sectors()
         if len(sectors) < 1:
             return
 
@@ -125,6 +124,22 @@ class EditMode(navigation_mode_2d.EditMode):
         new_sectors = self._sector_prefab.copy(target)
         self._highlighter.clear()
         self._highlighter.set_selected_objects(new_sectors)
+
+    def _flip_sectors_vertically(self):
+        sectors = self._gather_selected_sectors()
+        operations.sector_flip.SectorFlip(sectors).flip(True, False)
+
+    def _flip_sectors_horizontally(self):
+        sectors = self._gather_selected_sectors()
+        operations.sector_flip.SectorFlip(sectors).flip(False, True)
+
+    def _gather_selected_sectors(self) -> typing.List:
+        sectors: typing.Set[map_objects.EditorSector] = set()
+        for selected_item in self._highlighter.selected:
+            if selected_item.is_sector:
+                sectors.add(selected_item.map_object)
+
+        return list(sectors)
 
     def _start_drawing(self):
         selected = self._highlighter.select()

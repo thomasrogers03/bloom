@@ -8,3 +8,4 @@ from .test_wall_gather import TestWallGather
 from .test_wall_link import TestWallLink
 from .test_wall_split import TestWallSplit
 from .test_wall_join import TestWallJoin
+from .test_sector_flip import TestSectorFlip
