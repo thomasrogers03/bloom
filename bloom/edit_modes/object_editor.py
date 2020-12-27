@@ -333,8 +333,10 @@ class ObjectEditor:
         )
 
         for selected_item in selected:
-            heinum = selected_item.map_object.get_heinum(selected_item.part)
-            selected_item.map_object.set_heinum(selected_item.part, heinum + amount)
+            operations.increment_sector_heinum.IncrementSectorHeinum(
+                selected_item.map_object,
+                selected_item.part
+            ).increment(amount)
 
         if len(selected) > 0:
             first_selected = selected[0]
@@ -344,7 +346,8 @@ class ObjectEditor:
 
     def _set_sector_first_wall(self):
         selected = self._highlighter.select(
-            selected_type_or_types=map_objects.EditorWall)
+            selected_type_or_types=map_objects.EditorWall
+        )
         if selected is None:
             return
 
