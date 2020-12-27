@@ -80,9 +80,12 @@ class Menu:
             scale=self._TEXT_SIZE,
             command=self._wrapped_command(command),
             relief=DirectGuiGlobals.FLAT,
+            pressEffect=False,
             frameColor=(0, 0, 0, 0)
         )
         self._adjust_frame(new_button)
+        new_button.bind(DirectGuiGlobals.ENTER, self._highlight_button, extraArgs=[new_button])
+        new_button.bind(DirectGuiGlobals.EXIT, self._unhighlight_button, extraArgs=[new_button])
 
         return new_button
 
@@ -95,6 +98,12 @@ class Menu:
         frame.bind(DirectGuiGlobals.WITHIN, self._show_sub_menu, extraArgs=[menu])
 
         return menu
+
+    def _highlight_button(self, button: DirectGui.DirectButton, _):
+        button['frameColor'] = (0.95, 0.95, 0.95, 1)
+
+    def _unhighlight_button(self, button: DirectGui.DirectButton, _):
+        button['frameColor'] = (0, 0, 0, 0)
 
     def _wrapped_command(self, command):
         def _wrapped(*args, **kwargs):

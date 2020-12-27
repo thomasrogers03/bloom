@@ -191,7 +191,7 @@ class Cameras:
             0, 1, 0, 1
         )
         display_region.set_camera(camera)
-        display_region.set_sort(constants.FRONT_MOST)
+        display_region.set_sort(constants.SORT_2D_MODE)
         display_region.set_active(False)
 
         camera = Camera(
