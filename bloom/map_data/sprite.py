@@ -18,8 +18,8 @@ class Stat(data_loading.CustomStruct):
     blocking2: data_loading.PartialInteger(data_loading.UInt16, 1)
     translucent_rev: data_loading.PartialInteger(data_loading.UInt16, 1)
     reserved: data_loading.PartialInteger(data_loading.UInt16, 3)
-    poly_green: data_loading.PartialInteger(data_loading.UInt16, 1)
     poly_blue: data_loading.PartialInteger(data_loading.UInt16, 1)
+    poly_green: data_loading.PartialInteger(data_loading.UInt16, 1)
     invisible: data_loading.PartialInteger(data_loading.UInt16, 1)
 
 
