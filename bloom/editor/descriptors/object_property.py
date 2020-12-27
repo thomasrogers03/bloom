@@ -58,8 +58,8 @@ class Property(typing.NamedTuple):
         return Property(Property.INTEGER_PROPERTY, value, 0, None, None)
 
     @staticmethod
-    def create_boolean(value: int):
-        return Property(Property.BOOLEAN_PROPERTY, bool(value), 0, None, None)
+    def create_boolean(value: int, offset=False):
+        return Property(Property.BOOLEAN_PROPERTY, bool(value), offset, None, None)
 
     @staticmethod
     def create_enum(value: int, enum_values: typing.Dict[str, int]):

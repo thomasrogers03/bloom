@@ -96,7 +96,7 @@ class SpriteTypeDescriptor:
             'Wait Time': object_property.Property.create_integer(data.wait_time),
             'Interruptable': object_property.Property.create_boolean(data.interruptable),
             'Drop Item': object_property.Property.create_integer(data.drop_item),
-            'Decoupled': object_property.Property.create_integer(data.decoupled),
+            'Decoupled': object_property.Property.create_boolean(data.decoupled),
             'One Shot': object_property.Property.create_boolean(data.one_shot),
             'Key': object_property.Property.create_enum(data.key, object_property.Property.KEY_ENUM),
             'Push': object_property.Property.create_boolean(data.push),
@@ -107,14 +107,15 @@ class SpriteTypeDescriptor:
             'Sight': object_property.Property.create_boolean(data.sight),
             'Proximity': object_property.Property.create_boolean(data.proximity),
             'Monsters Cannot Use': object_property.Property.create_boolean(data.dude_lockout),
-            'Skill 1': object_property.Property.create_boolean(data.launch_1),
-            'Skill 2': object_property.Property.create_boolean(data.launch_2),
-            'Skill 3': object_property.Property.create_boolean(data.launch_3),
-            'Skill 4': object_property.Property.create_boolean(data.launch_4),
-            'Skill 5': object_property.Property.create_boolean(data.launch_5),
-            'Bloodbath': object_property.Property.create_boolean(data.launch_B),
-            'Cooperative': object_property.Property.create_boolean(data.launch_C),
+            'Skill 1': object_property.Property.create_boolean(data.launch_1, offset=True),
+            'Skill 2': object_property.Property.create_boolean(data.launch_2, offset=True),
+            'Skill 3': object_property.Property.create_boolean(data.launch_3, offset=True),
+            'Skill 4': object_property.Property.create_boolean(data.launch_4, offset=True),
+            'Skill 5': object_property.Property.create_boolean(data.launch_5, offset=True),
+            'Bloodbath': object_property.Property.create_boolean(data.launch_B, offset=True),
+            'Cooperative': object_property.Property.create_boolean(data.launch_C, offset=True),
             'Locked': object_property.Property.create_boolean(data.locked),
+            'Locked Message': object_property.Property.create_integer(data.lock_msg),
         }
 
         for descriptor in self.property_descriptors:
@@ -186,6 +187,7 @@ class SpriteTypeDescriptor:
         data.launch_B = int(values['Bloodbath'])
         data.launch_C = int(values['Cooperative'])
         data.locked = int(values['Locked'])
+        data.lock_msg = int(values['Locked Message'])
 
         for descriptor in self.property_descriptors:
             name = descriptor['name']
