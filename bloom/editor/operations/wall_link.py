@@ -64,7 +64,6 @@ class SectorWallLink:
                     test_wall = test_wall.wall_point_2
                     if SectorWallLink._cannot_link(test_wall, wall_to_link):
                         return False
-            test_wall._other_side_wall
             test_wall.link(wall_to_link)
             return True
 
@@ -79,7 +78,8 @@ class SectorWallLink:
     def _cannot_link(test_wall: map_objects.EditorWall, wall_to_link: map_objects.EditorWall):
         return wall_to_link == test_wall or \
             wall_to_link == test_wall.wall_previous_point or \
-            wall_to_link == test_wall.wall_point_2
+            wall_to_link == test_wall.wall_point_2 or \
+            test_wall.other_side_wall is not None
 
     def _do_try_link_wall(
         self,
