@@ -26,7 +26,8 @@ class MovingClicker:
         clickers: clicker_factory.ClickerFactory,
         snapper: grid_snapper.GridSnapper,
         all_sectors: map_objects.SectorCollection,
-        highlighter_filter_types=None
+        highlighter_filter_types=None,
+        move_sprites_on_sectors=True
     ):
         self._camera_collection = camera_collection
         self._transform_to_camera_delta = transform_to_camera_delta
@@ -34,6 +35,7 @@ class MovingClicker:
         self._snapper = snapper
         self._all_sectors = all_sectors
         self._highlighter_filter_types = highlighter_filter_types
+        self._move_sprites_on_sectors = move_sprites_on_sectors
         self._updated_callback: typing.Callable[[], None] = None
 
         self._move_clicker = clickers.make_clicker(
@@ -183,7 +185,8 @@ class MovingClicker:
             highlight,
             self._snapper,
             self._all_sectors,
-            move_sector_walls=move_sector_walls
+            self._move_sprites_on_sectors,
+            move_sector_walls
         )
         self._show_grids()
 

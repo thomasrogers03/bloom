@@ -103,7 +103,8 @@ class EditMode(navigation_mode_3d.EditMode):
             highlighter_filter_types=[
                 map_objects.EditorSector,
                 map_objects.EditorMarker,
-            ]
+            ],
+            move_sprites_on_sectors=False
         )
         self._moving_clicker.set_updated_callback(self._update_markers)
 

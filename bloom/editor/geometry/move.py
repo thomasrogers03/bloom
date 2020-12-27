@@ -19,10 +19,12 @@ class Move:
         highlighted_object: highlight_details.HighlightDetails,
         snapper: grid_snapper.GridSnapper,
         all_sectors: map_objects.SectorCollection,
-        move_sector_walls=False
+        move_sprites_on_sectors: bool,
+        move_sector_walls: bool
     ):
         self._hit = highlighted_object.hit_position
         self._move_sector_walls = move_sector_walls
+        self._move_sprites_on_sectors = move_sprites_on_sectors
         self._highlighted_mover = self._mover_for_object(highlighted_object)
         self._selected_objects = selected_objects
         self._movers: typing.List[empty_move.EmptyMove] = [
@@ -100,7 +102,7 @@ class Move:
             return wall_move.WallMove(details.map_object, details.part)
 
         if isinstance(details.map_object, map_objects.EditorSector):
-            return sector_move.SectorMove(details.map_object, details.part)
+            return sector_move.SectorMove(details.map_object, details.part, self._move_sprites_on_sectors)
 
         if isinstance(details.map_object, map_objects.EditorSprite) or \
                 isinstance(details.map_object, map_objects.EditorMarker):

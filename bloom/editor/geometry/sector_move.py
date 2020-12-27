@@ -15,7 +15,7 @@ class SpriteMove(typing.NamedTuple):
 
 class SectorMove(empty_move.EmptyMove):
 
-    def __init__(self, sector: map_objects.EditorSector, part: str):
+    def __init__(self, sector: map_objects.EditorSector, part: str, move_sprites_on_sectors: bool):
         self._sector = sector
         self._part = part
 
@@ -25,14 +25,15 @@ class SectorMove(empty_move.EmptyMove):
             self._start_z = self._sector.ceiling_z
 
         self._sprite_moves: typing.List[SpriteMove] = []
-        for sprite in self._sector.sprites:
-            if self._sprite_should_move(sprite):
-                self._sprite_moves.append(
-                    SpriteMove(
-                        sprite.origin,
-                        sprite
+        if move_sprites_on_sectors:
+            for sprite in self._sector.sprites:
+                if self._sprite_should_move(sprite):
+                    self._sprite_moves.append(
+                        SpriteMove(
+                            sprite.origin,
+                            sprite
+                        )
                     )
-                )
 
     def _sprite_should_move(self, sprite: map_objects.EditorSprite):
         origin = sprite.origin_2d
