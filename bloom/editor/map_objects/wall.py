@@ -535,7 +535,7 @@ class EditorWall(empty_object.EmptyObject):
             part == self._lower_wall_part
 
     def _is_masking_part(self, part: str):
-        return part.endswith(self._MASK_WALL_PART)
+        return part is not None and part.endswith(self._MASK_WALL_PART)
 
     @property
     def _lower_wall_part(self):
