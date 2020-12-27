@@ -46,7 +46,7 @@ class EditMode(base_edit_mode.EditMode):
         return super().exit_mode()
 
     def _pan_camera_2d(self, total_delta: core.Vec2, delta: core.Vec2):
-        x_direction = (delta.x * self._camera.camera.get_sx()) / 50
+        x_direction = (self._scale_x(delta.x) * self._camera.camera.get_sx()) / 50
         y_direction = (delta.y * self._camera.camera.get_sx()) / 50
 
         self._camera_collection.builder_2d.set_x(
@@ -62,6 +62,7 @@ class EditMode(base_edit_mode.EditMode):
 
     def _strafe_camera_2d(self, total_delta: core.Vec2, delta: core.Vec2):
         delta *= constants.TICK_SCALE / 100.0
+        delta.x = self._scale_x(delta.x)
 
         scale_grid = 1.0 / 8
         delta_y_scaled = delta.y / 2
@@ -80,6 +81,10 @@ class EditMode(base_edit_mode.EditMode):
         self._camera_collection.builder_2d.set_x(self._camera_collection.builder_2d, delta.x * 512)
 
         self._editor.update_builder_sector(self._camera_collection.get_builder_position())
+
+    def _scale_x(self, value: float):
+        inverse_aspect_ratio = 1.0 / self._camera_collection.aspect_2d.get_sx()
+        return value * inverse_aspect_ratio
 
     @property
     def _camera(self) -> cameras.Camera:

@@ -5,7 +5,7 @@
 from panda3d import core
 
 from .. import cameras, constants, dialogs
-from ..editor import highlighter, map_objects
+from ..editor import highlighter, map_objects, operations
 from ..editor.highlighting import find_in_marquee, highlight_finder_2d
 from . import (base_edit_mode, drawing_mode_2d, keyboard_camera,
                moving_clicker, navigation_mode_2d, object_editor, wall_bevel)
@@ -39,6 +39,7 @@ class EditMode(navigation_mode_2d.EditMode):
         self._marquee_display: core.NodePath = None
 
         self._wall_bevel_editor = wall_bevel.EditMode(*args, **kwargs)
+        self._sector_prefab: operations.sector_copy.SectorCopy = None
 
         self._make_clicker(
             [core.KeyboardButton.alt(), core.MouseButton.one()],
@@ -78,6 +79,9 @@ class EditMode(navigation_mode_2d.EditMode):
 
         self._moving_clicker.setup_keyboard(self)
 
+        self._context_menu.add_command('Copy Sectors', self._copy_sectors)
+        self._context_menu.add_command('Paste Sectors', self._paste_sectors)
+
         if 'grid_visible' in state:
             if state['grid_visible']:
                 self._moving_clicker.show_grid()
@@ -94,6 +98,33 @@ class EditMode(navigation_mode_2d.EditMode):
 
     def set_copy_sprite(self, sprite: map_objects.EditorSprite):
         self._object_editor.set_copy_sprite(sprite)
+
+    def _copy_sectors(self):
+        sectors: typing.Set[map_objects.EditorSector] = set()
+        for selected_item in self._highlighter.selected:
+            if selected_item.is_sector:
+                sectors.add(selected_item.map_object)
+
+        if len(sectors) < 1:
+            return
+
+        self._sector_prefab = operations.sector_copy.SectorCopy(
+            list(sectors),
+            self._editor.sectors
+        )
+    
+    def _paste_sectors(self):
+        if self._sector_prefab is None:
+            return
+
+        source, _ = self._extrude_mouse_to_scene_transform(check_buttons=True)
+        if source is None:
+            return
+
+        target = self._editor.snapper.snap_to_grid_2d(source.xy)
+        new_sectors = self._sector_prefab.copy(target)
+        self._highlighter.clear()
+        self._highlighter.set_selected_objects(new_sectors)
 
     def _start_drawing(self):
         selected = self._highlighter.select()

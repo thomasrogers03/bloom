@@ -41,7 +41,6 @@ class ObjectEditor:
         )
 
         self._copy_sprite: map_objects.EditorSprite = None
-        self._sector_prefab: operations.sector_copy.SectorCopy = None
 
         make_clicker_callback(
             [core.MouseButton.one()],
@@ -193,7 +192,6 @@ class ObjectEditor:
     def _setup_context_menu(self, menu: context_menu.Menu):
         self._setup_wall_context_menu(menu.add_sub_menu('Edit'))
         self._setup_sprite_context_menu(menu.add_sub_menu('Add Sprite'))
-        menu.add_command('Clone Sectors', self._copy_sectors)
 
     def _setup_wall_context_menu(self, menu: context_menu.Menu):
         menu.add_command('Extrude', self._extrude_selection)
@@ -210,28 +208,6 @@ class ObjectEditor:
                     sprite_descriptor
                 )
             )
-
-    def _copy_sectors(self):
-        sectors: typing.List[map_objects.EditorSector] = []
-        for selected_item in self._highlighter.selected:
-            if selected_item.is_sector:
-                sectors.append(selected_item.map_object)
-
-        if len(sectors) < 1:
-            return
-
-        self._sector_prefab = operations.sector_copy.SectorCopy(
-            sectors,
-            self._editor.sectors
-        )
-    
-    def _paste_sectors(self):
-        if self._sector_prefab is None:
-            return
-
-        new_sectors = self._sector_prefab.copy()
-        self._highlighter.clear()
-        self._highlighter.set_selected_objects(new_sectors)
 
     def _edit_object_properties(self):
         selected = self._highlighter.select()

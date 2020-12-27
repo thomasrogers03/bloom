@@ -87,8 +87,9 @@ class EditMode(DirectObject.DirectObject):
 
     def _show_context_menu(self):
         position = self._edit_mode_selector.mouse_watcher.get_mouse()
+        inverse_aspect_ratio = 1.0 / self._camera_collection.aspect_2d.get_sx()
         self._context_menu.show()
-        self._context_menu.set_pos(position.x, 0, position.y)
+        self._context_menu.set_pos(position.x * inverse_aspect_ratio, 0, position.y)
 
     def _hide_context_menu(self, *_):
         self._context_menu.hide()
