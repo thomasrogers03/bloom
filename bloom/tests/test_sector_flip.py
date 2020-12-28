@@ -114,3 +114,17 @@ class TestSectorFlip(unittest.TestCase):
         expected_other_side_wall = utils.find_wall_on_point(sector, core.Point2(-1, 0))
         self.assertIsNone(wall.other_side_wall)
         self.assertIsNone(expected_other_side_wall.other_side_wall)
+
+    def test_adjacent_links(self):
+        sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 0)
+        sector_2 = utils.build_rectangular_sector(self._sectors, -1, 0, 0, 1)
+        sector_3 = utils.build_rectangular_sector(self._sectors, 0, 1, 0, 1)
+
+        wall = utils.find_wall_on_point(sector, core.Point2(1, 0))
+        operations.wall_link.SectorWallLink(wall, self._sectors).try_link_wall()
+        operations.wall_link.SectorWallLink(wall, self._sectors).try_link_wall()
+
+        wall = utils.find_wall_on_point(sector_2, core.Point2(0, 0))
+        operations.wall_link.SectorWallLink(wall, self._sectors).try_link_wall()
+
+        operations.sector_flip.SectorFlip([sector, sector_2, sector_3]).flip(False, True)

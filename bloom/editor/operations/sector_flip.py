@@ -63,14 +63,24 @@ class SectorFlip:
                 sprite.move_to(new_position)
 
         if vertical ^ horizontal:
-            relinked_walls: typing.Set[map_objects.EditorWall] = set()
+            relinked_walls: typing.List[
+                typing.Tuple[
+                    map_objects.EditorWall,
+                    map_objects.EditorWall
+                ]
+            ] = []
             for sector in self._sectors:
                 for wall in sector.walls:
-                    if wall not in relinked_walls and wall.other_side_wall is not None:
+                    if wall.other_side_wall is not None:
                         other_side_wall = wall.other_side_wall
                         wall.unlink()
 
-                        relinked_walls.add(wall.wall_previous_point)
-                        relinked_walls.add(other_side_wall.wall_previous_point)
-                        wall.wall_previous_point.link(other_side_wall.wall_previous_point)
+                        relinked_walls.append(
+                            (
+                                wall.wall_previous_point,
+                                other_side_wall.wall_previous_point
+                            )
+                        )
 
+            for wall, other_side_wall in relinked_walls:
+                wall.link(other_side_wall)
