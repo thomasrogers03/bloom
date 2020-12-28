@@ -96,11 +96,11 @@ class ObjectEditor:
         )
         self._menu.add_command(
             label="Move sprite to ceiling (home)",
-            command=self._move_selected_sprites_to_ceiling
+            command=self._move_selected_to_ceiling
         )
         self._menu.add_command(
             label="Move sprite to floor (end)",
-            command=self._move_selected_sprites_to_floor
+            command=self._move_selected_to_floor
         )
         self._menu.add_command(
             label="Decrease sprite angle (,)",
@@ -153,13 +153,18 @@ class ObjectEditor:
         event_handler.accept('b', self._bind_objects)
         event_handler.accept('n', self._toggle_blocking_state)
 
-        event_handler.accept('home', self._move_selected_sprites_to_ceiling)
-        event_handler.accept('end', self._move_selected_sprites_to_floor)
+        event_handler.accept('home', self._move_selected_to_ceiling)
+        event_handler.accept('end', self._move_selected_to_floor)
 
-        event_handler.accept('page_up', self._move_sector_up)
-        event_handler.accept('page_up-repeat', self._move_sector_up)
-        event_handler.accept('page_down', self._move_sector_down)
-        event_handler.accept('page_down-repeat', self._move_sector_down)
+        event_handler.accept('control-page_up', self._move_sector_up)
+        event_handler.accept('control-page_up-repeat', self._move_sector_up)
+        event_handler.accept('control-page_down', self._move_sector_down)
+        event_handler.accept('control-page_down-repeat', self._move_sector_down)
+
+        event_handler.accept('page_up', self._move_sector_part_up)
+        event_handler.accept('page_up-repeat', self._move_sector_part_up)
+        event_handler.accept('page_down', self._move_sector_part_down)
+        event_handler.accept('page_down-repeat', self._move_sector_part_down)
 
         event_handler.accept(',', self._decrease_angle)
         event_handler.accept(',-repeat', self._decrease_angle)
@@ -484,18 +489,28 @@ class ObjectEditor:
             sprite.move_to(hit_position)
             return sprite
 
-    def _move_selected_sprites_to_floor(self):
-        for selected_item in self._select_sprites():
-            self._move_sprite_to_floor(selected_item.map_object)
+    def _move_selected_to_floor(self):
+        for selected_item in self._select_sprites_or_sectors():
+            if selected_item.is_sprite:
+                self._move_sprite_to_floor(selected_item.map_object)
+            else:
+                operations.sector_move_to_adjacent.SectorMoveToAdjacent(
+                    selected_item.map_object, selected_item.part
+                ).move(False)
 
     def _move_sprite_to_floor(self, sprite: map_objects.EditorSprite):
         editor_sector = sprite.get_sector()
         new_z = editor_sector.floor_z_at_point(sprite.origin_2d)
         sprite.set_z_at_bottom(new_z)
 
-    def _move_selected_sprites_to_ceiling(self):
-        for selected_item in self._select_sprites():
-            self._move_sprite_to_ceiling(selected_item.map_object)
+    def _move_selected_to_ceiling(self):
+        for selected_item in self._select_sprites_or_sectors():
+            if selected_item.is_sprite:
+                self._move_sprite_to_ceiling(selected_item.map_object)
+            else:
+                operations.sector_move_to_adjacent.SectorMoveToAdjacent(
+                    selected_item.map_object, selected_item.part
+                ).move(True)
 
     def _move_sprite_to_ceiling(self, sprite: map_objects.EditorSprite):
         editor_sector = sprite.get_sector()
@@ -530,6 +545,33 @@ class ObjectEditor:
 
             for sprite in sector.sprites:
                 sprite.move_to(sprite.origin + delta)
+
+    def _move_sector_part_up(self):
+        self._move_sector_part(-1)
+
+    def _move_sector_part_down(self):
+        self._move_sector_part(1)
+
+    def _move_sector_part(self, direction: float):
+        selected = self._highlighter.select_append(
+            no_append_if_not_selected=True,
+            selected_type_or_types=map_objects.EditorSector
+        )
+
+        amount = direction * self._editor.snapper.grid_size
+        delta = core.Vec3(0, 0, amount)
+        for selected_object in selected:
+            sector = selected_object.map_object
+            if selected_object.part == map_objects.EditorSector.FLOOR_PART:
+                sector.move_floor_to(sector.floor_z + amount)
+
+                for marker in sector.floor_z_motion_markers:
+                    marker.move_to(marker.origin + delta)
+            else:
+                sector.move_ceiling_to(sector.ceiling_z + amount)
+
+                for marker in sector.ceiling_z_motion_markers:
+                    marker.move_to(marker.origin + delta)
 
     def _change_tile(self):
         self._highlighter.select_append(no_append_if_not_selected=True)
@@ -603,4 +645,13 @@ class ObjectEditor:
         yield from self._highlighter.select_append(
             no_append_if_not_selected=True,
             selected_type_or_types=map_objects.EditorSprite
+        )
+
+    def _select_sprites_or_sectors(self):
+        yield from self._highlighter.select_append(
+            no_append_if_not_selected=True,
+            selected_type_or_types=[
+                map_objects.EditorSprite,
+                map_objects.EditorSector,
+            ]
         )
