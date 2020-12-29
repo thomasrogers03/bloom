@@ -17,23 +17,40 @@ class SectorMoveToAdjacent:
         found = False
         if self._part == map_objects.EditorSector.FLOOR_PART:
             floor_z = self._sector.floor_z
-            highest = constants.REALLY_BIG_NUMBER
-            for portal in self._sector.portal_walls():
-                new_z = portal.other_side_sector.floor_z
-                if new_z > floor_z and new_z < highest:
-                    highest = new_z
-                    found = True
+
+            if move_up:
+                new_height = -constants.REALLY_BIG_NUMBER
+                for portal in self._sector.portal_walls():
+                    new_z = portal.other_side_sector.floor_z
+                    if new_z < floor_z and new_z > new_height:
+                        new_height = new_z
+                        found = True
+            else:
+                new_height = constants.REALLY_BIG_NUMBER
+                for portal in self._sector.portal_walls():
+                    new_z = portal.other_side_sector.floor_z
+                    if new_z > floor_z and new_z < new_height:
+                        new_height = new_z
+                        found = True
 
             if found:
-                self._sector.move_floor_to(highest)
+                self._sector.move_floor_to(new_height)
         else:
             ceiling_z = self._sector.ceiling_z
-            lowest = -constants.REALLY_BIG_NUMBER
-            for portal in self._sector.portal_walls():
-                new_z = portal.other_side_sector.ceiling_z
-                if new_z < ceiling_z and new_z > lowest:
-                    lowest = new_z
-                    found = True
+            if move_up:
+                new_height = -constants.REALLY_BIG_NUMBER
+                for portal in self._sector.portal_walls():
+                    new_z = portal.other_side_sector.ceiling_z
+                    if new_z < ceiling_z and new_z > new_height:
+                        new_height = new_z
+                        found = True
+            else:
+                new_height = constants.REALLY_BIG_NUMBER
+                for portal in self._sector.portal_walls():
+                    new_z = portal.other_side_sector.ceiling_z
+                    if new_z > ceiling_z and new_z < new_height:
+                        new_height = new_z
+                        found = True
 
             if found:
-                self._sector.move_ceiling_to(lowest)
+                self._sector.move_ceiling_to(new_height)
