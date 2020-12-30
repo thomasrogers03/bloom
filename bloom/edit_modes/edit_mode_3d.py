@@ -168,7 +168,7 @@ class EditMode(navigation_mode_3d.EditMode):
 
         if 'selected' in state:
             self._highlighter.clear()
-            self._highlighter.selected[:] = state['selected']
+            self._highlighter.set_selected(state['selected'])
             self._highlighter.update_displays(self._editor.ticks)
         if 'highlighted' in state:
             self._highlighter.set_highlighted(state['highlighted'])

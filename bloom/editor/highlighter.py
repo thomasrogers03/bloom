@@ -9,6 +9,7 @@ from panda3d import core
 from . import map_editor
 from .highlighting import highlight_details, target_view
 from .map_objects import empty_object, sector, sprite, wall
+from .operations import change_selection
 
 
 class Highlighter:
@@ -56,11 +57,11 @@ class Highlighter:
 
         if no_append_if_not_selected:
             self.deselect_all()
-            self._selected = [self._highlighted]
+            self.update_selection([self._highlighted])
             self.update_selected_target_view()
             return self._selected
 
-        self._selected.append(self._highlighted)
+        self.update_selection(self._selected + [self._highlighted])
         self.update_selected_target_view()
         return self._selected
 
@@ -78,7 +79,7 @@ class Highlighter:
         if self._highlighted is not None:
             hit_position = self._highlighted.hit_position
 
-        self._selected[:] = [
+        self._selected = [
             highlight_details.HighlightDetails(
                 map_object, 
                 part,
@@ -89,10 +90,25 @@ class Highlighter:
         ]
         self.update_selected_target_view()
 
+    def set_selected(self, highlight_details: typing.List[highlight_details.HighlightDetails]):
+        for selected in self._selected:
+            selected.map_object.hide_highlight(selected.part)
+        self._selected = highlight_details
+        self.update_selected_target_view()
+
     def update_selected_target_view(self):
         self._selected_target_view.reset()
         for selected in self._selected:
             self._selected_target_view.show_targets(selected.map_object)
+
+    def update_selection(self, new_selection: typing.List[highlight_details.HighlightDetails]):
+        operation = change_selection.ChangeSelection(
+            self,
+            self._selected,
+            new_selection
+        )
+        self._editor.undo_stack.add_operation(operation)
+        operation.apply()
 
     def _higlight_selected_index_for_select(self):
         if len(self._selected) < 2:
@@ -140,9 +156,7 @@ class Highlighter:
         )
 
     def deselect_all(self):
-        for selected in self._selected:
-            selected.map_object.hide_highlight(selected.part)
-        self._selected = []
+        self.update_selection([])
         self.update_selected_target_view()
 
     def update(

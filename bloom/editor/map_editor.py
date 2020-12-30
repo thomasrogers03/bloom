@@ -14,6 +14,7 @@ from ..utils import sky
 from . import grid_snapper, sector_geometry, view_clipping
 from .map_objects import (EditorSector, EditorSprite, EditorWall,
                           SectorCollection)
+from .operations import undo_stack
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,7 @@ class MapEditor:
         self._clipping_debug: core.NodePath = None
         self._clipping_enabled = constants.PORTALS_ENABLED
         self._view_clipping_invalid = True
+        self._undo_stack = undo_stack.UndoStack()
 
         self._sky_picnum = self._find_sky(map_to_load.sectors)
         self._sky: sky.Sky = None
@@ -70,6 +72,10 @@ class MapEditor:
     @property
     def scene(self):
         return self._scene
+    
+    @property
+    def undo_stack(self):
+        return self._undo_stack
 
     def unload(self):
         self._scene.remove_node()

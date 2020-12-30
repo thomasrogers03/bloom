@@ -80,10 +80,31 @@ class EditMode(DirectObject.DirectObject):
         self._old_accept(constants.GUI_HAS_FOCUS, self.disable_events)
         self._old_accept(constants.GUI_LOST_FOCUS, self.enable_events)
 
+        self._menu.add_command(
+            label='Undo (ctrl+z)',
+            command=self._undo
+        )
+        self._menu.add_command(
+            label='Redo (ctrl+y)',
+            command=self._redo
+        )
+
+        self._context_menu.add_command('Undo (ctrl+z)', self._undo)
+        self._context_menu.add_command('Redo (ctrl+y)', self._redo)
+
+        self.accept('control-z', self._undo)
+        self.accept('control-y', self._redo)
+
     def exit_mode(self):
         self._context_menu.hide()
         self.ignore_all()
         return {}
+
+    def _undo(self):
+        self._editor.undo_stack.undo()
+
+    def _redo(self):
+        self._editor.undo_stack.redo()
 
     def _show_context_menu(self):
         position = self._edit_mode_selector.mouse_watcher.get_mouse()

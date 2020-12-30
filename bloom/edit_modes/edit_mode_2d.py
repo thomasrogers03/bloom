@@ -205,7 +205,7 @@ class EditMode(navigation_mode_2d.EditMode):
             end.xy
         )
 
-        self._highlighter.selected[:] = finder.get_objects()
+        self._highlighter.update_selection(finder.get_objects())
 
     def _clear_marquee_display(self):
         if self._marquee_display is not None:
