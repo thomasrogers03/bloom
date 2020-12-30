@@ -114,7 +114,8 @@ class EditMode(navigation_mode_3d.EditMode):
         )
 
         operations.sprite_angle_update.SpriteAngleUpdate(
-            selected.map_object).increment(-15)
+            selected.map_object
+        ).increment(-15)
         self._update_markers()
 
     def _increase_angle(self):
@@ -163,6 +164,14 @@ class EditMode(navigation_mode_3d.EditMode):
         delta_y = bounding_rectangle.w - bounding_rectangle.z
 
         radius = 3 * min(delta_x, delta_y) / 8
+
+        display = shapes.make_circle(
+            self._marker_display,
+            marker.origin,
+            radius * 1.5,
+            12
+        )
+        self._setup_display(display, colour=core.Vec4(0, 1, 0, 0.5))
 
         display = shapes.make_arc(
             self._marker_display,

@@ -8,7 +8,7 @@ from panda3d import core
 
 from ... import editor, map_data
 from ...utils import shapes
-from .. import plane, sector_geometry
+from .. import marker_constants, plane, sector_geometry
 from . import empty_object, marker_highlight
 
 
@@ -73,6 +73,10 @@ class EditorMarker(empty_object.EmptyObject):
     def theta(self):
         return editor.to_degrees(self._sprite.sprite.theta)
 
+    def set_theta(self, value: float):
+        self.invalidate_geometry()
+        self._sprite.sprite.theta = editor.to_build_angle(value)
+
     def get_geometry_part(self, part: str) -> core.NodePath:
         return self._sector.get_geometry_part(part)
 
@@ -136,7 +140,10 @@ class EditorMarker(empty_object.EmptyObject):
             12
         )
         self._display.set_pos(self.origin)
-        self._display.set_color(0, 0, 1, 0.5)
+        if self.get_type() == marker_constants.AXIS_MARKER_TAG:
+            self._display.set_color(1, 0, 1, 0.5)
+        else:
+            self._display.set_color(0, 0, 1, 0.5)
         self._display.set_transparency(True)
         self._display.set_name(self._name)
         self._needs_geometry_reset = False
@@ -160,6 +167,9 @@ class EditorMarker(empty_object.EmptyObject):
         self._sprite.sprite.sector_index = sector_mapping[self._sector]
         self._sprite.sprite.owner = sector_mapping[self._sector]
         return self._sprite
+
+    def get_type(self):
+        return self._sprite.sprite.tags[0]
 
     @property
     def _z(self):
