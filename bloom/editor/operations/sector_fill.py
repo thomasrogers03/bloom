@@ -21,6 +21,9 @@ class SectorFill:
         self,
         start_wall: map_objects.EditorWall
     ):
+        if not drawing_sector.Sector.is_sector_section_clockwise(start_wall):
+            return False
+
         walls: typing.List[map_objects.EditorWall] = list(start_wall.iterate_wall_bunch())
         for wall in walls:
             if wall.other_side_wall is not None:
@@ -37,6 +40,7 @@ class SectorFill:
         for wall, wall_point_2 in segments:
             wall.set_wall_point_2(wall_point_2)
 
+        new_walls = list(reversed(new_walls))
         otherside_walls = new_walls[1:] + new_walls[:1]
         for editor_wall, otherside_wall in zip(walls, otherside_walls):
             editor_wall.link(otherside_wall)

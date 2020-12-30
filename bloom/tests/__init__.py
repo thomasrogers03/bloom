@@ -9,3 +9,4 @@ from .test_wall_link import TestWallLink
 from .test_wall_split import TestWallSplit
 from .test_wall_join import TestWallJoin
 from .test_sector_flip import TestSectorFlip
+from .test_sector_fill import TestSectorFill
