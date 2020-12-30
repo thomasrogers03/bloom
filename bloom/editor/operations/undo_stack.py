@@ -17,6 +17,18 @@ class UndoableOperation:
     def redo(self):
         raise NotImplementedError()
 
+
+class SimplyUndoableOperation:
+
+    def __init__(self, name: str, undo, redo):
+        self._name = name
+        self.undo = undo
+        self.redo = redo
+
+    def get_name(self):
+        return self._name
+
+
 class UndoStack:
 
     def __init__(self, camera_collection: cameras.Cameras):
@@ -44,6 +56,6 @@ class UndoStack:
 
         operation = self._redo.pop()
         operation.redo()
-        
+
         self._camera_collection.set_info_text(f'Redo: {operation.get_name()}')
         self._undo.append(operation)

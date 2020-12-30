@@ -283,7 +283,11 @@ class ObjectEditor:
         )
 
         for selected_item in selected:
-            operations.flip.Flip(selected_item.map_object, selected_item.part).flip()
+            operations.flip.Flip(
+                self._editor.undo_stack, 
+                selected_item.map_object, 
+                selected_item.part
+            ).flip()
 
     def _bind_objects(self):
         selected = self._highlighter.select_append()
