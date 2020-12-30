@@ -72,8 +72,8 @@ class EditMode(base_edit_mode.EditMode):
         current_zoom = self._camera.camera.get_sx()
         new_zoom = current_zoom * zoom_scale
 
-        if new_zoom > 128:
-            new_zoom = 128
+        if new_zoom > 512:
+            new_zoom = 512
         if new_zoom < 1:
             new_zoom = 1
 
