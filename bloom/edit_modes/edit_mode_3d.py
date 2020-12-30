@@ -50,7 +50,7 @@ class EditMode(navigation_mode_3d.EditMode):
 
         self._make_clicker(
             [core.KeyboardButton.shift(), core.MouseButton.one()],
-            on_click=self._select_sector_geometry,
+            on_click=self._select_adjacent_geometry,
         )
 
         self._make_clicker(
@@ -63,16 +63,22 @@ class EditMode(navigation_mode_3d.EditMode):
             on_click=self._paste_selected_picnum,
         )
 
-    def _select_sector_geometry(self):
-        selected_sector = self._highlighter.select(
-            selected_type_or_types=map_objects.EditorSector
+    def _select_adjacent_geometry(self):
+        selected = self._highlighter.select(
+            selected_type_or_types=[
+                map_objects.EditorSector,
+                map_objects.EditorWall
+            ]
         )
-        if selected_sector is None:
+        if selected is None:
             return
 
-        selected_objects = [selected_sector.map_object]
-        for wall in selected_sector.map_object.walls:
-            selected_objects.append(wall)
+        if selected.is_sector:
+            selected_objects = [selected.map_object]
+            for wall in selected.map_object.walls:
+                selected_objects.append(wall)
+        else:
+            selected_objects = list(selected.map_object.iterate_wall_bunch())
         self._highlighter.set_selected_objects(selected_objects)
         self._highlighter.update_displays(self._editor.ticks)
 
