@@ -197,6 +197,7 @@ class ObjectEditor:
     def _setup_context_menu(self, menu: context_menu.Menu):
         self._setup_wall_context_menu(menu.add_sub_menu('Edit'))
         self._setup_sprite_context_menu(menu.add_sub_menu('Add Sprite'))
+        menu.add_command('Fill out sector behind wall', self._fill_wall_sector)
 
     def _setup_wall_context_menu(self, menu: context_menu.Menu):
         menu.add_command('Extrude', self._extrude_selection)
@@ -213,6 +214,19 @@ class ObjectEditor:
                     sprite_descriptor
                 )
             )
+
+    def _fill_wall_sector(self):
+        selected = self._highlighter.select(selected_type_or_types=map_objects.EditorWall)
+        if selected is None:
+            return
+
+        result = operations.sector_fill.SectorFill(
+            selected.map_object.get_sector(), 
+            self._editor.sectors
+        ).fill(selected.map_object)
+
+        if result:
+            self._camera_collection.set_info_text('Filled out sector')
 
     def _edit_object_properties(self):
         selected = self._highlighter.select()
