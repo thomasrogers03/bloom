@@ -43,7 +43,7 @@ class MapEditor:
         self._clipping_debug: core.NodePath = None
         self._clipping_enabled = constants.PORTALS_ENABLED
         self._view_clipping_invalid = True
-        self._undo_stack = undo_stack.UndoStack()
+        self._undo_stack = undo_stack.UndoStack(self._camera_collection)
 
         self._sky_picnum = self._find_sky(map_to_load.sectors)
         self._sky: sky.Sky = None

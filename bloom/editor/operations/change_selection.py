@@ -24,6 +24,9 @@ class ChangeSelection(UndoableOperation):
         self._new_selection = new_selection
         self.apply = self.redo
 
+    def get_name(self):
+        return 'Select'
+
     def undo(self):
         self._selector.set_selected(self._previous_selection)
 
