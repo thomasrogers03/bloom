@@ -98,7 +98,7 @@ def load_walls(unpacker: data_loading.Unpacker, encrypted: bool, header_3: heade
 
     data = unpacker.buffer
     offset = unpacker.offset
-    result, new_offset = loader.load_walls(Wall, data, offset, header_3.wall_count, key)
+    result, new_offset = loader.walls.load_walls(Wall, data, offset, header_3.wall_count, key)
     unpacker.seek(new_offset)
 
     return result

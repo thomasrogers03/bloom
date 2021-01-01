@@ -89,13 +89,6 @@ typedef struct
     uint8_t data14[4];
 } BloodWallData;
 
-static struct PyModuleDef wallmodule = {
-    PyModuleDef_HEAD_INIT,
-    "bloom.map_data.wall",
-    NULL,
-    -1,
-    NULL};
-
 inline void crypt_buffer(char *data, size_t length, uint8_t key)
 {
     for (size_t index = 0; index < length; ++index)
@@ -105,7 +98,7 @@ inline void crypt_buffer(char *data, size_t length, uint8_t key)
 }
 
 static PyObject *
-loader_load_walls(PyObject *self, PyObject *args)
+walls_load_walls(PyObject *self, PyObject *args)
 {
     PyObject *wall_constructor;
     PyObject *data_bytes;
@@ -231,22 +224,22 @@ loader_load_walls(PyObject *self, PyObject *args)
     return result;
 }
 
-static PyMethodDef LoaderMethods[] = {
+static PyMethodDef WallsMethods[] = {
     {"load_walls",
-     loader_load_walls,
+     walls_load_walls,
      METH_VARARGS,
      "Load walls for a map."},
     {NULL, NULL, 0, NULL}};
 
-static struct PyModuleDef loadermodule = {
+static struct PyModuleDef wallsmodule = {
     PyModuleDef_HEAD_INIT,
-    "bloom.native.loader",
+    "bloom.native.loader.walls",
     "bloom native map loading",
     -1,
-    LoaderMethods};
+    WallsMethods};
 
 PyMODINIT_FUNC
-PyInit_loader(void)
+PyInit_walls(void)
 {
-    return PyModule_Create(&loadermodule);
+    return PyModule_Create(&wallsmodule);
 }

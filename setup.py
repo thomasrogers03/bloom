@@ -28,8 +28,8 @@ def _get_version():
 
 
 native_module = setuptools.Extension(
-    'bloom.native.loader',
-    sources=['bloom/native/loadermodule.cpp'],
+    'bloom.native.loader.walls',
+    sources=['bloom/native/loader/wallsmodule.cpp'],
 )
 
 setuptools.setup(
