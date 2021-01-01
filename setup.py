@@ -1,14 +1,15 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
-import setuptools
 import os.path
+
+import setuptools
 
 
 def _install_requires():
     directory = os.path.dirname(__file__)
     requirements_path = os.path.join(directory, 'requirements.txt')
-    
+
     with open(requirements_path, 'r') as file:
         lines = [
             line.strip()
@@ -17,13 +18,19 @@ def _install_requires():
         ]
     return lines
 
+
 def _get_version():
     directory = os.path.dirname(__file__)
     version_path = os.path.join(directory, 'version.txt')
-    
+
     with open(version_path, 'r') as file:
         return file.readlines()[0].strip()
 
+
+native_module = setuptools.Extension(
+    'bloom.native.loader',
+    sources=['bloom/native/loadermodule.cpp'],
+)
 
 setuptools.setup(
     name="bloom",
@@ -58,5 +65,6 @@ setuptools.setup(
             ],
             'platforms': ['win_amd64']
         }
-    }
+    },
+    ext_modules=[native_module]
 )
