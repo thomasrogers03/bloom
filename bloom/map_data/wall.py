@@ -5,6 +5,7 @@ import typing
 
 from .. import data_loading
 from . import headers, sector
+from ..native import loader
 
 
 class Stat(data_loading.CustomStruct):
@@ -95,22 +96,10 @@ class Wall(data_loading.CustomStruct):
 def load_walls(unpacker: data_loading.Unpacker, encrypted: bool, header_3: headers.MapHeader3):
     key = ((header_3.revisions * sector.BuildSector.size()) | 0x4D) & 0xFF
 
-    result: typing.List[Wall] = []
-    for _ in range(header_3.wall_count):
-        if encrypted:
-            build_wall = unpacker.read_xor_encrypted_struct(BuildWall, key)
-        else:
-            build_wall = unpacker.read_struct(BuildWall)
-        wall = Wall(wall=build_wall)
-
-        if wall.wall.tags[2] > 0:
-            wall.data = unpacker.read_struct(BloodWallData)
-        elif wall.wall.tags[2] == 0 or wall.wall.tags[2] == -1:
-            wall.data = BloodWallData()
-        else:
-            raise ValueError('Unable to parse wall data')
-
-        result.append(wall)
+    data = unpacker.buffer
+    offset = unpacker.offset
+    result, new_offset = loader.load_walls(Wall, data, offset, header_3.wall_count, key)
+    unpacker.seek(new_offset)
 
     return result
 

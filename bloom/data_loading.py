@@ -259,6 +259,10 @@ class Unpacker:
         return [self.read_struct(struct_type) for _ in range(count)]
 
     @property
+    def buffer(self):
+        return self._buffer
+
+    @property
     def offset(self):
         return self._offset
 
