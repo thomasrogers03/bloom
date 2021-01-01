@@ -20,3 +20,4 @@ cache
 test_results
 !bloom/examples/*.MAP
 bloom/examples/*-BACKUP-*
+*.so

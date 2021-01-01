@@ -120,7 +120,8 @@ loader_load_walls(PyObject *self, PyObject *args)
 
     char *data = PyBytes_AsString(data_bytes);
 
-    PyObject *result = PyList_New(count);
+    PyObject *result_walls = PyList_New(count);
+    PyObject *result = PyTuple_New(2);
     for (size_t index = 0; index < count; ++index)
     {
         crypt_buffer(&data[offset], sizeof(BuildWall), key);
@@ -132,7 +133,41 @@ loader_load_walls(PyObject *self, PyObject *args)
         PyObject *py_build_wall = PyObject_GetAttrString(py_wall, "wall");
 
         PyObject_SetAttrString(py_build_wall, "position_x", PyLong_FromLong(wall.position_x));
+        PyObject_SetAttrString(py_build_wall, "position_x", PyLong_FromLong(wall.position_x));
         PyObject_SetAttrString(py_build_wall, "position_y", PyLong_FromLong(wall.position_y));
+        PyObject_SetAttrString(py_build_wall, "point2_index", PyLong_FromLong(wall.point2_index));
+        PyObject_SetAttrString(py_build_wall, "other_side_wall_index", PyLong_FromLong(wall.other_side_wall_index));
+        PyObject_SetAttrString(py_build_wall, "other_side_sector_index", PyLong_FromLong(wall.other_side_sector_index));
+        PyObject_SetAttrString(py_build_wall, "picnum", PyLong_FromLong(wall.picnum));
+        PyObject_SetAttrString(py_build_wall, "over_picnum", PyLong_FromLong(wall.over_picnum));
+        PyObject_SetAttrString(py_build_wall, "shade", PyLong_FromLong(wall.shade));
+        PyObject_SetAttrString(py_build_wall, "palette", PyLong_FromLong(wall.palette));
+        PyObject_SetAttrString(py_build_wall, "repeat_x", PyLong_FromLong(wall.repeat_x));
+        PyObject_SetAttrString(py_build_wall, "repeat_y", PyLong_FromLong(wall.repeat_y));
+        PyObject_SetAttrString(py_build_wall, "panning_x", PyLong_FromLong(wall.panning_x));
+        PyObject_SetAttrString(py_build_wall, "panning_y", PyLong_FromLong(wall.panning_y));
+
+        PyObject *py_wall_tags = PyObject_GetAttrString(py_build_wall, "tags");
+        for (size_t tag_index = 0; tag_index < 3; ++tag_index)
+        {
+            PyList_SetItem(py_wall_tags, tag_index, PyLong_FromLong(wall.tags[tag_index]));
+        }
+
+        PyObject *py_wall_stat = PyObject_GetAttrString(py_build_wall, "stat");
+
+        PyObject_SetAttrString(py_wall_stat, "blocking", PyLong_FromLong(wall.stat.blocking));
+        PyObject_SetAttrString(py_wall_stat, "bottom_swap", PyLong_FromLong(wall.stat.bottom_swap));
+        PyObject_SetAttrString(py_wall_stat, "align", PyLong_FromLong(wall.stat.align));
+        PyObject_SetAttrString(py_wall_stat, "xflip", PyLong_FromLong(wall.stat.xflip));
+        PyObject_SetAttrString(py_wall_stat, "masking", PyLong_FromLong(wall.stat.masking));
+        PyObject_SetAttrString(py_wall_stat, "one_way", PyLong_FromLong(wall.stat.one_way));
+        PyObject_SetAttrString(py_wall_stat, "blocking2", PyLong_FromLong(wall.stat.blocking2));
+        PyObject_SetAttrString(py_wall_stat, "translucent", PyLong_FromLong(wall.stat.translucent));
+        PyObject_SetAttrString(py_wall_stat, "yflip", PyLong_FromLong(wall.stat.yflip));
+        PyObject_SetAttrString(py_wall_stat, "translucent_rev", PyLong_FromLong(wall.stat.translucent_rev));
+        PyObject_SetAttrString(py_wall_stat, "reserved", PyLong_FromLong(wall.stat.reserved));
+        PyObject_SetAttrString(py_wall_stat, "poly_blue", PyLong_FromLong(wall.stat.poly_blue));
+        PyObject_SetAttrString(py_wall_stat, "poly_green", PyLong_FromLong(wall.stat.poly_green));
 
         if (wall.tags[2] > 0)
         {
@@ -140,11 +175,59 @@ loader_load_walls(PyObject *self, PyObject *args)
             offset += sizeof(BloodWallData);
 
             PyObject *py_wall_data = PyObject_GetAttrString(py_wall, "data");
+
+            PyObject_SetAttrString(py_wall_data, "data1", PyLong_FromLong(wall_data.data1));
+            PyObject_SetAttrString(py_wall_data, "data2", PyLong_FromLong(wall_data.data2));
+            PyObject_SetAttrString(py_wall_data, "state", PyLong_FromLong(wall_data.state));
+            PyObject_SetAttrString(py_wall_data, "data3", PyLong_FromLong(wall_data.data3));
+
+            PyObject *py_data_4 = PyObject_GetAttrString(py_wall_data, "data4");
+            for (size_t data_index = 0; data_index < 2; ++data_index)
+            {
+                PyList_SetItem(py_data_4, data_index, PyLong_FromLong(wall_data.data4[data_index]));
+            }
+
+            PyObject_SetAttrString(py_wall_data, "data", PyLong_FromLong(wall_data.data));
+            PyObject_SetAttrString(py_wall_data, "tx_id", PyLong_FromLong(wall_data.tx_id));
+            PyObject_SetAttrString(py_wall_data, "data5", PyLong_FromLong(wall_data.data5));
+            PyObject_SetAttrString(py_wall_data, "rx_id", PyLong_FromLong(wall_data.rx_id));
+            PyObject_SetAttrString(py_wall_data, "cmd", PyLong_FromLong(wall_data.cmd));
+            PyObject_SetAttrString(py_wall_data, "going_on", PyLong_FromLong(wall_data.going_on));
+            PyObject_SetAttrString(py_wall_data, "going_off", PyLong_FromLong(wall_data.going_off));
+            PyObject_SetAttrString(py_wall_data, "busy_time", PyLong_FromLong(wall_data.busy_time));
+            PyObject_SetAttrString(py_wall_data, "wait_time", PyLong_FromLong(wall_data.wait_time));
+            PyObject_SetAttrString(py_wall_data, "rest_state", PyLong_FromLong(wall_data.rest_state));
+            PyObject_SetAttrString(py_wall_data, "interruptable", PyLong_FromLong(wall_data.interruptable));
+            PyObject_SetAttrString(py_wall_data, "pan_always", PyLong_FromLong(wall_data.pan_always));
+            PyObject_SetAttrString(py_wall_data, "panx", PyLong_FromLong(wall_data.panx));
+            PyObject_SetAttrString(py_wall_data, "data8", PyLong_FromLong(wall_data.data8));
+            PyObject_SetAttrString(py_wall_data, "pany", PyLong_FromLong(wall_data.pany));
+            PyObject_SetAttrString(py_wall_data, "data9", PyLong_FromLong(wall_data.data9));
+            PyObject_SetAttrString(py_wall_data, "decoupled", PyLong_FromLong(wall_data.decoupled));
+            PyObject_SetAttrString(py_wall_data, "one_shot", PyLong_FromLong(wall_data.one_shot));
+            PyObject_SetAttrString(py_wall_data, "data10", PyLong_FromLong(wall_data.data10));
+            PyObject_SetAttrString(py_wall_data, "key", PyLong_FromLong(wall_data.key));
+            PyObject_SetAttrString(py_wall_data, "push", PyLong_FromLong(wall_data.push));
+            PyObject_SetAttrString(py_wall_data, "vector", PyLong_FromLong(wall_data.vector));
+            PyObject_SetAttrString(py_wall_data, "reserved", PyLong_FromLong(wall_data.reserved));
+
+            PyObject *py_data_11 = PyObject_GetAttrString(py_wall_data, "data11");
+            for (size_t data_index = 0; data_index < 2; ++data_index)
+            {
+                PyList_SetItem(py_data_11, data_index, PyLong_FromLong(wall_data.data11[data_index]));
+            }
+
+            PyObject_SetAttrString(py_wall_data, "data12", PyLong_FromLong(wall_data.data12));
+            PyObject_SetAttrString(py_wall_data, "locked", PyLong_FromLong(wall_data.locked));
+            PyObject_SetAttrString(py_wall_data, "dude_lockout", PyLong_FromLong(wall_data.dude_lockout));
+            PyObject_SetAttrString(py_wall_data, "data13", PyLong_FromLong(wall_data.data13));
         }
 
-        PyList_SetItem(result, index, py_wall);
+        PyList_SetItem(result_walls, index, py_wall);
     }
 
+    PyTuple_SetItem(result, 0, result_walls);
+    PyTuple_SetItem(result, 1, PyLong_FromLong(offset));
     return result;
 }
 
