@@ -1,6 +1,8 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import os.path
+import pickle
 import typing
 
 import numpy
@@ -70,6 +72,12 @@ class Tile:
         return palette[palette_lookup[indices]]
 
 
+class ArtData(typing.NamedTuple):
+    widths: typing.List[int]
+    heights: typing.List[int]
+    animation_data: typing.List[AnimationData]
+    data_offset: int
+
 class Art:
 
     def __init__(self, rff: RFF, path: str):
@@ -78,16 +86,17 @@ class Art:
         self._unpacker = data_loading.Unpacker(tile_data)
 
         self._header = self._unpacker.read_struct(Header)
-        count = self._header.tile_end - self._header.tile_start + 1
+        self._count = self._header.tile_end - self._header.tile_start + 1
 
-        widths = self._unpacker.read_multiple_members(data_loading.UInt16, count)
-        heights = self._unpacker.read_multiple_members(data_loading.UInt16, count)
-        list_of_animation_data = self._unpacker.read_multiple(AnimationData, count)
-
-        data_offset = self._unpacker.offset
+        art_data = self._load_art_data(path)
+        data_offset = art_data.data_offset
 
         self._tiles: typing.List[Tile] = []
-        combined_tile_data = zip(widths, heights, list_of_animation_data)
+        combined_tile_data = zip(
+            art_data.widths,
+            art_data.heights,
+            art_data.animation_data
+        )
         for width, height, animation_data in combined_tile_data:
             tile = Tile(width, height, animation_data, data_offset)
             self._tiles.append(tile)
@@ -116,6 +125,29 @@ class Art:
             self._lookups.append(lookup)
 
         self._default_palette = self._palettes['BLOOD.PAL']
+
+    def _load_art_data(self, path: str):
+        art_name = os.path.basename(path)
+        cache_path = f'cache/{art_name}.data.bin'
+
+        if os.path.exists(cache_path):
+            with open(cache_path, 'rb') as file:
+                return pickle.load(file)
+            
+        widths = self._unpacker.read_multiple_members(data_loading.UInt16, self._count)
+        heights = self._unpacker.read_multiple_members(data_loading.UInt16, self._count)
+        animation_data = self._unpacker.read_multiple(AnimationData, self._count)
+        art_data = ArtData(
+            widths,
+            heights,
+            animation_data,
+            self._unpacker.offset
+        )
+
+        with open(cache_path, 'w+b') as file:
+            pickle.dump(art_data, file)
+        
+        return art_data
 
     @property
     def count(self):
