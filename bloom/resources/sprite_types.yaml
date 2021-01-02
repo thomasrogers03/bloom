@@ -353,6 +353,9 @@
 73:
   name: Tesla Charge
   category: ammo
+  repeats:
+    x: 8
+    y: 8
   tile_config:
     tile: 548
 76:
