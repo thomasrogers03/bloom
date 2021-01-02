@@ -37,6 +37,11 @@ sectors_module = setuptools.Extension(
     sources=['bloom/native/loader/sectorsmodule.cpp'],
 )
 
+sprites_module = setuptools.Extension(
+    'bloom.native.loader.sprites',
+    sources=['bloom/native/loader/spritesmodule.cpp'],
+)
+
 setuptools.setup(
     name="bloom",
     version=_get_version(),
@@ -74,5 +79,6 @@ setuptools.setup(
     ext_modules=[
         walls_module,
         sectors_module,
+        sprites_module,
     ]
 )

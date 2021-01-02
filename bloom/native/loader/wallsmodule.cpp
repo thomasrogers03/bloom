@@ -1,8 +1,6 @@
 // Copyright 2020 Thomas Rogers
 // SPDX-License-Identifier: Apache-2.0
 
-#define PY_SSIZE_T_CLEAN
-
 #include "common.h"
 
 typedef struct

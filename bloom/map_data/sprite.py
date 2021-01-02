@@ -4,6 +4,7 @@
 import typing
 
 from .. import data_loading
+from ..native import loader
 from . import headers
 
 
@@ -135,30 +136,23 @@ class Sprite(data_loading.CustomStruct):
 
         return new_blood_sprite
 
+def _encryption_key(encrypted: bool, header_3: headers.MapHeader3):
+    if encrypted:
+        return ((header_3.revisions * BuildSprite.size()) | 0x4D) & 0xFF
+    return 0
+
 def load_sprites(unpacker: data_loading.Unpacker, encrypted: bool, header_3: headers.MapHeader3):
-    key = ((header_3.revisions * BuildSprite.size()) | 0x4D) & 0xFF
+    key = _encryption_key(encrypted, header_3)
 
-    result: typing.List[Sprite] = []
-    for _ in range(header_3.sprite_count):
-        if encrypted:
-            build_sprite = unpacker.read_xor_encrypted_struct(BuildSprite, key)
-        else:
-            build_sprite = unpacker.read_struct(BuildSprite)
-        sprite = Sprite(sprite=build_sprite)
-
-        if sprite.sprite.tags[2] > 0:
-            sprite.data = unpacker.read_struct(BloodSpriteData)
-        elif sprite.sprite.tags[2] == 0 or sprite.sprite.tags[2] == -1:
-            sprite.data = BloodSpriteData()
-        else:
-            raise ValueError('Unable to parse sprite data')
-
-        result.append(sprite)
+    data = unpacker.buffer
+    offset = unpacker.offset
+    result, new_offset = loader.sprites.load_sprites(Sprite, data, offset, header_3.sprite_count, key)
+    unpacker.seek(new_offset)
 
     return result
 
 def save_sprites(packer: data_loading.Packer, encrypted: bool, header_3: headers.MapHeader3, sprites: typing.List[Sprite]):
-    key = ((header_3.revisions * BuildSprite.size()) | 0x4D) & 0xFF
+    key = _encryption_key(encrypted, header_3)
 
     for sprite in sprites:
         if encrypted:
