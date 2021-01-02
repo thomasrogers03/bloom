@@ -4,19 +4,20 @@
 import typing
 
 from .. import data_loading
+from ..native import loader
 from . import headers
 
 
 class Stat(data_loading.CustomStruct):
-    parallax: data_loading.PartialInteger(data_loading.Int16, 1)
-    groudraw: data_loading.PartialInteger(data_loading.Int16, 1)
-    swapxy: data_loading.PartialInteger(data_loading.Int16, 1)
-    expand: data_loading.PartialInteger(data_loading.Int16, 1)
-    xflip: data_loading.PartialInteger(data_loading.Int16, 1)
-    yflip: data_loading.PartialInteger(data_loading.Int16, 1)
-    align: data_loading.PartialInteger(data_loading.Int16, 1)
-    masking: data_loading.PartialInteger(data_loading.Int16, 2)
-    reserved: data_loading.PartialInteger(data_loading.Int16, 7)
+    parallax: data_loading.PartialInteger(data_loading.UInt16, 1)
+    groudraw: data_loading.PartialInteger(data_loading.UInt16, 1)
+    swapxy: data_loading.PartialInteger(data_loading.UInt16, 1)
+    expand: data_loading.PartialInteger(data_loading.UInt16, 1)
+    xflip: data_loading.PartialInteger(data_loading.UInt16, 1)
+    yflip: data_loading.PartialInteger(data_loading.UInt16, 1)
+    align: data_loading.PartialInteger(data_loading.UInt16, 1)
+    masking: data_loading.PartialInteger(data_loading.UInt16, 2)
+    reserved: data_loading.PartialInteger(data_loading.UInt16, 7)
 
 
 class BuildSector(data_loading.CustomStruct):
@@ -145,26 +146,18 @@ class Sector(data_loading.CustomStruct):
     data: BloodSectorData
 
 
+def _encryption_key(encrypted: bool, header_3: headers.MapHeader3):
+    if encrypted:
+        return (header_3.revisions * BuildSector.size()) & 0xFF
+    return 0
+
 def load_sectors(unpacker: data_loading.Unpacker, encrypted: bool, header_3: headers.MapHeader3):
-    key = (header_3.revisions * BuildSector.size()) & 0xFF
+    key = _encryption_key(encrypted, header_3)
 
-    result: typing.List[Sector] = []
-    for _ in range(header_3.sector_count):
-        if encrypted:
-            build_sector = unpacker.read_xor_encrypted_struct(BuildSector, key)
-        else:
-            build_sector = unpacker.read_struct(BuildSector)
-
-        sector = Sector(sector=build_sector)
-
-        if sector.sector.tags[2] > 0:
-            sector.data = unpacker.read_struct(BloodSectorData)
-        elif sector.sector.tags[2] == 0 or sector.sector.tags[2] == -1:
-            sector.data = BloodSectorData()
-        else:
-            raise ValueError('Unable to parse sector data')
-
-        result.append(sector)
+    data = unpacker.buffer
+    offset = unpacker.offset
+    result, new_offset = loader.sectors.load_sectors(Sector, data, offset, header_3.sector_count, key)
+    unpacker.seek(new_offset)
 
     return result
 

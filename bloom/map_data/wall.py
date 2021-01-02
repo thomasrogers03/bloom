@@ -4,8 +4,8 @@
 import typing
 
 from .. import data_loading
-from . import headers, sector
 from ..native import loader
+from . import headers, sector
 
 
 class Stat(data_loading.CustomStruct):
@@ -92,9 +92,13 @@ class Wall(data_loading.CustomStruct):
     wall: BuildWall
     data: BloodWallData
 
+def _encryption_key(encrypted: bool, header_3: headers.MapHeader3):
+    if encrypted:
+        return ((header_3.revisions * sector.BuildSector.size()) | 0x4D) & 0xFF
+    return 0
 
 def load_walls(unpacker: data_loading.Unpacker, encrypted: bool, header_3: headers.MapHeader3):
-    key = ((header_3.revisions * sector.BuildSector.size()) | 0x4D) & 0xFF
+    key = _encryption_key(encrypted, header_3)
 
     data = unpacker.buffer
     offset = unpacker.offset
@@ -105,7 +109,7 @@ def load_walls(unpacker: data_loading.Unpacker, encrypted: bool, header_3: heade
 
 
 def save_walls(packer: data_loading.Packer, encrypted: bool, header_3: headers.MapHeader3, walls: typing.List[Wall]):
-    key = ((header_3.revisions * sector.BuildSector.size()) | 0x4D) & 0xFF
+    key = _encryption_key(encrypted, header_3)
 
     for wall in walls:
         if encrypted:

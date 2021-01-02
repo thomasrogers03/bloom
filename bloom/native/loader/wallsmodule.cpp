@@ -3,8 +3,7 @@
 
 #define PY_SSIZE_T_CLEAN
 
-#include <Python.h>
-#include <cstdint>
+#include "common.h"
 
 typedef struct
 {
@@ -89,14 +88,6 @@ typedef struct
     uint8_t data14[4];
 } BloodWallData;
 
-inline void crypt_buffer(char *data, size_t length, uint8_t key)
-{
-    for (size_t index = 0; index < length; ++index)
-    {
-        data[index] ^= (key + index) & 0xFF;
-    }
-}
-
 static PyObject *
 walls_load_walls(PyObject *self, PyObject *args)
 {
@@ -140,11 +131,7 @@ walls_load_walls(PyObject *self, PyObject *args)
         PyObject_SetAttrString(py_build_wall, "panning_x", PyLong_FromLong(wall.panning_x));
         PyObject_SetAttrString(py_build_wall, "panning_y", PyLong_FromLong(wall.panning_y));
 
-        PyObject *py_wall_tags = PyObject_GetAttrString(py_build_wall, "tags");
-        for (size_t tag_index = 0; tag_index < 3; ++tag_index)
-        {
-            PyList_SetItem(py_wall_tags, tag_index, PyLong_FromLong(wall.tags[tag_index]));
-        }
+        load_int_list(PyObject_GetAttrString(py_build_wall, "tags"), wall.tags);
 
         PyObject *py_wall_stat = PyObject_GetAttrString(py_build_wall, "stat");
 
@@ -174,11 +161,7 @@ walls_load_walls(PyObject *self, PyObject *args)
             PyObject_SetAttrString(py_wall_data, "state", PyLong_FromLong(wall_data.state));
             PyObject_SetAttrString(py_wall_data, "data3", PyLong_FromLong(wall_data.data3));
 
-            PyObject *py_data_4 = PyObject_GetAttrString(py_wall_data, "data4");
-            for (size_t data_index = 0; data_index < 2; ++data_index)
-            {
-                PyList_SetItem(py_data_4, data_index, PyLong_FromLong(wall_data.data4[data_index]));
-            }
+            load_int_list(PyObject_GetAttrString(py_wall_data, "data4"), wall_data.data4);
 
             PyObject_SetAttrString(py_wall_data, "data", PyLong_FromLong(wall_data.data));
             PyObject_SetAttrString(py_wall_data, "tx_id", PyLong_FromLong(wall_data.tx_id));
@@ -204,11 +187,7 @@ walls_load_walls(PyObject *self, PyObject *args)
             PyObject_SetAttrString(py_wall_data, "vector", PyLong_FromLong(wall_data.vector));
             PyObject_SetAttrString(py_wall_data, "reserved", PyLong_FromLong(wall_data.reserved));
 
-            PyObject *py_data_11 = PyObject_GetAttrString(py_wall_data, "data11");
-            for (size_t data_index = 0; data_index < 2; ++data_index)
-            {
-                PyList_SetItem(py_data_11, data_index, PyLong_FromLong(wall_data.data11[data_index]));
-            }
+            load_int_list(PyObject_GetAttrString(py_wall_data, "data11"), wall_data.data11);
 
             PyObject_SetAttrString(py_wall_data, "data12", PyLong_FromLong(wall_data.data12));
             PyObject_SetAttrString(py_wall_data, "locked", PyLong_FromLong(wall_data.locked));

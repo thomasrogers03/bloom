@@ -27,9 +27,14 @@ def _get_version():
         return file.readlines()[0].strip()
 
 
-native_module = setuptools.Extension(
+walls_module = setuptools.Extension(
     'bloom.native.loader.walls',
     sources=['bloom/native/loader/wallsmodule.cpp'],
+)
+
+sectors_module = setuptools.Extension(
+    'bloom.native.loader.sectors',
+    sources=['bloom/native/loader/sectorsmodule.cpp'],
 )
 
 setuptools.setup(
@@ -66,5 +71,8 @@ setuptools.setup(
             'platforms': ['win_amd64']
         }
     },
-    ext_modules=[native_module]
+    ext_modules=[
+        walls_module,
+        sectors_module,
+    ]
 )
