@@ -38,6 +38,8 @@ class SectorGeometry:
         display_2d.hide(constants.SCENE_3D)
         display_2d.set_depth_offset(constants.DEPTH_OFFSET, 1)
 
+        self._2d_segments = core.LineSegs('2d')
+
     @property
     def sprite_geometry(self):
         return self._sprite_geometry
@@ -52,11 +54,8 @@ class SectorGeometry:
 
     def add_2d_geometry(self, point_1: core.Point2, point_2: core.Point2, colour: core.Vec4, thickness: float):
         if not constants.PORTALS_DEBUGGING_ENABLED:
-            segments = self._create_2d_segments(point_1, point_2, colour, thickness=thickness)
-            segments.create(self._node_2d, dynamic=False)
-            
-            segments = self._create_2d_vertex_segments(point_1, colour)
-            segments.create(self._node_2d, dynamic=False)
+            self._add_2d_segments(self._2d_segments, point_1, point_2, colour, thickness=thickness)
+            self._add_2d_vertex_segments(self._2d_segments, point_1, colour)
 
     def add_2d_highlight_geometry(self, name: str, point_1: core.Point2, point_2: core.Point2):
         segments = self._create_2d_segments(point_1, point_2, core.Vec4(1, 1, 1, 1), thickness=4, z_offset=-512)
@@ -78,9 +77,7 @@ class SectorGeometry:
         highlight_display_node = core.GeomNode(f'{part}_highlight')
 
         segments = self._create_3d_segments(point_1, point_2, core.Vec4(1, 1, 1, 1))
-        segments.create(highlight_display_node, dynamic=False)
-
-        segments = self._create_2d_vertex_segments(point_1, core.Vec4(1, 1, 1, 1))
+        self._add_2d_vertex_segments(segments, point_1, core.Vec4(1, 1, 1, 1))
         segments.create(highlight_display_node, dynamic=False)
 
         highlight_display: core.NodePath = self._display.attach_new_node(highlight_display_node)
@@ -112,20 +109,26 @@ class SectorGeometry:
                 if animation_data is not None:
                     sector_shape.set_name('animated_geometry')
                     sector_shape.set_python_tag('animation_data', (animation_data, lookup))
+        
+        self._2d_segments.create(self._node_2d, dynamic=False)
 
         return self._display
 
-    def _create_2d_vertex_segments(self, point: core.Point2, colour: core.Vec4):
+    @staticmethod
+    def _create_2d_vertex_segments(point: core.Point2, colour: core.Vec4):
         segments = core.LineSegs('2d_vertex')
+        SectorGeometry._add_2d_vertex_segments(segments, point, colour)
+        return segments
+
+    @staticmethod
+    def _add_2d_vertex_segments(segments: core.LineSegs, point: core.Point2, colour: core.Vec4):
         segments.set_thickness(2)
         segments.set_color(colour)
-        segments.draw_to(point.x - 32, point.y - 32, -constants.REALLY_BIG_NUMBER)
+        segments.move_to(point.x - 32, point.y - 32, -constants.REALLY_BIG_NUMBER)
         segments.draw_to(point.x - 32, point.y + 32, -constants.REALLY_BIG_NUMBER)
         segments.draw_to(point.x + 32, point.y + 32, -constants.REALLY_BIG_NUMBER)
         segments.draw_to(point.x + 32, point.y - 32, -constants.REALLY_BIG_NUMBER)
         segments.draw_to(point.x - 32, point.y - 32, -constants.REALLY_BIG_NUMBER)
-
-        return segments
 
     def _setup_highlight_display(self, highlight: core.NodePath):
         highlight.set_two_sided(True)
@@ -144,14 +147,25 @@ class SectorGeometry:
 
         return segments
 
-    def _create_2d_segments(self, point_1: core.Point2, point_2: core.Point2, colour: core.Vec4, thickness=2, z_offset=0):
+    @staticmethod
+    def _create_2d_segments(point_1: core.Point2, point_2: core.Point2, colour: core.Vec4, thickness=2, z_offset=0):
         segments = core.LineSegs('2d')
+        SectorGeometry._add_2d_segments(segments, point_1, point_2, colour, thickness=thickness, z_offset=z_offset)
+        return segments
+
+    @staticmethod
+    def _add_2d_segments(
+        segments: core.LineSegs, 
+        point_1: core.Point2, 
+        point_2: core.Point2, 
+        colour: core.Vec4, 
+        thickness=2, 
+        z_offset=0
+    ):
         segments.set_thickness(thickness)
         segments.set_color(colour)
-        segments.draw_to(core.Point3(point_1.x, point_1.y, -constants.REALLY_BIG_NUMBER + z_offset))
-        segments.draw_to(core.Point3(point_2.x, point_2.y, -constants.REALLY_BIG_NUMBER + z_offset))
-
-        return segments
+        segments.move_to(point_1.x, point_1.y, -constants.REALLY_BIG_NUMBER + z_offset)
+        segments.draw_to(point_2.x, point_2.y, -constants.REALLY_BIG_NUMBER + z_offset)
 
     def _get_node_for_picnum(self, picnum: int, lookup: int):
         if lookup not in self._nodes:
