@@ -89,6 +89,8 @@ typedef struct
 static PyObject *
 walls_load_walls(PyObject *self, PyObject *args)
 {
+    static const BloodWallData empty_wall_data = {0};
+
     PyObject *wall_constructor;
     PyObject *data_bytes;
     uint64_t offset;
@@ -147,51 +149,53 @@ walls_load_walls(PyObject *self, PyObject *args)
         PyObject_SetAttrString(py_wall_stat, "poly_blue", PyLong_FromLong(wall.stat.poly_blue));
         PyObject_SetAttrString(py_wall_stat, "poly_green", PyLong_FromLong(wall.stat.poly_green));
 
+        const BloodWallData *wall_data_ptr = &empty_wall_data;
         if (wall.tags[2] > 0)
         {
-            const BloodWallData &wall_data = *reinterpret_cast<const BloodWallData *>(&data[offset]);
+            wall_data_ptr = reinterpret_cast<const BloodWallData *>(&data[offset]);
             offset += sizeof(BloodWallData);
-
-            PyObject *py_wall_data = PyObject_GetAttrString(py_wall, "data");
-
-            PyObject_SetAttrString(py_wall_data, "data1", PyLong_FromLong(wall_data.data1));
-            PyObject_SetAttrString(py_wall_data, "data2", PyLong_FromLong(wall_data.data2));
-            PyObject_SetAttrString(py_wall_data, "state", PyLong_FromLong(wall_data.state));
-            PyObject_SetAttrString(py_wall_data, "data3", PyLong_FromLong(wall_data.data3));
-
-            load_int_list(PyObject_GetAttrString(py_wall_data, "data4"), wall_data.data4);
-
-            PyObject_SetAttrString(py_wall_data, "data", PyLong_FromLong(wall_data.data));
-            PyObject_SetAttrString(py_wall_data, "tx_id", PyLong_FromLong(wall_data.tx_id));
-            PyObject_SetAttrString(py_wall_data, "data5", PyLong_FromLong(wall_data.data5));
-            PyObject_SetAttrString(py_wall_data, "rx_id", PyLong_FromLong(wall_data.rx_id));
-            PyObject_SetAttrString(py_wall_data, "cmd", PyLong_FromLong(wall_data.cmd));
-            PyObject_SetAttrString(py_wall_data, "going_on", PyLong_FromLong(wall_data.going_on));
-            PyObject_SetAttrString(py_wall_data, "going_off", PyLong_FromLong(wall_data.going_off));
-            PyObject_SetAttrString(py_wall_data, "busy_time", PyLong_FromLong(wall_data.busy_time));
-            PyObject_SetAttrString(py_wall_data, "wait_time", PyLong_FromLong(wall_data.wait_time));
-            PyObject_SetAttrString(py_wall_data, "rest_state", PyLong_FromLong(wall_data.rest_state));
-            PyObject_SetAttrString(py_wall_data, "interruptable", PyLong_FromLong(wall_data.interruptable));
-            PyObject_SetAttrString(py_wall_data, "pan_always", PyLong_FromLong(wall_data.pan_always));
-            PyObject_SetAttrString(py_wall_data, "panx", PyLong_FromLong(wall_data.panx));
-            PyObject_SetAttrString(py_wall_data, "data8", PyLong_FromLong(wall_data.data8));
-            PyObject_SetAttrString(py_wall_data, "pany", PyLong_FromLong(wall_data.pany));
-            PyObject_SetAttrString(py_wall_data, "data9", PyLong_FromLong(wall_data.data9));
-            PyObject_SetAttrString(py_wall_data, "decoupled", PyLong_FromLong(wall_data.decoupled));
-            PyObject_SetAttrString(py_wall_data, "one_shot", PyLong_FromLong(wall_data.one_shot));
-            PyObject_SetAttrString(py_wall_data, "data10", PyLong_FromLong(wall_data.data10));
-            PyObject_SetAttrString(py_wall_data, "key", PyLong_FromLong(wall_data.key));
-            PyObject_SetAttrString(py_wall_data, "push", PyLong_FromLong(wall_data.push));
-            PyObject_SetAttrString(py_wall_data, "vector", PyLong_FromLong(wall_data.vector));
-            PyObject_SetAttrString(py_wall_data, "reserved", PyLong_FromLong(wall_data.reserved));
-
-            load_int_list(PyObject_GetAttrString(py_wall_data, "data11"), wall_data.data11);
-
-            PyObject_SetAttrString(py_wall_data, "data12", PyLong_FromLong(wall_data.data12));
-            PyObject_SetAttrString(py_wall_data, "locked", PyLong_FromLong(wall_data.locked));
-            PyObject_SetAttrString(py_wall_data, "dude_lockout", PyLong_FromLong(wall_data.dude_lockout));
-            PyObject_SetAttrString(py_wall_data, "data13", PyLong_FromLong(wall_data.data13));
         }
+        const BloodWallData &wall_data = *wall_data_ptr;
+
+        PyObject *py_wall_data = PyObject_GetAttrString(py_wall, "data");
+
+        PyObject_SetAttrString(py_wall_data, "data1", PyLong_FromLong(wall_data.data1));
+        PyObject_SetAttrString(py_wall_data, "data2", PyLong_FromLong(wall_data.data2));
+        PyObject_SetAttrString(py_wall_data, "state", PyLong_FromLong(wall_data.state));
+        PyObject_SetAttrString(py_wall_data, "data3", PyLong_FromLong(wall_data.data3));
+
+        load_int_list(PyObject_GetAttrString(py_wall_data, "data4"), wall_data.data4);
+
+        PyObject_SetAttrString(py_wall_data, "data", PyLong_FromLong(wall_data.data));
+        PyObject_SetAttrString(py_wall_data, "tx_id", PyLong_FromLong(wall_data.tx_id));
+        PyObject_SetAttrString(py_wall_data, "data5", PyLong_FromLong(wall_data.data5));
+        PyObject_SetAttrString(py_wall_data, "rx_id", PyLong_FromLong(wall_data.rx_id));
+        PyObject_SetAttrString(py_wall_data, "cmd", PyLong_FromLong(wall_data.cmd));
+        PyObject_SetAttrString(py_wall_data, "going_on", PyLong_FromLong(wall_data.going_on));
+        PyObject_SetAttrString(py_wall_data, "going_off", PyLong_FromLong(wall_data.going_off));
+        PyObject_SetAttrString(py_wall_data, "busy_time", PyLong_FromLong(wall_data.busy_time));
+        PyObject_SetAttrString(py_wall_data, "wait_time", PyLong_FromLong(wall_data.wait_time));
+        PyObject_SetAttrString(py_wall_data, "rest_state", PyLong_FromLong(wall_data.rest_state));
+        PyObject_SetAttrString(py_wall_data, "interruptable", PyLong_FromLong(wall_data.interruptable));
+        PyObject_SetAttrString(py_wall_data, "pan_always", PyLong_FromLong(wall_data.pan_always));
+        PyObject_SetAttrString(py_wall_data, "panx", PyLong_FromLong(wall_data.panx));
+        PyObject_SetAttrString(py_wall_data, "data8", PyLong_FromLong(wall_data.data8));
+        PyObject_SetAttrString(py_wall_data, "pany", PyLong_FromLong(wall_data.pany));
+        PyObject_SetAttrString(py_wall_data, "data9", PyLong_FromLong(wall_data.data9));
+        PyObject_SetAttrString(py_wall_data, "decoupled", PyLong_FromLong(wall_data.decoupled));
+        PyObject_SetAttrString(py_wall_data, "one_shot", PyLong_FromLong(wall_data.one_shot));
+        PyObject_SetAttrString(py_wall_data, "data10", PyLong_FromLong(wall_data.data10));
+        PyObject_SetAttrString(py_wall_data, "key", PyLong_FromLong(wall_data.key));
+        PyObject_SetAttrString(py_wall_data, "push", PyLong_FromLong(wall_data.push));
+        PyObject_SetAttrString(py_wall_data, "vector", PyLong_FromLong(wall_data.vector));
+        PyObject_SetAttrString(py_wall_data, "reserved", PyLong_FromLong(wall_data.reserved));
+
+        load_int_list(PyObject_GetAttrString(py_wall_data, "data11"), wall_data.data11);
+
+        PyObject_SetAttrString(py_wall_data, "data12", PyLong_FromLong(wall_data.data12));
+        PyObject_SetAttrString(py_wall_data, "locked", PyLong_FromLong(wall_data.locked));
+        PyObject_SetAttrString(py_wall_data, "dude_lockout", PyLong_FromLong(wall_data.dude_lockout));
+        PyObject_SetAttrString(py_wall_data, "data13", PyLong_FromLong(wall_data.data13));
 
         PyList_SetItem(result_walls, index, py_wall);
     }

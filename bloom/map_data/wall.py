@@ -7,6 +7,9 @@ from .. import data_loading
 from ..native import loader
 from . import headers, sector
 
+class _Empty:
+    pass
+
 
 class Stat(data_loading.CustomStruct):
     blocking: data_loading.PartialInteger(data_loading.UInt16, 1)
@@ -23,6 +26,12 @@ class Stat(data_loading.CustomStruct):
     poly_blue: data_loading.PartialInteger(data_loading.UInt16, 1)
     poly_green: data_loading.PartialInteger(data_loading.UInt16, 1)
 
+    @staticmethod
+    def allocate() -> 'Stat':
+        stat: Stat = _Empty()
+        stat.__class__ = Stat
+        
+        return stat
 
 class BuildWall(data_loading.CustomStruct):
     position_x: data_loading.Int32
@@ -40,6 +49,16 @@ class BuildWall(data_loading.CustomStruct):
     panning_x: data_loading.UInt8
     panning_y: data_loading.UInt8
     tags: data_loading.SizedType(data_loading.Int16, 3)
+
+    @staticmethod
+    def allocate() -> 'BuildWall':
+        wall: BuildWall = _Empty()
+        wall.__class__ = BuildWall
+
+        wall.stat = Stat.allocate()
+        wall.tags = [0, 0, 0]
+        
+        return wall
 
 
 class BloodWallData(data_loading.CustomStruct):
@@ -87,10 +106,31 @@ class BloodWallData(data_loading.CustomStruct):
 
     data14: data_loading.SizedType(data_loading.UInt8, 4)
 
+    @staticmethod
+    def allocate() -> 'BloodWallData':
+        data: BloodWallData = _Empty()
+        data.__class__ = BloodWallData
+
+        data.data4 = [0, 0]
+        data.data11 = [0, 0]
+        data.data14 = [0, 0]
+        
+        return data
+
 
 class Wall(data_loading.CustomStruct):
     wall: BuildWall
     data: BloodWallData
+
+    @staticmethod
+    def allocate() -> 'Wall':
+        wall: Wall = _Empty()
+        wall.__class__ = Wall
+
+        wall.wall = BuildWall.allocate()
+        wall.data = BloodWallData.allocate()
+        
+        return wall
 
 def _encryption_key(encrypted: bool, header_3: headers.MapHeader3):
     if encrypted:
@@ -102,7 +142,7 @@ def load_walls(unpacker: data_loading.Unpacker, encrypted: bool, header_3: heade
 
     data = unpacker.buffer
     offset = unpacker.offset
-    result, new_offset = loader.walls.load_walls(Wall, data, offset, header_3.wall_count, key)
+    result, new_offset = loader.walls.load_walls(Wall.allocate, data, offset, header_3.wall_count, key)
     unpacker.seek(new_offset)
 
     return result
