@@ -45,34 +45,36 @@ class Highlighter:
         self._get_selected_colour_callback = get_selected_colour_callback
 
     def select_append(self, no_append_if_not_selected=False, selected_type_or_types=None) -> typing.List[highlight_details.HighlightDetails]:
-        if not (self._highlight_valid(selected_type_or_types) and self._selected_are_valid(selected_type_or_types)):
-            self.deselect_all()
-            return []
+        with self._editor.undo_stack.multi_step_undo():
+            if not (self._highlight_valid(selected_type_or_types) and self._selected_are_valid(selected_type_or_types)):
+                self.deselect_all()
+                return []
 
-        swap_index = self._higlight_selected_index_for_select()
-        if swap_index is not None:
-            self._move_highlight_to_top_selected(swap_index)
+            swap_index = self._higlight_selected_index_for_select()
+            if swap_index is not None:
+                self._move_highlight_to_top_selected(swap_index)
+                self.update_selected_target_view()
+                return self._selected
+
+            if no_append_if_not_selected:
+                self.deselect_all()
+                self.update_selection([self._highlighted])
+                self.update_selected_target_view()
+                return self._selected
+
+            self.update_selection(self._selected + [self._highlighted])
             self.update_selected_target_view()
             return self._selected
-
-        if no_append_if_not_selected:
-            self.deselect_all()
-            self.update_selection([self._highlighted])
-            self.update_selected_target_view()
-            return self._selected
-
-        self.update_selection(self._selected + [self._highlighted])
-        self.update_selected_target_view()
-        return self._selected
 
     def select(self, selected_type_or_types=None) -> highlight_details.HighlightDetails:
-        self.deselect_all()
-        if not self._highlight_valid(selected_type_or_types):
-            return None
+        with self._editor.undo_stack.multi_step_undo():
+            self.deselect_all()
+            if not self._highlight_valid(selected_type_or_types):
+                return None
 
-        self._selected = [self._highlighted]
-        self.update_selected_target_view()
-        return self._selected[0]
+            self._selected = [self._highlighted]
+            self.update_selected_target_view()
+            return self._selected[0]
 
     def set_selected_objects(self, objects_to_select: typing.List[empty_object.EmptyObject]):
         hit_position = core.Point3(0, 0, 0)
@@ -115,7 +117,7 @@ class Highlighter:
             return None
 
         for selected_index, selected in enumerate(self._selected):
-            if self._highlighted.map_object == selected.map_object:
+            if self._highlighted == selected:
                 return selected_index
 
         return None

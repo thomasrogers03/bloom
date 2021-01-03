@@ -18,6 +18,11 @@ class HighlightDetails(typing.NamedTuple):
     part: str
     hit_position: core.Vec3
 
+    def __eq__(self, rhs):
+        return isinstance(rhs, HighlightDetails) and \
+            self.map_object == rhs.map_object and \
+            self.part == rhs.part
+
     @property
     def is_sector(self):
         return isinstance(self.map_object, map_objects.EditorSector)

@@ -55,6 +55,31 @@ def _property_change(name: str, map_object: map_objects.EmptyObject, part: str, 
     for property_name in property_names:
         new_values[property_name] = getattr(stat, property_name)
 
+class MultiStepUndo(UndoableOperation):
+
+    def __init__(self):
+        self._operations: typing.List[UndoableOperation] = []
+
+    def add_operation(self, operation: UndoableOperation):
+        self._operations.append(operation)
+
+    @property
+    def has_operations(self):
+        return len(self._operations) > 0
+
+    def get_name(self):
+        if self.has_operations:
+            return self._operations[-1].get_name()
+        return 'Undefined'
+
+    def undo(self):
+        for item in reversed(self._operations):
+            item.undo()
+
+    def redo(self):
+        for item in self._operations:
+            item.redo()
+
 
 class UndoStack:
 
@@ -62,10 +87,14 @@ class UndoStack:
         self._camera_collection = camera_collection
         self._undo: typing.List[UndoableOperation] = []
         self._redo: typing.List[UndoableOperation] = []
+        self._multi_step_undo: MultiStepUndo = None
 
     def add_operation(self, operation: UndoableOperation):
-        self._redo.clear()
-        self._undo.append(operation)
+        if self._multi_step_undo is None:
+            self._redo.clear()
+            self._undo.append(operation)
+        else:
+            self._multi_step_undo.add_operation(operation)
 
     def undo(self):
         if len(self._undo) < 1:
@@ -86,6 +115,18 @@ class UndoStack:
 
         self._camera_collection.set_info_text(f'Redo: {operation.get_name()}')
         self._undo.append(operation)
+
+    @contextmanager
+    def multi_step_undo(self):
+        if self._multi_step_undo is None:
+            self._multi_step_undo = MultiStepUndo()
+            yield
+            multi_step_undo = self._multi_step_undo
+            self._multi_step_undo = None
+            if multi_step_undo.has_operations:
+                self.add_operation(multi_step_undo)
+        else:
+            yield
 
     @contextmanager
     def property_change(
