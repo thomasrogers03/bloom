@@ -100,6 +100,7 @@ class EmptyObject:
 
     def change_attribute(self, undo, redo):
         operation = ChangeAttribute(self, undo, redo)
+        operation.apply()
         self._undo_stack.add_operation(operation)
 
     def _get_highlighter(self):
@@ -111,6 +112,7 @@ class ChangeAttribute(undo_stack.UndoableOperation):
         self._map_object = map_object
         self._undo = undo
         self._redo = redo
+        self.apply = self.redo
 
     def undo(self):
         self._map_object.invalidate_geometry()

@@ -100,6 +100,7 @@ class EditMode(navigation_mode_3d.EditMode):
             self._clicker_factory,
             self._editor.snapper,
             self._editor.sectors,
+            self._editor.undo_stack,
             highlighter_filter_types=[
                 map_objects.EditorSector,
                 map_objects.EditorMarker,

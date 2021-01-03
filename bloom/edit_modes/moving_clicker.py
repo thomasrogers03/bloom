@@ -7,7 +7,7 @@ from direct.showbase import DirectObject
 from panda3d import core
 
 from .. import cameras, clicker_factory, constants, editor
-from ..editor import grid_snapper, highlighter, map_objects
+from ..editor import grid_snapper, highlighter, map_objects, undo_stack
 from ..editor.geometry import move
 from ..editor.highlighting import highlight_details
 from ..utils import shapes
@@ -26,6 +26,7 @@ class MovingClicker:
         clickers: clicker_factory.ClickerFactory,
         snapper: grid_snapper.GridSnapper,
         all_sectors: map_objects.SectorCollection,
+        undos: undo_stack.UndoStack,
         highlighter_filter_types=None,
         move_sprites_on_sectors=True
     ):
@@ -37,6 +38,7 @@ class MovingClicker:
         self._highlighter_filter_types = highlighter_filter_types
         self._move_sprites_on_sectors = move_sprites_on_sectors
         self._updated_callback: typing.Callable[[], None] = None
+        self._undo_stack = undos
 
         self._move_clicker = clickers.make_clicker(
             [core.KeyboardButton.control(), core.MouseButton.one()],
@@ -53,7 +55,7 @@ class MovingClicker:
                 core.KeyboardButton.control(),
                 core.KeyboardButton.shift(),
                 core.MouseButton.one()
-            
+
             ],
             on_click_after_move=self._end_move_selection,
             on_click_move=self._move_entire_sector,
@@ -186,7 +188,8 @@ class MovingClicker:
             self._snapper,
             self._all_sectors,
             self._move_sprites_on_sectors,
-            move_sector_walls
+            move_sector_walls,
+            self._undo_stack
         )
         self._show_grids()
 

@@ -10,6 +10,7 @@ from ..highlighting import highlight_details
 from . import (empty_move, sector_move, sector_move_walls, sprite_move,
                wall_move)
 
+from .. import undo_stack
 
 class Move:
 
@@ -20,7 +21,8 @@ class Move:
         snapper: grid_snapper.GridSnapper,
         all_sectors: map_objects.SectorCollection,
         move_sprites_on_sectors: bool,
-        move_sector_walls: bool
+        move_sector_walls: bool,
+        undos: undo_stack.UndoStack
     ):
         self._hit = highlighted_object.hit_position
         self._move_sector_walls = move_sector_walls
@@ -33,6 +35,7 @@ class Move:
         self._direction = self._highlighted_mover.get_move_direction()
         self._snapper = snapper
         self._all_sectors = all_sectors
+        self._undo_stack = undos
 
     def end_move(self):
         ajusted_sector_shapes: typing.Set[map_objects.EditorSector] = set()
@@ -80,13 +83,15 @@ class Move:
                 ).try_link_wall()
 
     def move(self, delta: core.Vec3):
-        if self._direction is None:
-            self.move_modified(delta)
-        else:
-            self._do_move(self._direction * self._direction.dot(delta))
+        with self._undo_stack.multi_step_undo('Move Objects'):
+            if self._direction is None:
+                self.move_modified(delta)
+            else:
+                self._do_move(self._direction * self._direction.dot(delta))
 
     def move_modified(self, delta: core.Vec3):
-        self._do_move(core.Vec3(delta.x, delta.y, 0))
+        with self._undo_stack.multi_step_undo('Move Objects Modified'):
+            self._do_move(core.Vec3(delta.x, delta.y, 0))
 
     def _do_move(self, delta: core.Vec3):
         for mover in self._movers:

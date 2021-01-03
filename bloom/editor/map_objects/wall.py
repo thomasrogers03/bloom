@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import typing
+from contextlib import contextmanager
 
 from panda3d import bullet, core
 
@@ -247,13 +248,26 @@ class EditorWall(empty_object.EmptyObject):
             self._sector.invalidate_geometry()
 
     def teleport_point_1_to(self, position: core.Point2):
-        self.invalidate_geometry()
-
-        self._wall.wall.position_x = int(position.x)
-        self._wall.wall.position_y = int(position.y)
+        with self._change_wall():
+            self._wall.wall.position_x = int(position.x)
+            self._wall.wall.position_y = int(position.y)
 
     def move_point_2_to(self, position: core.Point2):
         self._wall_point_2.move_point_1_to(position)
+
+    @contextmanager
+    def _change_wall(self):
+        old_wall = self._wall.copy()
+        yield
+        new_wall = self._wall.copy()
+
+        def _undo():
+            self._wall = old_wall
+
+        def _redo():
+            self._wall = new_wall
+
+        self.change_attribute(_undo, _redo)
 
     def _do_move_point_1_to(self, position: core.Point2):
         self._update_repeats_from_length_change(position)

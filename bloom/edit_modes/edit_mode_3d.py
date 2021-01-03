@@ -116,7 +116,8 @@ class EditMode(navigation_mode_3d.EditMode):
             self._highlighter,
             self._clicker_factory,
             self._editor.snapper,
-            self._editor.sectors
+            self._editor.sectors,
+            self._editor.undo_stack
         )
 
     def enter_mode(self, state: dict):
