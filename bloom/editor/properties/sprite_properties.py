@@ -225,7 +225,8 @@ class SpriteDialog:
         sprite.sprite.sprite.status_number = descriptor.get_status_number(
             descriptors.sprite_category_descriptors
         )
-        sprite.sprite.sprite.stat.invisible = int(descriptor.invisible)
+        if descriptor.invisible:
+            sprite.sprite.sprite.stat.invisible = 1
 
         sprite.sprite.sprite.stat.blocking = 0
         sprite.sprite.sprite.stat.blocking2 = 0

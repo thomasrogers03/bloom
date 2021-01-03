@@ -85,6 +85,7 @@ class SpriteTypeDescriptor:
         )
 
     def get_sprite_properties(self, sprite: map_objects.EditorSprite):
+        stat = sprite.sprite.sprite.stat
         data = sprite.sprite.data
 
         properties: typing.Dict[str, object_property.Property] = {
@@ -116,6 +117,7 @@ class SpriteTypeDescriptor:
             'Cooperative': object_property.Property.create_boolean(data.launch_C, offset=True),
             'Locked': object_property.Property.create_boolean(data.locked),
             'Locked Message': object_property.Property.create_integer(data.lock_msg),
+            'Invisible': object_property.Property.create_boolean(stat.invisible),
         }
 
         for descriptor in self.property_descriptors:
@@ -158,6 +160,7 @@ class SpriteTypeDescriptor:
         sprite: map_objects.EditorSprite,
         values: typing.Dict[str, typing.Tuple[bool, int]]
     ):
+        stat = sprite.sprite.sprite.stat
         data = sprite.sprite.data
 
         data.state = int(values['State'])
@@ -188,6 +191,7 @@ class SpriteTypeDescriptor:
         data.launch_C = int(values['Cooperative'])
         data.locked = int(values['Locked'])
         data.lock_msg = int(values['Locked Message'])
+        stat.invisible = int(values['Invisible'])
 
         for descriptor in self.property_descriptors:
             name = descriptor['name']

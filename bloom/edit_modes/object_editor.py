@@ -313,7 +313,14 @@ class ObjectEditor:
 
     def _bind_objects(self):
         selected = self._highlighter.select_append()
+        if len(selected) < 1:
+            return
+
         if len(selected) < 2:
+            selected_object = selected[0]
+            selected_object.map_object.set_source_event_grouping(None)
+            selected_object.map_object.set_target_event_grouping(None)
+            self._highlighter.update_selected_target_view()
             return
 
         transmitter = selected[-1]

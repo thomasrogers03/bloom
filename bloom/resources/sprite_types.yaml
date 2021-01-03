@@ -179,6 +179,16 @@
     tiles:
       - 1161 
       - 2532
+  properties:
+    - name: Count to On
+      type: int
+      from: data_2
+    - name: Count to Off
+      type: int
+      from: data_3
+    - name: Sound to Play
+      type: sound
+      from: data_4
 23:
   name: Padlock (1-Shot)
   category: switches

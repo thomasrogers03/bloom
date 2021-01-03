@@ -111,7 +111,7 @@ class Highlighter:
         operation.apply()
 
     def _higlight_selected_index_for_select(self):
-        if len(self._selected) < 2:
+        if len(self._selected) < 1:
             return None
 
         for selected_index, selected in enumerate(self._selected):
