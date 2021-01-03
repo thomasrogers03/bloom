@@ -65,8 +65,12 @@ class AutoSave:
         new_path = self._map_path(new_index)
         new_meta_data_path = self._meta_data_path(new_index)
 
+        if os.path.exists(new_path):
+            os.remove(new_path)
         os.rename(old_path, new_path)
         if os.path.exists(old_meta_data_path):
+            if os.path.exists(new_meta_data_path):
+                os.remove(new_meta_data_path)
             os.rename(old_meta_data_path, new_meta_data_path)
 
     def _map_path(self, index: int):
