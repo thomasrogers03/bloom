@@ -57,7 +57,8 @@ def _property_change(name: str, map_object: map_objects.EmptyObject, part: str, 
 
 class MultiStepUndo(UndoableOperation):
 
-    def __init__(self):
+    def __init__(self, name: str):
+        self._name = name
         self._operations: typing.List[UndoableOperation] = []
 
     def add_operation(self, operation: UndoableOperation):
@@ -68,9 +69,7 @@ class MultiStepUndo(UndoableOperation):
         return len(self._operations) > 0
 
     def get_name(self):
-        if self.has_operations:
-            return self._operations[-1].get_name()
-        return 'Undefined'
+        return self._name
 
     def undo(self):
         for item in reversed(self._operations):
@@ -117,9 +116,9 @@ class UndoStack:
         self._undo.append(operation)
 
     @contextmanager
-    def multi_step_undo(self):
+    def multi_step_undo(self, name: str):
         if self._multi_step_undo is None:
-            self._multi_step_undo = MultiStepUndo()
+            self._multi_step_undo = MultiStepUndo(name)
             yield
             multi_step_undo = self._multi_step_undo
             self._multi_step_undo = None

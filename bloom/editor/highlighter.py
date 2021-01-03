@@ -45,7 +45,7 @@ class Highlighter:
         self._get_selected_colour_callback = get_selected_colour_callback
 
     def select_append(self, no_append_if_not_selected=False, selected_type_or_types=None) -> typing.List[highlight_details.HighlightDetails]:
-        with self._editor.undo_stack.multi_step_undo():
+        with self._editor.undo_stack.multi_step_undo('Select'):
             if not (self._highlight_valid(selected_type_or_types) and self._selected_are_valid(selected_type_or_types)):
                 self.deselect_all()
                 return []
@@ -67,7 +67,7 @@ class Highlighter:
             return self._selected
 
     def select(self, selected_type_or_types=None) -> highlight_details.HighlightDetails:
-        with self._editor.undo_stack.multi_step_undo():
+        with self._editor.undo_stack.multi_step_undo('Select'):
             self.deselect_all()
             if not self._highlight_valid(selected_type_or_types):
                 return None
