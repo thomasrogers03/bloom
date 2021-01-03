@@ -82,16 +82,18 @@ class Move:
                     self._all_sectors
                 ).try_link_wall()
 
+        self._undo_stack.end_multi_step_undo()
+
     def move(self, delta: core.Vec3):
-        with self._undo_stack.multi_step_undo('Move Objects'):
-            if self._direction is None:
-                self.move_modified(delta)
-            else:
-                self._do_move(self._direction * self._direction.dot(delta))
+        self._undo_stack.begin_multi_step_undo('Move Objects')
+        if self._direction is None:
+            self.move_modified(delta)
+        else:
+            self._do_move(self._direction * self._direction.dot(delta))
 
     def move_modified(self, delta: core.Vec3):
-        with self._undo_stack.multi_step_undo('Move Objects Modified'):
-            self._do_move(core.Vec3(delta.x, delta.y, 0))
+        self._undo_stack.begin_multi_step_undo('Move Objects Modified')
+        self._do_move(core.Vec3(delta.x, delta.y, 0))
 
     def _do_move(self, delta: core.Vec3):
         for mover in self._movers:

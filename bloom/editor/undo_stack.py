@@ -124,14 +124,22 @@ class UndoStack:
     @contextmanager
     def multi_step_undo(self, name: str):
         if self._multi_step_undo is None:
-            self._multi_step_undo = MultiStepUndo(name)
+            self.begin_multi_step_undo(name)
             yield
+            self.end_multi_step_undo()
+        else:
+            yield
+
+    def begin_multi_step_undo(self, name: str):
+        if self._multi_step_undo is None:
+            self._multi_step_undo = MultiStepUndo(name)
+    
+    def end_multi_step_undo(self):
+        if self._multi_step_undo is not None:
             multi_step_undo = self._multi_step_undo
             self._multi_step_undo = None
             if multi_step_undo.has_operations:
                 self.add_operation(multi_step_undo)
-        else:
-            yield
 
     @contextmanager
     def property_change(
