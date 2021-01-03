@@ -4,7 +4,7 @@
 import typing
 
 from ..highlighting import highlight_details
-from .undo_stack import UndoableOperation
+from ..undo_stack import UndoableOperation
 
 class Selector:
     

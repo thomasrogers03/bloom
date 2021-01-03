@@ -9,7 +9,7 @@ from panda3d import bullet, core
 from ... import audio, constants, editor, game_map, map_data
 from ...tiles import manager
 from .. import (event_grouping, marker_constants, plane, sector_geometry,
-                segment)
+                segment, undo_stack)
 from . import empty_object, sprite_highlight
 
 
@@ -26,9 +26,10 @@ class EditorSprite(empty_object.EmptyObject):
         name: str,
         sector: 'bloom.editor.map_objects.sector.EditorSector',
         audio_manager: audio.Manager,
-        tile_manager: manager.Manager
+        tile_manager: manager.Manager,
+        undos: undo_stack.UndoStack
     ):
-        super().__init__()
+        super().__init__(undos)
 
         self._sector = sector
         self._name = name

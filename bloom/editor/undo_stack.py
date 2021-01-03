@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import typing
-
-from ... import cameras
-from .. import map_objects
 from contextlib import contextmanager
+
+from .. import cameras
 
 
 class UndoableOperation:
@@ -31,8 +30,14 @@ class SimpleUndoableOperation:
         return self._name
 
 
+class MapObject:
+
+    def invalidate_geometry(self):
+        raise NotImplementedError()
+
+
 @contextmanager
-def _property_change(name: str, map_object: map_objects.EmptyObject, part: str, property_names: typing.List[str]):
+def _property_change(name: str, map_object: MapObject, part: str, property_names: typing.List[str]):
     old_values: typing.Dict[str, typing.Any] = {}
     new_values: typing.Dict[str, typing.Any] = {}
     stat = map_object.get_stat_for_part(part)
@@ -54,6 +59,7 @@ def _property_change(name: str, map_object: map_objects.EmptyObject, part: str, 
 
     for property_name in property_names:
         new_values[property_name] = getattr(stat, property_name)
+
 
 class MultiStepUndo(UndoableOperation):
 
@@ -131,7 +137,7 @@ class UndoStack:
     def property_change(
         self,
         name: str,
-        map_object: map_objects.EmptyObject,
+        map_object: MapObject,
         part: str,
         *property_names: typing.List[str]
     ):

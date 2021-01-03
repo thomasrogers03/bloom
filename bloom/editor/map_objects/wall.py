@@ -6,7 +6,7 @@ import typing
 from panda3d import bullet, core
 
 from ... import constants, editor, game_map, map_data
-from .. import event_grouping, sector_geometry, segment
+from .. import event_grouping, sector_geometry, segment, undo_stack
 from . import empty_object, geometry_highlight
 
 
@@ -18,9 +18,10 @@ class EditorWall(empty_object.EmptyObject):
         self,
         blood_wall: map_data.wall.Wall,
         name: str,
-        editor_sector
+        editor_sector,
+        undos: undo_stack.UndoStack
     ):
-        super().__init__()
+        super().__init__(undos)
 
         self._sector = editor_sector
         self._name = name

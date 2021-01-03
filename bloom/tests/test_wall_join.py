@@ -14,17 +14,7 @@ from . import utils
 class TestWallJoin(unittest.TestCase):
 
     def setUp(self):
-        mock_audio_manager = mock.Mock()
-        mock_geometry_factory = mock.Mock()
-        mock_suggest_sky = mock.Mock()
-
-        map_to_load = game_map.Map()
-        self._sectors = map_objects.SectorCollection(
-            map_to_load,
-            mock_audio_manager,
-            mock_geometry_factory,
-            mock_suggest_sky
-        )
+        self._sectors = utils.new_sector_collection()
 
     def tearDown(self):
         test_id = self.id()

@@ -8,7 +8,7 @@ from panda3d import bullet, core
 
 from ... import audio, constants, editor, game_map, map_data
 from .. import (event_grouping, marker_constants, plane, ror_constants,
-                sector_geometry, segment)
+                sector_geometry, segment, undo_stack)
 from . import (empty_object, geometry_highlight, marker, sprite, wall,
                z_motion_marker)
 from .drawing import sector as drawing_sector
@@ -24,9 +24,10 @@ class EditorSector(empty_object.EmptyObject):
         name: str,
         audio_manager: audio.Manager,
         geometry_factory: sector_geometry.SectorGeometryFactory,
-        suggest_sky_picnum: typing.Callable[[int], int]
+        suggest_sky_picnum: typing.Callable[[int], int],
+        undos: undo_stack.UndoStack
     ):
-        super().__init__()
+        super().__init__(undos)
 
         self._sector = sector
         self._name = name
@@ -52,24 +53,28 @@ class EditorSector(empty_object.EmptyObject):
             z_motion_marker.EditorZMotionMarker(
                 z_motion_marker.EditorZMotionMarker.POSITION_OFF, 
                 self.FLOOR_PART, 
-                self
+                self,
+                self._undo_stack
             ),
             z_motion_marker.EditorZMotionMarker(
                 z_motion_marker.EditorZMotionMarker.POSITION_ON, 
                 self.FLOOR_PART, 
-                self
+                self,
+                self._undo_stack
             )
         ]
         self._ceiling_z_motion_markers: typing.List[marker.EditorMarker] = [
             z_motion_marker.EditorZMotionMarker(
                 z_motion_marker.EditorZMotionMarker.POSITION_OFF, 
                 self.CEILING_PART, 
-                self
+                self,
+                self._undo_stack
             ),
             z_motion_marker.EditorZMotionMarker(
                 z_motion_marker.EditorZMotionMarker.POSITION_ON, 
                 self.CEILING_PART, 
-                self
+                self,
+                self._undo_stack
             )
         ]
 
@@ -160,7 +165,8 @@ class EditorSector(empty_object.EmptyObject):
         self._markers[marker_index] = marker.EditorMarker(
             blood_sprite,
             f'marker_{marker_index}',
-            self
+            self,
+            self._undo_stack
         )
 
     def setup_geometry(self):
@@ -835,7 +841,7 @@ class EditorSector(empty_object.EmptyObject):
         self.invalidate_geometry()
 
         new_wall_index = len(self._walls)
-        new_wall = wall.EditorWall(blood_wall, str(new_wall_index), self)
+        new_wall = wall.EditorWall(blood_wall, str(new_wall_index), self, self._undo_stack)
         self._walls.append(new_wall)
 
         return new_wall
@@ -887,7 +893,8 @@ class EditorSector(empty_object.EmptyObject):
             str(new_sprite_index),
             self,
             self._audio_manager,
-            self._geometry_factory.tile_manager
+            self._geometry_factory.tile_manager,
+            self._undo_stack
         )
         self._sprites.append(new_sprite)
 

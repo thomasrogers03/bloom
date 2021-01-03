@@ -8,7 +8,7 @@ from panda3d import core
 
 from ... import editor, map_data
 from ...utils import shapes
-from .. import marker_constants, plane, sector_geometry
+from .. import marker_constants, plane, sector_geometry, undo_stack
 from . import empty_object, marker_highlight
 
 
@@ -19,9 +19,10 @@ class EditorMarker(empty_object.EmptyObject):
         self,
         sprite: map_data.sprite.Sprite,
         name: str,
-        sector: 'bloom.editor.map_objects.sector.EditorSector'
+        sector: 'bloom.editor.map_objects.sector.EditorSector',
+        undos: undo_stack.UndoStack
     ):
-        super().__init__()
+        super().__init__(undos)
 
         self._sprite = sprite
         self._name = name

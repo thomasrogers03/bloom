@@ -4,10 +4,13 @@
 
 from panda3d import core
 
+from .. import undo_stack
+
 
 class EmptyObject:
 
-    def __init__(self):
+    def __init__(self, undos: undo_stack.UndoStack):
+        self._undo_stack = undos
         self._source_event_grouping = None
         self._target_event_grouping = None
 
@@ -95,5 +98,27 @@ class EmptyObject:
         if self._target_event_grouping is not None:
             self._target_event_grouping.sources.add(self)
 
+    def change_attribute(self, undo, redo):
+        operation = ChangeAttribute(self, undo, redo)
+        self._undo_stack.add_operation(operation)
+
     def _get_highlighter(self):
         raise NotImplementedError()
+
+class ChangeAttribute(undo_stack.UndoableOperation):
+    
+    def __init__(self, map_object: EmptyObject, undo, redo):
+        self._map_object = map_object
+        self._undo = undo
+        self._redo = redo
+
+    def undo(self):
+        self._map_object.invalidate_geometry()
+        self._undo()
+
+    def redo(self):
+        self._map_object.invalidate_geometry()
+        self._redo()
+        
+
+

@@ -6,6 +6,7 @@ import typing
 from panda3d import core
 
 from ... import editor, map_data
+from .. import undo_stack
 from . import marker
 
 
@@ -17,12 +18,14 @@ class EditorZMotionMarker(marker.EditorMarker):
         self,
         position: str,
         sector_part: str,
-        sector: 'bloom.editor.map_objects.sector.EditorSector'
+        sector: 'bloom.editor.map_objects.sector.EditorSector',
+        undos: undo_stack.UndoStack
     ):
         super().__init__(
             map_data.sprite.Sprite.new(),
             f'z_motion_marker_{position}',
-            sector
+            sector,
+            undos
         )
         self._position = position
         self._sector_part = sector_part

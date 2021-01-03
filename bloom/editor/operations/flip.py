@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from .. import map_objects
-from .undo_stack import SimpleUndoableOperation, UndoStack
+from ..undo_stack import SimpleUndoableOperation, UndoStack
 
 
 class Flip:

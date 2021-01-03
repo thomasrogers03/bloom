@@ -11,10 +11,9 @@ from .. import (audio, cameras, constants, data_loading, edit_mode, editor,
                 find_resource, game_map, map_data)
 from ..tiles import manager
 from ..utils import sky
-from . import grid_snapper, sector_geometry, view_clipping
+from . import grid_snapper, sector_geometry, undo_stack, view_clipping
 from .map_objects import (EditorSector, EditorSprite, EditorWall,
                           SectorCollection)
-from .operations import undo_stack
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +61,8 @@ class MapEditor:
             map_to_load, 
             audio_manager,
             geometry_factory, 
-            self._suggest_sky
+            self._suggest_sky,
+            self._undo_stack
         )
         self._sectors.setup_geometry()
 
