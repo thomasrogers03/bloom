@@ -173,6 +173,10 @@ class EditorMarker(empty_object.EmptyObject):
         return self._sprite.sprite.tags[0]
 
     @property
+    def _blood_object(self):
+        return self._sprite
+
+    @property
     def _z(self):
         return self._sector.floor_z_at_point(self.origin_2d) - 64
 

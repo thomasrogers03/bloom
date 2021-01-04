@@ -388,6 +388,10 @@ class EditorSprite(empty_object.EmptyObject):
         return self._sprite
 
     @property
+    def _blood_object(self):
+        return self._sprite
+
+    @property
     def _offsets(self):
         tile_offsets = self._tile_manager.get_tile_offsets(
             self._sprite.sprite.picnum
