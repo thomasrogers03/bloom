@@ -311,16 +311,16 @@ class EditorSector(empty_object.EmptyObject):
                 editor_wall.invalidate_geometry()
 
     def move_floor_to(self, height: float):
-        self.invalidate_geometry()
-        self._invalidate_adjacent_sectors()
-        self._sector.sector.floor_z = editor.to_build_height(height)
+        with self._change_blood_object():
+            self._invalidate_adjacent_sectors()
+            self._sector.sector.floor_z = editor.to_build_height(height)
 
     def move_ceiling_to(self, height: float):
-        self.invalidate_geometry()
-        self._invalidate_adjacent_sectors()
-        self._sector.sector.ceiling_z = editor.to_build_height(
-            height
-        )
+        with self._change_blood_object():
+            self._invalidate_adjacent_sectors()
+            self._sector.sector.ceiling_z = editor.to_build_height(
+                height
+            )
 
     def swap_parallax(self, part: str):
         if part == self.FLOOR_PART:
@@ -614,6 +614,14 @@ class EditorSector(empty_object.EmptyObject):
         for sprite_index, sprite in enumerate(map_to_load.sprites):
             if sprite.sprite.sector_index == sector_index:
                 yield sprite_index
+
+    @property
+    def _blood_object(self):
+        return self._sector
+
+    @_blood_object.setter
+    def _blood_object(self, value):
+        self._sector = value
 
     def get_sector(self):
         return self

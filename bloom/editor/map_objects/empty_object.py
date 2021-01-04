@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+from contextlib import contextmanager
+
 from panda3d import core
 
 from .. import undo_stack
@@ -102,6 +104,28 @@ class EmptyObject:
         operation = ChangeAttribute(self, undo, redo)
         operation.apply()
         self._undo_stack.add_operation(operation)
+
+    @contextmanager
+    def _change_blood_object(self):
+        old_object = self._blood_object.copy()
+        yield
+        new_object = self._blood_object.copy()
+
+        def _undo():
+            self._blood_object = old_object
+
+        def _redo():
+            self._blood_object = new_object
+
+        self.change_attribute(_undo, _redo)
+
+    @property
+    def _blood_object(self):
+        raise NotImplementedError()
+
+    @_blood_object.setter
+    def _blood_object(self, value):
+        raise NotImplementedError()
 
     def _get_highlighter(self):
         raise NotImplementedError()

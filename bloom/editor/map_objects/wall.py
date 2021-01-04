@@ -248,44 +248,12 @@ class EditorWall(empty_object.EmptyObject):
             self._sector.invalidate_geometry()
 
     def teleport_point_1_to(self, position: core.Point2):
-        with self._change_wall():
+        with self._change_blood_object():
             self._wall.wall.position_x = int(position.x)
             self._wall.wall.position_y = int(position.y)
 
     def move_point_2_to(self, position: core.Point2):
         self._wall_point_2.move_point_1_to(position)
-
-    @contextmanager
-    def _change_wall(self):
-        old_wall = self._wall.copy()
-        yield
-        new_wall = self._wall.copy()
-
-        def _undo():
-            self._wall = old_wall
-
-        def _redo():
-            self._wall = new_wall
-
-        self.change_attribute(_undo, _redo)
-
-    def _do_move_point_1_to(self, position: core.Point2):
-        self._update_repeats_from_length_change(position)
-        self.wall_previous_point._update_repeats_from_length_change(
-            position, is_point_2=True
-        )
-
-        self.teleport_point_1_to(position)
-
-    def _update_repeats_from_length_change(self, new_position: core.Point2, is_point_2=False):
-        if is_point_2:
-            end_point = self.point_1
-        else:
-            end_point = self.point_2
-
-        delta_length = (end_point - new_position).length() - self.get_length()
-        new_x_repeat = self.x_repeat + delta_length * self._LENGTH_REPEAT_SCALE
-        self._wall.wall.repeat_x = editor.to_build_repeat_x(new_x_repeat)
 
     @property
     def sector(self):
@@ -539,6 +507,14 @@ class EditorWall(empty_object.EmptyObject):
         self._wall.wall.repeat_x = editor.to_build_repeat_x(
             self.get_length() * self._LENGTH_REPEAT_SCALE
         )
+
+    @property
+    def _blood_object(self):
+        return self._wall
+
+    @_blood_object.setter
+    def _blood_object(self, value):
+        self._wall = value
 
     @property
     def _has_wall_mask(self):
