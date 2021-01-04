@@ -25,6 +25,7 @@ class SimpleUndoableOperation:
         self._name = name
         self.undo = undo
         self.redo = redo
+        self.apply = self.redo
 
     def get_name(self):
         return self._name

@@ -24,52 +24,53 @@ class SectorInsert:
         if len(points) < 3:
             return
 
-        if self._sector_to_split is None:
-            new_sector = self._all_sectors.create_empty_sector()
-        else:
-            new_sector = self._all_sectors.create_sector(self._sector_to_split)
+        with self._all_sectors.undos.multi_step_undo('Sector Insert'):
+            if self._sector_to_split is None:
+                new_sector = self._all_sectors.create_empty_sector()
+            else:
+                new_sector = self._all_sectors.create_sector(self._sector_to_split)
 
-        if not drawing_sector.Sector.are_points_clockwise(points):
-            points = list(reversed(points))
+            if not drawing_sector.Sector.are_points_clockwise(points):
+                points = list(reversed(points))
 
-        if self._sector_to_split is not None:
-            new_points = sector_draw.make_wall_points(
+            if self._sector_to_split is not None:
+                new_points = sector_draw.make_wall_points(
+                    self._wall_base,
+                    self._sector_to_split,
+                    points
+                )
+            new_otherside_points = sector_draw.make_wall_points(
                 self._wall_base,
-                self._sector_to_split,
+                new_sector,
                 points
             )
-        new_otherside_points = sector_draw.make_wall_points(
-            self._wall_base,
-            new_sector,
-            points
-        )
 
-        if self._sector_to_split is not None:
-            otherside_walls = new_otherside_points[1:] + new_otherside_points[:1]
-            for editor_wall, otherside_wall in zip(new_points, otherside_walls):
-                editor_wall.link(otherside_wall)
+            if self._sector_to_split is not None:
+                otherside_walls = new_otherside_points[1:] + new_otherside_points[:1]
+                for editor_wall, otherside_wall in zip(new_points, otherside_walls):
+                    editor_wall.link(otherside_wall)
 
-        if self._sector_to_split is not None:
-            self._join_walls(new_points)
-        self._join_walls(reversed(new_otherside_points))
+            if self._sector_to_split is not None:
+                self._join_walls(new_points)
+            self._join_walls(reversed(new_otherside_points))
 
-        if self._sector_to_split is not None:
-            for new_wall in new_points:
+            if self._sector_to_split is not None:
+                for new_wall in new_points:
+                    new_wall.reset_panning_and_repeats(None)
+
+            for new_wall in new_otherside_points:
                 new_wall.reset_panning_and_repeats(None)
 
-        for new_wall in new_otherside_points:
-            new_wall.reset_panning_and_repeats(None)
+            if self._sector_to_split is not None:
+                self._sector_to_split.invalidate_geometry()
+            new_sector.invalidate_geometry()
 
-        if self._sector_to_split is not None:
-            self._sector_to_split.invalidate_geometry()
-        new_sector.invalidate_geometry()
-
-        if self._sector_to_split is not None:
-            for sprite in self._sector_to_split.sprites:
-                sprite_find_sector.SpriteFindSector(
-                    sprite,
-                    self._all_sectors.sectors
-                ).update_sector()
+            if self._sector_to_split is not None:
+                for sprite in self._sector_to_split.sprites:
+                    sprite_find_sector.SpriteFindSector(
+                        sprite,
+                        self._all_sectors.sectors
+                    ).update_sector()
 
     @staticmethod
     def _join_walls(walls: typing.List[map_objects.EditorWall]):

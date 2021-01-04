@@ -33,7 +33,7 @@ class SectorCollection:
         sprite_mapping: typing.Dict[int, sprite.EditorSprite] = {}
         marker_sprite_mapping: typing.Dict[int, sprite.EditorSprite] = {}
         for sector_index, map_sector in enumerate(map_to_load.sectors):
-            self.new_sector(map_sector).load(
+            self.new_sector(map_sector, undoable=False).load(
                 map_to_load,
                 sector_index,
                 sprite_mapping,
@@ -73,6 +73,10 @@ class SectorCollection:
     @property
     def event_groupings(self):
         return self._event_groupings
+    
+    @property
+    def undos(self):
+        return self._undo_stack
 
     def destroy_sector(self, sector_to_destroy: EditorSector):
         sector_to_destroy.destroy()
@@ -97,7 +101,7 @@ class SectorCollection:
 
         return new_sector
 
-    def new_sector(self, blood_sector: game_map.sector.Sector):
+    def new_sector(self, blood_sector: game_map.sector.Sector, undoable=True):
         index = len(self._sectors)
 
         new_sector = EditorSector(
@@ -108,7 +112,22 @@ class SectorCollection:
             self._suggest_sky_picnum,
             self._undo_stack
         )
-        self._sectors.append(new_sector)
+
+        def _undo():
+            self.destroy_sector(new_sector)
+    
+        def _redo():
+            new_sector.undestroy()
+            self._sectors.append(new_sector)
+
+        operation = undo_stack.SimpleUndoableOperation(
+            'Add Sector',
+            _undo,
+            _redo
+        )
+        operation.apply()
+        if undoable:
+            self._undo_stack.add_operation(operation)
 
         return new_sector
 

@@ -11,6 +11,6 @@ class SpriteAngleUpdate:
         self._sprite = sprite
 
     def increment(self, amount):
-        self._sprite.invalidate_geometry()
-        new_value = self._sprite.theta + amount
-        self._sprite.set_theta(new_value)
+        with self._sprite.change_blood_object():
+            new_value = self._sprite.theta + amount
+            self._sprite.set_theta(new_value)

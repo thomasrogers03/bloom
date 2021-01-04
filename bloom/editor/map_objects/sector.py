@@ -221,6 +221,10 @@ class EditorSector(empty_object.EmptyObject):
         self._display = None
         self._is_destroyed = True
 
+    def undestroy(self):
+        self.invalidate_geometry()
+        self._is_destroyed = False
+
     def reset_panning_and_repeats(self, part: str):
         self.invalidate_geometry()
         if part == self.FLOOR_PART:
@@ -918,8 +922,14 @@ class EditorSector(empty_object.EmptyObject):
             self._geometry_factory.tile_manager,
             self._undo_stack
         )
-        self._sprites.append(new_sprite)
 
+        def _undo():
+            self._sprites.remove(new_sprite)
+
+        def _redo():
+            self._sprites.append(new_sprite)
+
+        self.change_attribute(_undo, _redo)
         return new_sprite
 
     def add_new_sprite(self, position: core.Point3):

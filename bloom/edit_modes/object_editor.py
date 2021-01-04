@@ -423,32 +423,38 @@ class ObjectEditor:
         ).toggle()
 
     def _decrease_angle(self):
-        selected = self._highlighter.select_append(
-            no_append_if_not_selected=True,
-            selected_type_or_types=[map_objects.EditorSector, map_objects.EditorSprite]
-        )
+        with self._editor.undo_stack.multi_step_undo('Decrease Angle'):
+            selected = self._highlighter.select_append(
+                no_append_if_not_selected=True,
+                selected_type_or_types=[map_objects.EditorSector, map_objects.EditorSprite]
+            )
 
-        for selected_item in selected:
-            if isinstance(selected_item.map_object, map_objects.EditorSprite):
-                operations.sprite_angle_update.SpriteAngleUpdate(
-                    selected_item.map_object).increment(-15)
-            elif isinstance(selected_item.map_object, map_objects.EditorSector):
-                operations.sector_rotate.SectorRotate(
-                    selected_item.map_object).rotate(-15)
+            for selected_item in selected:
+                if isinstance(selected_item.map_object, map_objects.EditorSprite):
+                    operations.sprite_angle_update.SpriteAngleUpdate(
+                        selected_item.map_object
+                    ).increment(-15)
+                elif isinstance(selected_item.map_object, map_objects.EditorSector):
+                    operations.sector_rotate.SectorRotate(
+                        selected_item.map_object
+                    ).rotate(-15)
 
     def _increase_angle(self):
-        selected = self._highlighter.select_append(
-            no_append_if_not_selected=True,
-            selected_type_or_types=[map_objects.EditorSector, map_objects.EditorSprite]
-        )
+        with self._editor.undo_stack.multi_step_undo('Increase Angle'):
+            selected = self._highlighter.select_append(
+                no_append_if_not_selected=True,
+                selected_type_or_types=[map_objects.EditorSector, map_objects.EditorSprite]
+            )
 
-        for selected_item in selected:
-            if isinstance(selected_item.map_object, map_objects.EditorSprite):
-                operations.sprite_angle_update.SpriteAngleUpdate(
-                    selected_item.map_object).increment(15)
-            elif isinstance(selected_item.map_object, map_objects.EditorSector):
-                operations.sector_rotate.SectorRotate(
-                    selected_item.map_object).rotate(15)
+            for selected_item in selected:
+                if isinstance(selected_item.map_object, map_objects.EditorSprite):
+                    operations.sprite_angle_update.SpriteAngleUpdate(
+                        selected_item.map_object
+                    ).increment(15)
+                elif isinstance(selected_item.map_object, map_objects.EditorSector):
+                    operations.sector_rotate.SectorRotate(
+                        selected_item.map_object
+                    ).rotate(15)
 
     def _delete_selected(self):
         selected = self._highlighter.select_append(no_append_if_not_selected=True)
@@ -473,42 +479,44 @@ class ObjectEditor:
         descriptor: sprite_type_descriptor.SpriteTypeDescriptor
     ):
         def _callback():
-            selected = self._highlighter.select()
-            if selected is None:
-                return
+            with self._editor.undo_stack.multi_step_undo('Add Sprite'):
+                selected = self._highlighter.select()
+                if selected is None:
+                    return
 
-            blood_sprite = map_data.sprite.Sprite.new()
-            sprite = selected.map_object.add_sprite(blood_sprite)
-            sprite_properties.SpriteDialog.apply_sprite_properties(
-                sprite,
-                descriptor,
-                descriptor.default_tile,
-                descriptor.palette
-            )
+                blood_sprite = map_data.sprite.Sprite.new()
+                sprite = selected.map_object.add_sprite(blood_sprite)
+                sprite_properties.SpriteDialog.apply_sprite_properties(
+                    sprite,
+                    descriptor,
+                    descriptor.default_tile,
+                    descriptor.palette
+                )
 
-            hit_position = self._editor.snapper.snap_to_grid_3d(selected.hit_position)
-            sprite.move_to(hit_position)
+                hit_position = self._editor.snapper.snap_to_grid_3d(selected.hit_position)
+                sprite.move_to(hit_position)
         return _callback
 
     def _add_sprite(self, sprite_type=None):
-        selected = self._highlighter.select(
-            selected_type_or_types=[map_objects.EditorSector, map_objects.EditorWall]
-        )
-        if selected is None:
-            return
+        with self._editor.undo_stack.multi_step_undo('Add Sprite'):
+            selected = self._highlighter.select(
+                selected_type_or_types=[map_objects.EditorSector, map_objects.EditorWall]
+            )
+            if selected is None:
+                return
 
-        sprite = self._add_sprite_to_sector(selected)
-        if selected.is_floor:
-            self._move_sprite_to_floor(sprite)
-        elif selected.is_ceiling:
-            self._move_sprite_to_ceiling(sprite)
-        elif selected.is_wall:
-            offset = selected.map_object.get_normal_3d() * 8
-            sprite.move_to(sprite.position - offset)
-            sprite.get_stat_for_part(None).facing = 1
-            theta = selected.map_object.line_segment.get_direction_theta()
-            sprite.set_theta(theta + 180)
-            sprite.invalidate_geometry()
+            sprite = self._add_sprite_to_sector(selected)
+            if selected.is_floor:
+                self._move_sprite_to_floor(sprite)
+            elif selected.is_ceiling:
+                self._move_sprite_to_ceiling(sprite)
+            elif selected.is_wall:
+                offset = selected.map_object.get_normal_3d() * 8
+                sprite.move_to(sprite.position - offset)
+                sprite.get_stat_for_part(None).facing = 1
+                theta = selected.map_object.line_segment.get_direction_theta()
+                sprite.set_theta(theta + 180)
+                sprite.invalidate_geometry()
 
     def _add_sprite_to_sector(self, selected: highlight_details.HighlightDetails):
         sector = selected.get_sector()
