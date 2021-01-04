@@ -17,16 +17,17 @@ class WallSplit:
         if self._where == self._wall_to_split.point_1 or self._where == self._wall_to_split.point_2:
             return
 
-        self._do_split()
-        if self._wall_to_split.other_side_wall is not None:
-            other_side_wall = self._wall_to_split.other_side_wall
-            other_side_wall.unlink()
-            WallSplit(other_side_wall, self._where).split()
+        with self._wall_to_split.undos.multi_step_undo('Wall Split'):
+            self._do_split()
+            if self._wall_to_split.other_side_wall is not None:
+                other_side_wall = self._wall_to_split.other_side_wall
+                other_side_wall.unlink()
+                WallSplit(other_side_wall, self._where).split()
 
-            self._wall_to_split.link(other_side_wall.wall_point_2)
+                self._wall_to_split.link(other_side_wall.wall_point_2)
 
-            point_2 = self._wall_to_split.wall_point_2
-            point_2.link(other_side_wall)
+                point_2 = self._wall_to_split.wall_point_2
+                point_2.link(other_side_wall)
 
     def _do_split(self):
         self._wall_to_split.invalidate_geometry()

@@ -43,14 +43,24 @@ class EditorWall(empty_object.EmptyObject):
         self._wall_point_2 = wall_point_2
         self._other_side_wall = other_side_wall
 
-    def link(self, otherside_wall: 'EditorWall'):
+    def link(self, other_side_wall: 'EditorWall'):
         if self._other_side_wall is not None:
             message = 'Tried to link to a wall when we are already linking to one'
             raise AssertionError(message)
 
-        self.invalidate_geometry()
-        self._other_side_wall = otherside_wall
-        otherside_wall._other_side_wall = self
+        old_other_side_wall = self._other_side_wall
+        old_other_side_for_new_other_side = other_side_wall._other_side_wall
+        def _undo():
+            self.invalidate_geometry()
+            self._other_side_wall = old_other_side_wall
+            other_side_wall._other_side_wall = old_other_side_for_new_other_side
+
+        def _redo():
+            self.invalidate_geometry()
+            self._other_side_wall = other_side_wall
+            other_side_wall._other_side_wall = self
+
+        self.change_attribute(_undo, _redo)
 
     def unlink(self):
         self.invalidate_geometry()
@@ -276,11 +286,22 @@ class EditorWall(empty_object.EmptyObject):
         return self._wall_point_2
 
     def set_wall_point_2(self, value: 'EditorWall'):
-        self.invalidate_geometry()
-        self._wall_point_2 = value
+        previous_point_2 = self._wall_point_2
 
-        value.invalidate_geometry()
-        value.wall_previous_point = self
+        def _undo():
+            self._sector.invalidate_geometry()
+            self._wall_point_2 = previous_point_2
+            self._wall_point_2.wall_previous_point = self
+
+        def _redo():
+            self._sector.invalidate_geometry()
+            self._wall_point_2 = value
+            self._wall_point_2.wall_previous_point = self
+
+        if previous_point_2 is None:
+            _redo()
+        else:
+            self.change_attribute(_undo, _redo)
 
     @property
     def other_side_sector(self):

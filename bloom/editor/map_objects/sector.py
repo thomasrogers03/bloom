@@ -852,10 +852,20 @@ class EditorSector(empty_object.EmptyObject):
         self.invalidate_geometry()
 
         new_wall_index = len(self._walls)
-        new_wall = wall.EditorWall(blood_wall, str(
-            new_wall_index), self, self._undo_stack)
-        self._walls.append(new_wall)
+        new_wall = wall.EditorWall(
+            blood_wall, 
+            str(new_wall_index), 
+            self, 
+            self._undo_stack
+        )
 
+        def _undo():
+            self._walls.remove(new_wall)
+
+        def _redo():
+            self._walls.append(new_wall)
+
+        self.change_attribute(_undo, _redo)
         return new_wall
 
     def migrate_wall_to_other_sector(

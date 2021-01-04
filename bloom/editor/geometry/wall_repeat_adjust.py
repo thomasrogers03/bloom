@@ -14,10 +14,11 @@ class WallRepeatAdjust:
     def adjust(self):
         self._wall.invalidate_geometry()
 
-        new_length = self._wall.get_length()
-        if self._previous_length > 0:
-            ratio = self._wall.x_repeat / self._previous_length
-        else:
-            ratio = 8
-        
-        self._wall.blood_wall.wall.repeat_x = editor.to_build_repeat_x(ratio * new_length)
+        with self._wall.change_blood_object():
+            new_length = self._wall.get_length()
+            if self._previous_length > 0:
+                ratio = self._wall.x_repeat / self._previous_length
+            else:
+                ratio = 8
+            
+            self._wall.blood_wall.wall.repeat_x = editor.to_build_repeat_x(ratio * new_length)
