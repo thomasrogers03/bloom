@@ -51,28 +51,28 @@ class EditorSector(empty_object.EmptyObject):
 
         self._floor_z_motion_markers: typing.List[marker.EditorMarker] = [
             z_motion_marker.EditorZMotionMarker(
-                z_motion_marker.EditorZMotionMarker.POSITION_OFF, 
-                self.FLOOR_PART, 
+                z_motion_marker.EditorZMotionMarker.POSITION_OFF,
+                self.FLOOR_PART,
                 self,
                 self._undo_stack
             ),
             z_motion_marker.EditorZMotionMarker(
-                z_motion_marker.EditorZMotionMarker.POSITION_ON, 
-                self.FLOOR_PART, 
+                z_motion_marker.EditorZMotionMarker.POSITION_ON,
+                self.FLOOR_PART,
                 self,
                 self._undo_stack
             )
         ]
         self._ceiling_z_motion_markers: typing.List[marker.EditorMarker] = [
             z_motion_marker.EditorZMotionMarker(
-                z_motion_marker.EditorZMotionMarker.POSITION_OFF, 
-                self.CEILING_PART, 
+                z_motion_marker.EditorZMotionMarker.POSITION_OFF,
+                self.CEILING_PART,
                 self,
                 self._undo_stack
             ),
             z_motion_marker.EditorZMotionMarker(
-                z_motion_marker.EditorZMotionMarker.POSITION_ON, 
-                self.CEILING_PART, 
+                z_motion_marker.EditorZMotionMarker.POSITION_ON,
+                self.CEILING_PART,
                 self,
                 self._undo_stack
             )
@@ -311,12 +311,12 @@ class EditorSector(empty_object.EmptyObject):
                 editor_wall.invalidate_geometry()
 
     def move_floor_to(self, height: float):
-        with self._change_blood_object():
+        with self.change_blood_object():
             self._invalidate_adjacent_sectors()
             self._sector.sector.floor_z = editor.to_build_height(height)
 
     def move_ceiling_to(self, height: float):
-        with self._change_blood_object():
+        with self.change_blood_object():
             self._invalidate_adjacent_sectors()
             self._sector.sector.ceiling_z = editor.to_build_height(
                 height
@@ -468,7 +468,8 @@ class EditorSector(empty_object.EmptyObject):
             first_wall = self._walls[0]
             direction_segment = first_wall.line_segment
             first_wall_orthogonal = first_wall.get_orthogonal_vector()
-            orthogonal_segment = segment.Segment(first_wall.point_1, first_wall.point_1 + first_wall_orthogonal)
+            orthogonal_segment = segment.Segment(
+                first_wall.point_1, first_wall.point_1 + first_wall_orthogonal)
 
             texture_size = all_geometry.get_tile_dimensions(picnum)
             if texture_size.x < 1:
@@ -486,8 +487,10 @@ class EditorSector(empty_object.EmptyObject):
                 colour_writer.add_data4(shade, shade, shade, 1)
 
                 if stat.align:
-                    new_y = direction_segment.get_point_distance(point_2d, ignore_on_line=True)
-                    new_x = orthogonal_segment.get_point_distance(point_2d, ignore_on_line=True)
+                    new_y = direction_segment.get_point_distance(
+                        point_2d, ignore_on_line=True)
+                    new_x = orthogonal_segment.get_point_distance(
+                        point_2d, ignore_on_line=True)
                     point_2d = core.Point2(new_x, new_y)
 
                 if stat.swapxy:
@@ -648,19 +651,19 @@ class EditorSector(empty_object.EmptyObject):
         return self.ceiling_heinum
 
     def set_heinum(self, part: str, value: float):
-        self.invalidate_geometry()
-        if part == self.FLOOR_PART:
-            if value == 0:
-                self._sector.sector.floor_stat.groudraw = 0
+        with self.change_blood_object():
+            if part == self.FLOOR_PART:
+                if value == 0:
+                    self._sector.sector.floor_stat.groudraw = 0
+                else:
+                    self._sector.sector.floor_stat.groudraw = 1
+                self._sector.sector.floor_heinum = editor.to_build_heinum(value)
             else:
-                self._sector.sector.floor_stat.groudraw = 1
-            self._sector.sector.floor_heinum = editor.to_build_heinum(value)
-        else:
-            if value == 0:
-                self._sector.sector.ceiling_stat.groudraw = 0
-            else:
-                self._sector.sector.ceiling_stat.groudraw = 1
-            self._sector.sector.ceiling_heinum = editor.to_build_heinum(value)
+                if value == 0:
+                    self._sector.sector.ceiling_stat.groudraw = 0
+                else:
+                    self._sector.sector.ceiling_stat.groudraw = 1
+                self._sector.sector.ceiling_heinum = editor.to_build_heinum(value)
 
     def ceiling_z_at_point(self, point: core.Point2):
         if not self._sector.sector.ceiling_stat.groudraw or len(self._walls) < 1:
@@ -680,11 +683,11 @@ class EditorSector(empty_object.EmptyObject):
         return self.ceiling_shade
 
     def set_shade(self, part: str, value: float):
-        self.invalidate_geometry()
-        if part == self.FLOOR_PART:
-            self._sector.sector.floor_shade = editor.to_build_shade(value)
-        else:
-            self._sector.sector.ceiling_shade = editor.to_build_shade(value)
+        with self.change_blood_object():
+            if part == self.FLOOR_PART:
+                self._sector.sector.floor_shade = editor.to_build_shade(value)
+            else:
+                self._sector.sector.ceiling_shade = editor.to_build_shade(value)
 
     @property
     def ceiling_shade(self):
@@ -825,11 +828,11 @@ class EditorSector(empty_object.EmptyObject):
         return self._sector.sector.ceiling_picnum
 
     def set_picnum(self, part: str, picnum: int):
-        self.invalidate_geometry()
-        if part == self.FLOOR_PART:
-            self._sector.sector.floor_picnum = picnum
-        else:
-            self._sector.sector.ceiling_picnum = picnum
+        with self.change_blood_object():
+            if part == self.FLOOR_PART:
+                self._sector.sector.floor_picnum = picnum
+            else:
+                self._sector.sector.ceiling_picnum = picnum
 
     def remove_sprite(self, editor_sprite: sprite.EditorSprite):
         if self._is_destroyed:
@@ -849,7 +852,8 @@ class EditorSector(empty_object.EmptyObject):
         self.invalidate_geometry()
 
         new_wall_index = len(self._walls)
-        new_wall = wall.EditorWall(blood_wall, str(new_wall_index), self, self._undo_stack)
+        new_wall = wall.EditorWall(blood_wall, str(
+            new_wall_index), self, self._undo_stack)
         self._walls.append(new_wall)
 
         return new_wall

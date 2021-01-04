@@ -80,6 +80,10 @@ class EmptyObject:
     def target_event_grouping(self):
         return self._target_event_grouping
 
+    @property
+    def undos(self):
+        return self._undo_stack
+
     def set_source_event_grouping(self, event_grouping):
         if self._source_event_grouping == event_grouping:
             return
@@ -106,7 +110,7 @@ class EmptyObject:
         self._undo_stack.add_operation(operation)
 
     @contextmanager
-    def _change_blood_object(self):
+    def change_blood_object(self):
         old_object = self._blood_object.copy()
         yield
         new_object = self._blood_object.copy()
@@ -130,8 +134,9 @@ class EmptyObject:
     def _get_highlighter(self):
         raise NotImplementedError()
 
+
 class ChangeAttribute(undo_stack.UndoableOperation):
-    
+
     def __init__(self, map_object: EmptyObject, undo, redo):
         self._map_object = map_object
         self._undo = undo
@@ -145,6 +150,3 @@ class ChangeAttribute(undo_stack.UndoableOperation):
     def redo(self):
         self._map_object.invalidate_geometry()
         self._redo()
-        
-
-

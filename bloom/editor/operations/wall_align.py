@@ -13,13 +13,13 @@ class WallAlign:
         self._first_wall = first_wall
 
     def align(self):
-        self._do_align(set())
+        with self._first_wall.undos.multi_step_undo('Wall Align'):
+            self._do_align(set())
 
     def _do_align(self, seen: typing.Set[map_objects.EditorWall]):
         if self._first_wall in seen:
             return
 
-        self._first_wall.invalidate_geometry()
         picnum = self._first_wall.blood_wall.wall.picnum
 
         seen.add(self._first_wall)
@@ -41,12 +41,13 @@ class WallAlign:
                 if wall_to_update.blood_wall.wall.picnum != picnum:
                     continue
 
-                wall_to_update.blood_wall.wall.panning_x = editor.to_build_panning_x(
-                    new_panning_x
-                )
-                wall_to_update.blood_wall.wall.panning_y = editor.to_build_panning_y(
-                    new_panning_y
-                )
+                with wall_to_update.change_blood_object():
+                    wall_to_update.blood_wall.wall.panning_x = editor.to_build_panning_x(
+                        new_panning_x
+                    )
+                    wall_to_update.blood_wall.wall.panning_y = editor.to_build_panning_y(
+                        new_panning_y
+                    )
 
                 if wall_to_update != current_wall:
                     walls_for_alignment.append(wall_to_update)

@@ -93,13 +93,14 @@ class EditMode(navigation_mode_3d.EditMode):
         self._camera_collection.set_info_text('Copied')
 
     def _paste_selected_picnum(self):
-        if self._copy_picnum is not None:
-            selected = self._highlighter.select_append(
-                no_append_if_not_selected=True
-            )
-            for selected_object in selected:
-                selected_object.map_object.set_picnum(selected_object.part, self._copy_picnum)
-        self._camera_collection.set_info_text('Pasted')
+        with self._editor.undo_stack.multi_step_undo('Paste Picnum'):
+            if self._copy_picnum is not None:
+                selected = self._highlighter.select_append(
+                    no_append_if_not_selected=True
+                )
+                for selected_object in selected:
+                    selected_object.map_object.set_picnum(selected_object.part, self._copy_picnum)
+            self._camera_collection.set_info_text('Pasted')
 
     def set_editor(self, editor):
         super().set_editor(editor)

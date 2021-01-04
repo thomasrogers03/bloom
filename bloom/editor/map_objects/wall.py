@@ -248,7 +248,7 @@ class EditorWall(empty_object.EmptyObject):
             self._sector.invalidate_geometry()
 
     def teleport_point_1_to(self, position: core.Point2):
-        with self._change_blood_object():
+        with self.change_blood_object():
             self._wall.wall.position_x = int(position.x)
             self._wall.wall.position_y = int(position.y)
 
@@ -349,9 +349,11 @@ class EditorWall(empty_object.EmptyObject):
         if self._is_lower_swapped_part(part):
             self._other_side_wall.set_picnum(None, picnum)
         elif self._is_masking_part(part):
-            self._wall.wall.over_picnum = picnum
+            with self.change_blood_object():
+                self._wall.wall.over_picnum = picnum
         else:
-            self._wall.wall.picnum = picnum
+            with self.change_blood_object():
+                self._wall.wall.picnum = picnum
 
     def show_debug(self):
         if self._debug_display is not None:
@@ -490,23 +492,22 @@ class EditorWall(empty_object.EmptyObject):
         return self.shade
 
     def set_shade(self, part: str, value: float):
-        self.invalidate_geometry()
-        self._wall.wall.shade = editor.to_build_shade(value)
+        with self.change_blood_object():
+            self._wall.wall.shade = editor.to_build_shade(value)
 
     def get_length(self):
         return self.get_direction().length()
 
     def reset_panning_and_repeats(self, part: str):
-        self.invalidate_geometry()
+        with self.change_blood_object():
+            self._wall.wall.panning_x = 0
+            self._wall.wall.panning_y = 0
 
-        self._wall.wall.panning_x = 0
-        self._wall.wall.panning_y = 0
+            self._wall.wall.repeat_y = 8
 
-        self._wall.wall.repeat_y = 8
-
-        self._wall.wall.repeat_x = editor.to_build_repeat_x(
-            self.get_length() * self._LENGTH_REPEAT_SCALE
-        )
+            self._wall.wall.repeat_x = editor.to_build_repeat_x(
+                self.get_length() * self._LENGTH_REPEAT_SCALE
+            )
 
     @property
     def _blood_object(self):
