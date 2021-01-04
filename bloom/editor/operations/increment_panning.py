@@ -4,13 +4,19 @@
 
 from panda3d import core
 
-from ... import editor, map_data
+from ... import cameras, editor, map_data
 from .. import map_objects
 
 
 class IncrementPanning:
 
-    def __init__(self, map_object: map_objects.EmptyObject, part: str):
+    def __init__(
+        self, 
+        camera_collection: cameras.Cameras, 
+        map_object: map_objects.EmptyObject, 
+        part: str
+    ):
+        self._camera_collection = camera_collection
         self._map_object = map_object
         self._part = part
 
@@ -27,6 +33,8 @@ class IncrementPanning:
                     wall.panning_y = editor.to_build_panning_y(
                         self._map_object.y_panning + amount.y
                     )
+                    message = f'Wall Panning: ({wall.panning_x}, {wall.panning_y})'
+                    self._camera_collection.set_info_text(message)
                 elif isinstance(self._map_object, map_objects.EditorSector):
                     amount *= 16
 
@@ -38,6 +46,7 @@ class IncrementPanning:
                         sector.floor_ypanning = editor.to_build_panning_y(
                             self._map_object.floor_y_panning + amount.y
                         )
+                        message = f'Sector Floor Panning: ({sector.floor_xpanning}, {sector.floor_ypanning})'
                     else:
                         sector.ceiling_xpanning = editor.to_build_panning_x(
                             self._map_object.ceiling_x_panning + amount.x
@@ -45,8 +54,11 @@ class IncrementPanning:
                         sector.ceiling_ypanning = editor.to_build_panning_y(
                             self._map_object.ceiling_y_panning + amount.y
                         )
+                        message = f'Sector Ceiling Panning: ({sector.ceiling_xpanning}, {sector.ceiling_ypanning})'
+                    self._camera_collection.set_info_text(message)
                 elif isinstance(self._map_object, map_objects.EditorSprite):
                     increment_repeats.IncrementRepeats(
+                        self._camera_collection,
                         self._map_object,
                         self._part
                     ).increment(amount)

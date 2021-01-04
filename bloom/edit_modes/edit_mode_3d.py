@@ -219,6 +219,7 @@ class EditMode(navigation_mode_3d.EditMode):
 
         for selected_item in selected:
             operations.increment_panning.IncrementPanning(
+                self._camera_collection,
                 selected_item.map_object, 
                 selected_item.part
             ).increment(amount)
@@ -242,6 +243,7 @@ class EditMode(navigation_mode_3d.EditMode):
 
         for selected_item in selected:
             operations.increment_repeats.IncrementRepeats(
+                self._camera_collection,
                 selected_item.map_object, 
                 selected_item.part
             ).increment(amount)

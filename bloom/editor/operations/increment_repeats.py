@@ -4,13 +4,19 @@
 
 from panda3d import core
 
-from ... import editor, map_data
+from ... import cameras, editor, map_data
 from .. import map_objects
 
 
 class IncrementRepeats:
 
-    def __init__(self, map_object: map_objects.EmptyObject, part: str):
+    def __init__(
+        self, 
+        camera_collection: cameras.Cameras, 
+        map_object: map_objects.EmptyObject, 
+        part: str
+    ):
+        self._camera_collection = camera_collection
         self._map_object = map_object
         self._part = part
 
@@ -28,8 +34,11 @@ class IncrementRepeats:
                     wall.repeat_y = editor.to_build_repeat_y(
                         self._map_object.y_repeat + amount.y / 64
                     )
+                    message = f'Wall Repeats: ({wall.repeat_x}, {wall.repeat_y})'
+                    self._camera_collection.set_info_text(message)
                 elif isinstance(self._map_object, map_objects.EditorSector):
                     increment_panning.IncrementPanning(
+                        self._camera_collection,
                         self._map_object,
                         self._part
                     ).increment(amount)
@@ -42,3 +51,5 @@ class IncrementRepeats:
                     sprite.repeat_y = editor.to_build_sprite_repeat(
                         self._map_object.y_repeat + amount.y
                     )
+                    message = f'Sprite Repeats: ({sprite.repeat_x}, {sprite.repeat_y})'
+                    self._camera_collection.set_info_text(message)

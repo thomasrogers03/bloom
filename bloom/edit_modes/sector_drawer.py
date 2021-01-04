@@ -12,7 +12,6 @@ from . import drawing_display
 
 
 class SectorDrawer:
-    _NEAR_WALL_THRESHOLD = 256
 
     def __init__(
         self,
@@ -181,20 +180,26 @@ class SectorDrawer:
         return None
 
     def _vertex_near_point(self, point: core.Point2) -> map_objects.EditorWall:
+        result: map_objects.EditorWall = None
+        closest_distance_squared = self._editor.snapper.grid_size * self._editor.snapper.grid_size
         for wall in self._sector.walls:
-            distance = (point - wall.point_1).length()
-            if distance < self._NEAR_WALL_THRESHOLD:
-                return wall
+            distance_squared = (point - wall.point_1).length_squared()
+            if distance_squared < closest_distance_squared:
+                result = wall
+                closest_distance_squared = distance_squared
 
-        return None
+        return result
 
     def _wall_near_point(self, point: core.Point2) -> map_objects.EditorWall:
+        result: map_objects.EditorWall = None
+        closest_distance = self._editor.snapper.grid_size
         for wall in self._sector.walls:
             distance = wall.line_segment.get_point_distance(point)
-            if distance is not None and distance < self._NEAR_WALL_THRESHOLD:
-                return wall
+            if distance is not None and distance < closest_distance:
+                result = wall
+                closest_distance = distance
 
-        return None
+        return result
 
     def _update_debug_display(self):
         self._display.update(
