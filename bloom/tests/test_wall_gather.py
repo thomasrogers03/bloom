@@ -24,7 +24,7 @@ class TestWallGather(unittest.TestCase):
             ]
         )
         wall_to_split = utils.find_wall_on_point(self._start_sector, core.Point2(-1, 0))
-        operations.wall_split.WallSplit(wall_to_split).split(core.Point2(0, 0))
+        operations.wall_split.WallSplit(wall_to_split, core.Point2(0, 0)).split()
 
     def tearDown(self):
         test_id = self.id()

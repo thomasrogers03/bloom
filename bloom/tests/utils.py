@@ -11,7 +11,7 @@ from bloom.editor import map_objects
 from panda3d import core
 
 from .. import map_data
-from ..editor import map_objects
+from ..editor import map_objects, undo_stack
 from ..editor.map_objects.drawing import sector as drawing_sector
 from ..editor.operations import sector_draw
 
@@ -181,7 +181,8 @@ def new_sector_collection():
     mock_audio_manager = mock.Mock()
     mock_geometry_factory = mock.Mock()
     mock_suggest_sky = mock.Mock()
-    mock_undo_stack = mock.Mock()
+    mock_camera_collection = mock.Mock()
+    undos = undo_stack.UndoStack(mock_camera_collection)
 
     map_to_load = game_map.Map()
     return map_objects.SectorCollection(
@@ -189,7 +190,7 @@ def new_sector_collection():
         mock_audio_manager,
         mock_geometry_factory,
         mock_suggest_sky,
-        mock_undo_stack
+        undos
     )
 
 

@@ -19,14 +19,15 @@ class SectorWallLink:
         self._all_sectors = all_sectors
 
     def try_link_wall(self):
-        if self._try_link_single_wall():
-            if self._wall_to_link.other_side_wall is None:
-                self.try_link_wall()
-            elif self._wall_to_link.wall_point_2.other_side_wall is None:
-                SectorWallLink(
-                    self._wall_to_link.wall_point_2,
-                    self._all_sectors
-                ).try_link_wall()
+        with self._wall_to_link.undos.multi_step_undo('Wall Link'):
+            if self._try_link_single_wall():
+                if self._wall_to_link.other_side_wall is None:
+                    self.try_link_wall()
+                elif self._wall_to_link.wall_point_2.other_side_wall is None:
+                    SectorWallLink(
+                        self._wall_to_link.wall_point_2,
+                        self._all_sectors
+                    ).try_link_wall()
 
     def _try_link_single_wall(self):
         if self._wall_to_link.other_side_sector is not None:
@@ -53,14 +54,14 @@ class SectorWallLink:
 
             if test_wall.point_2 == overlap.point_1:
                 if test_wall.point_1 != overlap.point_2:
-                    wall_split.WallSplit(test_wall).split(overlap.point_2)
+                    wall_split.WallSplit(test_wall, overlap.point_2).split()
                     test_wall = test_wall.wall_point_2
                     if SectorWallLink._cannot_link(test_wall, wall_to_link):
                         return False
             else:
-                wall_split.WallSplit(test_wall).split(overlap.point_1)
+                wall_split.WallSplit(test_wall, overlap.point_1).split()
                 if test_wall.point_1 != overlap.point_2:
-                    wall_split.WallSplit(test_wall).split(overlap.point_2)
+                    wall_split.WallSplit(test_wall, overlap.point_2).split()
                     test_wall = test_wall.wall_point_2
                     if SectorWallLink._cannot_link(test_wall, wall_to_link):
                         return False

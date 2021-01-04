@@ -14,7 +14,7 @@ from . import base_edit_mode
 class EditMode(base_edit_mode.EditMode):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args ,**kwargs)
+        super().__init__(*args, **kwargs)
         self._wall: map_objects.EditorWall = None
         self._display: core.NodePath = None
 
@@ -74,9 +74,8 @@ class EditMode(base_edit_mode.EditMode):
             self._setup_curve()
 
     def _do_split(self):
-        split = operations.wall_split.WallSplit(self._wall)
         for point in self._split_points:
-            split.split(point)
+            operations.wall_split.WallSplit(self._wall, point).split()
         self._edit_mode_selector.pop_mode()
 
     def _decrease_point_count(self):

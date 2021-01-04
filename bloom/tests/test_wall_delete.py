@@ -30,7 +30,7 @@ class TestWallDelete(unittest.TestCase):
         sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
 
         wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
-        operations.wall_split.WallSplit(wall).split(core.Point2(0, 1))
+        operations.wall_split.WallSplit(wall, core.Point2(0, 1)).split()
 
         split_wall = utils.find_wall_on_point(sector, core.Point2(0, 1))
         operations.wall_delete.WallDelete(split_wall).delete()
@@ -45,7 +45,7 @@ class TestWallDelete(unittest.TestCase):
         wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
         operations.wall_link.SectorWallLink(wall, self._sectors).try_link_wall()
 
-        operations.wall_split.WallSplit(wall).split(core.Point2(0, 1))
+        operations.wall_split.WallSplit(wall, core.Point2(0, 1)).split()
         
         wall = utils.find_wall_on_point(sector, core.Point2(0, 1))
         operations.wall_delete.WallDelete(wall).delete()

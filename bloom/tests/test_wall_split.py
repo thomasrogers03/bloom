@@ -30,7 +30,7 @@ class TestWallSplit(unittest.TestCase):
         sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
         
         wall_to_split = utils.find_wall_on_point(sector, core.Point2(-1, 1))
-        operations.wall_split.WallSplit(wall_to_split).split(core.Point2(-1, 0))
+        operations.wall_split.WallSplit(wall_to_split, core.Point2(-1, 0)).split()
 
         self.assertEqual(5, len(sector.walls))
         utils.assert_sector_has_point(sector, core.Point2(-1, 0))
@@ -44,7 +44,7 @@ class TestWallSplit(unittest.TestCase):
         sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
         
         wall_to_split = utils.find_wall_on_point(sector, core.Point2(-1, 1))
-        operations.wall_split.WallSplit(wall_to_split).split(core.Point2(-1, 1))
+        operations.wall_split.WallSplit(wall_to_split, core.Point2(-1, 1)).split()
 
         self.assertEqual(4, len(sector.walls))
 
@@ -52,7 +52,7 @@ class TestWallSplit(unittest.TestCase):
         sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
         
         wall_to_split = utils.find_wall_on_point(sector, core.Point2(-1, 1))
-        operations.wall_split.WallSplit(wall_to_split).split(core.Point2(-1, -1))
+        operations.wall_split.WallSplit(wall_to_split, core.Point2(-1, -1)).split()
 
         self.assertEqual(4, len(sector.walls))
 
@@ -68,7 +68,7 @@ class TestWallSplit(unittest.TestCase):
         wall_to_link.link(other_side_wall_to_link)
 
         wall_to_split = utils.find_wall_on_point(sector, core.Point2(1, 1))
-        operations.wall_split.WallSplit(wall_to_split).split(core.Point2(0, 1))
+        operations.wall_split.WallSplit(wall_to_split, core.Point2(0, 1)).split()
 
         wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
         self.assertEqual(wall.wall_point_2.point_1, core.Point2(0, 1))

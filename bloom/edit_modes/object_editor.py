@@ -656,7 +656,7 @@ class ObjectEditor:
             return
 
         where = self._editor.snapper.snap_to_grid_2d(selected.hit_position.xy)
-        operations.wall_split.WallSplit(selected.map_object).split(where)
+        operations.wall_split.WallSplit(selected.map_object, where).split()
 
     def _join_sectors(self):
         selected = self._highlighter.select_append(
