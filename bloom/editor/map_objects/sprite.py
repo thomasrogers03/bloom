@@ -391,6 +391,10 @@ class EditorSprite(empty_object.EmptyObject):
     def _blood_object(self):
         return self._sprite
 
+    @_blood_object.setter
+    def _blood_object(self, value):
+        self._sprite = value
+
     @property
     def _offsets(self):
         tile_offsets = self._tile_manager.get_tile_offsets(
