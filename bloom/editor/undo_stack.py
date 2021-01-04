@@ -94,8 +94,15 @@ class UndoStack:
         self._undo: typing.List[UndoableOperation] = []
         self._redo: typing.List[UndoableOperation] = []
         self._multi_step_undo: MultiStepUndo = None
+        self._enabled = False
+
+    def enable(self):
+        self._enabled = True
 
     def add_operation(self, operation: UndoableOperation):
+        if not self._enabled:
+            return
+
         if self._multi_step_undo is None:
             self._redo.clear()
             self._undo.append(operation)
@@ -104,6 +111,7 @@ class UndoStack:
 
     def undo(self):
         if len(self._undo) < 1:
+            self._camera_collection.set_info_text('Nothing to undo...')
             return
 
         operation = self._undo.pop()
@@ -114,6 +122,7 @@ class UndoStack:
 
     def redo(self):
         if len(self._redo) < 1:
+            self._camera_collection.set_info_text('Nothing to redo...')
             return
 
         operation = self._redo.pop()

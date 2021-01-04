@@ -68,6 +68,7 @@ class MapEditor:
 
         self._last_builder_sector: EditorSector = None
         self._builder_sector: EditorSector = None
+        self._undo_stack.enable()
 
     @property
     def scene(self):

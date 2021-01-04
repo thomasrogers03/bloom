@@ -59,11 +59,9 @@ class Highlighter:
             if no_append_if_not_selected:
                 self.deselect_all()
                 self.update_selection([self._highlighted])
-                self.update_selected_target_view()
                 return self._selected
 
             self.update_selection(self._selected + [self._highlighted])
-            self.update_selected_target_view()
             return self._selected
 
     def select(self, selected_type_or_types=None) -> highlight_details.HighlightDetails:
@@ -72,8 +70,7 @@ class Highlighter:
             if not self._highlight_valid(selected_type_or_types):
                 return None
 
-            self._selected = [self._highlighted]
-            self.update_selected_target_view()
+            self.update_selection([self._highlighted])
             return self._selected[0]
 
     def set_selected_objects(self, objects_to_select: typing.List[empty_object.EmptyObject]):
@@ -111,6 +108,7 @@ class Highlighter:
         )
         self._editor.undo_stack.add_operation(operation)
         operation.apply()
+        self.update_selected_target_view()
 
     def _higlight_selected_index_for_select(self):
         if len(self._selected) < 1:

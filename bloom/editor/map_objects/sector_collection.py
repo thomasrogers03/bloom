@@ -33,7 +33,7 @@ class SectorCollection:
         sprite_mapping: typing.Dict[int, sprite.EditorSprite] = {}
         marker_sprite_mapping: typing.Dict[int, sprite.EditorSprite] = {}
         for sector_index, map_sector in enumerate(map_to_load.sectors):
-            self.new_sector(map_sector, undoable=False).load(
+            self.new_sector(map_sector).load(
                 map_to_load,
                 sector_index,
                 sprite_mapping,
@@ -101,7 +101,7 @@ class SectorCollection:
 
         return new_sector
 
-    def new_sector(self, blood_sector: game_map.sector.Sector, undoable=True):
+    def new_sector(self, blood_sector: game_map.sector.Sector):
         index = len(self._sectors)
 
         new_sector = EditorSector(
@@ -126,8 +126,7 @@ class SectorCollection:
             _redo
         )
         operation.apply()
-        if undoable:
-            self._undo_stack.add_operation(operation)
+        self._undo_stack.add_operation(operation)
 
         return new_sector
 
