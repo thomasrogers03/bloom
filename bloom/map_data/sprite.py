@@ -168,5 +168,5 @@ def save_sprites(packer: data_loading.Packer, encrypted: bool, header_3: headers
 
         if sprite.sprite.tags[2] > 0:
             packer.write_struct(sprite.data)
-        elif sprite.sprite.tags[2] < 0:
+        elif sprite.sprite.tags[2] < -1:
             raise Exception('Ran out of XSprites!')
