@@ -72,3 +72,8 @@ sprite_category_descriptors = _load_sprite_categories()
 sprite_types = _load_sprite_descriptors()
 sector_types = _load_sector_descriptors()
 wall_types = _load_wall_descriptors()
+
+reverse_sector_type_lookup = {
+    descriptor.name: descriptor.sector_type
+    for descriptor in sector_types.values()
+}

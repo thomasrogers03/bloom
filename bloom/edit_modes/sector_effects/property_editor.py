@@ -9,6 +9,7 @@ from panda3d import core
 from ... import clicker, constants, dialogs
 from ...editor import (event_grouping, geometry, highlighter, map_objects,
                        marker_constants, operations)
+from ...editor.descriptors import constants as descriptor_constants
 from ...editor.highlighting import highlight_details
 from ...utils import shapes
 from .. import (drawing_mode_3d, edit_mode_2d, moving_clicker,
@@ -63,6 +64,9 @@ class EditMode(navigation_mode_3d.EditMode):
 
         self._moving_clicker.setup_keyboard(self)
 
+        self._context_menu.add_command('Set Up Door', self._setup_door)
+        self._context_menu.add_command('Set Up Trap Wall', self._setup_trap_wall)
+
         if 'grid_visible' in state:
             if state['grid_visible']:
                 self._moving_clicker.show_grid()
@@ -109,6 +113,42 @@ class EditMode(navigation_mode_3d.EditMode):
         )
         self._moving_clicker.set_updated_callback(self._update_markers)
 
+    def _setup_door(self):
+        self._sector.sector.sector.tags[0] = descriptor_constants.reverse_sector_type_lookup['Z Motion']
+        
+        self._sector.floor_z_motion_markers[0].set_z(self._sector.floor_z)
+        self._sector.floor_z_motion_markers[1].set_z(self._sector.floor_z)
+
+        lowest_adjacent = self._sector.floor_z - constants.BIG_NUMBER
+        for portal in self._sector.portal_walls():
+            if portal.other_side_sector.ceiling_z > lowest_adjacent:
+                lowest_adjacent = portal.other_side_sector.ceiling_z
+
+        door_ceiling = lowest_adjacent + self._editor.snapper.grid_size
+        
+        self._sector.ceiling_z_motion_markers[0].set_z(self._sector.floor_z)
+        self._sector.ceiling_z_motion_markers[1].set_z(door_ceiling)
+        self._sector.move_ceiling_to(door_ceiling)
+        
+        self._update_markers()
+
+    def _setup_trap_wall(self):
+        self._sector.sector.sector.tags[0] = descriptor_constants.reverse_sector_type_lookup['Z Motion']
+        
+        self._sector.ceiling_z_motion_markers[0].set_z(self._sector.ceiling_z)
+        self._sector.ceiling_z_motion_markers[1].set_z(self._sector.ceiling_z)
+
+        highest_adjacent = self._sector.floor_z + constants.BIG_NUMBER
+        for portal in self._sector.portal_walls():
+            if portal.other_side_sector.floor_z < highest_adjacent:
+                highest_adjacent = portal.other_side_sector.floor_z
+
+        self._sector.floor_z_motion_markers[0].set_z(self._sector.ceiling_z)
+        self._sector.floor_z_motion_markers[1].set_z(highest_adjacent)
+        self._sector.move_floor_to(highest_adjacent)
+
+        self._update_markers()
+
     def _decrease_angle(self):
         selected = self._highlighter.select(
             selected_type_or_types=[map_objects.EditorMarker]
@@ -138,7 +178,7 @@ class EditMode(navigation_mode_3d.EditMode):
 
     def _update_markers(self):
         self._clear_markers()
-        if self._sector.sector.sector.tags[0] < 1:
+        if self._sector.get_type() < 1:
             return
 
         first_marker, second_marker = self._sector.markers
