@@ -25,6 +25,9 @@ class SectorMoveToAdjacent:
                     if new_z < floor_z and new_z > new_height:
                         new_height = new_z
                         found = True
+                if not found:
+                    new_height = self._sector.ceiling_z
+                    found = True
             else:
                 new_height = constants.REALLY_BIG_NUMBER
                 for portal in self._sector.portal_walls():
@@ -51,6 +54,9 @@ class SectorMoveToAdjacent:
                     if new_z > ceiling_z and new_z < new_height:
                         new_height = new_z
                         found = True
+                if not found:
+                    new_height = self._sector.floor_z
+                    found = True
 
             if found:
                 self._sector.move_ceiling_to(new_height)
