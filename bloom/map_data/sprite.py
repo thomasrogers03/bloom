@@ -148,7 +148,7 @@ def load_sprites(unpacker: data_loading.Unpacker, encrypted: bool, header_3: hea
 
         if sprite.sprite.tags[2] > 0:
             sprite.data = unpacker.read_struct(BloodSpriteData)
-        elif sprite.sprite.tags[2] == 0 or sprite.sprite.tags[2] == -1:
+        elif sprite.sprite.tags[2] >= -1:
             sprite.data = BloodSpriteData()
         else:
             raise ValueError('Unable to parse sprite data')
@@ -168,3 +168,5 @@ def save_sprites(packer: data_loading.Packer, encrypted: bool, header_3: headers
 
         if sprite.sprite.tags[2] > 0:
             packer.write_struct(sprite.data)
+        elif sprite.sprite.tags[2] < 0:
+            raise Exception('Ran out of XSprites!')

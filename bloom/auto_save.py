@@ -80,15 +80,18 @@ class AutoSave:
         return f'{self._map_path_prefix}-BACKUP-{index}.YAML'
 
     def _do_save(self, map_to_save: game_map.Map):
-        path = self._map_path(0)
-        meta_data_path = self._meta_data_path(0)
+        try:
+            path = self._map_path(0)
+            meta_data_path = self._meta_data_path(0)
 
-        result, _ = map_to_save.save(path)
-        with open(path, 'w+b') as file:
-            file.write(result)
+            result, _ = map_to_save.save(path)
+            with open(path, 'w+b') as file:
+                file.write(result)
 
-        with open(meta_data_path, 'w+') as file:
-            file.write(yaml.dump(self._meta_data))
+            with open(meta_data_path, 'w+') as file:
+                file.write(yaml.dump(self._meta_data))
+        except Exception as error:
+            self._log_info(f'Failed to save due to: {error}')
 
     def _log_info(self, message: str):
         logger.info(message)

@@ -17,9 +17,10 @@ T = typing.TypeVar('T')
 
 class SizedType:
 
-    def __init__(self, variable_type: type, count: int):
+    def __init__(self, variable_type: type, count: int, default=None):
         self._variable_type = variable_type
         self._count = count
+        self._default = default
 
     def format_string(self) -> bytes:
         callback = getattr(self._variable_type, 'format_string', None)
@@ -54,6 +55,9 @@ class SizedType:
         return value
 
     def default(self):
+        if self._default is not None:
+            return self._default
+
         callback = getattr(self._variable_type, 'default', None)
         if callback is not None:
             return [callback()] * self._count
@@ -87,9 +91,10 @@ class FixedLengthString:
 
 class FixedSizeInteger:
 
-    def __init__(self, size: int, signed=True):
+    def __init__(self, size: int, signed=True, default=0):
         self._size = size
         self._signed = signed
+        self._default = default
 
     def format_string(self) -> bytes:
         if self._signed:
@@ -119,7 +124,7 @@ class FixedSizeInteger:
         return [value]
 
     def default(self):
-        return 0
+        return self._default
 
 
 Int8 = FixedSizeInteger(1)
@@ -134,9 +139,10 @@ Magic = SizedType(bytes, 4)
 
 class PartialInteger:
 
-    def __init__(self, expected_integer_type: FixedSizeInteger, bits: int):
+    def __init__(self, expected_integer_type: FixedSizeInteger, bits: int, default=0):
         self._bits = bits
         self._expected_size = expected_integer_type.size() * 8
+        self._default = default
 
     def size(self):
         return self._bits / 8.0
@@ -191,14 +197,13 @@ class PartialInteger:
         result = 0
         bits = 0
         for hint, value in zip(type_hints, values):
-            # value = read_value & ((1 << hint.bits) - 1)
             value &= ((1 << hint.bits) - 1)
             result |= value << bits
             bits += hint.bits
         return result
 
     def default(self):
-        return 0
+        return self._default
 
 
 class Unpacker:

@@ -112,7 +112,7 @@ class BloodSectorData(data_loading.CustomStruct):
 
     ceiling_zmotion: data_loading.SizedType(data_loading.Int32, 2)
     floor_zmotion: data_loading.SizedType(data_loading.Int32, 2)
-    markers: data_loading.SizedType(data_loading.Int16, 2)
+    markers: data_loading.SizedType(data_loading.Int16, 2, default=[-1, -1])
 
     crush: data_loading.PartialInteger(data_loading.UInt8, 1)
     unknown12: data_loading.PartialInteger(data_loading.UInt8, 7)
@@ -159,7 +159,7 @@ def load_sectors(unpacker: data_loading.Unpacker, encrypted: bool, header_3: hea
 
         if sector.sector.tags[2] > 0:
             sector.data = unpacker.read_struct(BloodSectorData)
-        elif sector.sector.tags[2] == 0 or sector.sector.tags[2] == -1:
+        elif sector.sector.tags[2] >= -1:
             sector.data = BloodSectorData()
         else:
             raise ValueError('Unable to parse sector data')
@@ -185,3 +185,5 @@ def save_sectors(
 
         if sector.sector.tags[2] > 0:
             packer.write_struct(sector.data)
+        elif sector.sector.tags[2] < -1:
+            raise Exception('Ran out of XSectors!')
