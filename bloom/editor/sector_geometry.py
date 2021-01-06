@@ -22,6 +22,7 @@ class SectorGeometry:
         self._name = name
 
         self._nodes: typing.Dict[int, typing.Dict[int, core.GeomNode]] = {}
+        self._pannable_nodes: typing.List[core.GeomNode] = []
         self._tile_manager = tile_manager
         self._node_2d = core.GeomNode(f'{self._name}_2d')
 
@@ -43,11 +44,11 @@ class SectorGeometry:
     @property
     def sprite_geometry(self):
         return self._sprite_geometry
-    
+
     @property
     def scene(self):
         return self._scene
-    
+
     @property
     def display(self):
         return self._display
@@ -67,8 +68,15 @@ class SectorGeometry:
 
         return highlight_display
 
-    def add_geometry(self, geometry: core.Geom, picnum: int, lookup: int):
-        self._get_node_for_picnum(picnum, lookup).add_geom(geometry)
+    def add_geometry(self, geometry: core.Geom, picnum: int, lookup: int, pannable: bool):
+        if pannable:
+            node = core.GeomNode(f'pannable_geometry_{len(self._pannable_nodes)}')
+            node.add_geom(geometry)
+            node.set_python_tag('picnum', picnum)
+            node.set_python_tag('lookup', lookup)
+            self._pannable_nodes.append(node)
+        else:
+            self._get_node_for_picnum(picnum, lookup).add_geom(geometry)
 
     def add_vertex_highlight_geometry(self, point: core.Point2, bottom: float, top: float, part: str):
         point_1 = core.Point3(point.x, point.y, bottom)
@@ -107,9 +115,16 @@ class SectorGeometry:
                 sector_shape.set_texture(self._tile_manager.get_tile(picnum, lookup), 1)
                 animation_data = self._tile_manager.get_animation_data(picnum)
                 if animation_data is not None:
-                    sector_shape.set_name('animated_geometry')
+                    sector_shape.set_name(f'animated_geometry_{lookup}_{picnum}')
                     sector_shape.set_python_tag('animation_data', (animation_data, lookup))
-        
+
+        for node in self._pannable_nodes:
+            picnum = node.get_python_tag('picnum')
+            lookup = node.get_python_tag('lookup')
+
+            sector_shape: core.NodePath = self._display.attach_new_node(node)
+            sector_shape.set_texture(self._tile_manager.get_tile(picnum, lookup), 1)
+
         self._2d_segments.create(self._node_2d, dynamic=False)
 
         return self._display
@@ -155,11 +170,11 @@ class SectorGeometry:
 
     @staticmethod
     def _add_2d_segments(
-        segments: core.LineSegs, 
-        point_1: core.Point2, 
-        point_2: core.Point2, 
-        colour: core.Vec4, 
-        thickness=2, 
+        segments: core.LineSegs,
+        point_1: core.Point2,
+        point_2: core.Point2,
+        colour: core.Vec4,
+        thickness=2,
         z_offset=0
     ):
         segments.set_thickness(thickness)
@@ -170,7 +185,7 @@ class SectorGeometry:
     def _get_node_for_picnum(self, picnum: int, lookup: int):
         if lookup not in self._nodes:
             self._nodes[lookup] = {}
-        
+
         lookup_nodes = self._nodes[lookup]
         if picnum not in lookup_nodes:
             lookup_nodes[picnum] = core.GeomNode('geometry')

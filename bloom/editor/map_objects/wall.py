@@ -653,7 +653,7 @@ class EditorWall(empty_object.EmptyObject):
             geometry = core.Geom(vertex_data)
             geometry.add_primitive(primitive)
 
-            all_geometry.add_geometry(geometry, picnum, self._wall.wall.palette)
+            all_geometry.add_geometry(geometry, picnum, self._wall.wall.palette, False)
             all_geometry.add_highlight_geometry(
                 geometry,
                 f'{self._name}_{part}'

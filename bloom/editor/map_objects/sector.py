@@ -261,7 +261,7 @@ class EditorSector(empty_object.EmptyObject):
         return self._display.find(f'**/{part}')
 
     def get_animated_geometry(self) -> typing.Iterable[core.NodePath]:
-        return self._display.find_all_matches('**/animated_geometry')
+        return self._display.find_all_matches('**/animated_geometry_*')
 
     def show(self):
         if self._display is not None:
@@ -406,7 +406,8 @@ class EditorSector(empty_object.EmptyObject):
             self._sector.sector.floor_stat,
             self._sector.sector.floor_picnum,
             self._sector.sector.floor_palette,
-            self.floor_shade
+            self.floor_shade,
+            self._sector.data.pan_floor
         )
 
         self._add_geometry(
@@ -418,7 +419,8 @@ class EditorSector(empty_object.EmptyObject):
             self._sector.sector.ceiling_stat,
             self._sector.sector.ceiling_picnum,
             self._sector.sector.ceiling_palette,
-            self.ceiling_shade
+            self.ceiling_shade,
+            self._sector.data.pan_ceiling
         )
 
     def _add_geometry(
@@ -431,7 +433,8 @@ class EditorSector(empty_object.EmptyObject):
         stat: map_data.sector.Stat,
         picnum: int,
         lookup: int,
-        shade: float
+        shade: float,
+        pannable: bool
     ):
         for sub_sector in drawing_sector.Sector(self._walls).get_sub_sectors():
             polygon = drawing_sector.Sector.get_wall_bunch_points(
@@ -544,7 +547,7 @@ class EditorSector(empty_object.EmptyObject):
             geometry.add_primitive(primitive)
 
             if not stat.parallax and picnum != 504:
-                all_geometry.add_geometry(geometry, picnum, lookup)
+                all_geometry.add_geometry(geometry, picnum, lookup, pannable)
             all_geometry.add_highlight_geometry(
                 geometry,
                 part
@@ -857,9 +860,9 @@ class EditorSector(empty_object.EmptyObject):
 
         new_wall_index = len(self._walls)
         new_wall = wall.EditorWall(
-            blood_wall, 
-            str(new_wall_index), 
-            self, 
+            blood_wall,
+            str(new_wall_index),
+            self,
             self._undo_stack
         )
 
