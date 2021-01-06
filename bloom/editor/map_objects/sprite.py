@@ -16,7 +16,7 @@ from . import empty_object, sprite_highlight
 class EditorSprite(empty_object.EmptyObject):
     PART_NAME = 'sprite'
     _AMBIENT_SFX_TYPE = 710
-    _SOUND_DISTANCE_SCALE = 10
+    _SOUND_DISTANCE_SCALE = 20
     _STATE_OFF = 0
     _STATE_ON = 1
 
