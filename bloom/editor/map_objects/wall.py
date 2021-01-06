@@ -50,6 +50,7 @@ class EditorWall(empty_object.EmptyObject):
 
         old_other_side_wall = self._other_side_wall
         old_other_side_for_new_other_side = other_side_wall._other_side_wall
+
         def _undo():
             self.invalidate_geometry()
             self._other_side_wall = old_other_side_wall
@@ -217,6 +218,10 @@ class EditorWall(empty_object.EmptyObject):
 
         if self._is_other_side_sector_visible is not None:
             return self._is_other_side_sector_visible
+
+        if self.other_side_sector.sector.sector.floor_stat.parallax or \
+                self.other_side_sector.sector.sector.ceiling_stat.parallax:
+            return True
 
         middle_bottom = max(
             self.other_side_sector.floor_z_at_point(self.point_1),
