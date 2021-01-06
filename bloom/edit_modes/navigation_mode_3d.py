@@ -57,7 +57,7 @@ class EditMode(base_edit_mode.EditMode):
     def _make_highlight_finder_callback(self):
         source, target = self._extrude_mouse_to_scene_transform(check_buttons=True)
         if source is None or target is None:
-            return lambda highlight: highlight
+            return lambda highlight, _: highlight
 
         return highlight_finder_3d.HighlightFinder3D(self._editor, source, target).find_highlight
 

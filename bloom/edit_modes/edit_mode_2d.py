@@ -260,7 +260,7 @@ class EditMode(navigation_mode_2d.EditMode):
     def _make_highlight_finder_callback(self):
         source, _ = self._extrude_mouse_to_scene_transform(check_buttons=True)
         if source is None:
-            return lambda highlight: highlight
+            return lambda highlight, _: highlight
 
         return highlight_finder_2d.HighlightFinder2D(self._editor, source.xy, self._camera_scale()).find_highlight
 

@@ -21,7 +21,8 @@ class Highlighter:
         self._selected_target_view = target_view.TargetView(self._editor.scene)
         self._highlighted: highlight_details.HighlightDetails = None
         self._selected: typing.List[highlight_details.HighlightDetails] = []
-        self._filter_callback: typing.Callable[[highlight_details.HighlightDetails], bool] = None
+        self._filter_callback: typing.Callable[[
+            highlight_details.HighlightDetails], bool] = None
         self._get_selected_colour_callback: typing.Callable[
             [highlight_details.HighlightDetails],
             core.Vec4
@@ -36,7 +37,7 @@ class Highlighter:
         return self._highlighted
 
     def set_highlighted(self, value: highlight_details.HighlightDetails):
-        self.update(lambda _: value)
+        self.update(lambda _, __: value)
 
     def set_filter_callback(self, filter_callback: typing.Callable[[highlight_details.HighlightDetails], bool]):
         self._filter_callback = filter_callback
@@ -80,7 +81,7 @@ class Highlighter:
 
         self._selected = [
             highlight_details.HighlightDetails(
-                map_object, 
+                map_object,
                 part,
                 hit_position
             )
@@ -160,11 +161,17 @@ class Highlighter:
         self.update_selected_target_view()
 
     def update(
-        self, 
-        higlight_finder: typing.Callable[[highlight_details.HighlightDetails], highlight_details.HighlightDetails]
+        self,
+        higlight_finder: typing.Callable[
+            [
+                highlight_details.HighlightDetails,
+                typing.List[highlight_details.HighlightDetails]
+            ],
+            highlight_details.HighlightDetails,
+        ]
     ):
-        new_highlight = higlight_finder(self._highlighted)
-        
+        new_highlight = higlight_finder(self._highlighted, self._selected)
+
         if new_highlight != self._highlighted:
             if self._highlighted is not None:
                 self._highlighted.map_object.hide_highlight(self._highlighted.part)

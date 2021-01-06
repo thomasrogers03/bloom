@@ -1,6 +1,8 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import typing
+
 from panda3d import core
 
 from .. import map_editor, map_objects
@@ -14,7 +16,11 @@ class HighlightFinder3D:
         self._start_position = start_position
         self._end_position = end_position
 
-    def find_highlight(self, current_highlight: highlight_details.HighlightDetails):
+    def find_highlight(
+        self,
+        current_highlight: highlight_details.HighlightDetails,
+        selected: typing.List[highlight_details.HighlightDetails]
+    ):
         if self._editor.builder_sector is None:
             return current_highlight
 
