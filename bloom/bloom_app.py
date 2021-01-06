@@ -60,9 +60,7 @@ class Bloom(ShowBase):
             with open(self._META_PATH, 'r') as file:
                 self._bloom_meta = yaml.safe_load(file.read())
         else:
-            self._bloom_meta = {
-                'recent': []
-            }
+            self._bloom_meta = {}
 
         if 'fluid_synth_path' not in self._config:
             fluid_synth_path = distutils.spawn.find_executable("fluidsynth.exe")
@@ -202,8 +200,8 @@ class Bloom(ShowBase):
         self._song: core.AudioSound = None
         self._meta_data = {}
 
-        for path in self._bloom_meta['recent']:
-            self._add_recent(path)
+        for path in self._recent:
+            self._add_recent_menu_item(path)
 
         for map_name in self._rff.find_matching_entries('*.MAP'):
             map_name = map_name[:constants.MAP_EXTENSION_SKIP]
@@ -394,6 +392,12 @@ class Bloom(ShowBase):
             )
 
     @property
+    def _recent(self):
+        if 'recent' not in self._bloom_meta:
+            self._bloom_meta['recent'] = []
+        return self._bloom_meta['recent']
+
+    @property
     def _blood_path(self):
         return self._config['blood_path']
 
@@ -444,15 +448,25 @@ class Bloom(ShowBase):
         if not path:
             return
 
-        path = os.path.expanduser(path)
-        path = os.path.abspath(path)
-
-        if path not in self._bloom_meta['recent']:
-            self._bloom_meta['recent'].append(path)
+        path = self._full_path(path)
+        if path not in self._recent:
+            self._recent.append(path)
             self._open_recent_menu.add_command(
-                label=path, 
+                label=path,
                 command=self._open_map_from_path_callback(path)
             )
+
+    def _add_recent_menu_item(self, path: str):
+        path = self._full_path(path)
+        self._open_recent_menu.add_command(
+            label=path,
+            command=self._open_map_from_path_callback(path)
+        )
+
+    @staticmethod
+    def _full_path(path: str):
+        path = os.path.expanduser(path)
+        return os.path.abspath(path)
 
     def _open_map_from_rff(self, map_name: str):
         def _callback():
