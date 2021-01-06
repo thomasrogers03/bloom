@@ -240,7 +240,7 @@ class Bloom(ShowBase):
         )
 
         if self._path is None:
-            self._path = self._config.get('last_map', None)
+            self._path = self._last_map
 
         if self._path is None:
             self._make_new_board()
@@ -303,7 +303,7 @@ class Bloom(ShowBase):
 
     def _make_new_board(self):
         self._path = os.path.join(self._blood_path, 'NEWBOARD.MAP')
-        self._config['last_map'] = self._path
+        self._last_map = self._path
 
     def _update_for_frame(self, task):
         with self._edit_mode_selector.track_performance_stats('frame_update'):
@@ -392,6 +392,14 @@ class Bloom(ShowBase):
             )
 
     @property
+    def _last_map(self):
+        return self._bloom_meta.get('last_map', None)
+
+    @_last_map.setter
+    def _last_map(self, value: str):
+        self._bloom_meta['last_map'] = value
+
+    @property
     def _recent(self):
         if 'recent' not in self._bloom_meta:
             self._bloom_meta['recent'] = []
@@ -440,7 +448,7 @@ class Bloom(ShowBase):
 
     def _open_map_from_path(self, path: str):
         self._path = path
-        self._config['last_map'] = self._path
+        self._last_map = self._path
         self._add_recent(self._path)
         self._do_open_map()
 
@@ -515,7 +523,7 @@ class Bloom(ShowBase):
             title='Save map to...',
             filetypes=(('Map files', '*.MAP'),)
         )
-        self._config['last_map'] = path
+        self._last_map = path
         if not path:
             return
 
