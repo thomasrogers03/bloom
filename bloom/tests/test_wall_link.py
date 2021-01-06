@@ -36,6 +36,15 @@ class TestWallLink(unittest.TestCase):
         link_other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
         self.assertEqual(link_wall.other_side_wall, link_other_side_wall)
 
+    def test_no_link_when_facing_same_direction(self):
+        sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
+        utils.build_rectangular_sector(self._sectors, -2, 2, -2, 1)
+
+        link_wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
+        operations.wall_link.SectorWallLink(link_wall, self._sectors).try_link_wall()
+
+        self.assertIsNone(link_wall.other_side_wall)
+
     def test_can_link_bigger_to_smaller(self):
         sector = utils.build_rectangular_sector(self._sectors, -2, 2, -1, 1)
         other_side_sector = utils.build_rectangular_sector(self._sectors, -1, 1, 1, 2)

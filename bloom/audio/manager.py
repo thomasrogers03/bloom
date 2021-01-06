@@ -23,6 +23,7 @@ class SoundAttachment(typing.NamedTuple):
     distance_to_cut_off: float
     max_volume: float
 
+
 class Manager:
 
     def __init__(
@@ -120,7 +121,8 @@ class Manager:
             if attachment.node_path.is_empty():
                 remove_indices.append(attachment_index)
 
-            distance_squared = attachment.node_path.get_pos(self._listener).length_squared()
+            distance_squared = attachment.node_path.get_pos(
+                self._listener).length_squared()
             cut_off_squared = attachment.distance_to_cut_off * attachment.distance_to_cut_off
             if distance_squared > cut_off_squared:
                 continue
@@ -129,7 +131,8 @@ class Manager:
             if distance_squared <= max_volume_distance_squared:
                 portion = 1
             else:
-                portion = 1 - math.sqrt(distance_squared) / attachment.distance_to_cut_off
+                portion = 1 - math.sqrt(distance_squared) / \
+                    attachment.distance_to_cut_off
             volume = portion * attachment.max_volume
 
             if volume > volumes[attachment.sound]:

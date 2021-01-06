@@ -80,7 +80,8 @@ class SectorWallLink:
         return wall_to_link == test_wall or \
             wall_to_link == test_wall.wall_previous_point or \
             wall_to_link == test_wall.wall_point_2 or \
-            test_wall.other_side_wall is not None
+            test_wall.other_side_wall is not None or \
+            test_wall.get_direction().dot(wall_to_link.get_direction()) >= 0
 
     def _do_try_link_wall(
         self,
