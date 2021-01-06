@@ -13,6 +13,7 @@ build
 dist
 *.spec
 config.yaml
+meta.yaml
 bloom.egg-info
 *.bam
 cache

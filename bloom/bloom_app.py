@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 class Bloom(ShowBase):
     _CONFIG_PATH = 'config.yaml'
+    _META_PATH = 'meta.yaml'
     _AUTO_SAVE_TIMEOUT = 1 * 60
 
     def __init__(self, path: str):
@@ -54,6 +55,14 @@ class Bloom(ShowBase):
             self._config['blood_path'] = blood_path
             with open(self._CONFIG_PATH, 'w+') as file:
                 file.write(yaml.dump(self._config))
+
+        if os.path.exists(self._META_PATH):
+            with open(self._META_PATH, 'r') as file:
+                self._bloom_meta = yaml.safe_load(file.read())
+        else:
+            self._bloom_meta = {
+                'recent': []
+            }
 
         if 'fluid_synth_path' not in self._config:
             fluid_synth_path = distutils.spawn.find_executable("fluidsynth.exe")
@@ -133,9 +142,11 @@ class Bloom(ShowBase):
         file_menu = tkinter.Menu(menu_bar, tearoff=0)
 
         self._open_from_rff_menu = tkinter.Menu(file_menu, tearoff=0)
+        self._open_recent_menu = tkinter.Menu(file_menu, tearoff=0)
 
         file_menu.add_command(label="New (ctrl+n)", command=self._new_map)
         file_menu.add_command(label="Open (ctrl+o)", command=self._open_map)
+        file_menu.add_cascade(label="Open Recent", menu=self._open_recent_menu)
         file_menu.add_cascade(label="Open From RFF", menu=self._open_from_rff_menu)
         file_menu.add_command(label="Save (ctrl+s)", command=self._save_map)
         file_menu.add_command(label="Save As", command=self._save_map_as)
@@ -191,6 +202,9 @@ class Bloom(ShowBase):
         self._song: core.AudioSound = None
         self._meta_data = {}
 
+        for path in self._bloom_meta['recent']:
+            self._add_recent(path)
+
         for map_name in self._rff.find_matching_entries('*.MAP'):
             map_name = map_name[:constants.MAP_EXTENSION_SKIP]
             self._open_from_rff_menu.add_command(
@@ -232,6 +246,8 @@ class Bloom(ShowBase):
 
         if self._path is None:
             self._make_new_board()
+
+        self._add_recent(self._path)
 
         self._edit_mode_selector = edit_mode.EditMode(
             self.mouseWatcherNode,
@@ -411,9 +427,32 @@ class Bloom(ShowBase):
             filetypes=(('Map files', '*.MAP'),)
         )
         if path:
-            self._path = path
-            self._config['last_map'] = self._path
-            self._do_open_map()
+            self._open_map_from_path(path)
+
+    def _open_map_from_path_callback(self, path: str):
+        def _callback():
+            self._open_map_from_path(path)
+        return _callback
+
+    def _open_map_from_path(self, path: str):
+        self._path = path
+        self._config['last_map'] = self._path
+        self._add_recent(self._path)
+        self._do_open_map()
+
+    def _add_recent(self, path: str):
+        if not path:
+            return
+
+        path = os.path.expanduser(path)
+        path = os.path.abspath(path)
+
+        if path not in self._bloom_meta['recent']:
+            self._bloom_meta['recent'].append(path)
+            self._open_recent_menu.add_command(
+                label=path, 
+                command=self._open_map_from_path_callback(path)
+            )
 
     def _open_map_from_rff(self, map_name: str):
         def _callback():
@@ -490,6 +529,8 @@ class Bloom(ShowBase):
         logger.info('Shutting down...')
         with open(self._CONFIG_PATH, 'w+') as file:
             file.write(yaml.dump(self._config))
+        with open(self._META_PATH, 'w+') as file:
+            file.write(yaml.dump(self._bloom_meta))
         self.tkRoot.destroy()
 
     def _log_info(self, message: str):
