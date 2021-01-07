@@ -78,6 +78,9 @@ class EditorSector(empty_object.EmptyObject):
             )
         ]
 
+        self._floor_part: sector_geometry.GeometryPart = None
+        self._ceiling_part: sector_geometry.GeometryPart = None
+
     def load(
         self,
         map_to_load: game_map.Map,
@@ -397,44 +400,47 @@ class EditorSector(empty_object.EmptyObject):
         if len(self._walls) < 1:
             return
 
+        self._floor_part = sector_geometry.GeometryPart(
+            self._sector.sector.floor_picnum,
+            self._sector.sector.floor_palette,
+            self._sector.data.pan_always and self._sector.data.pan_floor,
+            'floor'
+        )
         self._add_geometry(
             geometry,
-            'floor',
             self.floor_z_at_point,
             self.floor_x_panning,
             self.floor_y_panning,
             self._sector.sector.floor_stat,
-            self._sector.sector.floor_picnum,
-            self._sector.sector.floor_palette,
             self.floor_shade,
-            self._sector.data.pan_floor
+            self._floor_part
         )
 
+        self._ceiling_part = sector_geometry.GeometryPart(
+            self._sector.sector.ceiling_picnum,
+            self._sector.sector.ceiling_palette,
+            self._sector.data.pan_always and self._sector.data.pan_ceiling,
+            'ceiling'
+        )
         self._add_geometry(
             geometry,
-            'ceiling',
             self.ceiling_z_at_point,
             self.ceiling_x_panning,
             self.ceiling_y_panning,
             self._sector.sector.ceiling_stat,
-            self._sector.sector.ceiling_picnum,
-            self._sector.sector.ceiling_palette,
             self.ceiling_shade,
-            self._sector.data.pan_ceiling
+            self._ceiling_part
         )
 
     def _add_geometry(
         self,
         all_geometry: sector_geometry.SectorGeometry,
-        part: str,
         height_callback: typing.Callable[[core.Vec2], float],
         x_panning: float,
         y_panning: float,
         stat: map_data.sector.Stat,
-        picnum: int,
-        lookup: int,
         shade: float,
-        pannable: bool
+        part: sector_geometry.GeometryPart
     ):
         for sub_sector in drawing_sector.Sector(self._walls).get_sub_sectors():
             polygon = drawing_sector.Sector.get_wall_bunch_points(
@@ -478,7 +484,7 @@ class EditorSector(empty_object.EmptyObject):
             orthogonal_segment = segment.Segment(
                 first_wall.point_1, first_wall.point_1 + first_wall_orthogonal)
 
-            texture_size = all_geometry.get_tile_dimensions(picnum)
+            texture_size = all_geometry.get_tile_dimensions(part.picnum)
             if texture_size.x < 1:
                 texture_size.x = 1
             if texture_size.y < 1:
@@ -521,13 +527,8 @@ class EditorSector(empty_object.EmptyObject):
 
                 texcoord_writer.add_data2(texture_coordinate_x, texture_coordinate_y)
 
-            if part == 'floor':
-                is_floor = True
-            else:
-                is_floor = False
-
             primitive = core.GeomTriangles(core.Geom.UH_static)
-            if is_floor:
+            if part.is_floor:
                 for triangle_index in range(triangulator.get_num_triangles()):
                     primitive.add_vertices(
                         triangulator.get_triangle_v2(triangle_index),
@@ -546,11 +547,13 @@ class EditorSector(empty_object.EmptyObject):
             geometry = core.Geom(vertex_data)
             geometry.add_primitive(primitive)
 
-            if not stat.parallax and picnum != 504:
-                all_geometry.add_geometry(geometry, picnum, lookup, pannable)
+            if not stat.parallax and part.picnum != 504:
+                all_geometry.add_geometry(geometry, part)
+            else:
+                part.node = None
             all_geometry.add_highlight_geometry(
                 geometry,
-                part
+                part.part
             )
 
     @staticmethod

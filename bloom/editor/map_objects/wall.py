@@ -34,6 +34,7 @@ class EditorWall(empty_object.EmptyObject):
         self._needs_geometry_reset = False
         self._is_other_side_sector_visible: bool = None
         self._is_destroyed = False
+        self._parts: typing.Dict[str, sector_geometry.GeometryPart] = {}
 
     def setup(
         self,
@@ -95,6 +96,8 @@ class EditorWall(empty_object.EmptyObject):
             self.wall_previous_point.other_side_wall._gather_walls_at_point_1(seen)
 
     def setup_geometry(self, all_geometry: sector_geometry.SectorGeometry):
+        self._parts = {}
+
         debug_display_node = core.TextNode('debug')
         text = f'Angle: {self.get_direction_theta()}\n'
         text += f'Direction: {self.get_direction()}\n'
@@ -141,13 +144,18 @@ class EditorWall(empty_object.EmptyObject):
             else:
                 peg = self._sector.ceiling_z
 
+            self._parts['full'] = sector_geometry.GeometryPart(
+                self._wall.wall.picnum,
+                self._wall.wall.palette,
+                self._wall.data.pan_always,
+                'full'
+            )
             self._make_wall_part(
                 all_geometry,
-                'full',
                 peg,
                 lambda point: self._sector.floor_z_at_point(point),
                 lambda point: self._sector.ceiling_z_at_point(point),
-                self._wall.wall.picnum
+                self._parts['full']
             )
         else:
             if not self.other_side_sector.sector.sector.floor_stat.parallax:
@@ -163,13 +171,18 @@ class EditorWall(empty_object.EmptyObject):
                 else:
                     peg = self.other_side_sector.floor_z
 
+                self._parts['lower'] = sector_geometry.GeometryPart(
+                    lower_picnum,
+                    self._wall.wall.palette,
+                    self._wall.data.pan_always,
+                    'lower'
+                )
                 self._make_wall_part(
                     all_geometry,
-                    'lower',
                     peg,
                     lambda point: self._sector.floor_z_at_point(point),
                     lambda point: self.other_side_sector.floor_z_at_point(point),
-                    lower_picnum,
+                    self._parts['lower'],
                     stat=lower_stat
                 )
             if not self.other_side_sector.sector.sector.ceiling_stat.parallax:
@@ -178,13 +191,18 @@ class EditorWall(empty_object.EmptyObject):
                 else:
                     peg = self.other_side_sector.ceiling_z
 
+                self._parts['upper'] = sector_geometry.GeometryPart(
+                    self._wall.wall.picnum,
+                    self._wall.wall.palette,
+                    self._wall.data.pan_always,
+                    'upper'
+                )
                 self._make_wall_part(
                     all_geometry,
-                    'upper',
                     peg,
                     lambda point: self.other_side_sector.ceiling_z_at_point(point),
                     lambda point: self._sector.ceiling_z_at_point(point),
-                    self._wall.wall.picnum
+                    self._parts['upper']
                 )
             if self._has_wall_mask:
                 if self._wall.wall.stat.align:
@@ -198,13 +216,18 @@ class EditorWall(empty_object.EmptyObject):
                         self.other_side_sector.ceiling_z
                     )
 
+                self._parts['middle'] = sector_geometry.GeometryPart(
+                    self._wall.wall.over_picnum,
+                    self._wall.wall.palette,
+                    self._wall.data.pan_always,
+                    'middle'
+                )
                 self._make_wall_part(
                     all_geometry,
-                    'middle',
                     peg,
                     lambda point: self.other_side_sector.floor_z_at_point(point),
                     lambda point: self.other_side_sector.ceiling_z_at_point(point),
-                    self._wall.wall.over_picnum
+                    self._parts['middle']
                 )
 
         self._needs_geometry_reset = False
@@ -562,11 +585,10 @@ class EditorWall(empty_object.EmptyObject):
     def _make_wall_part(
         self,
         all_geometry: sector_geometry.SectorGeometry,
-        part: str,
         peg: float,
         floor_z_at_point_callback: typing.Callable[[core.Point2], float],
         ceiling_z_at_point_callback: typing.Callable[[core.Point2], float],
-        picnum: int,
+        part: sector_geometry.GeometryPart,
         stat: map_data.wall.Stat = None
     ):
         if stat is None:
@@ -580,7 +602,7 @@ class EditorWall(empty_object.EmptyObject):
 
         if point_1_top < point_1_bottom or point_2_top < point_2_bottom:
             vertex_data = core.GeomVertexData(
-                part,
+                part.part,
                 constants.VERTEX_FORMAT,
                 core.Geom.UH_static
             )
@@ -597,7 +619,7 @@ class EditorWall(empty_object.EmptyObject):
             colour_write.add_data4(self.shade, self.shade, self.shade, 1)
             colour_write.add_data4(self.shade, self.shade, self.shade, 1)
 
-            texture_size = all_geometry.get_tile_dimensions(picnum)
+            texture_size = all_geometry.get_tile_dimensions(part.picnum)
             if texture_size.x < 1:
                 texture_size.x = 1
             if texture_size.y < 1:
@@ -653,10 +675,10 @@ class EditorWall(empty_object.EmptyObject):
             geometry = core.Geom(vertex_data)
             geometry.add_primitive(primitive)
 
-            all_geometry.add_geometry(geometry, picnum, self._wall.wall.palette, False)
+            all_geometry.add_geometry(geometry, part)
             all_geometry.add_highlight_geometry(
                 geometry,
-                f'{self._name}_{part}'
+                f'{self._name}_{part.part}'
             )
 
             return True

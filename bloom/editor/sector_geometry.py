@@ -10,6 +10,24 @@ from ..tiles import manager
 from . import sprite_geometry
 
 
+class GeometryPart:
+
+    def __init__(self, picnum: int, lookup: int, pannable: bool, part: str):
+        self.picnum = picnum
+        self.lookup = lookup
+        self.pannable = pannable
+        self.part = part
+        self.node: core.PandaNode = None
+
+    @property
+    def is_floor(self):
+        return self.part == 'floor'
+
+    @property
+    def is_ceiling(self):
+        return self.part == 'ceiling'
+
+
 class SectorGeometry:
 
     def __init__(
@@ -55,28 +73,33 @@ class SectorGeometry:
 
     def add_2d_geometry(self, point_1: core.Point2, point_2: core.Point2, colour: core.Vec4, thickness: float):
         if not constants.PORTALS_DEBUGGING_ENABLED:
-            self._add_2d_segments(self._2d_segments, point_1, point_2, colour, thickness=thickness)
+            self._add_2d_segments(self._2d_segments, point_1,
+                                  point_2, colour, thickness=thickness)
             self._add_2d_vertex_segments(self._2d_segments, point_1, colour)
 
     def add_2d_highlight_geometry(self, name: str, point_1: core.Point2, point_2: core.Point2):
-        segments = self._create_2d_segments(point_1, point_2, core.Vec4(1, 1, 1, 1), thickness=4, z_offset=-512)
+        segments = self._create_2d_segments(
+            point_1, point_2, core.Vec4(1, 1, 1, 1), thickness=4, z_offset=-512)
         highlight_display_node = segments.create(dynamic=False)
-        highlight_display: core.NodePath = self._display.attach_new_node(highlight_display_node)
+        highlight_display: core.NodePath = self._display.attach_new_node(
+            highlight_display_node)
         highlight_display.set_name(name)
         self._setup_highlight_display(highlight_display)
         highlight_display.hide()
 
         return highlight_display
 
-    def add_geometry(self, geometry: core.Geom, picnum: int, lookup: int, pannable: bool):
-        if pannable:
+    def add_geometry(self, geometry: core.Geom, part: GeometryPart):
+        if part.pannable:
             node = core.GeomNode(f'pannable_geometry_{len(self._pannable_nodes)}')
             node.add_geom(geometry)
-            node.set_python_tag('picnum', picnum)
-            node.set_python_tag('lookup', lookup)
+            node.set_python_tag('picnum', part.picnum)
+            node.set_python_tag('lookup', part.lookup)
             self._pannable_nodes.append(node)
         else:
-            self._get_node_for_picnum(picnum, lookup).add_geom(geometry)
+            node = self._get_node_for_picnum(part.picnum, part.lookup)
+            node.add_geom(geometry)
+        part.node = node
 
     def add_vertex_highlight_geometry(self, point: core.Point2, bottom: float, top: float, part: str):
         point_1 = core.Point3(point.x, point.y, bottom)
@@ -88,7 +111,8 @@ class SectorGeometry:
         self._add_2d_vertex_segments(segments, point_1, core.Vec4(1, 1, 1, 1))
         segments.create(highlight_display_node, dynamic=False)
 
-        highlight_display: core.NodePath = self._display.attach_new_node(highlight_display_node)
+        highlight_display: core.NodePath = self._display.attach_new_node(
+            highlight_display_node)
         self._setup_highlight_display(highlight_display)
         highlight_display.set_depth_test(False)
         highlight_display.hide()
@@ -98,7 +122,8 @@ class SectorGeometry:
     def add_highlight_geometry(self, geometry: core.Geom, part: str):
         highlight_display_node = core.GeomNode(f'{part}_highlight')
         highlight_display_node.add_geom(geometry)
-        highlight_display: core.NodePath = self._display.attach_new_node(highlight_display_node)
+        highlight_display: core.NodePath = self._display.attach_new_node(
+            highlight_display_node)
         self._setup_highlight_display(highlight_display)
         highlight_display.set_color(1, 1, 1, 0.25)
         highlight_display.hide()
@@ -116,7 +141,8 @@ class SectorGeometry:
                 animation_data = self._tile_manager.get_animation_data(picnum)
                 if animation_data is not None:
                     sector_shape.set_name(f'animated_geometry_{lookup}_{picnum}')
-                    sector_shape.set_python_tag('animation_data', (animation_data, lookup))
+                    sector_shape.set_python_tag(
+                        'animation_data', (animation_data, lookup))
 
         for node in self._pannable_nodes:
             picnum = node.get_python_tag('picnum')
@@ -165,7 +191,8 @@ class SectorGeometry:
     @staticmethod
     def _create_2d_segments(point_1: core.Point2, point_2: core.Point2, colour: core.Vec4, thickness=2, z_offset=0):
         segments = core.LineSegs('2d')
-        SectorGeometry._add_2d_segments(segments, point_1, point_2, colour, thickness=thickness, z_offset=z_offset)
+        SectorGeometry._add_2d_segments(
+            segments, point_1, point_2, colour, thickness=thickness, z_offset=z_offset)
         return segments
 
     @staticmethod
@@ -194,6 +221,7 @@ class SectorGeometry:
 
     def destroy(self):
         self._display.remove_node()
+
 
 class SectorGeometryFactory:
 
