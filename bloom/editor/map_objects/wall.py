@@ -570,8 +570,8 @@ class EditorWall(empty_object.EmptyObject):
                     node_path.set_tex_pos(
                         texture_stage,
                         core.Vec3(
-                            -ticks * tile_size.x * self._wall.data.panx / 5120,
-                            -ticks * tile_size.y * self._wall.data.pany / 5120,
+                            -ticks * tile_size.x * self._wall.data.panx / 3840,
+                            -ticks * tile_size.y * self._wall.data.pany / 3840,
                             0
                         )
                     )
