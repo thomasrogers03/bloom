@@ -96,6 +96,10 @@ class FixedSizeInteger:
         self._signed = signed
         self._default = default
 
+    @property
+    def signed(self):
+        return self._signed
+
     def format_string(self) -> bytes:
         if self._signed:
             if self._size == 1:
@@ -141,15 +145,14 @@ class PartialInteger:
 
     def __init__(self, expected_integer_type: FixedSizeInteger, bits: int, default=0):
         self._bits = bits
+        self._signed = expected_integer_type.signed and self._bits > 1
+        self._sign_mask = 1 << (self._bits - 1)
+        self._bit_shift = 1 << self._bits
         self._expected_size = expected_integer_type.size() * 8
         self._default = default
 
     def size(self):
         return self._bits / 8.0
-
-    @property
-    def bits(self):
-        return self._bits
 
     @staticmethod
     def next_required_for_full_integer(type_hints, index) -> typing.Tuple[int, FixedSizeInteger]:
@@ -169,7 +172,7 @@ class PartialInteger:
             if expected_size != type_hints[index]._expected_size:
                 raise ValueError('Found incomplete partial integer')
 
-            bits += type_hints[index].bits
+            bits += type_hints[index]._bits
             count += 1
 
             if bits > expected_size:
@@ -186,8 +189,12 @@ class PartialInteger:
     def read_values(type_hints: typing.List['PartialInteger'], read_value: int) -> typing.List[int]:
         result = []
         for hint in type_hints:
-            value = read_value & ((1 << hint.bits) - 1)
-            read_value >>= hint.bits
+            value = read_value & (hint._bit_shift - 1)
+            read_value >>= hint._bits
+
+            if hint._signed:
+                if value & hint._sign_mask != 0:
+                    value = value - hint._bit_shift
 
             result.append(value)
         return result
@@ -197,9 +204,13 @@ class PartialInteger:
         result = 0
         bits = 0
         for hint, value in zip(type_hints, values):
-            value &= ((1 << hint.bits) - 1)
-            result |= value << bits
-            bits += hint.bits
+            if hint._signed and value < 0:
+                value = value + hint._bit_shift
+
+            truncated_value = value & (hint._bit_shift - 1)
+
+            result |= truncated_value << bits
+            bits += hint._bits
         return result
 
     def default(self):
