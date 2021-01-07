@@ -298,7 +298,7 @@ class EditorSector(empty_object.EmptyObject):
         return self._display.find(f'**/{part}')
 
     def _get_animated_geometry(self) -> typing.Iterable[core.NodePath]:
-        return self._display.find_all_matches('**/animated_geometry_*')
+        return self._display.find_all_matches('**/animated_geometry*')
 
     def show(self):
         if self._display is not None:

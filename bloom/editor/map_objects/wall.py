@@ -570,7 +570,7 @@ class EditorWall(empty_object.EmptyObject):
                         texture_stage,
                         core.Vec3(
                             ticks * self._wall.data.panx / 128,
-                            ticks * self._wall.data.pany / 512,
+                            ticks * self._wall.data.pany / 1024,
                             0
                         )
                     )
