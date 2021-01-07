@@ -264,7 +264,7 @@ class EditorSector(empty_object.EmptyObject):
             node_path.set_texture(art_manager.get_tile(new_picnum, lookup))
 
         for wall in self._walls:
-            wall.update(ticks, art_manager)
+            wall.update(ticks)
 
         theta = editor.to_degrees(self._sector.data.angle)
         theta = math.radians(theta)
