@@ -191,6 +191,7 @@ class SpriteDialog:
             self._current_picnum,
             self._get_current_palette()
         )
+        self._sprite.invalidate_geometry()
 
         target_special_value = self._special_target_menu.get()
         if target_special_value == 'Next Level':

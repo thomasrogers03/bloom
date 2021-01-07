@@ -132,6 +132,7 @@ class WallDialog:
 
         self._current_descriptor.apply_wall_properties(self._wall, new_values)
         self._wall.blood_wall.wall.tags[0] = self._current_descriptor.wall_type
+        self._wall.invalidate_geometry()
 
         target_special_value = self._special_target_menu.get()
         if target_special_value == 'Next Level':
@@ -164,7 +165,7 @@ class WallDialog:
             self._current_descriptor.get_wall_properties(self._wall),
             None,
             None,
-            1.5,
+            1.65,
             1.5,
             1.25
         )

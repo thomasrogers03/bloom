@@ -60,6 +60,12 @@ class SectorTypeDescriptor:
             'Wall Push': object_property.Property.create_boolean(data.trigger_wall_push),
             'Key': object_property.Property.create_enum(data.key, object_property.Property.KEY_ENUM),
             'Under Water': object_property.Property.create_boolean(data.underwater),
+            
+            'Pan Always': object_property.Property.create_boolean(data.pan_always),
+            'Pan Floor': object_property.Property.create_boolean(data.pan_floor),
+            'Pan Ceiling': object_property.Property.create_boolean(data.pan_ceiling),
+            'Panning Speed': object_property.Property.create_integer(data.speed),
+            'Panning Angle': object_property.Property.create_integer(data.angle),
         }
 
         for descriptor in self.property_descriptors:
@@ -127,6 +133,12 @@ class SectorTypeDescriptor:
         data.trigger_wall_push = int(values['Wall Push'])
         data.key = int(values['Key'])
         data.underwater = int(values['Under Water'])
+
+        data.pan_always = int(values['Pan Always'])
+        data.pan_floor = int(values['Pan Floor'])
+        data.pan_ceiling = int(values['Pan Ceiling'])
+        data.speed = int(values['Panning Speed'])
+        data.angle = int(values['Panning Angle'])
 
         for descriptor in self.property_descriptors:
             name = descriptor['name']

@@ -138,6 +138,7 @@ class TypeSelector:
             self._sector,
             self._properties.get_values()
         )
+        self._sector.invalidate_geometry()
 
     def _update_property_view(self):
         self._clear_property_view()
@@ -147,7 +148,7 @@ class TypeSelector:
             self._current_sector_type.get_sector_type_properties(self._sector),
             None,
             None,
-            2,
+            2.35,
             1,
             1.25,
             alpha=0.5
