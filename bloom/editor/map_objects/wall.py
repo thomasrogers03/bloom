@@ -7,6 +7,7 @@ from contextlib import contextmanager
 from panda3d import bullet, core
 
 from ... import constants, editor, game_map, map_data
+from ...tiles import manager as tile_manager
 from .. import event_grouping, sector_geometry, segment, undo_stack
 from . import empty_object, geometry_highlight
 
@@ -557,6 +558,23 @@ class EditorWall(empty_object.EmptyObject):
             self._wall.wall.repeat_x = editor.to_build_repeat_x(
                 self.get_length() * self._LENGTH_REPEAT_SCALE
             )
+
+    def update(self, ticks: int, art_manager: tile_manager.Manager):
+        texture_stage = core.TextureStage.get_default()
+
+        for part in self._parts.values():
+            if part.pannable:
+                node_path: core.NodePath = part.node_path
+                if node_path is not None:
+                    tile_size = art_manager.get_tile_dimensions(part.picnum)
+                    node_path.set_tex_pos(
+                        texture_stage,
+                        core.Vec3(
+                            -ticks * tile_size.x * self._wall.data.panx / 5120,
+                            -ticks * tile_size.y * self._wall.data.pany / 5120,
+                            0
+                        )
+                    )
 
     @property
     def _blood_object(self):

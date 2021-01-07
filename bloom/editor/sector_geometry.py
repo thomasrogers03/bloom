@@ -27,6 +27,12 @@ class GeometryPart:
     def is_ceiling(self):
         return self.part == 'ceiling'
 
+    @property
+    def node_path(self) -> core.NodePath:
+        if self.node is None:
+            return None
+        return self.node.get_python_tag('node_path')
+
 
 class SectorGeometry:
 
@@ -142,7 +148,11 @@ class SectorGeometry:
                 if animation_data is not None:
                     sector_shape.set_name(f'animated_geometry_{lookup}_{picnum}')
                     sector_shape.set_python_tag(
-                        'animation_data', (animation_data, lookup))
+                        'animation_data', 
+                        (animation_data, lookup)
+                    )
+
+                node.set_python_tag('node_path', sector_shape)
 
         for node in self._pannable_nodes:
             picnum = node.get_python_tag('picnum')
@@ -150,6 +160,8 @@ class SectorGeometry:
 
             sector_shape: core.NodePath = self._display.attach_new_node(node)
             sector_shape.set_texture(self._tile_manager.get_tile(picnum, lookup), 1)
+
+            node.set_python_tag('node_path', sector_shape)
 
         self._2d_segments.create(self._node_2d, dynamic=False)
 

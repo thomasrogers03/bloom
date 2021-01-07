@@ -250,6 +250,8 @@ class EditorSector(empty_object.EmptyObject):
         self.setup_geometry()
 
     def update(self, ticks: int, art_manager: tile_manager.Manager):
+        texture_stage = core.TextureStage.get_default()
+
         geometry = self._get_animated_geometry()
         for node_path in geometry:
             animation_data_and_lookup = node_path.get_python_tag('animation_data')
@@ -260,6 +262,36 @@ class EditorSector(empty_object.EmptyObject):
             new_picnum = animation_data.picnum + offset
 
             node_path.set_texture(art_manager.get_tile(new_picnum, lookup))
+
+        for wall in self._walls:
+            wall.update(ticks, art_manager)
+
+        theta = editor.to_degrees(self._sector.data.angle)
+        theta = math.radians(theta)
+        x_panning = math.sin(theta)
+        y_panning = math.cos(theta)
+
+        if self._floor_part.pannable and self._floor_part.node_path is not None:
+            tile_size = art_manager.get_tile_dimensions(self._floor_part.picnum)
+            self._floor_part.node_path.set_tex_pos(
+                texture_stage, 
+                core.Vec3(
+                    ticks * tile_size.x * self._sector.data.speed * x_panning / 5120,
+                    ticks * tile_size.y * self._sector.data.speed * y_panning / 5120,
+                    0
+                )
+            )
+
+        if self._ceiling_part.pannable and self._ceiling_part.node_path is not None:
+            tile_size = art_manager.get_tile_dimensions(self._ceiling_part.picnum)
+            self._ceiling_part.node_path.set_tex_pos(
+                texture_stage,
+                core.Vec3(
+                    ticks * tile_size.x * self._sector.data.speed * x_panning / 5120,
+                    ticks * tile_size.y * self._sector.data.speed * y_panning / 5120,
+                    0
+                )
+            )
 
     def get_below_draw_offset(self):
         return self._below_ceiling_origin - self._sector_above_ceiling._above_floor_origin
