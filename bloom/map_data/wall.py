@@ -64,10 +64,8 @@ class BloodWallData(data_loading.CustomStruct):
     rest_state: data_loading.PartialInteger(data_loading.Int32, 1)
     interruptable: data_loading.PartialInteger(data_loading.Int32, 1)
     pan_always: data_loading.PartialInteger(data_loading.Int32, 1)
-    panx: data_loading.PartialInteger(data_loading.Int32, 7)
-    data8: data_loading.PartialInteger(data_loading.Int32, 1)
-    pany: data_loading.PartialInteger(data_loading.Int32, 7)
-    data9: data_loading.PartialInteger(data_loading.Int32, 1)
+    panx: data_loading.PartialInteger(data_loading.Int32, 8)
+    pany: data_loading.PartialInteger(data_loading.Int32, 8)
     decoupled: data_loading.PartialInteger(data_loading.Int32, 1)
 
     one_shot: data_loading.PartialInteger(data_loading.UInt8, 1)

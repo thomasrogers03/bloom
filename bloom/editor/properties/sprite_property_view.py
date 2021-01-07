@@ -166,7 +166,8 @@ class SpritePropertyView:
             descriptor = self._properties[property_name]
             if descriptor.property_type == Property.INTEGER_PROPERTY:
                 value = self._validate_setter_integer_value(
-                    setter) + descriptor.offset
+                    setter
+                ) + descriptor.offset
             elif descriptor.property_type == Property.BOOLEAN_PROPERTY:
                 value = bool(setter['indicatorValue']) ^ descriptor.offset
             elif descriptor.property_type == Property.SOUND_PROPERTY:
@@ -183,7 +184,7 @@ class SpritePropertyView:
 
     def _validate_setter_integer_value(self, setter):
         value = setter.get()
-        if not re.match('^[0-9]+$', value):
+        if not re.match('^-?[0-9]+$', value):
             setter.set('0')
             return 0
         return int(value)
