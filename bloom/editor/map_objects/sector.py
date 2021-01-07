@@ -7,6 +7,7 @@ import typing
 from panda3d import bullet, core
 
 from ... import audio, constants, editor, game_map, map_data
+from ...tiles import manager as tile_manager
 from .. import (event_grouping, marker_constants, plane, ror_constants,
                 sector_geometry, segment, undo_stack)
 from . import (empty_object, geometry_highlight, marker, sprite, wall,
@@ -248,6 +249,18 @@ class EditorSector(empty_object.EmptyObject):
         self._geometry_factory.remove_geometry(self._display)
         self.setup_geometry()
 
+    def update(self, ticks: int, art_manager: tile_manager.Manager):
+        geometry = self._get_animated_geometry()
+        for node_path in geometry:
+            animation_data_and_lookup = node_path.get_python_tag('animation_data')
+            animation_data: tile_manager.AnimationData = animation_data_and_lookup[0]
+
+            lookup: int = animation_data_and_lookup[1]
+            offset = (ticks // animation_data.ticks_per_frame) % animation_data.count
+            new_picnum = animation_data.picnum + offset
+
+            node_path.set_texture(art_manager.get_tile(new_picnum, lookup))
+
     def get_below_draw_offset(self):
         return self._below_ceiling_origin - self._sector_above_ceiling._above_floor_origin
 
@@ -263,7 +276,7 @@ class EditorSector(empty_object.EmptyObject):
             return core.NodePath()
         return self._display.find(f'**/{part}')
 
-    def get_animated_geometry(self) -> typing.Iterable[core.NodePath]:
+    def _get_animated_geometry(self) -> typing.Iterable[core.NodePath]:
         return self._display.find_all_matches('**/animated_geometry_*')
 
     def show(self):

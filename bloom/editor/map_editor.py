@@ -164,17 +164,8 @@ class MapEditor:
             if sector.is_hidden:
                 continue
 
-            geometry = sector.get_animated_geometry()
-            for node_path in geometry:
-                animation_data_and_lookup = node_path.get_python_tag('animation_data')
-                animation_data: manager.AnimationData = animation_data_and_lookup[0]
-                
-                lookup: int = animation_data_and_lookup[1]
-                offset = (self._ticks // animation_data.ticks_per_frame) % animation_data.count
-                new_picnum = animation_data.picnum + offset
-
-                node_path.set_texture(self._tile_manager.get_tile(new_picnum, lookup))
-
+            sector.update(self._ticks, self._tile_manager)
+            
     def toggle_view_clipping(self):
         self._clipping_enabled = not self._clipping_enabled
 
