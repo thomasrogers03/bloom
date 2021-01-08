@@ -42,7 +42,7 @@ class EmptyObject:
         raise NotImplementedError()
 
     def reset_panning_and_repeats(self, part: str):
-        raise NotImplementedError
+        pass
 
     def get_data(self):
         raise NotImplementedError()
