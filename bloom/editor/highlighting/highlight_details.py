@@ -36,6 +36,10 @@ class HighlightDetails(typing.NamedTuple):
         return self.is_sector and self.part == map_objects.EditorSector.FLOOR_PART
 
     @property
+    def is_vertex(self):
+        return self.is_wall and self.part == self.map_object.vertex_part_name
+
+    @property
     def is_wall(self):
         return isinstance(self.map_object, map_objects.EditorWall)
 

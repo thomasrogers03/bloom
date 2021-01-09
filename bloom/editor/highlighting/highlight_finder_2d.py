@@ -28,9 +28,13 @@ class HighlightFinder2D:
         selected: typing.List[highlight_details.HighlightDetails]
     ):
         selected_highlight = self._highlight_from_selected(selected)
-        if selected_highlight is not None:
-            return selected_highlight
+        found_highlight = self._find_highlight(current_highlight)
 
+        if self._highlight_priorty(selected_highlight) >= self._highlight_priorty(found_highlight):
+            return selected_highlight
+        return found_highlight
+
+    def _find_highlight(self, current_highlight: highlight_details.HighlightDetails):
         if self._editor.builder_sector is None:
             start_sector = self._editor.sectors.sectors[0]
         else:
@@ -77,6 +81,17 @@ class HighlightFinder2D:
             map_objects.EditorSector.FLOOR_PART,
             hit
         )
+
+    @staticmethod
+    def _highlight_priorty(highlight: highlight_details.HighlightDetails):
+        if highlight is None:
+            return -1
+
+        if highlight.is_vertex:
+            return 3
+        if highlight.is_wall:
+            return 2
+        return 1
 
     @property
     def _vertex_offset(self):
