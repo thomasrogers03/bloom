@@ -321,8 +321,8 @@
   name: Trapped Soul
   category: ammo
   repeats:
-    x: 12
-    y: 12
+    x: 6
+    y: 6
   tile_config:
     tile: 820 
 67:

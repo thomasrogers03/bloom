@@ -14,8 +14,9 @@ class ToggleWallMiddle:
     def toggle(self):
         self._toggle_single_wall()
         if self._wall.other_side_wall is not None:
-            other_side_toggle = ToggleWallMiddle(self._wall.other_side_wall, self._part)
-            other_side_toggle._toggle_single_wall()
+            self._wall.other_side_wall.invalidate_geometry()
+            stat = self._wall.other_side_wall.get_stat_for_part(self._part)
+            stat.masking = self._stat.masking
 
     def _toggle_single_wall(self):
         self._wall.invalidate_geometry()
