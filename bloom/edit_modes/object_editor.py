@@ -143,6 +143,11 @@ class ObjectEditor:
             label="Increase sector slope (')",
             command=self._increase_slope
         )
+        self._menu.add_separator()
+        self._menu.add_command(
+            label="Automatically Light Map",
+            command=self._auto_light
+        )
 
         event_handler.accept('j', self._join_sectors)
         event_handler.accept('space', self._split_selection)
@@ -194,6 +199,9 @@ class ObjectEditor:
     def set_copy_sprite(self, sprite: map_objects.EditorSprite):
         self._copy_sprite = sprite
 
+    def _auto_light(self):
+        operations.auto_light.AutoLight(self._editor.sectors).apply()
+
     def _setup_context_menu(self, menu: context_menu.Menu):
         self._setup_wall_context_menu(menu.add_sub_menu('Edit'))
         self._setup_sprite_context_menu(menu.add_sub_menu('Add Sprite'))
@@ -217,19 +225,21 @@ class ObjectEditor:
             )
 
     def _gradient_floor_heights(self):
-        selected = self._highlighter.select_append(selected_type_or_types=map_objects.EditorSector)
+        selected = self._highlighter.select_append(
+            selected_type_or_types=map_objects.EditorSector)
         operations.gradient_heights.GradientHeights(
             [selected_object.map_object for selected_object in selected],
             map_objects.EditorSector.FLOOR_PART
         ).apply()
 
     def _fill_wall_sector(self):
-        selected = self._highlighter.select(selected_type_or_types=map_objects.EditorWall)
+        selected = self._highlighter.select(
+            selected_type_or_types=map_objects.EditorWall)
         if selected is None:
             return
 
         result = operations.sector_fill.SectorFill(
-            selected.map_object.get_sector(), 
+            selected.map_object.get_sector(),
             self._editor.sectors
         ).fill(selected.map_object)
 
@@ -306,8 +316,8 @@ class ObjectEditor:
 
         for selected_item in selected:
             operations.flip.Flip(
-                self._editor.undo_stack, 
-                selected_item.map_object, 
+                self._editor.undo_stack,
+                selected_item.map_object,
                 selected_item.part
             ).flip()
 
@@ -426,7 +436,8 @@ class ObjectEditor:
         with self._editor.undo_stack.multi_step_undo('Decrease Angle'):
             selected = self._highlighter.select_append(
                 no_append_if_not_selected=True,
-                selected_type_or_types=[map_objects.EditorSector, map_objects.EditorSprite]
+                selected_type_or_types=[
+                    map_objects.EditorSector, map_objects.EditorSprite]
             )
 
             for selected_item in selected:
@@ -443,7 +454,8 @@ class ObjectEditor:
         with self._editor.undo_stack.multi_step_undo('Increase Angle'):
             selected = self._highlighter.select_append(
                 no_append_if_not_selected=True,
-                selected_type_or_types=[map_objects.EditorSector, map_objects.EditorSprite]
+                selected_type_or_types=[
+                    map_objects.EditorSector, map_objects.EditorSprite]
             )
 
             for selected_item in selected:
@@ -493,14 +505,16 @@ class ObjectEditor:
                     descriptor.palette
                 )
 
-                hit_position = self._editor.snapper.snap_to_grid_3d(selected.hit_position)
+                hit_position = self._editor.snapper.snap_to_grid_3d(
+                    selected.hit_position)
                 sprite.move_to(hit_position)
         return _callback
 
     def _add_sprite(self, sprite_type=None):
         with self._editor.undo_stack.multi_step_undo('Add Sprite'):
             selected = self._highlighter.select(
-                selected_type_or_types=[map_objects.EditorSector, map_objects.EditorWall]
+                selected_type_or_types=[
+                    map_objects.EditorSector, map_objects.EditorWall]
             )
             if selected is None:
                 return
