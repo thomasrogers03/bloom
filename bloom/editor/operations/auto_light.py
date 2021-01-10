@@ -5,26 +5,36 @@ import typing
 
 from ... import constants
 from .. import map_objects
+from concurrent import futures
 
 
 class AutoLight:
+    _executor = futures.ThreadPoolExecutor(max_workers=10)
 
     def __init__(self, all_sectors: map_objects.SectorCollection):
         self._all_sectors = all_sectors
 
     def apply(self):
+        futures = []
         for sector in self._non_sky_sectors():
-            distance = self._distance_to_sky_sector(
-                sector, 
-                constants.REALLY_BIG_NUMBER,
-                0,
-                set()
-            )
-            shade = 1 - distance * 0.1
-            sector.set_shade(map_objects.EditorSector.FLOOR_PART, shade)
-            sector.set_shade(map_objects.EditorSector.CEILING_PART, shade)
-            for wall in sector.walls:
-                wall.set_shade(None, shade)
+            future = self._executor.submit(self._apply_shade, sector)
+            futures.append(future)
+        
+        for future in futures:
+            future.result()
+
+    def _apply_shade(self, sector: map_objects.EditorSector):
+        distance = self._distance_to_sky_sector(
+            sector,
+            constants.REALLY_BIG_NUMBER,
+            0,
+            set()
+        )
+        shade = 1 - distance * 0.1
+        sector.set_shade(map_objects.EditorSector.FLOOR_PART, shade)
+        sector.set_shade(map_objects.EditorSector.CEILING_PART, shade)
+        for wall in sector.walls:
+            wall.set_shade(None, shade)
 
     def _distance_to_sky_sector(
         self,
