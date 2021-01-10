@@ -19,13 +19,18 @@ def _load_light_types():
 
 class AutoLight:
     _light_types = _load_light_types()
-    _executor = futures.ThreadPoolExecutor(max_workers=10)
+    _executor = futures.ThreadPoolExecutor(max_workers=100)
 
     def __init__(self, all_sectors: map_objects.SectorCollection):
         self._all_sectors = all_sectors
+        self._sectors_having_light: typing.Set[map_objects.EditorSector] = set()
 
     def apply(self):
         futures = []
+        for sector in self._all_sectors.sectors:
+            if self._sector_has_light(sector):
+                self._sectors_having_light.add(sector)
+
         for sector in self._non_sky_sectors():
             future = self._executor.submit(self._apply_shade, sector)
             futures.append(future)
@@ -53,15 +58,19 @@ class AutoLight:
         depth: int,
         seen: typing.Set[map_objects.EditorSector]
     ):
-        if self._sector_has_light(sector) or depth > 4 or depth >= distance or sector in seen:
+        if sector in seen:
+            return constants.REALLY_BIG_NUMBER
+
+        if depth > 6 or depth >= distance or sector in self._sectors_having_light:
             return depth
 
+        new_seen = seen | {sector,}
         for portal in sector.portal_walls():
             new_distance = self._distance_to_sky_sector(
                 portal.other_side_sector,
                 distance,
                 depth + 1,
-                seen
+                new_seen
             )
             if new_distance < distance:
                 distance = new_distance
@@ -71,7 +80,7 @@ class AutoLight:
                 sector.sector_above_ceiling,
                 distance,
                 depth,
-                seen
+                new_seen
             )
             if new_distance < distance:
                 distance = new_distance
