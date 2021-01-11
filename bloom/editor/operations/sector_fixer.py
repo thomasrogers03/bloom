@@ -59,6 +59,13 @@ class SectorFixer:
                 wall.set_wall_point_2(point_2.wall_point_2)
                 walls_to_delete.append(point_2)
 
+            if wall.wall_previous_point.wall_point_2 != wall:
+                wall.wall_previous_point.set_wall_point_2(wall)
+                fix_count += 1
+            if wall.wall_point_2.wall_previous_point != wall:
+                wall.set_wall_point_2(wall.wall_point_2)
+                fix_count += 1
+
             if wall.other_side_wall is not None:
                 if wall.other_side_wall.other_side_wall is None or \
                         wall.other_side_wall.point_2 != wall.point_1:
