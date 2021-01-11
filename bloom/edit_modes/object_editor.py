@@ -148,6 +148,10 @@ class ObjectEditor:
             label="Automatically Light Map",
             command=self._auto_light
         )
+        self._menu.add_command(
+            label="Cleanup Sector Geometry",
+            command=self._fix_sectors
+        )
 
         event_handler.accept('j', self._join_sectors)
         event_handler.accept('space', self._split_selection)
@@ -201,6 +205,12 @@ class ObjectEditor:
 
     def _auto_light(self):
         operations.auto_light.AutoLight(self._editor.sectors).apply()
+
+    def _fix_sectors(self):
+        sectors_removed, walls_removed = operations.sector_fixer.SectorFixer(
+            self._editor.sectors
+        ).apply()
+        self._camera_collection.set_info_text(f'Removed {sectors_removed} sectors, {walls_removed} walls')
 
     def _setup_context_menu(self, menu: context_menu.Menu):
         self._setup_wall_context_menu(menu.add_sub_menu('Edit'))
