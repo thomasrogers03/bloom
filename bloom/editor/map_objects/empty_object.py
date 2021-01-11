@@ -16,6 +16,10 @@ class EmptyObject:
         self._source_event_grouping = None
         self._target_event_grouping = None
 
+    @staticmethod
+    def _shade_to_colour_channel(shade: float):
+        return max((shade - 0.5) * 2, 0)
+
     @property
     def is_marker(self):
         return False

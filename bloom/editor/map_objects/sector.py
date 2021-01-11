@@ -476,6 +476,8 @@ class EditorSector(empty_object.EmptyObject):
         shade: float,
         part: sector_geometry.GeometryPart
     ):
+        shade = self._shade_to_colour_channel(shade)
+
         for sub_sector in drawing_sector.Sector(self._walls).get_sub_sectors():
             polygon = drawing_sector.Sector.get_wall_bunch_points(
                 sub_sector.outer_wall)

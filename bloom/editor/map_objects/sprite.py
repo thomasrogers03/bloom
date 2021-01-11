@@ -351,7 +351,8 @@ class EditorSprite(empty_object.EmptyObject):
             alpha = 0.75
         elif self._sprite.sprite.stat.translucent:
             alpha = 0.5
-        sprite_collision.set_color(self.shade, self.shade, self.shade, alpha)
+        shade = self._shade_to_colour_channel(self.shade)
+        sprite_collision.set_color(shade, shade, shade, alpha)
 
         self._sprite_collision = sprite_collision
         self.update_ambient_sound()

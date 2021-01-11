@@ -631,10 +631,11 @@ class EditorWall(empty_object.EmptyObject):
                 'texcoord'
             )
 
-            colour_write.add_data4(self.shade, self.shade, self.shade, 1)
-            colour_write.add_data4(self.shade, self.shade, self.shade, 1)
-            colour_write.add_data4(self.shade, self.shade, self.shade, 1)
-            colour_write.add_data4(self.shade, self.shade, self.shade, 1)
+            shade = self._shade_to_colour_channel(self.shade)
+            colour_write.add_data4(shade, shade, shade, 1)
+            colour_write.add_data4(shade, shade, shade, 1)
+            colour_write.add_data4(shade, shade, shade, 1)
+            colour_write.add_data4(shade, shade, shade, 1)
 
             texture_size = all_geometry.get_tile_dimensions(part.picnum)
             if texture_size.x < 1:
