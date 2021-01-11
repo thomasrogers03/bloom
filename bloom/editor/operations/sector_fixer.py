@@ -29,14 +29,16 @@ class SectorFixer:
 
         sectors_removed = 0
         walls_removed = 0
+        walls_fixed = 0
 
         for result in cleaned_objects:
             if 'sector' in result:
                 sectors_removed += 1
                 self._all_sectors.destroy_sector(result['sector'])
             walls_removed += len(result['walls'])
+            walls_fixed += result['fixed_wall_count']
 
-        return sectors_removed, walls_removed
+        return sectors_removed, walls_removed, walls_fixed
 
     def _cleanup_sector(self, sector: map_objects.EditorSector):
         result = {}
@@ -45,10 +47,11 @@ class SectorFixer:
             result['sector'] = sector
             sector.invalidate_geometry()
 
-        result['walls'] = self._cleanup_walls(sector)
+        result['walls'], result['fixed_wall_count'] = self._cleanup_walls(sector)
         return result
 
     def _cleanup_walls(self, sector: map_objects.EditorSector):
+        fix_count = 0
         walls_to_delete: typing.List[map_objects.EditorWall] = []
         for wall in sector.walls:
             while wall.get_length() == 0:
@@ -57,7 +60,9 @@ class SectorFixer:
                 walls_to_delete.append(point_2)
 
             if wall.other_side_wall is not None:
-                if wall.other_side_wall.other_side_wall is None:
+                if wall.other_side_wall.other_side_wall is None or \
+                        wall.other_side_wall.point_2 != wall.point_1:
+                    fix_count += 1
                     wall.unlink()
 
         for wall in walls_to_delete:
@@ -65,7 +70,7 @@ class SectorFixer:
                 wall.other_side_wall.unlink()
             sector.remove_wall(wall)
 
-        if len(walls_to_delete) > 0:
+        if len(walls_to_delete) > 0 or fix_count > 0:
             sector.invalidate_geometry()
 
-        return walls_to_delete
+        return walls_to_delete, fix_count

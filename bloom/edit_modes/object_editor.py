@@ -207,10 +207,11 @@ class ObjectEditor:
         operations.auto_light.AutoLight(self._editor.sectors).apply()
 
     def _fix_sectors(self):
-        sectors_removed, walls_removed = operations.sector_fixer.SectorFixer(
+        sectors_removed, walls_removed, walls_fixed = operations.sector_fixer.SectorFixer(
             self._editor.sectors
         ).apply()
-        self._camera_collection.set_info_text(f'Removed {sectors_removed} sectors, {walls_removed} walls')
+        self._camera_collection.set_info_text(
+            f'Removed {sectors_removed} sectors, {walls_removed} walls. Fixed {walls_fixed} walls')
 
     def _setup_context_menu(self, menu: context_menu.Menu):
         self._setup_wall_context_menu(menu.add_sub_menu('Edit'))
