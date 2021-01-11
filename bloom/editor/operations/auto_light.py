@@ -45,7 +45,7 @@ class AutoLight:
             0,
             set()
         )
-        shade = 1 - distance * 0.1
+        shade = 1 - distance * 0.05
         sector.set_shade(map_objects.EditorSector.FLOOR_PART, shade)
         sector.set_shade(map_objects.EditorSector.CEILING_PART, shade)
         for wall in sector.walls:
