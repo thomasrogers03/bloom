@@ -9,11 +9,11 @@ from .. import map_objects
 
 
 class WallFinder2D:
-    _MIN_DISTANCE = 1 / 128
+    _MIN_DISTANCE = 1 / 32768
 
-    def __init__(self, position: core.Point2, view_scale: float):
+    def __init__(self, position: core.Point2, grid_size: float, view_scale: float):
         self._position = position
-        self._min_distance = self._MIN_DISTANCE * view_scale
+        self._min_distance = self._MIN_DISTANCE * grid_size * view_scale
 
     def closest_wall(self, walls: typing.List[map_objects.EditorWall]):
         closest_distance = self._min_distance

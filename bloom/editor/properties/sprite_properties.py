@@ -16,7 +16,9 @@ from .. import descriptors, event_grouping, map_objects
 from ..descriptors import sprite_type_descriptor
 from . import sprite_property_view, sprite_type_list
 
-_SPRITE_CATEGORIES_TYPE = typing.Dict[str, typing.List[sprite_type_descriptor.SpriteTypeDescriptor]]
+_SPRITE_CATEGORIES_TYPE = typing.Dict[str,
+                                      typing.List[sprite_type_descriptor.SpriteTypeDescriptor]]
+
 
 class SpriteDialog:
     _TILE_FRAME_SIZE = 0.3
@@ -71,7 +73,8 @@ class SpriteDialog:
             command=self._show_tiles
         )
 
-        self._property_parent: core.NodePath = self._dialog.attach_new_node('properties')
+        self._property_parent: core.NodePath = self._dialog.attach_new_node(
+            'properties')
         self._property_parent.set_pos(0.66, 0, 0.38)
 
         self._sound_browser = sound_browser
@@ -109,6 +112,13 @@ class SpriteDialog:
             self._select_sprite_type
         )
         self._properties: sprite_property_view.SpritePropertyView = None
+
+        self._droppables = {
+            descriptor.name: sprite_type
+            for sprite_type, descriptor in descriptors.sprite_types.items()
+            if descriptor.get_is_droppable(descriptors.sprite_category_descriptors)
+        }
+        self._droppables['None'] = 0
 
         DirectGui.DirectLabel(
             parent=self._dialog,
@@ -186,8 +196,8 @@ class SpriteDialog:
 
         self._current_descriptor.apply_sprite_properties(self._sprite, new_values)
         self.apply_sprite_properties(
-            self._sprite, 
-            self._current_descriptor, 
+            self._sprite,
+            self._current_descriptor,
             self._current_picnum,
             self._get_current_palette()
         )
@@ -195,16 +205,19 @@ class SpriteDialog:
 
         target_special_value = self._special_target_menu.get()
         if target_special_value == 'Next Level':
-            self._sprite.set_target_event_grouping(event_grouping.EventGroupingCollection.END_LEVEL_GROUPING)
+            self._sprite.set_target_event_grouping(
+                event_grouping.EventGroupingCollection.END_LEVEL_GROUPING)
         elif target_special_value == 'Secret Level':
-            self._sprite.set_target_event_grouping(event_grouping.EventGroupingCollection.SECRET_END_LEVEL_GROUPING)
+            self._sprite.set_target_event_grouping(
+                event_grouping.EventGroupingCollection.SECRET_END_LEVEL_GROUPING)
         elif self._sprite.target_event_grouping is not None and \
                 self._sprite.target_event_grouping.special_receiver_id is not None:
             self._sprite.set_target_event_grouping(None)
 
         source_special_value = self._special_source_menu.get()
         if source_special_value == 'Level Start':
-            self._sprite.set_source_event_grouping(event_grouping.EventGroupingCollection.START_LEVEL_GROUPING)
+            self._sprite.set_source_event_grouping(
+                event_grouping.EventGroupingCollection.START_LEVEL_GROUPING)
         elif self._sprite.source_event_grouping is not None and \
                 self._sprite.source_event_grouping.special_receiver_id is not None:
             self._sprite.set_source_event_grouping(None)
@@ -215,7 +228,7 @@ class SpriteDialog:
 
     @staticmethod
     def apply_sprite_properties(
-        sprite: map_objects.EditorSprite, 
+        sprite: map_objects.EditorSprite,
         descriptor: sprite_type_descriptor.SpriteTypeDescriptor,
         picnum: int,
         palette: int
@@ -250,7 +263,10 @@ class SpriteDialog:
         self._properties = sprite_property_view.SpritePropertyView(
             self._property_parent,
             self._current_descriptor.default_tile,
-            self._current_descriptor.get_sprite_properties(self._sprite),
+            self._current_descriptor.get_sprite_properties(
+                self._sprite,
+                self._droppables
+            ),
             self._sound_browser,
             self._update_sprite_tile,
             1.5,

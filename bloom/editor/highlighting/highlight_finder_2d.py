@@ -19,6 +19,7 @@ class HighlightFinder2D:
         self._sprite_finder = sprite_finder_2d.SpriteFinder2D(self._position)
         self._wall_finder = wall_finder_2d.WallFinder2D(
             self._position,
+            self._editor.snapper.grid_size,
             self._view_scale
         )
 

@@ -1,5 +1,6 @@
 ammo:
   status_number: 3
+  droppable: true
 decoration:
   status_number: 0
 environment:
@@ -8,8 +9,10 @@ gibbable:
   status_number: 4
 items:
   status_number: 3
+  droppable: true
 keys:
   status_number: 3
+  droppable: true
 markers:
   status_number: 10
 misc:
@@ -30,3 +33,4 @@ traps:
   status_number: 11
 weapons:
   status_number: 3
+  droppable: true

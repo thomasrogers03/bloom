@@ -78,13 +78,16 @@ class SpriteTypeDescriptor:
     def property_descriptors(self) -> typing.List[dict]:
         return self._descriptor.get('properties', [])
 
+    def get_is_droppable(self, category_descriptors: dict) -> bool:
+        return category_descriptors[self.category].get('droppable', False)
+
     def get_status_number(self, category_descriptors: dict):
         return self._descriptor.get(
             'status_number',
             category_descriptors[self.category]['status_number']
         )
 
-    def get_sprite_properties(self, sprite: map_objects.EditorSprite):
+    def get_sprite_properties(self, sprite: map_objects.EditorSprite, droppables: typing.Dict[str, int]):
         stat = sprite.sprite.sprite.stat
         data = sprite.sprite.data
 
@@ -118,6 +121,7 @@ class SpriteTypeDescriptor:
             'Locked': object_property.Property.create_boolean(data.locked),
             'Locked Message': object_property.Property.create_integer(data.lock_msg),
             'Invisible': object_property.Property.create_boolean(stat.invisible),
+            'Drop Item': object_property.Property.create_enum(data.drop_item, droppables),
         }
 
         for descriptor in self.property_descriptors:
@@ -192,6 +196,7 @@ class SpriteTypeDescriptor:
         data.locked = int(values['Locked'])
         data.lock_msg = int(values['Locked Message'])
         stat.invisible = int(values['Invisible'])
+        data.drop_item = int(values['Drop Item'])
 
         for descriptor in self.property_descriptors:
             name = descriptor['name']
