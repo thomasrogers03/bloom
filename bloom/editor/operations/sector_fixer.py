@@ -7,6 +7,7 @@ from concurrent import futures
 import yaml
 
 from ... import constants
+from ...tiles import art
 from .. import map_objects
 
 
@@ -30,6 +31,7 @@ class SectorFixer:
         sectors_removed = 0
         walls_removed = 0
         walls_fixed = 0
+        sprites_fixed = 0
 
         for result in cleaned_objects:
             if 'sector' in result:
@@ -37,8 +39,9 @@ class SectorFixer:
                 self._all_sectors.destroy_sector(result['sector'])
             walls_removed += len(result['walls'])
             walls_fixed += result['fixed_wall_count']
+            sprites_fixed += result['fixed_sprite_count']
 
-        return sectors_removed, walls_removed, walls_fixed
+        return sectors_removed, walls_removed, walls_fixed, sprites_fixed
 
     def _cleanup_sector(self, sector: map_objects.EditorSector):
         result = {}
@@ -48,7 +51,18 @@ class SectorFixer:
             sector.invalidate_geometry()
 
         result['walls'], result['fixed_wall_count'] = self._cleanup_walls(sector)
+        result['fixed_sprite_count'] = self._cleanup_sprites(sector)
         return result
+
+    def _cleanup_sprites(self, sector: map_objects.EditorSector):
+        fix_count = 0
+
+        for sprite in sector.sprites:
+            if sprite.get_picnum(None) >= art.ArtManager.MAX_TILES:
+                sprite.set_picnum(None, 0)
+                fix_count += 1
+
+        return fix_count
 
     def _cleanup_walls(self, sector: map_objects.EditorSector):
         fix_count = 0
@@ -64,6 +78,10 @@ class SectorFixer:
                 fix_count += 1
             if wall.wall_point_2.wall_previous_point != wall:
                 wall.set_wall_point_2(wall.wall_point_2)
+                fix_count += 1
+
+            if wall.get_picnum(None) >= art.ArtManager.MAX_TILES:
+                wall.set_picnum(None, 0)
                 fix_count += 1
 
             if wall.other_side_wall is not None:

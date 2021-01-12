@@ -78,6 +78,7 @@ class ArtData(typing.NamedTuple):
     animation_data: typing.List[AnimationData]
     data_offset: int
 
+
 class Art:
 
     def __init__(self, rff: RFF, path: str):
@@ -133,7 +134,7 @@ class Art:
         if os.path.exists(cache_path):
             with open(cache_path, 'rb') as file:
                 return pickle.load(file)
-            
+
         widths = self._unpacker.read_multiple_members(data_loading.UInt16, self._count)
         heights = self._unpacker.read_multiple_members(data_loading.UInt16, self._count)
         animation_data = self._unpacker.read_multiple(AnimationData, self._count)
@@ -146,7 +147,7 @@ class Art:
 
         with open(cache_path, 'w+b') as file:
             pickle.dump(art_data, file)
-        
+
         return art_data
 
     @property
@@ -180,14 +181,16 @@ class Art:
 
 
 class ArtManager:
+    MAX_TILES = 4096
 
     def __init__(self, rff: RFF, paths: typing.List[str]):
         self._art = [Art(rff, path) for path in paths]
-        self._tile_count = sum(art.count for art in self._art)
+        self._art = self._art
 
     def get_tile_indices(self):
         return [
             index for art in self._art for index in art.get_tile_indices()
+            if index < self.MAX_TILES
         ]
 
     def get_tile_animation_data(self, tile_number: int):
