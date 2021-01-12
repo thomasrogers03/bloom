@@ -386,6 +386,7 @@ class EditorSprite(empty_object.EmptyObject):
         sector_mapping: typing.Dict['editor.sector.EditorSector', int]
     ) -> map_data.sprite.Sprite:
         self._sprite.sprite.sector_index = sector_mapping[self._sector]
+        self._sprite.sprite.owner = -1
         return self._sprite
 
     @property

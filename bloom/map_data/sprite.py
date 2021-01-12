@@ -129,6 +129,7 @@ class Sprite(data_loading.CustomStruct):
         new_blood_sprite.sprite.stat.centring = 1
         new_blood_sprite.sprite.clip_distance = 32
         new_blood_sprite.sprite.velocity_x = 1
+        new_blood_sprite.sprite.owner = -1
         new_blood_sprite.sprite.picnum = 0
         new_blood_sprite.sprite.repeat_x = 64
         new_blood_sprite.sprite.repeat_y = 64
