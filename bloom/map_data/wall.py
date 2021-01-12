@@ -26,12 +26,12 @@ class Stat(data_loading.CustomStruct):
 class BuildWall(data_loading.CustomStruct):
     position_x: data_loading.Int32
     position_y: data_loading.Int32
-    point2_index: data_loading.Int16
+    point2_index: data_loading.UInt16
     other_side_wall_index: data_loading.Int16
     other_side_sector_index: data_loading.Int16
     stat: Stat
-    picnum: data_loading.Int16
-    over_picnum: data_loading.Int16
+    picnum: data_loading.UInt16
+    over_picnum: data_loading.UInt16
     shade: data_loading.Int8
     palette: data_loading.UInt8
     repeat_x: data_loading.UInt8

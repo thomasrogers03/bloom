@@ -499,12 +499,9 @@ class EditorWall(empty_object.EmptyObject):
     ) -> map_data.wall.Wall:
         if self._other_side_wall is not None:
             self._wall.wall.other_side_wall_index = wall_mapping[self._other_side_wall]
-        else:
-            self._wall.wall.other_side_wall_index = -1
-
-        if self.other_side_sector is not None:
             self._wall.wall.other_side_sector_index = sector_mapping[self.other_side_sector]
         else:
+            self._wall.wall.other_side_wall_index = -1
             self._wall.wall.other_side_sector_index = -1
 
         self._wall.wall.point2_index = wall_mapping[self._wall_point_2]
