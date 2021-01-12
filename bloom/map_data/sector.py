@@ -27,13 +27,13 @@ class BuildSector(data_loading.CustomStruct):
     ceiling_stat: Stat
     floor_stat: Stat
 
-    ceiling_picnum: data_loading.Int16
+    ceiling_picnum: data_loading.UInt16
     ceiling_heinum: data_loading.Int16
     ceiling_shade: data_loading.Int8
     ceiling_palette: data_loading.UInt8
     ceiling_xpanning: data_loading.UInt8
     ceiling_ypanning: data_loading.UInt8
-    floor_picnum: data_loading.Int16
+    floor_picnum: data_loading.UInt16
     floor_heinum: data_loading.Int16
     floor_shade: data_loading.Int8
     floor_palette: data_loading.UInt8
