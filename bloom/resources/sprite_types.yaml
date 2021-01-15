@@ -180,13 +180,16 @@
       - 1161 
       - 2532
   properties:
-    - name: Count to On
+    - name: Start Position
+      type: int
+      from: data_1
+    - name: Activate Position
       type: int
       from: data_2
-    - name: Count to Off
+    - name: Period
       type: int
       from: data_3
-    - name: Sound to Play
+    - name: Sound To Play
       type: sound
       from: data_4
 23:
