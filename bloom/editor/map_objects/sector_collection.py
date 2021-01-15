@@ -148,6 +148,12 @@ class SectorCollection:
         sprite_index_mapping: typing.Dict[sprite.EditorSprite, int] = {}
         marker_id = marker_constants.START_ID
 
+        for editor_sector in self._sectors:
+            for editor_sprite in editor_sector.sprites:
+                data = editor_sprite.get_data()
+                data.tx_id = 0
+                data.rx_id = 0
+
         self._event_groupings.prepare_to_persist()
 
         for sector_index, editor_sector in enumerate(self._sectors):
