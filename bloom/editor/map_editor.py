@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 class MapEditor:
     _DEFAULT_SKY_INDEX_RANGE = 8
+    _MAX_FIND_SECTOR_CANDIDATES = 3
 
     def __init__(
         self,
@@ -94,30 +95,44 @@ class MapEditor:
     def builder_sector(self):
         return self._builder_sector
 
-    def _find_sector_for_sprite(self, current_sector: EditorSector, position: core.Point3):
-        seen: typing.Set[int] = set()
-        last_known_sector = current_sector
-        if current_sector is not None:
-            current_sector = self._find_sector_through_portals(
-                current_sector,
+    def _find_sector_for_sprite(self, last_known_sector: EditorSector, position: core.Point3):
+        seen: typing.Set[EditorSector] = set()
+        candidates: typing.List[EditorSector] = []
+        if last_known_sector is not None:
+            self._find_sector_through_portals(
+                last_known_sector,
                 seen,
-                position,
+                candidates,
+                position.xy,
                 10
             )
-            if current_sector is not None:
-                return current_sector
+
+        portal_candidate_count = len(candidates)
+        for editor_sector in candidates:
+            if self._z_in_sector(position, editor_sector):
+                return editor_sector
 
         for editor_sector in self._sectors.sectors:
-            current_sector = self._find_sector_through_portals(
+            self._find_sector_through_portals(
                 editor_sector,
                 seen,
-                position,
+                candidates,
+                position.xy,
                 1000
             )
-            if current_sector is not None:
-                return current_sector
 
-        return last_known_sector
+        if len(candidates) < 1:
+            return last_known_sector
+
+        for editor_sector in candidates[portal_candidate_count:]:
+            if self._z_in_sector(position, editor_sector):
+                return editor_sector
+
+        return candidates[0]
+
+    def _z_in_sector(self, position: core.Point3, editor_sector: EditorSector):
+        return position.z <= editor_sector.floor_z_at_point(position.xy) and \
+            position.z >= editor_sector.ceiling_z_at_point(position.xy)
 
     def update_builder_sector(self, builder_position: core.Vec3, force=False):
         self.invalidate_view_clipping()
@@ -232,25 +247,25 @@ class MapEditor:
         self,
         current_sector: EditorSector,
         seen: typing.Set[EditorSector],
-        position: core.Vec3,
-        depth_left
+        candidates: typing.List[EditorSector],
+        position: core.Vec2,
+        depth_left: int
     ):
-        if current_sector in seen or depth_left < 1:
-            return None
+        if current_sector in seen or depth_left < 1 or len(candidates) >= self._MAX_FIND_SECTOR_CANDIDATES:
+            return
 
         seen.add(current_sector)
-        if current_sector.vector_in_sector(position):
-            return current_sector
+        if current_sector.point_in_sector(position):
+            candidates.append(current_sector)
 
         for adjacent_sector in current_sector.adjacent_sectors():
-            found_sector = self._find_sector_through_portals(
+            self._find_sector_through_portals(
                 adjacent_sector,
                 seen,
+                candidates,
                 position,
                 depth_left - 1
             )
-            if found_sector is not None:
-                return found_sector
 
         return None
 

@@ -1016,12 +1016,6 @@ class EditorSector(empty_object.EmptyObject):
 
         return core.Vec2(math.degrees(theta_x), math.degrees(theta_y))
 
-    def vector_in_sector(self, position: core.Vec3):
-        if position.z > self.floor_z or position.z < self.ceiling_z:
-            return False
-
-        return self.point_in_sector(position.xy)
-
     @property
     def can_see_above(self):
         return self._sector.sector.ceiling_picnum == 504
