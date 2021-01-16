@@ -90,16 +90,10 @@ class SectorCollection:
             data=map_data.sector.BloodSectorData()
         )
 
-        new_sector = self.new_sector(new_blood_sector)
-        new_sector.setup_geometry()
-
-        return new_sector
+        return self.new_sector(new_blood_sector)
 
     def create_empty_sector(self):
-        new_sector = self.new_sector(map_data.sector.Sector())
-        new_sector.setup_geometry()
-
-        return new_sector
+        return self.new_sector(map_data.sector.Sector())
 
     def new_sector(self, blood_sector: game_map.sector.Sector):
         index = len(self._sectors)
