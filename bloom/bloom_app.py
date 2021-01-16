@@ -374,6 +374,17 @@ class Bloom(ShowBase):
             self._camera_collection.get_builder_position()
         )
 
+        builder_sector = self._map_editor.builder_sector
+        if builder_sector is not None:
+            position_2d = self._camera_collection.builder_2d.get_pos().xy
+            builder_z = self._camera_collection.builder.get_z()
+            floor_z = builder_sector.floor_z_at_point(position_2d)
+            if builder_z > floor_z:
+                self._camera_collection.builder.set_z(floor_z)
+            ceiling_z = builder_sector.ceiling_z_at_point(position_2d)
+            if builder_z < ceiling_z:
+                self._camera_collection.builder.set_z(ceiling_z)
+
     def _setup_auto_save(self):
         if self._auto_save is not None:
             return

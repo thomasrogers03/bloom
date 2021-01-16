@@ -58,13 +58,12 @@ class MapEditor:
             self._tile_manager
         )
         self._sectors = SectorCollection(
-            map_to_load, 
+            map_to_load,
             audio_manager,
-            geometry_factory, 
+            geometry_factory,
             self._suggest_sky,
             self._undo_stack
         )
-        self._sectors.setup_geometry()
 
         self._last_builder_sector: EditorSector = None
         self._builder_sector: EditorSector = None
@@ -73,7 +72,7 @@ class MapEditor:
     @property
     def scene(self):
         return self._scene
-    
+
     @property
     def undo_stack(self):
         return self._undo_stack
@@ -95,34 +94,40 @@ class MapEditor:
     def builder_sector(self):
         return self._builder_sector
 
+    def _find_sector_for_sprite(self, current_sector: EditorSector, position: core.Point3):
+        seen: typing.Set[int] = set()
+        last_known_sector = current_sector
+        if current_sector is not None:
+            current_sector = self._find_sector_through_portals(
+                current_sector,
+                seen,
+                position,
+                10
+            )
+            if current_sector is not None:
+                return current_sector
+
+        for editor_sector in self._sectors.sectors:
+            current_sector = self._find_sector_through_portals(
+                editor_sector,
+                seen,
+                position,
+                1000
+            )
+            if current_sector is not None:
+                return current_sector
+
+        return last_known_sector
+
     def update_builder_sector(self, builder_position: core.Vec3, force=False):
         self.invalidate_view_clipping()
-
-        seen: typing.Set[int] = set()
         if force:
             self._builder_sector = None
         self._last_builder_sector = self._builder_sector
-        if self._builder_sector is not None:
-            self._builder_sector = self._find_sector_through_portals(
-                self._builder_sector,
-                seen,
-                builder_position,
-                10
-            )
-            if self._builder_sector is not None:
-                return
-
-        for editor_sector in self._sectors.sectors:
-            self._builder_sector = self._find_sector_through_portals(
-                editor_sector,
-                seen,
-                builder_position,
-                1000
-            )
-            if self._builder_sector is not None:
-                return
-
-        self._builder_sector = self._last_builder_sector
+        self._builder_sector = self._find_sector_for_sprite(
+            self._last_builder_sector,
+            builder_position
+        )
 
     @property
     def snapper(self):
@@ -142,7 +147,7 @@ class MapEditor:
         for value in range(65535):
             if value not in found:
                 return value
-    
+
         raise Exception('Ran out of sprite data 1!')
 
     def update_for_frame(self):
@@ -165,7 +170,7 @@ class MapEditor:
                 continue
 
             sector.update(self._ticks, self._tile_manager)
-            
+
     def toggle_view_clipping(self):
         self._clipping_enabled = not self._clipping_enabled
 
@@ -207,7 +212,7 @@ class MapEditor:
         if self._sky_picnum is None:
             self._sky_picnum = suggested_picnum
             sky_range = self._sky_indices.get(
-                self._sky_picnum, 
+                self._sky_picnum,
                 self._DEFAULT_SKY_INDEX_RANGE
             )
             self._sky_offsets = list(range(sky_range))
@@ -222,31 +227,6 @@ class MapEditor:
                 self._sky_picnum,
                 self._sky_offsets
             )
-
-    def _find_sector_for_sprite(self, current_sector: EditorSector, position: core.Point3):
-        seen: typing.Set[int] = set()
-        last_known_sector = current_sector
-        if current_sector is not None:
-            current_sector = self._find_sector_through_portals(
-                current_sector,
-                seen,
-                position,
-                10
-            )
-            if current_sector is not None:
-                return current_sector
-
-        for editor_sector in self._sectors.sectors:
-            current_sector = self._find_sector_through_portals(
-                editor_sector,
-                seen,
-                position,
-                1000
-            )
-            if current_sector is not None:
-                return current_sector
-
-        return last_known_sector
 
     def _find_sector_through_portals(
         self,
@@ -285,8 +265,8 @@ class MapEditor:
         if self._builder_sector is not None:
             self._clipping_debug = self._scene.attach_new_node('clipping_debug')
             clipper = view_clipping.ViewClipping(
-                self._builder_sector, 
-                self._camera_collection, 
+                self._builder_sector,
+                self._camera_collection,
                 self._clipping_debug
             )
             clipper.clip()

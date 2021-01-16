@@ -43,12 +43,13 @@ class EditorSector(empty_object.EmptyObject):
         self._sector_above_ceiling: EditorSector = None
 
         self._is_destroyed = False
+        self._visible = False
 
         self._walls: typing.List[wall.EditorWall] = []
         self._sprites: typing.List[sprite.EditorSprite] = []
         self._markers: typing.List[marker.EditorMarker] = [None, None]
         self._display: core.NodePath = None
-        self._needs_geometry_reset = False
+        self._needs_geometry_reset = True
 
         self._floor_z_motion_markers: typing.List[marker.EditorMarker] = [
             z_motion_marker.EditorZMotionMarker(
@@ -173,7 +174,7 @@ class EditorSector(empty_object.EmptyObject):
             self._undo_stack
         )
 
-    def setup_geometry(self):
+    def _setup_geometry(self):
         geometry = self._geometry_factory.new_geometry(self._name)
         for editor_wall in self._walls:
             editor_wall.setup_geometry(geometry)
@@ -243,13 +244,16 @@ class EditorSector(empty_object.EmptyObject):
             self._sector.sector.ceiling_ypanning = 0
 
     def reset_geometry_if_necessary(self):
-        if not self._needs_geometry_reset:
+        if self.is_hidden or not self._needs_geometry_reset:
             return
 
         self._geometry_factory.remove_geometry(self._display)
-        self.setup_geometry()
+        self._setup_geometry()
 
     def update(self, ticks: int, art_manager: tile_manager.Manager):
+        if self.is_hidden:
+            return
+
         texture_stage = core.TextureStage.get_default()
 
         geometry = self._get_animated_geometry()
@@ -276,10 +280,10 @@ class EditorSector(empty_object.EmptyObject):
             0
         )   
 
-        if self._floor_part.pannable and self._floor_part.node_path is not None:
+        if self._floor_part is not None and self._floor_part.pannable and self._floor_part.node_path is not None:
             self._floor_part.node_path.set_tex_pos(texture_stage, panning)
 
-        if self._ceiling_part.pannable and self._ceiling_part.node_path is not None:
+        if self._ceiling_part is not None and self._ceiling_part.pannable and self._ceiling_part.node_path is not None:
             self._ceiling_part.node_path.set_tex_pos(texture_stage, panning)
 
     def get_below_draw_offset(self):
@@ -298,20 +302,23 @@ class EditorSector(empty_object.EmptyObject):
         return self._display.find(f'**/{part}')
 
     def _get_animated_geometry(self) -> typing.Iterable[core.NodePath]:
+        if self._display is None:
+            return []
+
         return self._display.find_all_matches('**/animated_geometry*')
 
     def show(self):
+        self._visible = True
         if self._display is not None:
             self._display.show()
             self._display.show(constants.SCENE_3D)
 
     @property
     def is_hidden(self):
-        if self._display is None:
-            return True
-        return self._display.is_hidden(constants.SCENE_3D)
+        return not self._visible
 
     def hide(self):
+        self._visible = False
         if self._display is not None:
             self._display.set_pos(0, 0, 0)
             self._display.hide(constants.SCENE_3D)

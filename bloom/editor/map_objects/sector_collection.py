@@ -130,10 +130,6 @@ class SectorCollection:
 
         return new_sector
 
-    def setup_geometry(self):
-        for sector in self._sectors:
-            sector.setup_geometry()
-
     def prepare_to_persist(
         self,
         find_sector: typing.Callable[['editor.sector.EditorSector', core.Point3], 'editor.sector.EditorSector'],
