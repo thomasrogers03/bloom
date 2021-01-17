@@ -44,6 +44,7 @@ class Manager:
         self._active_sounds: typing.Dict[int, core.AudioSound] = {}
         self._sound_attachments: typing.List[SoundAttachment] = []
         self._sounds_out_of_range: typing.Dict[int, bool] = defaultdict(lambda: True)
+        self._song: core.AudioSound = None
 
         self._sound_names: typing.Dict[int, str] = {
             index: name
@@ -65,22 +66,14 @@ class Manager:
         if sound is not None:
             sound.set_volume(0)
 
-    def load_music(self, song_name: str):
-        if not song_name:
-            return
+    def load_song(self, song_name: str):
+        self._unload_song()
 
-        midi_path = f'cache/{song_name}.mid'
-        if not os.path.exists(midi_path):
-            song_data = self._rff.data_for_entry(f'{song_name}.MID')
-            with open(midi_path, 'w+b') as file:
-                file.write(song_data)
-
-        converter = midi_to_wav.MidiToWav(midi_path)
-        song_path = converter.output_path
-        if not os.path.exists(song_path):
-            converter.convert(self._fluid_synth_path, self._sound_font_path)
-
-        return self._loader.load_sfx(song_path)
+        self._song = self._load_music(song_name)
+        if self._song is not None:
+            self._song.set_loop(True)
+            self._song.set_volume(1)
+            self._song.play()
 
     def _load_sound(self, sound_index: int):
         if sound_index not in self._sound_names:
@@ -199,3 +192,26 @@ class Manager:
             self._loader.unload_sfx(sound)
             return task.done
         return task.cont
+
+    def _unload_song(self):
+        if self._song is not None:
+            self._song.stop()
+            self._loader.unload_sfx(self._song)
+            self._song = None
+
+    def _load_music(self, song_name: str):
+        if not song_name:
+            return
+
+        midi_path = f'cache/{song_name}.mid'
+        if not os.path.exists(midi_path):
+            song_data = self._rff.data_for_entry(f'{song_name}.MID')
+            with open(midi_path, 'w+b') as file:
+                file.write(song_data)
+
+        converter = midi_to_wav.MidiToWav(midi_path)
+        song_path = converter.output_path
+        if not os.path.exists(song_path):
+            converter.convert(self._fluid_synth_path, self._sound_font_path)
+
+        return self._loader.load_sfx(song_path)

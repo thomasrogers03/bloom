@@ -199,7 +199,6 @@ class Bloom(ShowBase):
         self._rff = RFF(f'{self._blood_path}/BLOOD.RFF')
         self._sounds_rff = RFF(f'{self._blood_path}/SOUNDS.RFF')
         self._addon = addon.Addon(f'{self._blood_path}/BLOOD.INI')
-        self._song: core.AudioSound = None
         self._meta_data = {}
 
         for path in self._recent:
@@ -501,7 +500,7 @@ class Bloom(ShowBase):
             self._log_info(f'Loaded map {self._path} (hash: {hex(crc)})')
 
             song_name = self._addon.song_for_map(map_name)
-            self._load_song(song_name)
+            self._audio_manager.load_song(song_name)
 
         return _callback
 
@@ -513,22 +512,7 @@ class Bloom(ShowBase):
 
         map_name = os.path.basename(self._path)[:constants.MAP_EXTENSION_SKIP]
         song_name = self._addon.song_for_map(map_name)
-        self._load_song(song_name)
-
-    def _unload_song(self):
-        if self._song is not None:
-            self._song.stop()
-            self.loader.unload_sfx(self._song)
-            self._song = None
-
-    def _load_song(self, song_name: str):
-        self._unload_song()
-
-        self._song = self._audio_manager.load_music(song_name)
-        if self._song is not None:
-            self._song.set_loop(True)
-            self._song.set_volume(1)
-            self._song.play()
+        self._audio_manager.load_song(song_name)
 
     def _save_map_as(self):
         path = tkinter.filedialog.asksaveasfilename(
