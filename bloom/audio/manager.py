@@ -85,10 +85,11 @@ class Manager:
             return
 
         if self._song is not None:
-            self._song.stop()
-        self.clear()
-        self._paused = True
+            self._song.set_volume(0)
+        for sound in self._active_sounds.values():
+            sound.set_volume(0)
 
+        self._paused = True
         logger.info('Sound system paused')
 
     def unpause(self):
@@ -96,9 +97,9 @@ class Manager:
             return
 
         if self._song is not None:
-            self._song.play()
-        self._paused = False
+            self._song.set_volume(1)
 
+        self._paused = False
         logger.info('Sound system unpaused')
 
     def clear(self):
@@ -135,7 +136,7 @@ class Manager:
 
     def _update(self, task):
         if self._paused:
-            return
+            return task.cont
 
         remove_indices = []
         volumes = defaultdict(lambda: 0)
