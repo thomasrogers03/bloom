@@ -28,9 +28,6 @@ class WallAlign:
         previous_wall = self._first_wall
         current_wall = previous_wall.wall_point_2
         while current_wall != self._first_wall:
-            if current_wall in seen or current_wall.blood_wall.wall.picnum != picnum:
-                break
-
             current_wall.invalidate_geometry()
             seen.add(current_wall)
 
