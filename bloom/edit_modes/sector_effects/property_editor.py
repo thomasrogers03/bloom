@@ -65,6 +65,7 @@ class EditMode(navigation_mode_3d.EditMode):
 
         self._context_menu.add_command('Set Up Door', self._setup_door)
         self._context_menu.add_command('Set Up Trap Wall', self._setup_trap_wall)
+        self._context_menu.add_command('Set Up Trap Bars', self._setup_trap_bars)
 
         if 'grid_visible' in state:
             if state['grid_visible']:
@@ -148,6 +149,23 @@ class EditMode(navigation_mode_3d.EditMode):
 
         self._sector.floor_z_motion_markers[0].set_z(self._sector.ceiling_z)
         self._sector.floor_z_motion_markers[1].set_z(highest_adjacent)
+        self._sector.move_floor_to(highest_adjacent)
+
+        self._update_markers()
+
+    def _setup_trap_bars(self):
+        self._sector.sector.sector.tags[0] = descriptor_constants.reverse_sector_type_lookup['Z Motion']
+        
+        self._sector.ceiling_z_motion_markers[0].set_z(self._sector.ceiling_z)
+        self._sector.ceiling_z_motion_markers[1].set_z(self._sector.ceiling_z)
+
+        highest_adjacent = self._sector.floor_z + constants.BIG_NUMBER
+        for portal in self._sector.portal_walls():
+            if portal.other_side_sector.floor_z < highest_adjacent:
+                highest_adjacent = portal.other_side_sector.floor_z
+
+        self._sector.floor_z_motion_markers[0].set_z(highest_adjacent)
+        self._sector.floor_z_motion_markers[1].set_z(self._sector.ceiling_z)
         self._sector.move_floor_to(highest_adjacent)
 
         self._update_markers()

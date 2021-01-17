@@ -100,6 +100,9 @@ class Bloom(ShowBase):
                 sound_font_path = None
 
             self._config['sound_font_path'] = sound_font_path
+    
+        if self._current_addon_path is None:
+            self._current_addon_path = f'{self._blood_path}/BLOOD.INI'
 
         self.task_mgr.do_method_later(0.1, self._initialize, 'initialize')
 
@@ -198,7 +201,7 @@ class Bloom(ShowBase):
     def _initialize(self, task):
         self._rff = RFF(f'{self._blood_path}/BLOOD.RFF')
         self._sounds_rff = RFF(f'{self._blood_path}/SOUNDS.RFF')
-        self._addon = addon.Addon(f'{self._blood_path}/BLOOD.INI')
+        self._addon = addon.Addon(self._current_addon_path)
         self._meta_data = {}
 
         for path in self._recent:
@@ -434,6 +437,14 @@ class Bloom(ShowBase):
     @property
     def _sound_font_path(self):
         return self._config.get('sound_font_path', None)
+
+    @property
+    def _current_addon_path(self):
+        return self._config.get('addon_path', None)
+    
+    @_current_addon_path.setter
+    def _current_addon_path(self, value: str):
+        self._config['addon_path'] = value
 
     @property
     def _meta_data_path(self):
