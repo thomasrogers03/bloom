@@ -9,12 +9,13 @@ from panda3d import core
 from . import audio, constants, edit_mode, ror_type_selector, tile_dialog
 from .audio import sound_view
 from .editor import properties
+from .gui import mod_editor
 from .tiles import manager
 from .utils import gui
 
 
 class Dialogs:
-    
+
     def __init__(
         self,
         parent: core.NodePath,
@@ -50,6 +51,7 @@ class Dialogs:
             parent,
             edit_mode_selector
         )
+        self._mod_editor = mod_editor.ModEditor(parent, edit_mode_selector)
 
     @property
     def tile_dialog(self):
@@ -70,3 +72,7 @@ class Dialogs:
     @property
     def ror_type_selector(self):
         return self._ror_type_selector
+
+    @property
+    def mod_editor(self):
+        return self._mod_editor

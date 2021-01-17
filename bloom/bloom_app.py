@@ -149,6 +149,8 @@ class Bloom(ShowBase):
         file_menu.add_command(label="Save (ctrl+s)", command=self._save_map)
         file_menu.add_command(label="Save As", command=self._save_map_as)
         file_menu.add_separator()
+        file_menu.add_command(label="Edit Mod", command=self._edit_mod)
+        file_menu.add_separator()
         file_menu.add_command(label="Exit", command=self.tkRoot.quit)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
@@ -557,6 +559,9 @@ class Bloom(ShowBase):
             file.write(yaml.dump(self._meta_data))
 
         self._log_info(f'Saved map to {self._path} (hash: {hex(crc)})')
+
+    def _edit_mod(self):
+        self._dialogs.mod_editor.show(self._map_editor, self._path)
 
     def _handle_exit(self):
         logger.info('Shutting down...')
