@@ -37,7 +37,6 @@ class EditMode(navigation_mode_3d.EditMode):
         self._moving_clicker: moving_clicker.MovingClicker = None
 
         self._tickers.append(self._mouse_collision_tests)
-        self._tickers.append(self._type_selector.tick)
         self._tickers.append(self._update_mover)
 
         self._make_clicker(
@@ -112,6 +111,10 @@ class EditMode(navigation_mode_3d.EditMode):
             move_sprites_on_sectors=False
         )
         self._moving_clicker.set_updated_callback(self._update_markers)
+
+    def tick(self):
+        super().tick()
+        self._type_selector.tick()
 
     def _setup_door(self):
         self._sector.sector.sector.tags[0] = descriptor_constants.reverse_sector_type_lookup['Z Motion']
