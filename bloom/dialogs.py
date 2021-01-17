@@ -2,11 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+import typing
+
 from direct.gui import DirectGui, DirectGuiGlobals
 from direct.task import Task
 from panda3d import core
 
-from . import audio, constants, edit_mode, ror_type_selector, tile_dialog
+from . import (addon, audio, constants, edit_mode, ror_type_selector,
+               tile_dialog)
 from .audio import sound_view
 from .editor import properties
 from .gui import mod_editor
@@ -22,7 +25,8 @@ class Dialogs:
         tile_manager: manager.Manager,
         edit_mode_selector: edit_mode.EditMode,
         audio_manager: audio.Manager,
-        task_manager: Task.TaskManager
+        task_manager: Task.TaskManager,
+        get_addons: typing.Callable[[], typing.List[addon.Addon]]
     ):
         self._tile_dialog = tile_dialog.TileDialog(
             parent,
@@ -51,7 +55,12 @@ class Dialogs:
             parent,
             edit_mode_selector
         )
-        self._mod_editor = mod_editor.ModEditor(parent, edit_mode_selector)
+        self._mod_editor = mod_editor.ModEditor(
+            parent,
+            edit_mode_selector,
+            audio_manager,
+            get_addons
+        )
 
     @property
     def tile_dialog(self):

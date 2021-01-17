@@ -57,6 +57,10 @@ class Manager:
 
         self._task_manager.add(self._update)
 
+    @property
+    def rff(self):
+        return self._rff
+
     def attach_sound_to_object(
         self,
         attachment: SoundAttachment

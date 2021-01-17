@@ -263,7 +263,8 @@ class Bloom(ShowBase):
             self._tile_manager,
             self._edit_mode_selector,
             self._audio_manager,
-            self.task_mgr
+            self.task_mgr,
+            lambda: addon.Addon.addons_in_path(self._blood_path)
         )
 
         self._mode_3d = edit_mode_3d.EditMode(
