@@ -1,6 +1,7 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
 import math
 import os.path
 import threading
@@ -14,6 +15,8 @@ from panda3d import core
 
 from .. import constants, rff
 from . import midi_to_wav, sfx
+
+logger = logging.getLogger(__name__)
 
 
 class SoundAttachment(typing.NamedTuple):
@@ -74,18 +77,29 @@ class Manager:
         if self._song is not None:
             self._song.set_loop(True)
             self._song.set_volume(1)
-            self._song.play()
+            if not self._paused:
+                self._song.play()
 
     def pause(self):
+        if self._paused:
+            return
+
         if self._song is not None:
             self._song.stop()
         self.clear()
         self._paused = True
 
+        logger.info('Sound system paused')
+
     def unpause(self):
+        if not self._paused:
+            return
+
         if self._song is not None:
             self._song.play()
         self._paused = False
+
+        logger.info('Sound system unpaused')
 
     def clear(self):
         for sound in self._active_sounds.values():

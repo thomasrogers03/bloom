@@ -307,6 +307,11 @@ class Bloom(ShowBase):
         self._last_map = self._path
 
     def _update_for_frame(self, task):
+        if self.win.get_properties().get_foreground():
+            self._audio_manager.unpause()
+        else:
+            self._audio_manager.pause()
+
         with self._edit_mode_selector.track_performance_stats('frame_update'):
             self._map_editor.update_for_frame()
 
