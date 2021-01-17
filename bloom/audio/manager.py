@@ -45,6 +45,7 @@ class Manager:
         self._sound_attachments: typing.List[SoundAttachment] = []
         self._sounds_out_of_range: typing.Dict[int, bool] = defaultdict(lambda: True)
         self._song: core.AudioSound = None
+        self._paused = False
 
         self._sound_names: typing.Dict[int, str] = {
             index: name
@@ -75,6 +76,23 @@ class Manager:
             self._song.set_volume(1)
             self._song.play()
 
+    def pause(self):
+        if self._song is not None:
+            self._song.stop()
+        self.clear()
+        self._paused = True
+
+    def unpause(self):
+        if self._song is not None:
+            self._song.play()
+        self._paused = False
+
+    def clear(self):
+        for sound in self._active_sounds.values():
+            sound.stop()
+            self._loader.unload_sfx(sound)
+        self._active_sounds.clear()
+
     def _load_sound(self, sound_index: int):
         if sound_index not in self._sound_names:
             return None
@@ -101,13 +119,10 @@ class Manager:
         sound_name = self._sound_names[sound_index]
         return sfx.Sound.load(self._rff, sound_name)
 
-    def clear(self):
-        for sound in self._active_sounds.values():
-            sound.stop()
-            self._loader.unload_sfx(sound)
-        self._active_sounds.clear()
-
     def _update(self, task):
+        if self._paused:
+            return
+
         remove_indices = []
         volumes = defaultdict(lambda: 0)
         for attachment_index, attachment in enumerate(self._sound_attachments):
@@ -115,7 +130,8 @@ class Manager:
                 remove_indices.append(attachment_index)
 
             distance_squared = attachment.node_path.get_pos(
-                self._listener).length_squared()
+                self._listener
+            ).length_squared()
             cut_off_squared = attachment.distance_to_cut_off * attachment.distance_to_cut_off
             if distance_squared > cut_off_squared:
                 continue
