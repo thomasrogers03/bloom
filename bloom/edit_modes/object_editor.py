@@ -343,6 +343,7 @@ class ObjectEditor:
             selected_object.map_object.set_source_event_grouping(None)
             selected_object.map_object.set_target_event_grouping(None)
             self._highlighter.update_selected_target_view()
+            self._camera_collection.set_info_text('Removed transmit/receive binding')
             return
 
         transmitter = selected[-1]
@@ -361,6 +362,7 @@ class ObjectEditor:
         for selected_object in receivers:
             selected_object.map_object.set_source_event_grouping(grouping)
         self._highlighter.update_selected_target_view()
+        self._camera_collection.set_info_text('Bound objects for transmit/receive')
 
     def _toggle_blocking_state(self):
         selected = self._highlighter.select_append(
