@@ -307,8 +307,7 @@ class Bloom(ShowBase):
         self._last_map = self._path
 
     def _update_for_frame(self, task):
-        in_front = self.win.get_properties().get_foreground()
-        if in_front:
+        if self.mouseWatcherNode.has_mouse() or self.win.get_properties().get_foreground():
             self._audio_manager.unpause()
         else:
             self._audio_manager.pause()
