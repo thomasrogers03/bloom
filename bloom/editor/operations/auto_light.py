@@ -31,7 +31,7 @@ class AutoLight:
             if self._sector_has_light(sector):
                 self._sectors_having_light.add(sector)
 
-        for sector in self._non_sky_sectors():
+        for sector in self._all_sectors.sectors:
             future = self._executor.submit(self._apply_shade, sector)
             futures.append(future)
 
@@ -99,9 +99,3 @@ class AutoLight:
             if sprite.get_picnum(None) in self._light_types['sprites']:
                 return True
         return False
-
-    def _non_sky_sectors(self):
-        for sector in self._all_sectors.sectors:
-            stat = sector.get_stat_for_part(map_objects.EditorSector.CEILING_PART)
-            if not stat.parallax:
-                yield sector
