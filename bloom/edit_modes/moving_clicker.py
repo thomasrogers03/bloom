@@ -160,7 +160,7 @@ class MovingClicker:
     def _setup_sector_wall_mover(self):
         if self._mover is None:
             selected = self._object_highlighter.select_append(
-                no_append_if_not_selected=False,
+                no_append_if_not_selected=True,
                 selected_type_or_types=map_objects.EditorSector
             )
             if len(selected) < 1:
