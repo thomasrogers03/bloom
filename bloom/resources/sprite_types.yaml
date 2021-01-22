@@ -169,6 +169,10 @@
       - 1074
       - 1076
       - 1078
+  properties:
+    - name: Sound When Turning On
+      type: sound
+      from: data_1
 22:
   name: Combination Switch
   category: switches
