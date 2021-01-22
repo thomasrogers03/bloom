@@ -139,10 +139,11 @@ class SectorCollection:
         marker_id = marker_constants.START_ID
 
         for editor_sector in self._sectors:
+            self._reset_tx_rx(editor_sector)
             for editor_sprite in editor_sector.sprites:
-                data = editor_sprite.get_data()
-                data.tx_id = 0
-                data.rx_id = 0
+                self._reset_tx_rx(editor_sprite)
+            for editor_wall in editor_sector.walls:
+                self._reset_tx_rx(editor_wall)
 
         self._event_groupings.prepare_to_persist()
 
@@ -189,3 +190,9 @@ class SectorCollection:
             builder_sector_index = -1
 
         return blood_sectors, blood_walls, blood_sprites, builder_sector_index
+
+    @staticmethod
+    def _reset_tx_rx(map_object: empty_object.EmptyObject):
+        data = map_object.get_data()
+        data.tx_id = 0
+        data.rx_id = 0
