@@ -278,7 +278,7 @@ class EditorSector(empty_object.EmptyObject):
             -ticks * self._sector.data.speed * x_panning / 768,
             -ticks * self._sector.data.speed * y_panning / 768,
             0
-        )   
+        )
 
         if self._floor_part is not None and self._floor_part.pannable and self._floor_part.node_path is not None:
             self._floor_part.node_path.set_tex_pos(texture_stage, panning)
@@ -287,10 +287,20 @@ class EditorSector(empty_object.EmptyObject):
             self._ceiling_part.node_path.set_tex_pos(texture_stage, panning)
 
     def get_below_draw_offset(self):
-        return self._below_ceiling_origin - self._sector_above_ceiling._above_floor_origin
+        if self._sector_above_ceiling is None:
+            return None
+        return -self._sector_above_ceiling.get_above_draw_offset()
 
     def get_above_draw_offset(self):
-        return self._above_floor_origin - self._sector_below_floor._below_ceiling_origin
+        if self._sector_below_floor is None:
+            return None
+
+        point_2d = self._min_point()
+        below_point_2d = self._sector_below_floor._min_point()
+
+        point = core.Point3(point_2d.x, point_2d.y, self.floor_z)
+        below_point = core.Point3(below_point_2d.x, below_point_2d.y, self._sector_below_floor.ceiling_z)
+        return point - below_point
 
     def set_draw_offset(self, position: core.Point3):
         if self._display is not None:
@@ -300,6 +310,17 @@ class EditorSector(empty_object.EmptyObject):
         if self._display is None:
             return core.NodePath()
         return self._display.find(f'**/{part}')
+
+    def find_wall_on_point(self, point: core.Point2):
+        for wall in self.walls:
+            if wall.point_1 == point:
+                return wall
+
+        return None
+
+    def _min_point(self):
+        rectangle = self.get_bounding_rectangle()
+        return core.Point2(rectangle.x, rectangle.z)
 
     def _get_animated_geometry(self) -> typing.Iterable[core.NodePath]:
         if self._display is None:

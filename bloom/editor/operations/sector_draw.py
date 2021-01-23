@@ -25,9 +25,6 @@ def make_wall_points(
         result.append(new_wall)
     return result
 
-def find_wall_on_point(sector: map_objects.EditorSector, point: core.Point2):
-    for wall in sector.walls:
-        if wall.point_1 == point:
-            return wall
 
-    return None
+def find_wall_on_point(sector: map_objects.EditorSector, point: core.Point2):
+    return sector.find_wall_on_point(point)

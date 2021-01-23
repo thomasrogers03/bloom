@@ -19,11 +19,10 @@ _IMAGE_SIZE = 512
 
 
 def find_wall_on_point(sector: map_objects.EditorSector, point: core.Point2):
-    for wall in sector.walls:
-        if wall.point_1 == point:
-            return wall
-
-    raise ValueError('Point not found')
+    result = sector_draw.find_wall_on_point(sector, point)
+    if result is None:
+        raise ValueError('Point not found')
+    return result
 
 
 def build_rectangular_sector(
