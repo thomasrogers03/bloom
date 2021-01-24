@@ -36,11 +36,9 @@ class EditorSector(empty_object.EmptyObject):
         self._geometry_factory = geometry_factory
         self._suggest_sky_picnum = suggest_sky_picnum
 
-        self._below_ceiling_origin: core.Point3 = None
-        self._above_floor_origin: core.Point3 = None
-
         self._sector_below_floor: EditorSector = None
         self._sector_above_ceiling: EditorSector = None
+        self._ror_type: str = None
 
         self._is_destroyed = False
         self._visible = False
@@ -134,21 +132,18 @@ class EditorSector(empty_object.EmptyObject):
                 other_side_wall
             )
 
+        sprites_to_remove: typing.List[sprite.EditorSprite] = []
         for editor_sprite in self._sprites:
-            if editor_sprite.sprite.sprite.tags[0] in ror_constants.LOWER_LINK_TYPES:
-                self._below_ceiling_origin = core.Point3(
-                    editor_sprite.origin_2d.x,
-                    editor_sprite.origin_2d.y,
-                    self.ceiling_z_at_point(editor_sprite.origin_2d)
-                )
-                self._sector_above_ceiling = upper_sectors[editor_sprite.sprite.data.data1]
-            elif editor_sprite.sprite.sprite.tags[0] in ror_constants.UPPER_LINK_TYPES:
-                self._above_floor_origin = core.Point3(
-                    editor_sprite.origin_2d.x,
-                    editor_sprite.origin_2d.y,
-                    self.floor_z_at_point(editor_sprite.origin_2d)
-                )
+            if editor_sprite.sprite.sprite.tags[0] in ror_constants.UPPER_LINK_TYPES:
+                self._ror_type = ror_constants.UPPER_TAG_REVERSE_MAPPING[editor_sprite.sprite.sprite.tags[0]]
+                sprites_to_remove.append(editor_sprite)
                 self._sector_below_floor = lower_sectors[editor_sprite.sprite.data.data1]
+            elif editor_sprite.sprite.sprite.tags[0] in ror_constants.LOWER_LINK_TYPES:
+                sprites_to_remove.append(editor_sprite)
+                self._sector_above_ceiling = upper_sectors[editor_sprite.sprite.data.data1]
+
+        for editor_sprite in sprites_to_remove:
+            self.remove_sprite(editor_sprite)
 
         for marker_index, marker_sprite_index in enumerate(self._sector.data.markers):
             if marker_sprite_index < 1:
@@ -295,11 +290,12 @@ class EditorSector(empty_object.EmptyObject):
         if self._sector_below_floor is None:
             return None
 
-        point_2d = self._min_point()
-        below_point_2d = self._sector_below_floor._min_point()
+        point_2d = self.min_point()
+        below_point_2d = self._sector_below_floor.min_point()
 
         point = core.Point3(point_2d.x, point_2d.y, self.floor_z)
-        below_point = core.Point3(below_point_2d.x, below_point_2d.y, self._sector_below_floor.ceiling_z)
+        below_point = core.Point3(below_point_2d.x, below_point_2d.y,
+                                  self._sector_below_floor.ceiling_z)
         return point - below_point
 
     def set_draw_offset(self, position: core.Point3):
@@ -318,7 +314,7 @@ class EditorSector(empty_object.EmptyObject):
 
         return None
 
-    def _min_point(self):
+    def min_point(self):
         rectangle = self.get_bounding_rectangle()
         return core.Point2(rectangle.x, rectangle.z)
 
@@ -449,10 +445,7 @@ class EditorSector(empty_object.EmptyObject):
         self._walls[0] = editor_wall
         self._walls[index] = old_first_wall
 
-    def prepare_to_persist(
-        self,
-        wall_mapping: typing.Dict[wall.EditorWall, int]
-    ) -> map_data.sector.Sector:
+    def prepare_to_persist(self, wall_mapping: typing.Dict[wall.EditorWall, int]) -> map_data.sector.Sector:
         self._sector.sector.first_wall_index = wall_mapping[self._walls[0]]
         self._sector.sector.wall_count = len(self._walls)
 
@@ -868,16 +861,15 @@ class EditorSector(empty_object.EmptyObject):
     @property
     def sector_above_ceiling(self):
         return self._sector_above_ceiling
+    
+    @property
+    def ror_type(self):
+        return self._ror_type
 
-    def link(self, part: str, new_sector: 'EditorSector', link_origin: core.Point3):
-        if part == self.FLOOR_PART:
-            self._sector.sector.floor_stat.parallax = 0
-            self._sector_below_floor = new_sector
-            self._above_floor_origin = link_origin
-        else:
-            self._sector.sector.ceiling_stat.parallax = 0
-            self._sector_above_ceiling = new_sector
-            self._below_ceiling_origin = link_origin
+    def link(self, ror_type: str, sector_below_floor: 'EditorSector'):
+        self._ror_type = ror_type
+        self._sector_below_floor = sector_below_floor
+        self._sector_below_floor.sector_above_ceiling = self
 
     def get_bounding_rectangle(self):
         result = core.Vec4(
@@ -1044,6 +1036,10 @@ class EditorSector(empty_object.EmptyObject):
     @property
     def can_see_below(self):
         return self._sector.sector.floor_picnum == 504
+
+    @property
+    def sector_below_floor(self):
+        return self._sector_below_floor
 
     def point_in_sector(self, point: core.Point2):
         ray_start = core.Point2(-(1 << 31), point.y)

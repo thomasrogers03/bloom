@@ -47,78 +47,20 @@ class SectorExtrude:
             new_previous_wall = mapped_walls[old_wall.wall_previous_point]
             editor_wall.wall_previous_point = new_previous_wall
 
-        link_sprite_position = self._walls[0].origin + link_sprite_offset
-        link_sprite_position_for_new_sector = link_sprite_position + \
-            core.Vec3(self._WALL_OFFSET.x, self._WALL_OFFSET.y, 0)
-
         if self._part == map_objects.EditorSector.FLOOR_PART:
             upper_sector = self._sector
             lower_sector = new_sector
-
-            upper_sprite_position = link_sprite_position
-            lower_sprite_position = link_sprite_position_for_new_sector
         else:
             lower_sector = self._sector
             upper_sector = new_sector
-
-            upper_sprite_position = link_sprite_position_for_new_sector
-            lower_sprite_position = link_sprite_position
-
-        upper_link = upper_sector.add_new_sprite(upper_sprite_position)
-        lower_link = lower_sector.add_new_sprite(lower_sprite_position)
 
         picnum = ror_constants.ROR_TILE_MAPPING[link_type]
         upper_sector.sector.sector.floor_picnum = picnum
         lower_sector.sector.sector.ceiling_picnum = picnum
 
-        upper_link.sprite.sprite.picnum = 2332
-        upper_link.sprite.sprite.tags[0] = ror_constants.UPPER_TAG_MAPPING[link_type]
-        upper_link_z = upper_sector.floor_z_at_point(
-            upper_link.origin_2d
-        )
-        upper_link.move_to(
-            core.Point3(
-                upper_link.origin_2d.x,
-                upper_link.origin_2d.y,
-                upper_link_z - upper_link.size.y / 2
-            )
-        )
-        upper_link.sprite.data.data1 = link_id
-        
-        lower_link.sprite.sprite.picnum = 2331
-        lower_link.sprite.sprite.tags[0] = ror_constants.LOWER_TAG_MAPPING[link_type]
-        lower_link_z = lower_sector.ceiling_z_at_point(
-            lower_link.origin_2d
-        )
-        lower_link.move_to(
-            core.Point3(
-                lower_link.origin_2d.x,
-                lower_link.origin_2d.y,
-                lower_link_z + lower_link.size.y / 2
-            )
-        )
-        lower_link.sprite.data.data1 = link_id
-
-        upper_origin = core.Point3(
-            upper_link.origin_2d.x,
-            upper_link.origin_2d.y,
-            upper_link_z
-        )
         upper_sector.link(
             map_objects.EditorSector.FLOOR_PART, 
-            lower_sector,
-            upper_origin
-        )
-        lower_origin = core.Point3(
-            lower_link.origin_2d.x,
-            lower_link.origin_2d.y,
-            lower_link_z
-        )
-        
-        lower_sector.link(
-            map_objects.EditorSector.CEILING_PART, 
-            upper_sector,
-            lower_origin
+            lower_sector
         )
 
         if link_type in ror_constants.ROR_TYPES_WITH_WATER:
