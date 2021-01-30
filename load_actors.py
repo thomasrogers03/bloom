@@ -117,7 +117,7 @@ class Loader:
                 define = re.match('^define\s+([^\s]+)\s+(.*)?$', preprocessor)
                 if define:
                     definer = re.escape(define[1])
-                    definer = re.compile(f'\s+{definer}\s+')
+                    definer = re.compile(f'\s{definer}\s')
                     value = f' {define[2].strip()} '
                     defines.append((definer, value))
                     continue
@@ -141,10 +141,12 @@ class Loader:
 
     def _process_file(self, path: str):
         defines = [
-            (re.compile('\s+TRUE\s+'), ' 1 '),
-            (re.compile('\s+FALSE\s+'), ' 0 '),
+            (re.compile('\sTRUE\s'), ' 1 '),
+            (re.compile('\sFALSE\s'), ' 0 '),
         ]
         pre_processed = self._pre_process_file(path, defines)
+
+        print(pre_processed)
 
         logger.info(f'Loading actors from {path}')
         with tempfile.NamedTemporaryFile() as file:
@@ -197,7 +199,8 @@ def main():
     ]
 
     logger.info('Loading actors')
-    all_actors = Loader(paths).load_actors()
+    # all_actors = Loader(paths).load_actors()
+    all_actors = Loader(['tmp.txt']).load_actors()
     logger.info(f'{len(all_actors)} actors found')
 
     os.chdir(previous_directory)
@@ -209,8 +212,8 @@ def main():
             sprite_types[actor.type] = {}
         _load_sprite_type(actor, sprite_types[actor.type])
 
-    with open('bloom/resources/sprite_types.yaml', 'w+') as file:
-        file.write(yaml.safe_dump(sprite_types))
+    # with open('bloom/resources/sprite_types.yaml', 'w+') as file:
+    #     file.write(yaml.safe_dump(sprite_types))
 
 
 if __name__ == '__main__':
