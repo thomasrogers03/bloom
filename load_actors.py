@@ -56,91 +56,94 @@ class Listener(ActorListener):
         self._current_actor = None
 
 
-def _extend_lines(lines: typing.List[str]):
-    result = []
-    updated_line = ''
+class Loader:
 
-    for line in lines:
-        updated_line += line
-        if line[-2:-1] == '\\':
-            updated_line = updated_line[:-2]
-        else:
-            result.append(updated_line)
-            updated_line = ''
-    result.append(updated_line)
+    def __init__(self, paths: typing.List[str]):
+        self._paths = paths
 
-    return result
+    def load_actors(self):
+        all_actors = []
+        for actor_path in self._paths:
+            actors = self._process_file(actor_path)
+            all_actors += actors
 
+        return all_actors
 
-def _pre_process_file(path: str, defines):
-    logger.info(f'Preprocessing {path}')
+    @staticmethod
+    def _extend_lines(lines: typing.List[str]):
+        result = []
+        updated_line = ''
 
-    with open(path, 'r') as file:
-        lines = file.readlines()
+        for line in lines:
+            updated_line += line
+            if line[-2:-1] == '\\':
+                updated_line = updated_line[:-2]
+            else:
+                result.append(updated_line)
+                updated_line = ''
+        result.append(updated_line)
 
-    lines = _extend_lines(lines)
+        return result
 
-    result = ''
-    for line in lines:
-        match = re.match('^\s*#(.*)$', line)
-        if match:
-            preprocessor = match[1]
-            include = re.match('^include "([^"]+)"$', preprocessor)
-            if include:
-                result += _pre_process_file(include[1], defines)
-                continue
+    def _pre_process_file(self, path: str, defines):
+        logger.info(f'Preprocessing {path}')
 
-            define = re.match('^define\s+([^\s]+)\s+(.*)?$', preprocessor)
-            if define:
-                definer = re.escape(define[1])
-                definer = re.compile(f'\s+{definer}\s+')
-                value = f' {define[2].strip()} '
-                defines.append((definer, value))
-                continue
+        with open(path, 'r') as file:
+            lines = file.readlines()
 
-            raise ValueError(f'Unexpected preprocessor {preprocessor}')
-        else:
-            line = re.sub('//.*$', '', line)
-            for definer, value in defines:
-                line = re.sub(definer, value, line)
+        lines = self._extend_lines(lines)
 
-            line = line.strip()
-            if line:
-                result += line + '\n'
+        result = ''
+        for line in lines:
+            match = re.match('^\s*#(.*)$', line)
+            if match:
+                preprocessor = match[1]
+                include = re.match('^include "([^"]+)"$', preprocessor)
+                if include:
+                    result += self._pre_process_file(include[1], defines)
+                    continue
 
-    return result
+                define = re.match('^define\s+([^\s]+)\s+(.*)?$', preprocessor)
+                if define:
+                    definer = re.escape(define[1])
+                    definer = re.compile(f'\s+{definer}\s+')
+                    value = f' {define[2].strip()} '
+                    defines.append((definer, value))
+                    continue
 
+                raise ValueError(f'Unexpected preprocessor {preprocessor}')
+            else:
+                line = re.sub('//.*$', '', line)
+                for definer, value in defines:
+                    line = re.sub(definer, value, line)
 
-def _process_file(path: str):
-    defines = []
-    pre_processed = _pre_process_file(path, defines)
+                line = line.strip()
+                if line:
+                    result += line + '\n'
 
-    logger.info(f'Loading actors from {path}')
-    with tempfile.NamedTemporaryFile() as file:
-        file.write(pre_processed.encode())
-        file.flush()
+        return result
 
-        logger.info(f'Parsing {path}')
-        input_stream = FileStream(file.name)
-        lexer = ActorLexer(input_stream)
-        stream = CommonTokenStream(lexer)
-        parser = ActorParser(stream)
-        tree = parser.program()
+    def _process_file(self, path: str):
+        defines = []
+        pre_processed = self._pre_process_file(path, defines)
 
-        listener = Listener()
-        walker = ParseTreeWalker()
-        walker.walk(listener, tree)
+        logger.info(f'Loading actors from {path}')
+        with tempfile.NamedTemporaryFile() as file:
+            file.write(pre_processed.encode())
+            file.flush()
 
-    return listener.actors
+            logger.info(f'Parsing {path}')
+            input_stream = FileStream(file.name)
+            lexer = ActorLexer(input_stream)
+            stream = CommonTokenStream(lexer)
+            parser = ActorParser(stream)
+            tree = parser.program()
 
+            listener = Listener()
+            walker = ParseTreeWalker()
+            walker.walk(listener, tree)
 
-def _load_actors(paths: typing.List[str]):
-    all_actors = []
-    for actor_path in paths:
-        actors = _process_file(actor_path)
-        all_actors += all_actors
-
-    return all_actors
+        return listener.actors
 
 
 def main():
@@ -151,7 +154,7 @@ def main():
     ]
 
     logger.info('Loading actors')
-    all_actors = _load_actors(paths)
+    all_actors = Loader(paths).load_actors()
     logger.info(f'{len(all_actors)} actors found')
 
 
