@@ -1,0 +1,13 @@
+grammar Actor;
+program: actor* EOF;
+actor: 'Actor' INT '{' statement* '}';
+statement: property_definition;
+property_definition: property_name property_value;
+property_value: INT | FLOAT | STRING | ID;
+INT: [-]?[0-9]+;
+FLOAT: [-]?[0-9]+ '.' [0-9]+;
+STRING: '"' .*? '"';
+property_name: ID SUB_PROPERTY_NAME*;
+SUB_PROPERTY_NAME: [.] ID;
+ID: [a-zA-Z_]+ [a-zA-Z_0-9]*;
+WHITE_SPACE: [ \t\r\n]+ -> skip;

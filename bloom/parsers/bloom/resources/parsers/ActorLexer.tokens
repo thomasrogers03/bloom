@@ -1,0 +1,12 @@
+T__0=1
+T__1=2
+T__2=3
+INT=4
+FLOAT=5
+STRING=6
+SUB_PROPERTY_NAME=7
+ID=8
+WHITE_SPACE=9
+'Actor'=1
+'{'=2
+'}'=3

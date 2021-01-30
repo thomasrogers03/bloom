@@ -3,3 +3,4 @@
 
 -r ./requirements.txt
 opencv-python==4.4.0.46
+antlr4-python3-runtime==4.9.1
