@@ -58,8 +58,13 @@ class Listener(ActorListener):
 
 class Loader:
 
+    class PreprocessedFile(typing.NamedTuple):
+        code: str
+        defines: list
+
     def __init__(self, paths: typing.List[str]):
         self._paths = paths
+        self._preprocessed_cache: typing.Dict[str, self.PreprocessedFile] = {}
 
     def load_actors(self):
         all_actors = []
@@ -86,6 +91,12 @@ class Loader:
         return result
 
     def _pre_process_file(self, path: str, defines):
+        if path in self._preprocessed_cache:
+            logger.info(f'{path} found in preprocessed cache')
+            cached = self._preprocessed_cache[path]
+            defines.extend(cached.defines)
+            return cached.code
+
         logger.info(f'Preprocessing {path}')
 
         with open(path, 'r') as file:
@@ -94,6 +105,7 @@ class Loader:
         lines = self._extend_lines(lines)
 
         result = ''
+        current_define_count = len(defines)
         for line in lines:
             match = re.match('^\s*#(.*)$', line)
             if match:
@@ -121,6 +133,11 @@ class Loader:
                 if line:
                     result += line + '\n'
 
+        new_defines = defines[current_define_count:-1]
+        self._preprocessed_cache[path] = self.PreprocessedFile(
+            result,
+            new_defines
+        )
         return result
 
     def _process_file(self, path: str):
