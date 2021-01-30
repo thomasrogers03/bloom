@@ -2,4 +2,5 @@
 
 set -xeou pipefail
 
-antlr4 -Dlanguage=Python3 -o bloom/parsers bloom/resources/parsers/Actor.g4
+cd bloom/resources/parsers
+antlr4 -Dlanguage=Python3 -o ../../parsers Actor.g4
