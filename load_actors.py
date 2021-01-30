@@ -5,6 +5,7 @@ import re
 import tempfile
 import typing
 
+import yaml
 from antlr4 import *
 
 from bloom.parsers.ActorLexer import ActorLexer
@@ -24,8 +25,8 @@ logger = logging.getLogger(__name__)
 class Actor:
 
     def __init__(self):
-        self.properties = []
-        self.type = None
+        self.properties = {}
+        self.type = -1
 
 
 class Listener(ActorListener):
@@ -43,14 +44,12 @@ class Listener(ActorListener):
         self._current_actor = Actor()
 
     def exitProperty_definition(self, ctx: ActorParser.Property_definitionContext):
-        property_definition = {
-            'name': ctx.property_name().getText(),
-            'value': ctx.property_value().getText(),
-        }
-        self._current_actor.properties.append(property_definition)
+        name = ctx.property_name().getText()
+        value = ctx.property_value().getText()
+        self._current_actor.properties[name] = value
 
     def exitActor(self, ctx: ActorParser.ActorContext):
-        self._current_actor.type = ctx.INT().getText()
+        self._current_actor.type = int(ctx.INT().getText())
 
         self._actors.append(self._current_actor)
         self._current_actor = None
@@ -67,7 +66,7 @@ class Loader:
         self._preprocessed_cache: typing.Dict[str, self.PreprocessedFile] = {}
 
     def load_actors(self):
-        all_actors = []
+        all_actors: typing.List[Actor] = []
         for actor_path in self._paths:
             actors = self._process_file(actor_path)
             all_actors += actors
@@ -141,7 +140,10 @@ class Loader:
         return result
 
     def _process_file(self, path: str):
-        defines = []
+        defines = [
+            (re.compile('\s+TRUE\s+'), ' 1 '),
+            (re.compile('\s+FALSE\s+'), ' 0 '),
+        ]
         pre_processed = self._pre_process_file(path, defines)
 
         logger.info(f'Loading actors from {path}')
@@ -163,8 +165,32 @@ class Loader:
         return listener.actors
 
 
+def _load_sprite_type(actor: Actor, sprite: dict):
+    logger.info(f'Getting sprite {actor.type} info')
+
+    if 'sprite.clipdist' in actor.properties:
+        sprite['clipdist'] = float(actor.properties['sprite.clipdist'])
+
+    if 'sprite.pal' in actor.properties:
+        sprite['palette'] = int(actor.properties['sprite.pal'])
+
+    if 'repeats' not in sprite:
+        sprite['repeats'] = {}
+
+    if 'sprite.xrepeat' in actor.properties:
+        sprite['repeats']['x'] = int(actor.properties['sprite.xrepeat']) / 8
+
+    if 'sprite.yrepeat' in actor.properties:
+        sprite['repeats']['y'] = int(actor.properties['sprite.yrepeat']) / 8
+
+    if 'sprite.blocking' in actor.properties:
+        sprite['blocking'] = int(actor.properties['sprite.blocking'])
+
+
 def main():
+    previous_directory = os.getcwd()
     os.chdir('kpx')
+
     paths = [
         actor_path
         for actor_path in glob.glob('defs/actors/*.txt')
@@ -173,6 +199,18 @@ def main():
     logger.info('Loading actors')
     all_actors = Loader(paths).load_actors()
     logger.info(f'{len(all_actors)} actors found')
+
+    os.chdir(previous_directory)
+    with open('bloom/resources/sprite_types.yaml', 'r') as file:
+        sprite_types = yaml.safe_load(file.read())
+
+    for actor in all_actors:
+        if actor.type not in sprite_types:
+            sprite_types[actor.type] = {}
+        _load_sprite_type(actor, sprite_types[actor.type])
+
+    with open('bloom/resources/sprite_types.yaml', 'w+') as file:
+        file.write(yaml.safe_dump(sprite_types))
 
 
 if __name__ == '__main__':
