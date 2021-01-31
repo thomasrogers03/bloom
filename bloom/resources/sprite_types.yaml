@@ -1,1279 +1,1983 @@
 0:
-  name: Decoration
   category: decoration
+  name: Decoration
 1:
+  category: player
+  invisible: true
   name: Player Start
-  category: player
-  invisible: true
-  repeats:
-    x: 16
-    y: 16
-  tile_config:
-    start_tile: 2522
   properties:
-    - name: Player Number
-      type: int
-      from: data_1
-      link_to_tile: offset
-      offset: -1
-2:
-  name: Bloodbath Start
-  category: player
-  invisible: true
+  - from: data_1
+    link_to_tile: offset
+    name: Player Number
+    offset: -1
+    type: int
   repeats:
     x: 16
     y: 16
   tile_config:
     start_tile: 2522
-    from_data: 1
+2:
+  category: player
+  invisible: true
+  name: Bloodbath Start
   palette: 5
   properties:
-    - name: Player Number
-      type: int
-      from: data_1
-      link_to_tile: offset
-      offset: -1
+  - from: data_1
+    link_to_tile: offset
+    name: Player Number
+    offset: -1
+    type: int
+  repeats:
+    x: 16
+    y: 16
+  tile_config:
+    from_data: 1
+    start_tile: 2522
 3:
+  category: markers
+  invisible: true
   name: Off Marker
-  category: markers
-  invisible: true
 4:
+  category: markers
+  invisible: true
   name: On Marker
-  category: markers
-  invisible: true
 5:
-  name: Axis Marker
   category: markers
   invisible: true
+  name: Axis Marker
 6:
-  name: Lower Link
   category: sector links
   invisible: true
+  name: Lower Link
   tile_config:
     tile: 2331
 7:
-  name: Upper Link
   category: sector links
   invisible: true
+  name: Upper Link
   tile_config:
     tile: 2332
 8:
-  name: Teleport Target
   category: markers
   invisible: true
+  name: Teleport Target
 9:
-  name: Upper Water
   category: sector links
   invisible: true
+  name: Upper Water
   tile_config:
     tile: 2332
 10:
-  name: Lower Water
   category: sector links
   invisible: true
+  name: Lower Water
   tile_config:
     tile: 2331
 11:
-  name: Upper Stack
   category: sector links
   invisible: true
+  name: Upper Stack
   tile_config:
     tile: 2332
 12:
-  name: Lower Stack
   category: sector links
   invisible: true
+  name: Lower Stack
   tile_config:
     tile: 2331
 13:
-  name: Upper Goo
   category: sector links
   invisible: true
+  name: Upper Goo
   tile_config:
     tile: 2332
 14:
-  name: Lower Goo
   category: sector links
   invisible: true
+  name: Lower Goo
   tile_config:
     tile: 2331
 15:
-  name: Path Marker
   category: markers
+  name: Path Marker
+  properties:
+  - from: data_1
+    name: Marker ID
+    type: int
+  - from: data_2
+    name: Next Marker ID
+    type: int
   tile_config:
     tile: 2319
-  properties:
-    - name: Marker ID
-      type: int
-      from: data_1
-    - name: Next Marker ID
-      type: int
-      from: data_2
 16:
+  category: misc
   name: Alignable Region
-  category: misc
 17:
+  category: misc
   name: Base Region
-  category: misc
 18:
-  name: Dude Spawn
   category: misc
+  name: Dude Spawn
   tile_config:
     tile: 2077
 19:
-  name: Earthquake
   category: misc
+  name: Earthquake
   tile_config:
     tile: 2072
 20:
+  category: switches
   name: Toggle Switch
-  category: switches
-  repeats:
-    x: 12
-    y: 12
+  properties:
+  - from: data_1
+    name: Sound When Turning On
+    type: sound
+  - from: data_2
+    name: Sound When Turning Off
+    type: sound
   repeats:
     x: 12
     y: 12
   tile_config:
     tiles:
-      - 318
-      - 982
-      - 1046
-      - 1012
-      - 1070
-      - 1072
-      - 1074
-      - 1076
-      - 1078
-  properties:
-    - name: Sound When Turning On
-      type: sound
-      from: data_1
-    - name: Sound When Turning Off
-      type: sound
-      from: data_2
+    - 318
+    - 982
+    - 1046
+    - 1012
+    - 1070
+    - 1072
+    - 1074
+    - 1076
+    - 1078
 21:
+  category: switches
   name: 1-Way Switch
-  category: switches
+  properties:
+  - from: data_1
+    name: Sound When Turning On
+    type: sound
   repeats:
     x: 12
     y: 12
   tile_config:
     tiles:
-      - 318
-      - 982
-      - 1046
-      - 1012
-      - 1070
-      - 1072
-      - 1074
-      - 1076
-      - 1078
-  properties:
-    - name: Sound When Turning On
-      type: sound
-      from: data_1
+    - 318
+    - 982
+    - 1046
+    - 1012
+    - 1070
+    - 1072
+    - 1074
+    - 1076
+    - 1078
 22:
-  name: Combination Switch
   category: switches
+  name: Combination Switch
+  properties:
+  - from: data_1
+    name: Start Position
+    type: int
+  - from: data_2
+    name: Activate Position
+    type: int
+  - from: data_3
+    name: Period
+    type: int
+  - from: data_4
+    name: Sound To Play
+    type: sound
   repeats:
     x: 12
     y: 12
   tile_config:
     tiles:
-      - 1161 
-      - 2532
-  properties:
-    - name: Start Position
-      type: int
-      from: data_1
-    - name: Activate Position
-      type: int
-      from: data_2
-    - name: Period
-      type: int
-      from: data_3
-    - name: Sound To Play
-      type: sound
-      from: data_4
+    - 1161
+    - 2532
 23:
-  name: Padlock (1-Shot)
   category: switches
+  name: Padlock (1-Shot)
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 912
 30:
-  name: Torch
   category: decoration
+  name: Torch
   tile_config:
     tile: 550
 32:
-  name: Candle
   category: decoration
+  name: Candle
   tile_config:
     tile: 938
 40:
-  name: Random Weapon
   category: weapons
+  name: Random Weapon
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 832
 41:
-  name: Sawed Off
   category: weapons
+  name: Sawed Off
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 559
 42:
-  name: Tommy Gun
   category: weapons
+  name: Tommy Gun
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 558
 43:
-  name: Flare Pistol
   category: weapons
+  name: Flare Pistol
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 524
 44:
-  name: Voodoo Doll
   category: weapons
+  name: Voodoo Doll
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 525
 45:
-  name: Tesla Cannon
   category: weapons
+  name: Tesla Cannon
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 539
 46:
-  name: Napalm Launcher
   category: weapons
+  name: Napalm Launcher
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 526
 47:
+  category: weapons
   name: Pitchfork
-  category: weapons
+  repeats: {}
 48:
-  name: Spray Can
   category: weapons
+  name: Spray Can
+  repeats:
+    x: 10
+    y: 10
 49:
+  category: weapons
   name: Dynamite
-  category: weapons
+  repeats:
+    x: 10
+    y: 10
 50:
+  category: weapons
   name: Life Leech
-  category: weapons
+  repeats:
+    x: 10
+    y: 10
   tile_config:
-    tile: 800 
+    tile: 800
 60:
+  category: weapons
   name: Spray Can
-  category: weapons
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
-    tile: 618 
+    tile: 618
 62:
+  category: weapons
   name: Bundle of TNT
-  category: weapons
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
-    tile: 589 
+    tile: 589
 63:
+  category: weapons
   name: Case of TNT
-  category: weapons
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
-    tile: 809 
+    tile: 809
 64:
+  category: weapons
   name: Proximity Detonator
-  category: weapons
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
-    tile: 811 
+    tile: 811
 65:
-  name: Remote Detonator
   category: weapons
+  name: Remote Detonator
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
-    tile: 810 
+    tile: 810
 66:
-  name: Trapped Soul
   category: ammo
+  name: Trapped Soul
   repeats:
     x: 6
     y: 6
   tile_config:
-    tile: 820 
+    tile: 820
 67:
-  name: 4 Shotgun Shells
-  category:  ammo
-  repeats:
-    x: 12
-    y: 12
-  tile_config:
-    tile: 619 
-68:
-  name: Box of Shotgun Shells
   category: ammo
+  name: 4 Shotgun Shells
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
+  tile_config:
+    tile: 619
+68:
+  category: ammo
+  name: Box of Shotgun Shells
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 812
 69:
+  category: ammo
   name: A Few Bullets
-  category: ammo
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
-    tile: 813 
+    tile: 813
 70:
-  name: Voodoo Doll
   category: weapons
+  name: Voodoo Doll
+  repeats:
+    x: 10
+    y: 10
 72:
+  category: ammo
   name: Full Drum of Bullets
-  category: ammo
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
-    tile: 817 
+    tile: 817
 73:
-  name: Tesla Charge
   category: ammo
+  name: Tesla Charge
   repeats:
-    x: 8
-    y: 8
+    x: 6
+    y: 6
   tile_config:
     tile: 548
 76:
-  name: Flares
   category: ammo
+  name: Flares
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 816
 79:
+  category: ammo
   name: Gasoline Can
-  category: ammo
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
-    tile: 801 
+    tile: 801
 80:
-  name: Random Ammo
   category: ammo
+  name: Random Ammo
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 832
 100:
-  name: Skull Key
   category: keys
+  name: Skull Key
   repeats:
-    x: 12
-    y: 12
+    x: 8
+    y: 8
   tile_config:
     tile: 2552
 101:
-  name: Eye Key
   category: keys
+  name: Eye Key
   repeats:
-    x: 12
-    y: 12
+    x: 8
+    y: 8
   tile_config:
     tile: 2553
 102:
-  name: Fire Key
   category: keys
+  name: Fire Key
   repeats:
-    x: 12
-    y: 12
+    x: 8
+    y: 8
   tile_config:
     tile: 2554
 103:
-  name: Dagger Key
   category: keys
+  name: Dagger Key
   repeats:
-    x: 12
-    y: 12
+    x: 8
+    y: 8
   tile_config:
     tile: 2555
 104:
-  name: Spider Key
   category: keys
+  name: Spider Key
   repeats:
-    x: 12
-    y: 12
+    x: 8
+    y: 8
   tile_config:
     tile: 2556
 105:
-  name: Moon Key
   category: keys
+  name: Moon Key
   repeats:
-    x: 12
-    y: 12
+    x: 8
+    y: 8
   tile_config:
     tile: 2557
 106:
-  name: Key 7
   category: keys
+  name: Key 7
   repeats:
-    x: 12
-    y: 12
+    x: 8
+    y: 8
   tile_config:
     tile: 2558
 107:
-  name: Doctor's Bag
   category: items
+  name: Doctor's Bag
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 519
 108:
-  name: Medicine Pouch
   category: items
+  name: Medicine Pouch
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 822
 109:
-  name: Life Essence
   category: items
+  name: Life Essence
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 2169
 110:
-  name: Life Seed
   category: items
+  name: Life Seed
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 2433
 111:
+  category: items
   name: Red Potion
-  category: items
-112:
-  name: Feather Fall
-  category: items
-113:
-  name: Limited Invisibility
-  category: items
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
+112:
+  category: items
+  name: Feather Fall
+  repeats:
+    x: 10
+    y: 10
+113:
+  category: items
+  name: Limited Invisibility
+  repeats:
+    x: 10
+    y: 10
   tile_config:
     tile: 896
 114:
+  category: items
   name: Invulnerability
-  category: items
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
-    tile: 825 
+    tile: 825
 115:
-  name: Boots of Jumping
   category: items
+  name: Boots of Jumping
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 827
 116:
-  name: Raven Flight
+  blocking: 0
   category: items
+  name: Raven Flight
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 828
 117:
+  category: items
   name: Guns Akimbo
-  category: items
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
-    tile: 829 
+    tile: 829
 118:
-  name: Diving Suit
   category: items
+  name: Diving Suit
   repeats:
     x: 12
     y: 12
   tile_config:
-    tile: 830 
+    tile: 830
 119:
-  name: Gas Mask
   category: items
+  name: Gas Mask
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 831
 120:
+  category: items
   name: Clone
-  category: items
 121:
-  name: Crystal Ball
   category: items
+  name: Crystal Ball
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 760
 122:
+  category: items
   name: Decoy
-  category: items
 123:
+  category: items
   name: Doppleganger
-  category: items
 124:
-  name: Reflective Shots
   category: items
+  name: Reflective Shots
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 2428
 125:
-  name: Beast Vision
   category: items
+  name: Beast Vision
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 839
 126:
-  name: Shadow Cloak
+  blocking: 0
   category: items
+  name: Shadow Cloak
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 768
 127:
-  name: Rage Shroom
+  blocking: 0
   category: items
+  name: Rage Shroom
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 840
 128:
-  name: Delirium Shroom
+  blocking: 0
   category: items
+  name: Delirium Shroom
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 841
 129:
-  name: Grow Shroom
+  blocking: 0
   category: items
+  name: Grow Shroom
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 842
 130:
-  name: Shrink Shroom
+  blocking: 0
   category: items
+  name: Shrink Shroom
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 843
 131:
+  category: items
   name: Death Mask
-  category: items
 132:
+  category: items
   name: Wine Goblet
-  category: items
 133:
+  blocking: 0
+  category: items
   name: Wine Bottle
-  category: items
+  palette: 4
+  repeats: {}
 134:
+  blocking: 0
+  category: items
   name: Skull Grail
-  category: items
+  repeats: {}
 135:
+  blocking: 0
+  category: items
   name: Silver Grail
-  category: items
+  repeats: {}
 136:
-  name: Tome
   category: items
+  name: Tome
   repeats:
-    x: 12
-    y: 12
+    x: 10
+    y: 10
   tile_config:
     tile: 518
 137:
-  name: Black Chest
+  blocking: 0
   category: items
+  name: Black Chest
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 522
 138:
-  name: Wooden Chest
+  blocking: 0
   category: items
+  name: Wooden Chest
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 523
 139:
+  category: items
   name: Asbestos Armor
-  category: items
+  repeats:
+    x: 16
+    y: 16
 140:
-  name: Basic Armor
   category: items
+  name: Basic Armor
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 2628
 141:
-  name: Body Armor
   category: items
+  name: Body Armor
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 2586
 142:
-  name: Fire Armor
   category: items
+  name: Fire Armor
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 2578
 143:
-  name: Spirit Armor
   category: items
+  name: Spirit Armor
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 2602
 144:
-  name: Super Armor
   category: items
+  name: Super Armor
   repeats:
     x: 12
     y: 12
   tile_config:
     tile: 2594
 145:
+  category: multiplayer
   name: Blue Team Base
-  category: multiplayer
 146:
-  name: Red Team Base
   category: multiplayer
+  name: Red Team Base
 200:
-  name: Random Creature
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 0.0
+  name: Random Creature
+  palette: 0
   repeats:
-    x: 10
-    y: 10
+    x: 0
+    y: 0
   tile_config:
     tile: 832
 201:
-  name: Cultist w/ Tommy
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 48.0
+  name: Cultist w/ Tommy
+  palette: 3
   repeats:
-    x: 10
+    x: 9
     y: 10
   tile_config:
     tile: 2820
-  palette: 3
 202:
-  name: Cultist w/ Shotgun
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 48.0
+  name: Cultist w/ Shotgun
   repeats:
-    x: 10
+    x: 9
     y: 10
   tile_config:
     tile: 2820
 203:
-  name: Axe Zombie
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 48.0
+  name: Axe Zombie
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1170
 204:
-  name: Fat Zombie
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 48.0
+  name: Fat Zombie
   repeats:
-    x: 10
-    y: 10
+    x: 12
+    y: 12
   tile_config:
     tile: 1370
 205:
-  name: Earth Zombie
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 48.0
+  name: Earth Zombie
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 3054
 206:
-  name: Flesh Gargoyle
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 64.0
+  name: Flesh Gargoyle
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1470
 207:
-  name: Stone Gargoyle
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 84.0
+  name: Stone Gargoyle
+  palette: 5
   repeats:
-    x: 10
-    y: 10
+    x: 16
+    y: 16
   tile_config:
     tile: 1470
-  palette: 5
 208:
-  name: Flesh Statue
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 64.0
+  name: Flesh Statue
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1530
 209:
-  name: Stone Statue
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 64.0
+  name: Stone Statue
+  palette: 5
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1530
-  palette: 5
 210:
-  name: Phantasm
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 64.0
+  name: Phantasm
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 3060
 211:
-  name: Hound
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 80.0
+  name: Hound
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1270
 212:
-  name: Hand
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 32.0
+  name: Hand
   repeats:
-    x: 10
-    y: 10
+    x: 8
+    y: 8
   tile_config:
     tile: 1980
 213:
+  blocking: 1
+  category: monsters
+  clipdist: 32.0
   name: Brown Spider
-  category: monsters
-  blocking: 1
-  repeats:
-    x: 10
-    y: 10
-  tile_config:
-    tile: 1920
   palette: 7
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 1920
 214:
+  blocking: 1
+  category: monsters
+  clipdist: 32.0
   name: Red Spider
-  category: monsters
-  blocking: 1
+  palette: 4
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1920
-  palette: 4
 215:
-  name: Black Spider
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 32.0
+  name: Black Spider
+  palette: 4
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1920
-  palette: 4
 216:
-  name: Mother Spider
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 32.0
+  name: Mother Spider
   repeats:
-    x: 10
-    y: 10
+    x: 20
+    y: 20
   tile_config:
     tile: 1920
 217:
-  name: Gill Beast
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 64.0
+  name: Gill Beast
   repeats:
-    x: 10
-    y: 10
+    x: 12
+    y: 12
   tile_config:
     tile: 1570
 218:
-  name: Eel
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 32.0
+  name: Eel
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1870
 219:
-  name: Bat
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 32.0
+  name: Bat
   repeats:
-    x: 10
-    y: 10
+    x: 8
+    y: 8
   tile_config:
     tile: 1912
 220:
-  name: Rat
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 32.0
+  name: Rat
   repeats:
-    x: 10
-    y: 10
+    x: 6
+    y: 6
   tile_config:
     tile: 1745
 221:
-  name: Green Pod
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 64.0
+  name: Green Pod
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1792
 222:
-  name: Green Tentacle
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 32.0
+  name: Green Tentacle
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1797
 223:
+  blocking: 1
+  category: monsters
+  clipdist: 64.0
   name: Fire Pod
-  category: monsters
-  blocking: 1
+  palette: 2
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1792
-  palette: 2
 224:
-  name: Fire Tentacle
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 32.0
+  name: Fire Tentacle
+  palette: 2
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1797
-  palette: 2
 225:
-  name: Mother Pod
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 64.0
+  name: Mother Pod
+  palette: 0
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1792
-  palette: 6
 226:
-  name: Mother Tentacle
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 32.0
+  name: Mother Tentacle
+  palette: 0
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1797
-  palette: 6
 227:
-  name: Cerberus
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 64.0
+  name: Cerberus
   repeats:
-    x: 10
-    y: 10
+    x: 16
+    y: 16
   tile_config:
     tile: 2680
-229:
-  name: Tchernobog
-  category: monsters
+228:
   blocking: 1
+  category: decoration
+  clipdist: 64.0
+  name: Unknown
   repeats:
-    x: 10
-    y: 10
+    x: 16
+    y: 16
+  tile_config:
+    tile: 0
+229:
+  blocking: 1
+  category: monsters
+  clipdist: 128.0
+  name: Tchernobog
+  repeats:
+    x: 16
+    y: 16
   tile_config:
     tile: 3140
 230:
-  name: Tommy Cultist Prone
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 48.0
+  name: Tommy Cultist Prone
+  palette: 3
+  repeats:
+    x: 9
+    y: 10
+  tile_config:
+    tile: 3385
+231:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 9
+  tile_config:
+    tile: 0
+232:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 9
+  tile_config:
+    tile: 0
+233:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 9
+  tile_config:
+    tile: 0
+234:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 9
+  tile_config:
+    tile: 0
+235:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 9
+  tile_config:
+    tile: 0
+236:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 9
+  tile_config:
+    tile: 0
+237:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 9
+  tile_config:
+    tile: 0
+238:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 9
+  tile_config:
+    tile: 0
+239:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
   repeats:
     x: 10
     y: 10
   tile_config:
-    tile: 3385
-  palette: 3
-244:
-  name: Sleep Zombie
-  category: monsters
+    tile: 0
+240:
   blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 9
+    y: 10
+  tile_config:
+    tile: 0
+241:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 0
+242:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 10
+    y: 10
+  tile_config:
+    tile: 0
+243:
+  blocking: 1
+  category: decoration
+  clipdist: 64.0
+  name: Unknown
+  palette: 0
+  repeats: {}
+  tile_config:
+    tile: 0
+244:
+  blocking: 1
+  category: monsters
+  clipdist: 48.0
+  name: Sleep Zombie
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 1209
 245:
-  name: Innocent
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 48.0
+  name: Innocent
   repeats:
     x: 10
     y: 10
   tile_config:
     tile: 3798
 246:
-  name: Shotgun Cultist Prone
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 48.0
+  name: Shotgun Cultist Prone
   repeats:
-    x: 10
+    x: 9
     y: 10
   tile_config:
     tile: 3385
 247:
+  blocking: 1
+  category: monsters
+  clipdist: 48.0
   name: Cultist w/ Tesla
-  category: monsters
-  blocking: 1
-  repeats:
-    x: 10
-    y: 10
-  tile_config:
-    tile: 2820
   palette: 11
+  repeats:
+    x: 9
+    y: 10
+  tile_config:
+    tile: 2820
 248:
+  blocking: 1
+  category: monsters
+  clipdist: 48.0
   name: Cultist w/ Dynamite
-  category: monsters
-  blocking: 1
-  repeats:
-    x: 10
-    y: 10
-  tile_config:
-    tile: 2820
   palette: 13
-249:
-  name: Beast Cultist
-  category: monsters
-  blocking: 1
   repeats:
-    x: 10
+    x: 9
     y: 10
   tile_config:
     tile: 2820
-  palette: 12
-250:
-  name: Tiny Caleb
-  category: monsters
+249:
   blocking: 1
+  category: monsters
+  clipdist: 48.0
+  name: Beast Cultist
+  palette: 12
   repeats:
-    x: 10
+    x: 9
     y: 10
+  tile_config:
+    tile: 2820
+250:
+  blocking: 1
+  category: monsters
+  clipdist: 32.0
+  name: Tiny Caleb
+  repeats:
+    x: 4
+    y: 4
   tile_config:
     tile: 3870
 251:
-  name: Beast
-  category: monsters
   blocking: 1
+  category: monsters
+  clipdist: 48.0
+  name: Beast
+  repeats:
+    x: 9
+    y: 10
+  tile_config:
+    tile: 2690
+252:
+  blocking: 1
+  category: decoration
+  clipdist: 32.0
+  name: Unknown
+  palette: 0
+  repeats: {}
+  tile_config:
+    tile: 0
+253:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  palette: 41
+  repeats: {}
+  tile_config:
+    tile: 0
+300:
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
   repeats:
     x: 10
     y: 10
   tile_config:
-    tile: 2690
+    tile: 0
+301:
+  category: decoration
+  clipdist: 32.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+302:
+  category: decoration
+  clipdist: 32.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+303:
+  category: decoration
+  clipdist: 4.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+304:
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  repeats:
+    x: 6
+    y: 6
+  tile_config:
+    tile: 0
+305:
+  category: decoration
+  clipdist: 32.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+306:
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+307:
+  category: decoration
+  clipdist: 32.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+308:
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  repeats:
+    x: 6
+    y: 6
+  tile_config:
+    tile: 0
+309:
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  repeats:
+    x: 4
+    y: 4
+  tile_config:
+    tile: 0
+310:
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  repeats:
+    x: 2
+    y: 2
+  tile_config:
+    tile: 0
+311:
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+312:
+  category: decoration
+  clipdist: 24.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+313:
+  category: decoration
+  clipdist: 24.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+314:
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  repeats:
+    x: 6
+    y: 6
+  tile_config:
+    tile: 0
+315:
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+316:
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  repeats:
+    x: 4
+    y: 4
+  tile_config:
+    tile: 0
+317:
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+400:
+  blocking: 0
+  category: gibbable
+  clipdist: 32.0
+  name: TNT Barrel
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+  tile_config:
+    tile: 907
+401:
+  blocking: 0
+  category: gibbable
+  clipdist: 16.0
+  name: Armed Proximity Bomb
+  palette: 0
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 3444
+402:
+  blocking: 0
+  category: gibbable
+  clipdist: 16.0
+  name: Armed Remote
+  palette: 0
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 3457
+403:
+  blocking: 0
+  category: decoration
+  clipdist: 32.0
+  name: Blue Vase
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+404:
+  blocking: 0
+  category: decoration
+  clipdist: 32.0
+  name: Brown Vase
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+405:
+  blocking: 0
+  category: decoration
+  clipdist: 1.0
+  name: Crate Face
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+  tile_config:
+    tile: 462
+406:
+  blocking: 0
+  category: environment
+  clipdist: 1.0
+  name: Glass Window
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+  tile_config:
+    tile: 266
+407:
+  blocking: 0
+  category: gibbable
+  clipdist: 1.0
+  name: Fluorescent Light
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+  tile_config:
+    tile: 796
+408:
+  blocking: 0
+  category: gibbable
+  clipdist: 1.0
+  name: Wall Crack
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+  tile_config:
+    tile: 1127
+409:
+  blocking: 0
+  category: environment
+  clipdist: 1.0
+  name: Wood Beam
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+  tile_config:
+    tile: 1142
+410:
+  blocking: 0
+  category: gibbable
+  clipdist: 1.0
+  name: Spider Web
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+  tile_config:
+    tile: 1069
+411:
+  blocking: 0
+  category: gibbable
+  clipdist: 1.0
+  name: Metal Grate 1
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+  tile_config:
+    tile: 123
+412:
+  blocking: 0
+  category: gibbable
+  clipdist: 1.0
+  name: Flammable Tree
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+413:
+  blocking: 0
+  category: gibbable
+  clipdist: 1.0
+  name: Machine Gun
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+414:
+  blocking: 0
+  category: gibbable
+  clipdist: 8.0
+  name: Falling Walk
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+415:
+  blocking: 1
+  category: gibbable
+  clipdist: 48.0
+  name: Kickable Pail
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
 416:
+  blocking: 0
+  category: gibbable
+  clipdist: 1.0
   name: Gib Object
-  category: gibbable
-  blocking: 2
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
 417:
-  name: Explode Object
+  blocking: 0
   category: gibbable
-459:
-  name: Hidden Exploder
+  clipdist: 1.0
+  name: Explode Object
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+418:
+  blocking: 0
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+419:
+  blocking: 0
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+420:
+  blocking: 0
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+421:
+  blocking: 0
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+422:
+  blocking: 0
+  category: decoration
+  clipdist: 16.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+  tile_config:
+    tile: 0
+423:
+  blocking: 0
+  category: decoration
+  clipdist: 1.0
+  name: Unknown
+  palette: 10
+  repeats:
+    x: 16
+    y: 16
+  tile_config:
+    tile: 0
+424:
+  blocking: 0
+  category: decoration
+  clipdist: 1.0
+  name: Unknown
+  palette: 2
+  repeats:
+    x: 0
+    y: 0
+  tile_config:
+    tile: 0
+425:
+  blocking: 1
+  category: decoration
+  clipdist: 10.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 0
+426:
+  blocking: 1
+  category: decoration
+  clipdist: 8.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 0
+    y: 0
+  tile_config:
+    tile: 0
+427:
+  blocking: 1
+  category: gibbable
+  clipdist: 32.0
+  name: Zombie Head
+  palette: 0
+  repeats:
+    x: 10
+    y: 10
+428:
+  blocking: 0
+  category: decoration
+  clipdist: 32.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 16
+    y: 16
+  tile_config:
+    tile: 0
+429:
+  blocking: 0
+  category: decoration
+  clipdist: 32.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+430:
+  blocking: 0
+  category: decoration
+  clipdist: 32.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
+431:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 12
+    y: 12
+  tile_config:
+    tile: 0
+432:
+  blocking: 0
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 4
+    y: 4
+  tile_config:
+    tile: 0
+451:
   category: traps
+  name: Rock Trap
+452:
+  category: traps
+  name: Flame Trap
+  repeats: {}
+  tile_config:
+    tile: 2183
+454:
+  category: traps
+  name: Saw Blade
+  repeats: {}
+  tile_config:
+    tile: 655
+455:
+  category: traps
+  name: Electric Zap
+  tile_config:
+    tile: 1156
+456:
+  category: traps
+  name: Switched Zap
+  tile_config:
+    tile: 1156
+457:
+  category: traps
+  name: Pendulum
+  tile_config:
+    tile: 1080
+458:
+  category: traps
+  name: Guillotine
+  tile_config:
+    tile: 835
+459:
+  category: traps
+  name: Hidden Exploder
   repeats:
     x: 1
     y: 16
   tile_config:
     tile: 908
+460:
+  blocking: 0
+  category: decoration
+  name: Unknown
+  palette: 0
+  repeats:
+    x: 8
+    y: 8
+  tile_config:
+    tile: 0
 511:
+  blocking: 2
+  category: gibbable
   name: Gib Wall
-  category: gibbable
-  blocking: 2
-701:
-  name: Water Drip
-  category: environment
-702:
-  name: Blood Drip
-  category: environment
-706:
-  name: Bubble Generator
-  category: environment
-707:
-  name: Multi Bubble Generator
-  category: environment
-400:
-  name: TNT Barrel
-  category: gibbable
-  blocking: 2
-  tile_config:
-    tile: 907
-401:
-  name: Armed Proximity Bomb
-  category: gibbable
-  tile_config:
-    tile: 3444
-402:
-  name: Armed Remote
-  category: gibbable
-  tile_config:
-    tile: 3457
-403:
-  name: Blue Vase
-  category: decoration
-  blocking: 2
-404:
-  name: Brown Vase
-  category: decoration
-  blocking: 2
-405:
-  name: Crate Face
-  category: decoration
-  blocking: 2
-  tile_config:
-    tile: 462
-406:
-  name: Glass Window
-  category: environment
-  blocking: 2
-  tile_config:
-    tile: 266
-407:
-  name: Fluorescent Light
-  category: gibbable
-  blocking: 2
-  tile_config:
-    tile: 796
-408:
-  name: Wall Crack
-  category: gibbable
-  blocking: 2
-  tile_config:
-    tile: 1127
-409:
-  name: Wood Beam
-  category: environment
-  tile_config:
-    tile: 1142
-410:
-  name: Spider Web
-  category: gibbable
-  tile_config:
-    tile: 1069
-411:
-  name: Metal Grate 1
-  category: gibbable
-  tile_config:
-    tile: 123
-412:
-  name: Flammable Tree
-  category: gibbable
-413:
-  name: Machine Gun
-  category: gibbable
-414:
-  name: Falling Walk
-  category: gibbable
-415:
-  name: Kickable Pail
-  category: gibbable
-427:
-  name: Zombie Head
-  category: gibbable
-451:
-  name: Rock Trap
-  category: traps
-454:
-  name: Saw Blade
-  category: traps
-  tile_config:
-    tile: 655
-457:
-  name: Pendulum
-  category: traps
-  tile_config:
-    tile: 1080
-458:
-  name: Guillotine
-  category: traps
-  tile_config:
-    tile: 835 
-455:
-  name: Electric Zap
-  category: traps
-  tile_config:
-    tile: 1156
-456:
-  name: Switched Zap
-  category: traps
-  tile_config:
-    tile: 1156
-452:
-  name: Flame Trap
-  category: traps
-  tile_config:
-    tile: 2183
 700:
+  category: environment
   name: Trigger Generator
+  repeats: {}
+701:
   category: environment
+  name: Water Drip
+  repeats: {}
+702:
+  category: environment
+  name: Blood Drip
+  repeats: {}
 703:
+  category: environment
   name: Fireball Generator
-  category: environment
+  repeats: {}
 704:
+  category: environment
   name: Ecto Skul Generator
-  category: environment
 705:
-  name: Dart Generator
   category: environment
+  name: Dart Generator
+706:
+  category: environment
+  name: Bubble Generator
+  repeats: {}
+707:
+  category: environment
+  name: Multi Bubble Generator
+  repeats: {}
 708:
-  name: SFX Generator
   category: sounds
   invisible: true
+  name: SFX Generator
+  properties:
+  - from: data_1
+    name: Sound To Play
+    type: sound
+  repeats: {}
   tile_config:
     tile: 2519
-  properties:
-    - name: Sound To Play
-      type: sound
-      from: data_1
 709:
-  name: Sector SFX
   category: sounds
   invisible: true
+  name: Sector SFX
+  properties:
+  - from: data_1
+    name: Going On Sound
+    type: sound
+  - from: data_2
+    name: Going On Stop Sound
+    type: sound
+  - from: data_3
+    name: Going Off Sound
+    type: sound
+  - from: data_4
+    name: Going Off Stop Sound
+    type: sound
   tile_config:
     tile: 2520
-  properties:
-    - name: Going On Sound
-      type: sound
-      from: data_1
-    - name: Going On Stop Sound
-      type: sound
-      from: data_2
-    - name: Going Off Sound
-      type: sound
-      from: data_3
-    - name: Going Off Stop Sound
-      type: sound
-      from: data_4
 710:
-  name: Ambient SFX
   category: sounds
   invisible: true
+  name: Ambient SFX
+  properties:
+  - from: data_1
+    name: Distance To Start Falling Off
+    type: int
+  - from: data_2
+    name: Distance To Stop Playing
+    type: int
+  - from: data_3
+    name: Sound Number
+    type: sound
+  - from: data_4
+    name: Max Volume
+    type: int
   status_number: 12
   tile_config:
     tile: 2520
-  properties:
-    - name: Distance To Start Falling Off
-      type: int
-      from: data_1
-    - name: Distance To Stop Playing
-      type: int
-      from: data_2
-    - name: Sound Number
-      type: sound
-      from: data_3
-    - name: Max Volume
-      type: int
-      from: data_4
 711:
-  name: Player SFX
   category: sounds
   invisible: true
-  tile_config:
-    tile: 2519
+  name: Player SFX
   palette: 5
   properties:
-    - name: Sound To Play
-      type: sound
-      from: data_1
+  - from: data_1
+    name: Sound To Play
+    type: sound
+  tile_config:
+    tile: 2519
+10231:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 9
+  tile_config:
+    tile: 0
+10232:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 9
+  tile_config:
+    tile: 0
+10233:
+  blocking: 1
+  category: decoration
+  clipdist: 48.0
+  name: Unknown
+  repeats:
+    x: 8
+    y: 9
+  tile_config:
+    tile: 0

@@ -174,10 +174,10 @@ def _load_sprite_type(actor: Actor, sprite: dict):
         sprite['repeats'] = {}
 
     if 'sprite.xrepeat' in actor.properties:
-        sprite['repeats']['x'] = int(actor.properties['sprite.xrepeat']) / 8
+        sprite['repeats']['x'] = round(int(actor.properties['sprite.xrepeat']) / 4)
 
     if 'sprite.yrepeat' in actor.properties:
-        sprite['repeats']['y'] = int(actor.properties['sprite.yrepeat']) / 8
+        sprite['repeats']['y'] = round(int(actor.properties['sprite.yrepeat']) / 4)
 
     if 'sprite.blocking' in actor.properties:
         sprite['blocking'] = int(actor.properties['sprite.blocking'])
@@ -202,7 +202,11 @@ def main():
 
     for actor in all_actors:
         if actor.type not in sprite_types:
-            sprite_types[actor.type] = {}
+            sprite_types[actor.type] = {
+                'category': 'decoration',
+                'name': 'Unknown',
+                'tile_config': {'tile': 0},
+            }
         _load_sprite_type(actor, sprite_types[actor.type])
 
     with open('bloom/resources/sprite_types.yaml', 'w+') as file:
