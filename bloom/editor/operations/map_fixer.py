@@ -11,7 +11,14 @@ from ...tiles import art
 from .. import map_objects
 
 
-class SectorFixer:
+class FixDetails(typing.NamedTuple):
+    sectors_removed: int
+    walls_removed: int
+    walls_fixed: int
+    sprites_fixed: int
+
+
+class MapFixer:
     _executor = futures.ThreadPoolExecutor(max_workers=100)
 
     def __init__(self, all_sectors: map_objects.SectorCollection):
@@ -41,7 +48,7 @@ class SectorFixer:
             walls_fixed += result['fixed_wall_count']
             sprites_fixed += result['fixed_sprite_count']
 
-        return sectors_removed, walls_removed, walls_fixed, sprites_fixed
+        return FixDetails(sectors_removed, walls_removed, walls_fixed, sprites_fixed)
 
     def _cleanup_sector(self, sector: map_objects.EditorSector):
         result = {}
