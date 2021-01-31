@@ -59,7 +59,7 @@ class Loader:
 
     class PreprocessedFile(typing.NamedTuple):
         code: str
-        defines: list
+        defines: dict
 
     def __init__(self, paths: typing.List[str]):
         self._paths = paths
@@ -89,11 +89,11 @@ class Loader:
 
         return result
 
-    def _pre_process_file(self, path: str, defines):
+    def _pre_process_file(self, path: str, defines: dict):
         if path in self._preprocessed_cache:
             logger.info(f'{path} found in preprocessed cache')
             cached = self._preprocessed_cache[path]
-            defines.extend(cached.defines)
+            defines.update(cached.defines)
             return cached.code
 
         logger.info(f'Preprocessing {path}')
@@ -104,7 +104,7 @@ class Loader:
         lines = self._extend_lines(lines)
 
         result = ''
-        current_define_count = len(defines)
+        current_defines = dict(defines)
         for line in lines:
             match = re.match('^\s*#(.*)$', line)
             if match:
@@ -116,37 +116,31 @@ class Loader:
 
                 define = re.match('^define\s+([^\s]+)\s+(.*)?$', preprocessor)
                 if define:
-                    definer = re.escape(define[1])
-                    definer = re.compile(f'\s{definer}\s')
-                    value = f' {define[2].strip()} '
-                    defines.append((definer, value))
+                    defines[define[1]] = self._macro_fill(define[2].strip(), defines)
                     continue
 
                 raise ValueError(f'Unexpected preprocessor {preprocessor}')
             else:
                 line = re.sub('//.*$', '', line)
-                for definer, value in defines:
-                    line = re.sub(definer, value, line)
-
-                line = line.strip()
+                line = self._macro_fill(line, defines)
                 if line:
                     result += line + '\n'
 
-        new_defines = defines[current_define_count:-1]
+        new_defines = {key: defines[key] for key in set(defines) - set(current_defines)}
         self._preprocessed_cache[path] = self.PreprocessedFile(
             result,
             new_defines
         )
         return result
 
-    def _process_file(self, path: str):
-        defines = [
-            (re.compile('\sTRUE\s'), ' 1 '),
-            (re.compile('\sFALSE\s'), ' 0 '),
-        ]
-        pre_processed = self._pre_process_file(path, defines)
+    @staticmethod
+    def _macro_fill(line: str, defines: typing.Dict[str, str]):
+        words = [word.strip() for word in line.split()]
+        words = [defines.get(word, word) for word in words]
+        return ' '.join(words)
 
-        print(pre_processed)
+    def _process_file(self, path: str):
+        pre_processed = self._pre_process_file(path, {})
 
         logger.info(f'Loading actors from {path}')
         with tempfile.NamedTemporaryFile() as file:
@@ -199,8 +193,7 @@ def main():
     ]
 
     logger.info('Loading actors')
-    # all_actors = Loader(paths).load_actors()
-    all_actors = Loader(['tmp.txt']).load_actors()
+    all_actors = Loader(paths).load_actors()
     logger.info(f'{len(all_actors)} actors found')
 
     os.chdir(previous_directory)
@@ -212,8 +205,8 @@ def main():
             sprite_types[actor.type] = {}
         _load_sprite_type(actor, sprite_types[actor.type])
 
-    # with open('bloom/resources/sprite_types.yaml', 'w+') as file:
-    #     file.write(yaml.safe_dump(sprite_types))
+    with open('bloom/resources/sprite_types.yaml', 'w+') as file:
+        file.write(yaml.safe_dump(sprite_types))
 
 
 if __name__ == '__main__':
