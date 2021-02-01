@@ -174,7 +174,11 @@ class Art:
         return (tile.x_offset, tile.y_offset)
 
     def load_tile_image(self, tile_number: int, lookup: int):
-        return self.get_tile(tile_number).load(self._unpacker, self._default_palette, self._lookups[lookup][0])
+        if lookup >= len(self._lookups):
+            lookup = self._lookups[0]
+        else:
+            lookup = self._lookups[lookup]
+        return self.get_tile(tile_number).load(self._unpacker, self._default_palette, lookup[0])
 
     def get_tile(self, tile_number: int):
         return self._tiles[tile_number - self._header.tile_start]

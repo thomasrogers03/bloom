@@ -73,6 +73,14 @@ class Loader:
 
         return all_actors
 
+    def get_sfx_defines(self):
+        return {
+            key: int(value)
+            for preprocessed in self._preprocessed_cache.values()
+            for key, value in preprocessed.defines.items()
+            if key.startswith('SFX_')
+        }
+
     @staticmethod
     def _extend_lines(lines: typing.List[str]):
         result = []
@@ -183,20 +191,7 @@ def _load_sprite_type(actor: Actor, sprite: dict):
         sprite['blocking'] = int(actor.properties['sprite.blocking'])
 
 
-def main():
-    previous_directory = os.getcwd()
-    os.chdir('kpx')
-
-    paths = [
-        actor_path
-        for actor_path in glob.glob('defs/actors/*.txt')
-    ]
-
-    logger.info('Loading actors')
-    all_actors = Loader(paths).load_actors()
-    logger.info(f'{len(all_actors)} actors found')
-
-    os.chdir(previous_directory)
+def _process_actors(all_actors: typing.List[Actor]):
     with open('bloom/resources/sprite_types.yaml', 'r') as file:
         sprite_types = yaml.safe_load(file.read())
 
@@ -211,6 +206,42 @@ def main():
 
     with open('bloom/resources/sprite_types.yaml', 'w+') as file:
         file.write(yaml.safe_dump(sprite_types))
+
+
+def _process_sounds(sfx_definitions: typing.Dict[str, int]):
+    with open('bloom/resources/sound_names.yaml', 'r') as file:
+        sounds = yaml.safe_load(file.read())
+
+    for name, sfx in sfx_definitions.items():
+        if sfx not in sounds:
+            logger.info(f'Adding sound {sfx}: {name}')
+            sounds[sfx] = {
+                'name': name,
+                'category': 'unknown',
+            }
+
+    with open('bloom/resources/sound_names.yaml', 'w+') as file:
+        file.write(yaml.safe_dump(sounds))
+
+
+def main():
+    previous_directory = os.getcwd()
+    os.chdir('kpx')
+
+    paths = [
+        actor_path
+        for actor_path in glob.glob('defs/actors/*.txt')
+    ]
+
+    loader = Loader(paths)
+    logger.info('Loading actors')
+    all_actors = loader.load_actors()
+    logger.info(f'{len(all_actors)} actors found')
+
+    os.chdir(previous_directory)
+
+    _process_actors(all_actors)
+    _process_sounds(loader.get_sfx_defines())
 
 
 if __name__ == '__main__':

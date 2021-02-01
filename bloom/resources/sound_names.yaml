@@ -1,2024 +1,2823 @@
-# modified from http://web.bloodline.eu/ultimate_blood_mapedit_suite/map_3.htm
-
 0:
+  category: misc
   name: None
-  category: misc
 1:
+  category: outdoors
   name: The Haunted Wind
-  category: outdoors
 2:
+  category: creepy
   name: Humming, violin sound
-  category: creepy
 3:
+  category: water
   name: Underwater Music
-  category: water
 4:
+  category: creepy
   name: Ominous Cello Note
-  category: creepy
 5:
+  category: creepy
   name: Pinging Sound, EKG
-  category: creepy
 6:
+  category: outdoors
   name: A Couple of Crickets
-  category: outdoors
 7:
-  name: Underwater
   category: water
+  name: Underwater
 8:
+  category: machinery
   name: Throb of distant machinery
-  category: machinery
 9:
+  category: machinery
   name: Pulsing Machinery
-  category: machinery
 10:
+  category: outdoors
   name: Flock of chirping birds + jungle?
-  category: outdoors
 11:
+  category: outdoors
   name: Persistent cricket
-  category: outdoors
 12:
+  category: water
   name: Running water - pipe
-  category: water
 13:
+  category: water
   name: Running Water - stream
-  category: water
 14:
+  category: water
   name: Running Water - something plopping
-  category: water
 15:
+  category: machinery
   name: Underwater motor
-  category: machinery
 16:
+  category: outdoors
   name: Wind of approaching storm
-  category: outdoors
 17:
+  category: outdoors
   name: Low volume wind rush
-  category: outdoors
 18:
+  category: outdoors
   name: Louder wind rush
-  category: outdoors
 19:
+  category: machinery
   name: Squeaky wheel or honking geese.
-  category: machinery
 20:
+  category: machinery
   name: Distant Hum - Conveyor belt
-  category: machinery
 21:
+  category: outdoors
   name: Hum, something swinging in a tree
-  category: outdoors
 22:
+  category: outdoors
   name: 21 with a ringing bell in the distance
-  category: outdoors
+23:
+  category: unknown
+  name: SFX_AMB23
 24:
+  category: machinery
   name: Pounding on metal
-  category: machinery
 25:
+  category: machinery
   name: Fluorescent hum
-  category: machinery
 26:
+  category: machinery
   name: Electric Hum
-  category: machinery
 27:
+  category: fire
   name: Quiet Fire
-  category: fire
 28:
-  name: Electric Arc
   category: machinery
+  name: Electric Arc
 29:
+  category: machinery
   name: Eerie alien ambiance, lower than 33
-  category: machinery
 30:
+  category: water
   name: Water drip
-  category: water
 31:
+  category: machinery
   name: Heavy machinery hum
-  category: machinery
 32:
+  category: fire
   name: Torch or Fire
-  category: fire
 33:
+  category: outdoors
   name: Slight wind
-  category: outdoors
 34:
+  category: outdoors
   name: Steady howling wind
-  category: outdoors
 35:
+  category: outdoors
   name: Crickets at Night
-  category: outdoors
 36:
+  category: outdoors
   name: More Crickets
-  category: outdoors
 37:
+  category: water
   name: Scuba Diving sound
-  category: water
 38:
+  category: outdoors
   name: Rumbling Wind
-  category: outdoors
 39:
+  category: outdoors
   name: Quiet Howling Wind
-  category: outdoors
 40:
+  category: water
   name: Splashing
-  category: water
 41:
+  category: water
   name: Running Water
-  category: water
 42:
+  category: water
   name: Deep Sea Diving
-  category: water
 43:
+  category: machinery
   name: Quiet Chain Rattle
-  category: machinery
 44:
+  category: machinery
   name: Louder Chain Rattle
-  category: machinery
 46:
+  category: machinery
   name: Faint Rattling Chain
-  category: machinery
 47:
+  category: machinery
   name: Chain Rattle
-  category: machinery
 48:
+  category: creepy
   name: Deep Hum
-  category: creepy
 49:
+  category: outdoors
   name: Very Loud crickets
-  category: outdoors
 50:
+  category: machinery
   name: Intermittent Steam
-  category: machinery
 52:
+  category: water
   name: Muffled Underwater
-  category: water
 54:
+  category: outdoors
   name: Howling Wind
-  category: outdoors
 56:
+  category: water
   name: Swimming Underwater
-  category: water
 57:
+  category: machinery
   name: Timborous Alien Ambience
-  category: machinery
 58:
+  category: outdoors
   name: Something dragged across the floor
-  category: outdoors
 59:
-  name: Low voice speaking a foreign language
   category: voice
+  name: Low voice speaking a foreign language
 60:
-  name: Heart Beat
   category: creepy
+  name: Heart Beat
 61:
+  category: machinery
   name: Choo Choo Train
-  category: machinery
 62:
-  name: Hammering
   category: machinery
+  name: Hammering
 63:
+  category: voice
   name: Low voice speaking a foreign language
-  category: voice
 64:
+  category: machinery
   name: Tesla Arcing
-  category: machinery
 65:
+  category: city
   name: Happy Alarm Clock Song
-  category: city
 66:
+  category: creepy
   name: Low pitch hum with heart beat
-  category: creepy
+67:
+  category: unknown
+  name: SFX_FANLUP2
 100:
+  category: movers
   name: Single Squeak
-  category: movers
 101:
+  category: movers
   name: Turning Door Knob
-  category: movers
 102:
+  category: machinery
   name: Pulley Turning
-  category: machinery
 103:
+  category: movers
   name: Rumble of Heavy Door
-  category: movers
 104:
+  category: movers
   name: Door Lifted by Pulley
-  category: movers
 105:
+  category: movers
   name: Door Lifted by Chain
-  category: movers
 106:
+  category: movers
   name: Heavy Sliding Stone
-  category: movers
 107:
+  category: machinery
   name: Rumble with low pitched steam hiss
-  category: machinery
 108:
+  category: machinery
   name: Rumble with high pitched steam hiss
-  category: machinery
+109:
+  category: unknown
+  name: SFX_QDDOR1
+110:
+  category: unknown
+  name: SFX_QDOORMV1
 111:
+  category: movers
   name: Opening of Emergency Door
-  category: movers
+112:
+  category: unknown
+  name: SFX_QMEDPLAT
 113:
+  category: movers
   name: Hydraulic Door
-  category: movers
 114:
+  category: movers
   name: Stone Slate Sliding
-  category: movers
+115:
+  category: unknown
+  name: SFX_QTRAIN1
 116:
+  category: movers
   name: Draw Bridge Chain - Elevator Activated
-  category: movers
+117:
+  category: unknown
+  name: SFX_CREAKSML
 118:
+  category: movers
   name: Sliding Rock
-  category: movers
+119:
+  category: unknown
+  name: SFX_CREAKSLD
 120:
+  category: movers
   name: Sliding Drawer
-  category: movers
+121:
+  category: unknown
+  name: SFX_SLIDOOR2
 122:
+  category: fire
   name: Crackling
-  category: fire
+123:
+  category: unknown
+  name: SFX_FLSHDOR2
 124:
+  category: movers
   name: Heavy Sliding Rock
-  category: movers
 150:
+  category: movers
   name: Closing of a metal door
-  category: movers
 151:
+  category: movers
   name: Impact with Echo
-  category: movers
 152:
+  category: movers
   name: File Cabinet Closing
-  category: movers
 153:
+  category: machinery
   name: Steam Valve Opening
-  category: machinery
+154:
+  category: unknown
+  name: SFX_QAIRDOR2
 155:
+  category: movers
   name: Opening of machine Door
-  category: movers
 156:
+  category: movers
   name: Closing of a Closet Door
-  category: movers
 157:
+  category: movers
   name: Deep and Heavy Impact
-  category: movers
 158:
+  category: movers
   name: Heavy Lock Bolt Being Thrown
-  category: movers
 159:
+  category: movers
   name: Closing Click
-  category: movers
 160:
+  category: movers
   name: Double Door Lock
-  category: movers
 162:
+  category: movers
   name: Mechanical Click
-  category: movers
 163:
+  category: movers
   name: Hydraulic Lock
-  category: movers
 164:
+  category: movers
   name: Hydraulic Disengage
-  category: movers
 165:
+  category: movers
   name: Pressure Switch
-  category: movers
 166:
+  category: movers
   name: Single Chirp
-  category: movers
 167:
+  category: movers
   name: Electric Door Lock
-  category: movers
 168:
+  category: movers
   name: Window Opening
-  category: movers
 169:
+  category: movers
   name: Window Closing
-  category: movers
 170:
+  category: flesh
   name: Gurgling
-  category: flesh
 171:
+  category: flesh
   name: Thump
-  category: flesh
 172:
+  category: flesh
   name: Breaking Wind  Part I  Musical Fruit
-  category: flesh
 173:
+  category: flesh
   name: Breaking Wind Part II  .......
-  category: flesh
 174:
+  category: movers
   name: Short Rock Slide with Echo
-  category: movers
 200:
+  category: movers
   name: Pneumatic Shoosh
-  category: movers
 201:
-  name: Double Click
   category: movers
+  name: Double Click
 202:
+  category: movers
   name: Metallic Thud
-  category: movers
 203:
+  category: movers
   name: Door Handle Click
-  category: movers
+204:
+  category: unknown
+  name: SFX_QMEDTRY
+205:
+  category: unknown
+  name: SFX_QMEDUSE
 206:
+  category: movers
   name: Steel Trash Dumpster Thud
-  category: movers
 207:
+  category: movers
   name: Pop, Click
-  category: movers
+208:
+  category: unknown
+  name: SFX_FLICK
 209:
+  category: movers
   name: Pneumatic Click
-  category: movers
+210:
+  category: unknown
+  name: SFX_SWTCHBRK
 211:
+  category: movers
   name: Heavy Thud with Echo
-  category: movers
 212:
-  name: Click Echo
   category: movers
+  name: Click Echo
 213:
+  category: movers
   name: Click Echo
-  category: movers
 214:
+  category: movers
   name: Switch Engage
-  category: movers
 218:
+  category: creepy
   name: Twisting and breaking of wood
-  category: creepy
 219:
+  category: voice
   name: Undead backward prayer
-  category: voice
 220:
+  category: voice
   name: The Undead Praying
-  category: voice
 221:
+  category: voice
   name: Cha,cha,cha,cha
-  category: voice
 222:
+  category: voice
   name: Che,che,che,che
-  category: voice
 223:
+  category: voice
   name: Tah,tah,tah,tah
-  category: voice
 224:
+  category: voice
   name: Kill,kill,kill,kill
-  category: voice
 225:
+  category: movers
   name: Electric Motor Hum
-  category: movers
 226:
+  category: city
   name: Fire Siren
-  category: city
 227:
+  category: city
   name: Airplane Flyby
-  category: city
 228:
+  category: city
   name: Airplane Flyby low and slow
-  category: city
 229:
-  name: Intermittent Machine Gun Fire
   category: weapons
+  name: Intermittent Machine Gun Fire
 230:
+  category: weapons
   name: Intermittent Machine Gun Fire
-  category: weapons
 231:
+  category: city
   name: Jeep or Truck drive by
-  category: city
 232:
+  category: city
   name: Car drives by
-  category: city
 233:
+  category: city
   name: Car on dirt road drives by
-  category: city
 234:
-  name: Incoming Artillery
   category: weapons
+  name: Incoming Artillery
 235:
+  category: weapons
   name: Incoming Artillery
-  category: weapons
 236:
+  category: creepy
   name: Balls running down ramp
-  category: creepy
 237:
+  category: creepy
   name: Balls running down a longer ramp
-  category: creepy
 238:
+  category: machinery
   name: Machine Engaging
-  category: machinery
 239:
+  category: machinery
   name: Assembly line sound
-  category: machinery
 240:
+  category: creepy
   name: Doors creaking
-  category: creepy
 241:
+  category: machinery
   name: Small machine sound
-  category: machinery
 242:
+  category: creepy
   name: Prying of wood
-  category: creepy
 243:
-  name: Rattling
   category: creepy
+  name: Rattling
 244:
+  category: creepy
   name: Rattling
-  category: creepy
 245:
+  category: weapons
   name: Rifle blot being thrown
-  category: weapons
 246:
+  category: voice
   name: Gregorian Chant, high pitch
-  category: voice
 247:
+  category: voice
   name: Gregorian Chant
-  category: voice
 248:
+  category: voice
   name: Gregorian Chant, continious
-  category: voice
 249:
+  category: machinery
   name: Fast Electric Arc
-  category: machinery
 250:
+  category: machinery
   name: Fast Tesla Arc
-  category: machinery
 251:
+  category: machinery
   name: Long Tesla Arc
-  category: machinery
 252:
+  category: machinery
   name: Fuzzy Arc
-  category: machinery
 253:
+  category: outdoors
   name: Walking in deep mud
-  category: outdoors
 254:
+  category: outdoors
   name: Distant Thunder
-  category: outdoors
 255:
+  category: outdoors
   name: Distant Lightening Strike
-  category: outdoors
 256:
+  category: outdoors
   name: Lightening Strike
-  category: outdoors
 257:
+  category: creepy
   name: Tick, tick, tick
-  category: creepy
 258:
+  category: outdoors
   name: Transient Wind Rush
-  category: outdoors
 259:
+  category: outdoors
   name: Transient Wind, high pitch
-  category: outdoors
 260:
+  category: outdoors
   name: Transient Wind, deep pitch
-  category: outdoors
 261:
+  category: outdoors
   name: Rushing wind, high pitch
-  category: outdoors
 262:
+  category: creepy
   name: Fast Squeaks
-  category: creepy
 263:
-  name: Underwater
   category: water
+  name: Underwater
+264:
+  category: unknown
+  name: SFX_QFL_HUM1
+265:
+  category: unknown
+  name: SFX_ERTHRMBL
+266:
+  category: unknown
+  name: SFX_SINEWAVE
 267:
+  category: voice
   name: A few people whispering
-  category: voice
 268:
+  category: voice
   name: Hundreds of Screamers & Moaners
-  category: voice
+269:
+  category: unknown
+  name: SFX_LAUGH
+270:
+  category: unknown
+  name: SFX_BELL
+271:
+  category: unknown
+  name: SFX_1OWL
 272:
+  category: creepy
   name: Owl Hooting
-  category: creepy
 274:
+  category: gibbable
   name: Explosion with Cans Flying
-  category: gibbable
 275:
+  category: machinery
   name: Train Wheels Squeaking
-  category: machinery
 276:
+  category: machinery
   name: Train Whistle in the Distance
-  category: machinery
 277:
+  category: machinery
   name: Train Wheels, clickety clack
-  category: machinery
 278:
+  category: machinery
   name: Fluorescent Hum
-  category: machinery
 279:
+  category: creepy
   name: Phantom of the Opera Organ
-  category: creepy
 280:
+  category: creepy
   name: Phantom Organ  2
-  category: creepy
 281:
+  category: creepy
   name: Phantom Organ  3
-  category: creepy
 282:
+  category: voice
   name: Tickets Please!
-  category: voice
 283:
+  category: voice
   name: Hey! Stop Him!  He didn't pay!
-  category: voice
 284:
+  category: city
   name: Small Bell
-  category: city
 285:
+  category: creepy
   name: Beep, Beep,  (EKG)
-  category: creepy
 286:
+  category: creepy
   name: Continuos Beep (EKG)
-  category: creepy
 287:
+  category: voice
   name: aahhhh, moan
-  category: voice
 288:
+  category: monsters
   name: aahhhh, scream
-  category: monsters
 289:
+  category: voice
   name: Help Me!, yell
-  category: voice
 290:
+  category: voice
   name: whimpering
-  category: voice
 291:
+  category: machinery
   name: Heavy Motor Drone with Stattic
-  category: machinery
 292:
+  category: machinery
   name: Heavy Motor Rev
-  category: machinery
 293:
+  category: machinery
   name: Sawing
-  category: machinery
 294:
+  category: monsters
   name: Dog Whimpering
-  category: monsters
 295:
-  name: Chirping Siren
   category: city
+  name: Chirping Siren
 296:
+  category: city
   name: Chirping Siren
-  category: city
 297:
+  category: machinery
   name: Hum
-  category: machinery
 298:
+  category: machinery
   name: Fast Drumming or Knocking
-  category: machinery
 299:
+  category: machinery
   name: Slower Drumming or Knocking
-  category: machinery
 300:
+  category: gibbable
   name: Glass Being Broken
-  category: gibbable
 301:
+  category: gibbable
   name: Broken Glass Being Kicked
-  category: gibbable
 302:
+  category: movers
   name: Door closing repeatedly
-  category: movers
 303:
-  name: Explosion
   category: gibbable
+  name: Explosion
 304:
-  name: Explosion
   category: gibbable
+  name: Explosion
 305:
-  name: Explosion
   category: gibbable
+  name: Explosion
 306:
-  name: Cannon Fire
   category: fire
+  name: Cannon Fire
 307:
-  name: Cannon Fire
   category: fire
+  name: Cannon Fire
 308:
+  category: fire
   name: Cannon Fire
-  category: fire
 309:
+  category: machinery
   name: Stomping Sound
-  category: machinery
 310:
-  name: Incoming Fire
   category: fire
+  name: Incoming Fire
 311:
+  category: fire
   name: Incoming Fire
-  category: fire
 312:
+  category: outdoors
   name: Scratched Record
-  category: outdoors
 313:
+  category: outdoors
   name: Walking on Leaves
-  category: outdoors
 314:
+  category: movers
   name: Opening Steel Door
-  category: movers
 315:
+  category: outdoors
   name: Walking Fast on Leaves
-  category: outdoors
 316:
-  name: Walking on leaves and breaking twigs
   category: outdoors
+  name: Walking on leaves and breaking twigs
 317:
+  category: outdoors
   name: Walking on leaves and breaking twigs
-  category: outdoors
 318:
+  category: gibbable
   name: Bashing body parts against a headstone
-  category: gibbable
 319:
+  category: gibbable
   name: Bashing body parts against a lamp post.
-  category: gibbable
 320:
+  category: gibbable
   name: Distant Explosions
-  category: gibbable
 350:
+  category: items
   name: Cam Wheel
-  category: items
 351:
+  category: gibbable
   name: Distant Explosion
-  category: gibbable
 352:
+  category: fire
   name: Small Fire
-  category: fire
 353:
+  category: water
   name: Water from a hose
-  category: water
 354:
+  category: water
   name: Water Drip
-  category: water
 355:
+  category: water
   name: Water Drip Echo
-  category: water
 356:
+  category: water
   name: Water Drip Double Echo
-  category: water
 357:
+  category: misc
   name: Punching - Hammering
-  category: misc
 358:
+  category: machinery
   name: Eccentric Grinding
-  category: machinery
 359:
-  name: Hammering
   category: weapons
+  name: Hammering
 360:
+  category: machinery
   name: Rattling Chain
-  category: machinery
 361:
+  category: misc
   name: Stomping Feet
-  category: misc
 362:
+  category: creepy
   name: Gnawing
-  category: creepy
 363:
+  category: city
   name: Phone Ringing
-  category: city
 364:
+  category: outdoors
   name: Fluttering Leaves
-  category: outdoors
 365:
+  category: outdoors
   name: Cicadas and Grasshoppers
-  category: outdoors
 366:
+  category: city
   name: Cash Register
-  category: city
 367:
+  category: city
   name: Dial Tone
-  category: city
 368:
+  category: city
   name: Busy Signal
-  category: city
 369:
+  category: city
   name: Toilet Flushing
-  category: city
 370:
+  category: city
   name: Broken Record
-  category: city
 371:
+  category: water
   name: Fast Drip
-  category: water
 372:
+  category: water
   name: Double Drip
-  category: water
 373:
+  category: water
   name: Very Fast Drip
-  category: water
 374:
+  category: machinery
   name: Metal Object bouncing on metal surface
-  category: machinery
 375:
+  category: machinery
   name: Machine Driven by a Leather Belt
-  category: machinery
 376:
+  category: city
   name: Hairdryer
-  category: city
 377:
+  category: city
   name: Electric Razor
-  category: city
 378:
+  category: weapons
   name: Fast Clipping
-  category: weapons
 379:
-  name: Broken Record 2
   category: city
+  name: Broken Record 2
 380:
+  category: misc
   name: Thumping
-  category: misc
 381:
+  category: machinery
   name: Noisy Machinery
-  category: machinery
 382:
+  category: machinery
   name: Banging Pipes
-  category: machinery
 383:
+  category: outdoors
   name: Shoveling
-  category: outdoors
 384:
+  category: gibbable
   name: Squash
-  category: gibbable
 385:
+  category: gibbable
   name: Fast Squashing
-  category: gibbable
 400:
-  name: Click
   category: weapons
+  name: Click
 401:
-  name: Click
   category: weapons
+  name: Click
 402:
-  name: Click
   category: weapons
+  name: Click
 410:
+  category: weapons
   name: Double Click
-  category: weapons
 411:
-  name: Gun Shot
   category: weapons
+  name: Gun Shot
 412:
+  category: weapons
   name: Big Gunshot
-  category: weapons
 413:
+  category: weapons
   name: Booming Gunshot
-  category: weapons
 420:
+  category: weapons
   name: Gunshot with Echo
-  category: weapons
 421:
+  category: weapons
   name: Gunshot
-  category: weapons
 422:
-  name: Wind
   category: outdoors
+  name: Wind
 423:
-  name: Wind
   category: outdoors
+  name: Wind
 430:
+  category: weapons
   name: Gun Being Cocked
-  category: weapons
 431:
+  category: weapons
   name: Pop
-  category: weapons
 440:
+  category: water
   name: Rain
-  category: water
 441:
+  category: outdoors
   name: Thunderstorm
-  category: outdoors
 450:
+  category: water
   name: Water Fall
-  category: water
 451:
+  category: weapons
   name: Small EKG Chirp
-  category: weapons
 452:
-  name: Click
   category: misc
+  name: Click
 453:
-  name: Click
   category: misc
+  name: Click
 454:
-  name: Click
   category: misc
+  name: Click
 455:
+  category: items
   name: Something Being Picked Up
-  category: items
 460:
+  category: weapons
   name: Click
-  category: weapons
 461:
+  category: machinery
   name: Rolling Wheels
-  category: machinery
 462:
-  name: Fire
   category: fire
+  name: Fire
 463:
+  category: voice
   name: Eh,Eh,Eh
-  category: voice
 470:
+  category: gibbable
   name: Gunshot Breaks Glass
-  category: gibbable
 471:
-  name: Thunder
   category: outdoors
+  name: Thunder
 472:
+  category: movers
   name: Locking Door
-  category: movers
 473:
-  name: Wind
   category: outdoors
+  name: Wind
 474:
+  category: outdoors
   name: Wind
-  category: outdoors
 475:
-  name: Thunder
   category: outdoors
+  name: Thunder
 476:
-  name: Electric Arc
   category: machinery
+  name: Electric Arc
+477:
+  category: unknown
+  name: SFX_TALTAC3
+478:
+  category: unknown
+  name: SFX_TESLAZ_1
+479:
+  category: unknown
+  name: SFX_TESLAZ_2
 480:
+  category: weapons
   name: Bang
-  category: weapons
 481:
+  category: machinery
   name: Electric Arc
-  category: machinery
 489:
+  category: machinery
   name: Motor Whir
-  category: machinery
 490:
+  category: machinery
   name: Mechanical Echo
-  category: machinery
 491:
+  category: movers
   name: Big Door Opening
-  category: movers
 492:
+  category: flesh
   name: Inhale
-  category: flesh
 493:
+  category: monsters
   name: Train Whistle and Screaming
-  category: monsters
 494:
+  category: weapons
   name: Big Bang
-  category: weapons
+495:
+  category: unknown
+  name: SFX_ACIDHIT1
+496:
+  category: unknown
+  name: SFX_ACIDHIT2
 499:
+  category: misc
   name: Squish
-  category: misc
 500:
-  name: Metal Clang
   category: weapons
+  name: Metal Clang
 501:
+  category: weapons
   name: Metal Clang
-  category: weapons
 502:
+  category: movers
   name: Door Close
-  category: movers
 503:
+  category: weapons
   name: Pitch Fork Stab
-  category: weapons
 504:
-  name: Plunk
   category: misc
+  name: Plunk
 505:
-  name: Plunk
   category: misc
+  name: Plunk
 506:
+  category: misc
   name: Plunk
-  category: misc
 507:
-  name: Door Opening
   category: movers
+  name: Door Opening
 510:
+  category: weapons
   name: Pitch Fork Hits Home
-  category: weapons
 511:
+  category: weapons
   name: Twist
-  category: weapons
 512:
+  category: weapons
   name: Scraping
-  category: weapons
 513:
-  name: Stab
   category: weapons
+  name: Stab
 514:
+  category: weapons
   name: Stab
-  category: weapons
 515:
-  name: Ricochet
   category: weapons
+  name: Ricochet
 516:
+  category: weapons
   name: Ricochet
-  category: weapons
 517:
+  category: weapons
   name: Tesla Shot
-  category: weapons
 518:
-  name: Arcing
   category: machinery
+  name: Arcing
 519:
+  category: gibbable
   name: Explosion
-  category: gibbable
 520:
+  category: machinery
   name: Arcing
-  category: machinery
 521:
+  category: misc
   name: Foot Step in Guts
-  category: misc
 522:
+  category: monsters
   name: Gargoyle Scream
-  category: monsters
 530:
+  category: monsters
   name: Whoop (short)
-  category: monsters
 600:
-  name: Feet Hit the Ground
   category: misc
+  name: Feet Hit the Ground
 601:
+  category: misc
   name: Land on a Metal Surface
-  category: misc
 602:
+  category: misc
   name: Feet Hit the Ground
-  category: misc
 603:
-  name: Jump in Water
   category: water
+  name: Jump in Water
 604:
+  category: water
   name: Jump in Water
-  category: water
 605:
+  category: misc
   name: Landing
-  category: misc
 607:
+  category: gibbable
   name: Hitting the Floor after Falling.
-  category: gibbable
 608:
-  name: Little Bells that Tinkle
   category: weapons
+  name: Little Bells that Tinkle
 609:
+  category: weapons
   name: Little Bells that Tinkle
-  category: weapons
 610:
+  category: weapons
   name: Shot Gun Shells hit the Floor
-  category: weapons
 611:
+  category: weapons
   name: Machine Gun Shell hits the Floor
-  category: weapons
 612:
+  category: weapons
   name: Shell hit the Floor
-  category: weapons
 700:
-  name: Swoosh
   category: voice
+  name: Swoosh
 701:
-  name: Unh
   category: voice
+  name: Unh
 702:
+  category: voice
   name: Ah, It's Stuck
-  category: voice
 703:
+  category: voice
   name: No Power
-  category: voice
 704:
+  category: voice
   name: Locked
-  category: voice
 705:
+  category: voice
   name: I Need A Key
-  category: voice
 706:
-  name: Heavy Breathing
   category: flesh
+  name: Heavy Breathing
+707:
+  category: unknown
+  name: SFX_FRBREATH
 708:
+  category: water
   name: Walking in Water
-  category: water
 709:
+  category: water
   name: Underwater
-  category: water
 710:
-  name: Scream - Short
   category: voice
+  name: Scream - Short
 711:
+  category: voice
   name: Scream - Long
-  category: voice
 712:
+  category: voice
   name: Scream - Short
-  category: voice
 713:
-  name: Scream
   category: voice
+  name: Scream
 714:
+  category: voice
   name: Choked
-  category: voice
 715:
+  category: voice
   name: Can't Breath
-  category: voice
 716:
+  category: voice
   name: Ahhhh!
-  category: voice
 717:
+  category: monsters
   name: Cultist Dying
-  category: monsters
 718:
+  category: monsters
   name: Scream
-  category: monsters
 719:
+  category: voice
   name: Scream of Someone Falling
-  category: voice
 720:
-  name: Falling into Water
   category: water
-720:
   name: Falling into Water
-  category: water
 721:
-  name: Getting up out of Water
   category: water
+  name: Getting up out of Water
 722:
+  category: voice
   name: Gasping for Air
-  category: voice
 723:
+  category: voice
   name: Large Exhale
-  category: voice
 724:
+  category: voice
   name: Choking
-  category: voice
 725:
-  name: Ahhhh
   category: voice
+  name: Ahhhh
 726:
+  category: voice
   name: Ehhh, Ehhh
-  category: voice
+727:
+  category: unknown
+  name: SFX_PLAY1102
 728:
+  category: voice
   name: Ahhhh - Short
-  category: voice
 729:
-  name: Ahh!
   category: voice
+  name: Ahh!
 730:
+  category: voice
   name: Waaaa
-  category: voice
 731:
+  category: voice
   name: Unh
-  category: voice
 732:
+  category: voice
   name: Oohh
-  category: voice
 733:
+  category: voice
   name: Ahhhh
-  category: voice
 734:
+  category: voice
   name: He, he, he ,he
-  category: voice
+735:
+  category: unknown
+  name: SFX_PLAY1110
 736:
+  category: voice
   name: Ha, ha, ha, ha
-  category: voice
 737:
-  name: Cultist Laugh
   category: monsters
-742:
   name: Cultist Laugh
-  category: monsters
+738:
+  category: unknown
+  name: SFX_PLAY1113
+739:
+  category: unknown
+  name: SFX_PLAY1114
+740:
+  category: unknown
+  name: SFX_PLAY1115
+741:
+  category: unknown
+  name: SFX_PLAY1116
 742:
+  category: voice
   name: It Burns! It Burns!
-  category: voice
 743:
+  category: voice
   name: Wah, Wah
-  category: voice
 744:
+  category: voice
   name: Cultist Laugh
-  category: voice
 745:
+  category: monsters
   name: Sliding Stone, intermittant
-  category: monsters
 746:
+  category: voice
   name: Someone Stabbed
-  category: voice
 747:
+  category: voice
   name: Someone Gagging
-  category: voice
 775:
+  category: items
   name: Blip
-  category: items
 776:
+  category: items
   name: Gong
-  category: items
 777:
+  category: weapons
   name: Shotgun Shell Being Chambered
-  category: weapons
 778:
+  category: misc
   name: 1 Cricket
-  category: misc
 779:
-  name: Closing of Heavy Steel Lock
   category: machinery
+  name: Closing of Heavy Steel Lock
 780:
+  category: items
   name: Heart Beat
-  category: items
 781:
-  name: Crossed Swords
   category: items
+  name: Crossed Swords
 782:
+  category: weapons
   name: Pick Up Ammo
-  category: weapons
+800:
+  category: unknown
+  name: SFX_FFNIL1
+801:
+  category: unknown
+  name: SFX_FFNIL2
 802:
+  category: misc
   name: Soft Click
-  category: misc
+803:
+  category: unknown
+  name: SFX_FFSTONE2
 804:
+  category: misc
   name: Soft Close
-  category: misc
 805:
-  name: Tick
   category: misc
+  name: Tick
 806:
-  name: Tick
   category: misc
+  name: Tick
 807:
+  category: misc
   name: Tick
-  category: misc
 808:
-  name: Slurp
   category: misc
+  name: Slurp
 809:
-  name: Stomping Through Guts
   category: creepy
+  name: Stomping Through Guts
+810:
+  category: unknown
+  name: SFX_FFWATER1
+811:
+  category: unknown
+  name: SFX_FFWATER2
 812:
-  name: Stomping Through Guts
   category: creepy
+  name: Stomping Through Guts
 813:
+  category: misc
   name: Hard Crunch
-  category: misc
 814:
+  category: misc
   name: Thick Crunch
-  category: misc
 815:
-  name: Crunch
   category: misc
+  name: Crunch
 816:
+  category: misc
   name: Soft Crunch
-  category: misc
 817:
-  name: Soft Un-Sticking
   category: misc
+  name: Soft Un-Sticking
 818:
+  category: misc
   name: Soft Un-Sticking
-  category: misc
 819:
+  category: misc
   name: Un-Stick
-  category: misc
 820:
+  category: misc
   name: Re-Stick
-  category: misc
 821:
+  category: misc
   name: Striking a Match
-  category: misc
 822:
+  category: misc
   name: Sandy Foot Step
-  category: misc
 823:
+  category: misc
   name: Foot Step Up
-  category: misc
 824:
+  category: misc
   name: Soft Sandy Foot Step
-  category: misc
 825:
+  category: misc
   name: Step-Up
-  category: misc
 826:
-  name: Slurp
   category: misc
+  name: Slurp
 827:
-  name: Slurp
   category: misc
+  name: Slurp
 828:
+  category: misc
   name: Deep Slurp
-  category: misc
 829:
+  category: misc
   name: Unstuck Underwater
-  category: misc
 1000:
+  category: weapons
   name: Swing and a Miss
-  category: weapons
 1001:
-  name: Gun Shot
   category: weapons
+  name: Gun Shot
 1002:
-  name: Gun Shot
   category: weapons
+  name: Gun Shot
 1003:
-  name: Cultist's Criticism
   category: monsters
+  name: Cultist's Criticism
+1004:
+  category: unknown
+  name: SFX_CULTSPT2
+1005:
+  category: unknown
+  name: SFX_CULTSPT3
+1006:
+  category: unknown
+  name: SFX_CULTSPT4
+1007:
+  category: unknown
+  name: SFX_CULTSPT5
+1008:
+  category: unknown
+  name: SFX_CULTROM1
+1009:
+  category: unknown
+  name: SFX_CULTROM2
+1010:
+  category: unknown
+  name: SFX_CULTROM3
+1011:
+  category: unknown
+  name: SFX_CULTROM4
 1012:
+  category: monsters
   name: Cultist's Criticism
-  category: monsters
 1013:
-  name: Cultist's Yell
   category: monsters
+  name: Cultist's Yell
+1014:
+  category: unknown
+  name: SFX_CULTPAN2
+1015:
+  category: unknown
+  name: SFX_CULTPAN3
+1016:
+  category: unknown
+  name: SFX_CULTPAN4
 1017:
+  category: monsters
   name: Cultist's Yell
-  category: monsters
 1018:
-  name: Cultist's Scream
   category: monsters
+  name: Cultist's Scream
+1019:
+  category: unknown
+  name: SFX_CULTDIE2
+1020:
+  category: unknown
+  name: SFX_CULTDIE3
+1021:
+  category: unknown
+  name: SFX_CULTGLO1
+1022:
+  category: unknown
+  name: SFX_CULTGLO2
+1023:
+  category: unknown
+  name: SFX_CULTGLO3
+1024:
+  category: unknown
+  name: SFX_CULTGLO4
 1031:
+  category: monsters
   name: Cultist's Scream
-  category: monsters
 1032:
+  category: monsters
   name: It Burns!  It Burns!
-  category: monsters
 1033:
+  category: monsters
   name: Wah! Wah!
-  category: monsters
 1100:
+  category: monsters
   name: Slurp
-  category: monsters
 1101:
+  category: monsters
   name: Swoosh
-  category: monsters
 1102:
+  category: monsters
   name: Thud
-  category: monsters
 1103:
+  category: monsters
   name: Brains
-  category: monsters
 1104:
+  category: monsters
   name: More Brains
-  category: monsters
 1105:
+  category: monsters
   name: Rumble
-  category: monsters
 1106:
-  name: Roaring Scream
   category: monsters
+  name: Roaring Scream
+1107:
+  category: unknown
+  name: SFX_AZOMDIE1
+1108:
+  category: unknown
+  name: SFX_AZOMDIE2
 1109:
+  category: monsters
   name: Roaring Scream
-  category: monsters
 1200:
+  category: monsters
   name: Join Us
-  category: monsters
 1201:
-  name: Zombie Speak
   category: monsters
+  name: Zombie Speak
 1202:
+  category: monsters
   name: Zombie Speak
-  category: monsters
 1203:
+  category: monsters
   name: Fat Zombie Hurl
-  category: monsters
 1204:
+  category: monsters
   name: Hurl
-  category: monsters
 1205:
-  name: Bound & Gagged
   category: monsters
+  name: Bound & Gagged
 1206:
+  category: monsters
   name: Bound & Gagged
-  category: monsters
 1207:
+  category: monsters
   name: Whip
-  category: monsters
 1300:
+  category: monsters
   name: Growl
-  category: monsters
+1301:
+  category: unknown
+  name: SFX_CERBROAM
 1302:
-  name: Dog Cry
   category: monsters
+  name: Dog Cry
 1303:
-  name: Dog Cry
   category: monsters
+  name: Dog Cry
 1304:
+  category: monsters
   name: Dog Cry
-  category: monsters
 1305:
+  category: monsters
   name: Dog Howl
-  category: monsters
 1306:
+  category: monsters
   name: Sipping Through a Straw
-  category: monsters
 1307:
-  name: Whoosh
   category: monsters
+  name: Whoosh
 1308:
+  category: monsters
   name: Whoosh
-  category: monsters
 1309:
+  category: monsters
   name: Heavy Sliding Stone or Fire
-  category: monsters
 1400:
-  name: Gargoyle Roar
   category: monsters
+  name: Gargoyle Roar
+1401:
+  category: unknown
+  name: SFX_GARGROAM
+1402:
+  category: unknown
+  name: SFX_GARGPAIN
+1403:
+  category: unknown
+  name: SFX_GARGDIE1
+1404:
+  category: unknown
+  name: SFX_GARGDIE2
 1405:
-  name: Gargoyle Roar
   category: monsters
+  name: Gargoyle Roar
 1406:
-  name: Crunch
   category: monsters
+  name: Crunch
 1407:
+  category: monsters
   name: Opening a Vacuum Seal
-  category: monsters
 1408:
+  category: monsters
   name: Jump Down
-  category: monsters
 1450:
-  name: Gargoyle Roar
   category: monsters
+  name: Gargoyle Roar
+1451:
+  category: unknown
+  name: SFX_SARGROAM
+1452:
+  category: unknown
+  name: SFX_SARGPAIN
+1453:
+  category: unknown
+  name: SFX_SARGDIE1
+1454:
+  category: unknown
+  name: SFX_SARGDIE2
 1455:
+  category: monsters
   name: Gargoyle Roar
-  category: monsters
 1456:
+  category: monsters
   name: Crunch
-  category: monsters
 1457:
+  category: monsters
   name: Pneumatic Engage
-  category: monsters
 1458:
+  category: monsters
   name: Boots on Pavement
-  category: monsters
 1500:
+  category: monsters
   name: Squeak
-  category: monsters
 1501:
+  category: monsters
   name: Flock of Birds
-  category: monsters
 1502:
-  name: Whistling Sound
   category: monsters
+  name: Whistling Sound
+1503:
+  category: unknown
+  name: SFX_EELDIE1
+1504:
+  category: unknown
+  name: SFX_EELDIE2
 1505:
+  category: monsters
   name: Whistling Sound
-  category: monsters
 1600:
+  category: monsters
   name: Train Whistle & Shriek
-  category: monsters
 1601:
-  name: He, he, he
   category: voice
+  name: He, he, he
 1602:
+  category: voice
   name: He, he, he
-  category: voice
 1603:
-  name: Moan
   category: monsters
+  name: Moan
+1604:
+  category: unknown
+  name: SFX_PHANDIE3
 1605:
+  category: monsters
   name: Moan
-  category: monsters
 1700:
-  name: Gillbeast Roar
   category: monsters
+  name: Gillbeast Roar
 1701:
+  category: monsters
   name: Inhale - Exhale
-  category: monsters
 1702:
-  name: Gillbeast Roar
   category: monsters
+  name: Gillbeast Roar
 1703:
-  name: Gillbeast Roar
   category: monsters
+  name: Gillbeast Roar
 1704:
+  category: monsters
   name: The Sound of Something Impaled
-  category: monsters
 1705:
+  category: monsters
   name: Gillbeast Roar
-  category: monsters
 1800:
+  category: monsters
   name: Spider Sight
-  category: monsters
 1801:
-  name: Spider Death
   category: monsters
+  name: Spider Death
 1802:
-  name: Spider Death
   category: monsters
+  name: Spider Death
 1803:
-  name: Spider Death
   category: monsters
+  name: Spider Death
 1804:
-  name: Spider Death
   category: monsters
+  name: Spider Death
 1805:
+  category: monsters
   name: Spider Death
-  category: monsters
 1850:
+  category: monsters
   name: Mother Spider Sight
-  category: monsters
 1851:
-  name: Mother Spider Hurt
   category: monsters
+  name: Mother Spider Hurt
 1852:
+  category: monsters
   name: Mother Spider Hurt
-  category: monsters
 1853:
-  name: Mother Spider Move
   category: monsters
+  name: Mother Spider Move
 1854:
+  category: monsters
   name: Mother Spider Move
-  category: monsters
 1900:
+  category: monsters
   name: I'll swallow your soul
-  category: monsters
 1901:
+  category: monsters
   name: Give me your soul.
-  category: monsters
 1902:
+  category: monsters
   name: The sound of your soul being eaten.
-  category: monsters
 1903:
-  name: Chewy Soul
   category: monsters
+  name: Chewy Soul
 1904:
-  name: Chewy Soul
   category: monsters
+  name: Chewy Soul
 1905:
+  category: monsters
   name: Chewy Soul
-  category: monsters
 2000:
+  category: monsters
   name: Bat Sight
-  category: monsters
+2001:
+  category: unknown
+  name: SFX_BATROAM
+2002:
+  category: unknown
+  name: SFX_BATPAIN
+2003:
+  category: unknown
+  name: SFX_BATDIE1
+2004:
+  category: unknown
+  name: SFX_BATDIE2
+2005:
+  category: unknown
+  name: SFX_BATDIE3
+2006:
+  category: unknown
+  name: SFX_BAT
 2100:
+  category: monsters
   name: Rat Sight
-  category: monsters
 2101:
+  category: monsters
   name: Rats
-  category: monsters
+2102:
+  category: unknown
+  name: SFX_RATPAIN
+2103:
+  category: unknown
+  name: SFX_RATDIE1
+2104:
+  category: unknown
+  name: SFX_RATDIE2
 2105:
+  category: monsters
   name: Rat Death
-  category: monsters
+2200:
+  category: unknown
+  name: SFX_PODSQUIS
 2201:
-  name: Squishy Guts
   category: gibbable
+  name: Squishy Guts
+2202:
+  category: unknown
+  name: SFX_PODSQUIS_2
+2203:
+  category: unknown
+  name: SFX_PODDIE1
+2204:
+  category: unknown
+  name: SFX_PODDIE2
 2205:
-  name: Squishy Guts
   category: gibbable
+  name: Squishy Guts
 2206:
-  name: Swish
   category: misc
+  name: Swish
 2300:
+  category: monsters
   name: Cerberus Sight
-  category: monsters
 2301:
+  category: monsters
   name: Cerberus
-  category: monsters
+2302:
+  category: unknown
+  name: SFX_CERBPAIN_2
+2303:
+  category: unknown
+  name: SFX_CERBPAIN_3
+2304:
+  category: unknown
+  name: SFX_CERBDIE2_2
+2305:
+  category: unknown
+  name: SFX_CERBDIE3_2
 2306:
+  category: monsters
   name: Cerberus Injured
-  category: monsters
 2350:
+  category: monsters
   name: Bow down to me
-  category: monsters
 2351:
+  category: monsters
   name: Bow Down to me
-  category: monsters
 2352:
-  name: Kneel
   category: monsters
+  name: Kneel
 2353:
+  category: monsters
   name: Kneel
-  category: monsters
 2354:
-  name: Kneel Before me.
   category: voice
+  name: Kneel Before me.
 2355:
+  category: monsters
   name: Kneel Before me.
-  category: monsters
 2356:
-  name: I Have awaited you.
   category: monsters
+  name: I Have awaited you.
 2357:
+  category: voice
   name: I Have awaited you.
-  category: voice
 2360:
-  name: Tchernobog Laughter
   category: voice
+  name: Tchernobog Laughter
 2361:
-  name: Tchernobog Laughter
   category: voice
+  name: Tchernobog Laughter
 2362:
-  name: Tchernobog Laughter
   category: voice
+  name: Tchernobog Laughter
 2363:
-  name: Tchernobog Laughter
   category: voice
+  name: Tchernobog Laughter
 2364:
+  category: voice
   name: Tchernobog Laughter
-  category: voice
 2365:
+  category: voice
   name: Suffer
-  category: voice
 2366:
+  category: voice
   name: Sacrifice
-  category: voice
 2367:
+  category: voice
   name: Give me a sacrifice.
-  category: voice
 2368:
-  name: Worship Me!
   category: voice
+  name: Worship Me!
 2369:
+  category: voice
   name: Worship Me!
-  category: voice
 2370:
+  category: monsters
   name: Aargh
-  category: monsters
 2371:
-  name: Ugh
   category: monsters
+  name: Ugh
 2372:
+  category: monsters
   name: Ugh
-  category: monsters
 2373:
+  category: monsters
   name: Ahh!
-  category: monsters
 2374:
+  category: monsters
   name: Oww
-  category: monsters
 2375:
-  name: Aww
   category: monsters
+  name: Aww
 2377:
+  category: monsters
   name: Aww
-  category: monsters
 2380:
+  category: monsters
   name: Thud with Whistle
-  category: monsters
 2381:
+  category: monsters
   name: Large Stone Moving
-  category: monsters
+2400:
+  category: unknown
+  name: SFX_FLYBUZZ
+2401:
+  category: unknown
+  name: SFX_MFLY
+2450:
+  category: unknown
+  name: SFX_FPODCLOS
+2451:
+  category: unknown
+  name: SFX_FPODCOL2
+2452:
+  category: unknown
+  name: SFX_FPODEXP2
+2453:
+  category: unknown
+  name: SFX_FPODOPEN
+2454:
+  category: unknown
+  name: SFX_FPODSPIT
+2470:
+  category: unknown
+  name: SFX_FPODCLOS_2
+2471:
+  category: unknown
+  name: SFX_PODCOL2
+2472:
+  category: unknown
+  name: SFX_PODEXP2
+2473:
+  category: unknown
+  name: SFX_NPODOPEN
+2474:
+  category: unknown
+  name: SFX_PODSPIT1
+2475:
+  category: unknown
+  name: SFX_PODSPIT2
+2500:
+  category: unknown
+  name: SFX_TENTDWN3
+2501:
+  category: unknown
+  name: SFX_TENTEXP
+2502:
+  category: unknown
+  name: SFX_TENTSWP4
+2503:
+  category: unknown
+  name: SFX_TENTUP3
 3000:
+  category: voice
   name: Ooh, fresh victums for the ever growing army of the undead
-  category: voice
 3001:
+  category: voice
   name: This is my boom stick
-  category: voice
 3002:
+  category: voice
   name: Good, bad, I'm the guy with the gun.
-  category: voice
 3003:
+  category: voice
   name: I love the smell of napalm in the morning.
-  category: voice
 3004:
+  category: voice
   name: All I want's a friend.
-  category: voice
 3005:
+  category: voice
   name: No one wants to play with me
-  category: voice
 3006:
+  category: voice
   name: Hmm, Is that gasoline I smell.
-  category: voice
 3007:
+  category: voice
   name: Whoa
-  category: voice
 3008:
+  category: voice
   name: Ta Daa
-  category: voice
 3009:
+  category: voice
   name: I live again.
-  category: voice
 3010:
+  category: voice
   name: Who wants some huh?  Who's next?
-  category: voice
 3011:
+  category: voice
   name: I want some more
-  category: voice
 3012:
+  category: voice
   name: Victims, aren't we all?
-  category: voice
 3013:
+  category: voice
   name: They're all dead. They just don't know it yet.
-  category: voice
 3014:
+  category: voice
   name: I have something for you.
-  category: voice
 3015:
+  category: voice
   name: Are you just gonna stand there and bleed.
-  category: voice
 3016:
+  category: voice
   name: I got a present for you.
-  category: voice
 3017:
+  category: voice
   name: I've got 2 guns. That should be enough for all of you.
-  category: voice
 3018:
+  category: voice
   name: Hey! She-bitch, Let's go.
-  category: voice
 3019:
+  category: voice
   name: That'll teach you.
-  category: voice
 3020:
+  category: voice
   name: Get off my train.
-  category: voice
 3021:
+  category: voice
   name: Oh, shake it baby.
-  category: voice
 3022:
+  category: voice
   name: You have to have faith for that to work.
-  category: voice
 3023:
+  category: voice
   name: Open for business.
-  category: voice
 3024:
+  category: voice
   name: We'll need a lot more of these.
-  category: voice
 3025:
+  category: voice
   name: They'll need a lot more of these.
-  category: voice
 3026:
+  category: voice
   name: Lambs to the slaughter.
-  category: voice
 3027:
+  category: voice
   name: Nevermore
-  category: voice
 3028:
+  category: voice
   name: Grave robbers.
-  category: voice
 3029:
+  category: voice
   name: Ticket please.
-  category: voice
 3030:
+  category: voice
   name: Yes! Single white female.
-  category: voice
 3031:
+  category: voice
   name: Looks like my train's coming.
-  category: voice
 3032:
+  category: voice
   name: Whoa, that's me.
-  category: voice
 3033:
+  category: voice
   name: I sure could use a drink.
-  category: voice
 3034:
+  category: voice
   name: End of the line.
-  category: voice
 3035:
+  category: voice
   name: I must stop this train.
-  category: voice
 3036:
+  category: voice
   name: I got time to play with you.
-  category: voice
 3037:
+  category: voice
   name: Come out! Come out! Where ever you are.
-  category: voice
 3038:
+  category: voice
   name: Son of a bitch must pay!
-  category: voice
 3039:
+  category: voice
   name: It's all in the reflexes.
-  category: voice
 3040:
+  category: voice
   name: I smell varmint poontang.
-  category: voice
 3041:
-  name: When does the hurting stop?
   category: voice
+  name: When does the hurting stop?
 3042:
+  category: voice
   name: Boo Hoo! When does the hurting stop?
-  category: voice
 3043:
+  category: voice
   name: When does the hurting stop?
-  category: voice
 3044:
+  category: voice
   name: Umph! This looks extraordinarily bad.
-  category: voice
 3045:
+  category: voice
   name: Pay attention son. This is for your own good.
-  category: voice
 3046:
+  category: voice
   name: Owww, that wasn't a but nice.
-  category: voice
 3047:
+  category: voice
   name: Wow! This promises to be fun.
-  category: voice
 3048:
+  category: voice
   name: Slurp, um, this is better than Kool Aid
-  category: voice
 3049:
+  category: voice
   name: Da, da da, that's all folks.
-  category: voice
 3050:
+  category: voice
   name: Help! Help! I'm being repressed.
-  category: voice
 3051:
+  category: voice
   name: I'm not dead yet.
-  category: voice
 3052:
+  category: voice
   name: I'm gonna have to put you down.
-  category: voice
 3053:
+  category: voice
   name: What are you gonna do? Bleed on me?
-  category: voice
 3054:
+  category: voice
   name: Hmmm extraodinary use of colour. The composition, is a bit lacking.
-  category: voice
 3055:
+  category: voice
   name: Don't waste my time.
-  category: voice
 3056:
+  category: voice
   name: Rest in pieces.
-  category: voice
 3058:
+  category: voice
   name: Slurp, better than Kool Aid.
-  category: voice
 3059:
+  category: voice
   name: Slurp, ahhh!
-  category: voice
 3060:
+  category: voice
   name: Out, Out damn spot!
-  category: voice
 3061:
+  category: voice
   name: I like my hand bloody
-  category: voice
 3062:
+  category: voice
   name: Locked!
-  category: voice
 3063:
+  category: voice
   name: I need a key
-  category: voice
 3064:
+  category: voice
   name: Ahh! It's stuck!
-  category: voice
 3065:
+  category: voice
   name: Umph, no power!
-  category: voice
 3066:
+  category: voice
   name: Amateurs
-  category: voice
 3067:
+  category: voice
   name: ehhh! I'm not that hungry!
-  category: voice
 3068:
+  category: voice
   name: Leftovers
-  category: voice
 3069:
+  category: voice
   name: OH! I won it. I won, I won.
-  category: voice
 3070:
+  category: voice
   name: Do these blow up into a funny shape?
-  category: voice
 3071:
+  category: voice
   name: Aww! Ratburgers!
-  category: voice
 3072:
+  category: voice
   name: I want Jo-Jo. Jo-Jo. Jo-Jo.
-  category: voice
 3073:
+  category: voice
   name: Down the hatch.
-  category: voice
 3074:
+  category: voice
   name: Over the lips, through the gums, look out tummy, here I come.
-  category: voice
 3075:
+  category: voice
   name: Wrong door! Whoa!
-  category: voice
 3076:
+  category: voice
   name: Ophelia, nooooooooooo!
-  category: voice
 3077:
+  category: voice
   name: Sleep, Ophelia
-  category: voice
 3078:
+  category: voice
   name: Kill yourself
-  category: voice
 3079:
+  category: voice
   name: Show yourself.
-  category: voice
 3080:
+  category: voice
   name: I hate mimes.
-  category: voice
 3081:
+  category: voice
   name: Pathetic insect.
-  category: voice
 3082:
+  category: voice
   name: Run!  Run!
-  category: voice
 3083:
+  category: voice
   name: In pace requiesce fortunato
-  category: voice
 3084:
+  category: voice
   name: Fool! You are already dead.
-  category: voice
 3100:
+  category: voice
   name: Strangers in the night exchanging glances.
-  category: voice
 3101:
+  category: voice
   name: Theres no business like show business.
-  category: voice
 3102:
+  category: voice
   name: I did it my way.
-  category: voice
 3103:
+  category: voice
   name: If you're blue and you don't know where to go to...
-  category: voice
 3104:
+  category: voice
   name: The sun will come out tomorrow.
-  category: voice
 3105:
+  category: voice
   name: Row, row, row your boat.
-  category: voice
 3106:
+  category: voice
   name: It's a long way to Tipperary.
-  category: voice
 3107:
+  category: voice
   name: Somewhere over the rainbow.
-  category: voice
 3108:
+  category: voice
   name: Sailing, Sailing, over the bounting maine.
-  category: voice
 3109:
+  category: voice
   name: On the good ship lollipop.
-  category: voice
 3110:
+  category: voice
   name: I get no kick from champagne.
-  category: voice
 3111:
+  category: voice
   name: I've got you under my skin.
-  category: voice
 3200:
+  category: voice
   name: Hello, may I speak to Mr. Jass, first name's Hugh
-  category: voice
 3201:
+  category: voice
   name: Step right up! Step right up!
-  category: voice
 3202:
+  category: voice
   name: You will know what to do when the time comes.
-  category: voice
 3203:
-  name: Choose wisely. Two portals lead to certain death.
   category: voice
+  name: Choose wisely. Two portals lead to certain death.
 3204:
+  category: voice
   name: Why are you in such a hurry?
-  category: voice
 3205:
+  category: voice
   name: Next Stop Greentown.
-  category: voice
 3206:
+  category: voice
   name: You rang?
-  category: voice
 3207:
+  category: voice
   name: Garbled announcement.
-  category: voice
 3208:
+  category: voice
   name: All aboard!
-  category: voice
 3209:
+  category: voice
   name: Garbled
-  category: voice
 3210:
+  category: voice
   name: Secure breach at the zombie cage
-  category: voice
 3211:
+  category: voice
   name: I'm suffering.
-  category: voice
 3212:
+  category: voice
   name: I do that rather well don't you think?
-  category: voice
 3213:
+  category: voice
   name: Help me! Help me! (The Fly)
-  category: voice
 3214:
+  category: voice
   name: Train Station Annoucement
-  category: voice
 3216:
+  category: voice
   name: Prayer
-  category: voice
 3300:
+  category: voice
   name: Let the Blood Bath begin!
-  category: voice
 3301:
+  category: voice
   name: The Festival of Blood Continues!
-  category: voice
 3302:
+  category: voice
   name: You'll know what to do when the time comes.
-  category: voice
 3303:
+  category: voice
   name: Choose wisely. Two portals lead to certain death.
-  category: voice
 3304:
+  category: voice
   name: Kevorkian Approves!
-  category: voice
 3305:
+  category: voice
   name: Asshole
-  category: voice
 3306:
+  category: voice
   name: Excrement
-  category: voice
 3307:
+  category: voice
   name: Hamburger
-  category: voice
 3308:
+  category: voice
   name: Scrotum Separation
-  category: voice
 3309:
+  category: voice
   name: Body bagged.
-  category: voice
 3310:
+  category: voice
   name: Population control.
-  category: voice
 3311:
+  category: voice
   name: Unassisted death
-  category: voice
 3312:
+  category: voice
   name: Shadapong
-  category: voice
 3313:
+  category: voice
   name: Finish Him!
-  category: voice
 3314:
+  category: voice
   name: Darling award.
-  category: voice
 3317:
+  category: voice
   name: Go play Mario
-  category: voice
 3318:
+  category: voice
   name: Need a tricycle?
-  category: voice
 3319:
+  category: voice
   name: Talented.
-  category: voice
 3320:
+  category: voice
   name: Good one
-  category: voice
 3321:
+  category: voice
   name: Lunch meat.
-  category: voice
 3322:
+  category: voice
   name: Fine work.
-  category: voice
 3323:
+  category: voice
   name: Well done.
-  category: voice
 3324:
+  category: voice
   name: Destroyed.
-  category: voice
 3325:
+  category: voice
   name: Hosed.
-  category: voice
 3326:
+  category: voice
   name: Humiliated.
-  category: voice
 3327:
+  category: voice
   name: Toasted.
-  category: voice
 3328:
+  category: voice
   name: Fit to hell.
-  category: voice
 3329:
+  category: voice
   name: Pass the jelly.
-  category: voice
 3330:
+  category: voice
   name: Punishment delivered.
-  category: voice
 3331:
+  category: voice
   name: Bobbetttized!
-  category: voice
 3332:
+  category: voice
   name: Stiffed
-  category: voice
 3333:
+  category: voice
   name: He shoots! He scores!
-  category: voice
 3334:
+  category: voice
   name: Spillage
-  category: voice
 3335:
+  category: voice
   name: Sprayed.
-  category: voice
 3336:
+  category: voice
   name: Dog meat.
-  category: voice
 3337:
+  category: voice
   name: Bye, bye, now.
-  category: voice
 3338:
+  category: voice
   name: Ripped 'em loose.
-  category: voice
 3339:
+  category: voice
   name: Beaten like a cur.
-  category: voice
 3340:
+  category: voice
   name: Whipped and creamed.
-  category: voice
 3341:
+  category: voice
   name: Snuffed.
-  category: voice
 3342:
+  category: voice
   name: Spleen bit it.
-  category: voice
 3343:
+  category: voice
   name: Vaporized!
-  category: voice
 3344:
+  category: voice
   name: Excellent!
-  category: voice
 3345:
+  category: voice
   name: Excellent! (very fast)
-  category: voice
 4000:
+  category: monsters
   name: One Step
-  category: monsters
 4001:
+  category: monsters
   name: Hammering
-  category: monsters
 4002:
+  category: monsters
   name: Faster Hammering
-  category: monsters
 4003:
+  category: monsters
   name: Cultist Criticism 1
-  category: monsters
 4004:
+  category: monsters
   name: Cultist Criticism 2
-  category: monsters
 4005:
-  name: Cultist Criticism 3
   category: monsters
+  name: Cultist Criticism 3
+4006:
+  category: unknown
+  name: SFX_TCLTSPT4
+4007:
+  category: unknown
+  name: SFX_TCLTSPT5
+4008:
+  category: unknown
+  name: SFX_TCLTROM1
+4009:
+  category: unknown
+  name: SFX_TCLTROM2
+4010:
+  category: unknown
+  name: SFX_TCLTROM3
+4011:
+  category: unknown
+  name: SFX_TCLTROM4
+4012:
+  category: unknown
+  name: SFX_TCLTROM5
+4013:
+  category: unknown
+  name: SFX_TCLTPAN1
+4014:
+  category: unknown
+  name: SFX_TCLTPAN2
+4015:
+  category: unknown
+  name: SFX_TCLTPAN3
+4016:
+  category: unknown
+  name: SFX_TCLTPAN4
+4017:
+  category: unknown
+  name: SFX_TCLTPAN5
+4018:
+  category: unknown
+  name: SFX_TCLTDIE1
+4019:
+  category: unknown
+  name: SFX_TCLTDIE2
+4020:
+  category: unknown
+  name: SFX_TCLTDIE3
+4021:
+  category: unknown
+  name: SFX_TCLTGLO1
+4022:
+  category: unknown
+  name: SFX_TCLTGLO2
+4023:
+  category: unknown
+  name: SFX_TCLTGLO3
+4024:
+  category: unknown
+  name: SFX_TCLTGLO4
+4031:
+  category: unknown
+  name: SFX_TCLTFIR1
+4032:
+  category: unknown
+  name: SFX_TCLTFIR2
+4033:
+  category: unknown
+  name: SFX_TCLTFIR3
+4100:
+  category: unknown
+  name: SFX_BONED
+4101:
+  category: unknown
+  name: SFX_CASTRA
+4102:
+  category: unknown
+  name: SFX_CREAMED
+4103:
+  category: unknown
+  name: SFX_DESTRO
+4104:
+  category: unknown
+  name: SFX_DICED
+4105:
+  category: unknown
+  name: SFX_DISEMBO
+4106:
+  category: unknown
+  name: SFX_FLATTE
+4107:
+  category: unknown
+  name: SFX_JUSTICE
+4108:
+  category: unknown
+  name: SFX_MADNESS
+4109:
+  category: unknown
+  name: SFX_DECIMAT
+4110:
+  category: unknown
+  name: SFX_KILLED
+4111:
+  category: unknown
+  name: SFX_MINCMEAT
+4112:
+  category: unknown
+  name: SFX_MASSACR
+4113:
+  category: unknown
+  name: SFX_MUTILA
+4114:
+  category: unknown
+  name: SFX_REAMED
+4115:
+  category: unknown
+  name: SFX_RIPPED
+4116:
+  category: unknown
+  name: SFX_SLAUGHT
+4117:
+  category: unknown
+  name: SFX_SLICED
+4118:
+  category: unknown
+  name: SFX_SMASHED
+4119:
+  category: unknown
+  name: SFX_SODOMIZ
+4120:
+  category: unknown
+  name: SFX_SPLATT
+4121:
+  category: unknown
+  name: SFX_SQUASH
+4122:
+  category: unknown
+  name: SFX_THROTTL
+4123:
+  category: unknown
+  name: SFX_WASTED
+4124:
+  category: unknown
+  name: SFX_10
+4125:
+  category: unknown
+  name: SFX_OMNI24
+4126:
+  category: unknown
+  name: SFX_OMNI25
+4127:
+  category: unknown
+  name: SFX_OMNI26
+4128:
+  category: unknown
+  name: SFX_OMNI27
+4129:
+  category: unknown
+  name: SFX_OMNI32
+4130:
+  category: unknown
+  name: SFX_OMNI34
+4132:
+  category: unknown
+  name: SFX_OMNI36
+4133:
+  category: unknown
+  name: SFX_OMNI37
+4134:
+  category: unknown
+  name: SFX_OMNI41
+4135:
+  category: unknown
+  name: SFX_OMNI43
+4136:
+  category: unknown
+  name: SFX_OMNI44
+4141:
+  category: unknown
+  name: SFX_OMNI35
+4200:
+  category: unknown
+  name: SFX_OMNI5
+4202:
+  category: unknown
+  name: SFX_OMNI7
+4203:
+  category: unknown
+  name: SFX_OMNI8
+4204:
+  category: unknown
+  name: SFX_OMNI9
+4206:
+  category: unknown
+  name: SFX_OMNI12
+4207:
+  category: unknown
+  name: SFX_OMNI13
+4208:
+  category: unknown
+  name: SFX_OMNI16
+4210:
+  category: unknown
+  name: SFX_OMNI20
+4211:
+  category: unknown
+  name: SFX_OMNI21
+4212:
+  category: unknown
+  name: SFX_OMNI22
+4213:
+  category: unknown
+  name: SFX_OMNI23
+4300:
+  category: unknown
+  name: SFX_OMNI15A
+4400:
+  category: unknown
+  name: SFX_TAUNT0
+4401:
+  category: unknown
+  name: SFX_TAUNT1
+4402:
+  category: unknown
+  name: SFX_TAUNT2
+4403:
+  category: unknown
+  name: SFX_TAUNT3
+4404:
+  category: unknown
+  name: SFX_TAUNT4
+4405:
+  category: unknown
+  name: SFX_TAUNT5
+4406:
+  category: unknown
+  name: SFX_TAUNT6
+4407:
+  category: unknown
+  name: SFX_TAUNT7
+4408:
+  category: unknown
+  name: SFX_TAUNT8
+4409:
+  category: unknown
+  name: SFX_TAUNT9
+4500:
+  category: unknown
+  name: SFX_3000
 4502:
-  name: Woah. What the hell did that do?
   category: voice
+  name: Woah. What the hell did that do?
+4503:
+  category: unknown
+  name: SFX_3002A
+4504:
+  category: unknown
+  name: SFX_3002B
+4505:
+  category: unknown
+  name: SFX_3002C
+4506:
+  category: unknown
+  name: SFX_3002D
+4507:
+  category: unknown
+  name: SFX_3003
+4509:
+  category: unknown
+  name: SFX_3004B
+4511:
+  category: unknown
+  name: SFX_3006
+4512:
+  category: unknown
+  name: SFX_3007
+4513:
+  category: unknown
+  name: SFX_3008
+4514:
+  category: unknown
+  name: SFX_3009
+4515:
+  category: unknown
+  name: SFX_3010
+4516:
+  category: unknown
+  name: SFX_3011
+4517:
+  category: unknown
+  name: SFX_3012
+4518:
+  category: unknown
+  name: SFX_3013
+4519:
+  category: unknown
+  name: SFX_3014
+4520:
+  category: unknown
+  name: SFX_3015
+4521:
+  category: unknown
+  name: SFX_3016A
+4523:
+  category: unknown
+  name: SFX_3017
+4525:
+  category: unknown
+  name: SFX_3018B
+4526:
+  category: unknown
+  name: SFX_3019
+4527:
+  category: unknown
+  name: SFX_3020
+4528:
+  category: unknown
+  name: SFX_3021
+4530:
+  category: unknown
+  name: SFX_3022B
+4531:
+  category: unknown
+  name: SFX_3023A
+4533:
+  category: unknown
+  name: SFX_3024
+4534:
+  category: unknown
+  name: SFX_3025
+4535:
+  category: unknown
+  name: SFX_3026
+4536:
+  category: unknown
+  name: SFX_3027
+4537:
+  category: unknown
+  name: SFX_3028
+4538:
+  category: unknown
+  name: SFX_3029
+4539:
+  category: unknown
+  name: SFX_3030
+4540:
+  category: unknown
+  name: SFX_3031
+4541:
+  category: unknown
+  name: SFX_3032
+4542:
+  category: unknown
+  name: SFX_3033
+4543:
+  category: unknown
+  name: SFX_3034
+4544:
+  category: unknown
+  name: SFX_3035
+4545:
+  category: unknown
+  name: SFX_3036
+4546:
+  category: unknown
+  name: SFX_3037
+4547:
+  category: unknown
+  name: SFX_3038
+4548:
+  category: unknown
+  name: SFX_3039
+7000:
+  category: unknown
+  name: SFX_ICRYING
+7001:
+  category: unknown
+  name: SFX_ICRYING2
+7002:
+  category: unknown
+  name: SFX_IDONHME
+7003:
+  category: unknown
+  name: SFX_IGOAWAY2
+7004:
+  category: unknown
+  name: SFX_IGOAWAY3
+7005:
+  category: unknown
+  name: SFX_INOPLACE
+7006:
+  category: unknown
+  name: SFX_IPLEASE
+7007:
+  category: unknown
+  name: SFX_ISCREAM1
+7008:
+  category: unknown
+  name: SFX_ISCREAM2
+7009:
+  category: unknown
+  name: SFX_ISCREAM3
+8000:
+  category: unknown
+  name: SFX_8000
+8001:
+  category: unknown
+  name: SFX_8001
+8002:
+  category: unknown
+  name: SFX_8002
+8003:
+  category: unknown
+  name: SFX_8003
+8004:
+  category: unknown
+  name: SFX_8004
+8005:
+  category: unknown
+  name: SFX_8005
+8006:
+  category: unknown
+  name: SFX_8006
+8007:
+  category: unknown
+  name: SFX_8007
+9000:
+  category: unknown
+  name: SFX_BEASTD_1
+9001:
+  category: unknown
+  name: SFX_BEASTD_3
+9002:
+  category: unknown
+  name: SFX_BEASTD_2
+9003:
+  category: unknown
+  name: SFX_BEASTD_1_2
+9004:
+  category: unknown
+  name: SFX_BEAST_1
+9005:
+  category: unknown
+  name: SFX_BEAST_2
+9006:
+  category: unknown
+  name: SFX_BEAST_3
+9007:
+  category: unknown
+  name: SFX_CALEBM_1
+9008:
+  category: unknown
+  name: SFX_CULTMO_1
+9009:
+  category: unknown
+  name: SFX_ROAR1
+9010:
+  category: unknown
+  name: SFX_ROAR2
+9011:
+  category: unknown
+  name: SFX_ROAR3
+9012:
+  category: unknown
+  name: SFX_SLASH1
+9013:
+  category: unknown
+  name: SFX_SLASH2
+9014:
+  category: unknown
+  name: SFX_SLASH3
+9015:
+  category: unknown
+  name: SFX_STOM5
+9016:
+  category: unknown
+  name: SFX_STOMP4
+9017:
+  category: unknown
+  name: SFX_STOMP3
+10000:
+  category: unknown
+  name: SFX_T1002
+10001:
+  category: unknown
+  name: SFX_T1005
+10002:
+  category: unknown
+  name: SFX_T1006
+10003:
+  category: unknown
+  name: SFX_T1010
+10004:
+  category: unknown
+  name: SFX_T1011
+10005:
+  category: unknown
+  name: SFX_T1015
+10006:
+  category: unknown
+  name: SFX_T1051
+11000:
+  category: unknown
+  name: SFX_T1003
