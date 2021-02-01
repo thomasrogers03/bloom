@@ -47,6 +47,8 @@ PORTALS_ENABLED = env('PORTALS_ENABLED', 'true').lower() == 'true'
 PORTALS_DEBUGGING_ENABLED = DEBUG or env('PORTAL_DEBUG', 'false').lower() == 'true'
 PORTAL_DEBUG_DEPTH = int(env('PORTAL_DEBUG_DEPTH', '0'))
 
+DYNAMIC_GEOMETRY_LOAD = env('DYNAMIC_GEOMETRY_LOAD', 'false').lower() == 'true'
+
 # MAP_CACHE_ENABLED = True
 MAP_CACHE_ENABLED = False
 

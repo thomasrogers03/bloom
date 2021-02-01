@@ -70,6 +70,12 @@ class MapEditor:
         self._builder_sector: EditorSector = None
         self._undo_stack.enable()
 
+        if not constants.DYNAMIC_GEOMETRY_LOAD:
+            for sector in self._sectors.sectors:
+                sector.show()
+                sector.reset_geometry_if_necessary()
+                sector.hide()
+
     @property
     def scene(self):
         return self._scene
