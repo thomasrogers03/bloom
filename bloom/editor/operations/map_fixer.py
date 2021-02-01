@@ -9,6 +9,8 @@ import yaml
 from ... import constants
 from ...tiles import art
 from .. import map_objects
+from ..descriptors import constants as descriptor_constants
+from ..properties import sprite_properties
 
 
 class FixDetails(typing.NamedTuple):
@@ -68,6 +70,22 @@ class MapFixer:
             if sprite.get_picnum(None) >= art.ArtManager.MAX_TILES:
                 sprite.set_picnum(None, 0)
                 fix_count += 1
+
+            descriptor = descriptor_constants.sprite_types[sprite.get_type()]
+            palette = descriptor.palette
+            if palette is None:
+                palette = sprite.sprite.sprite.palette
+
+            tile = sprite.get_picnum(None)
+            if descriptor.valid_tiles and tile not in descriptor.valid_tiles:
+                tile = descriptor.default_tile
+
+            sprite_properties.SpriteDialog.apply_sprite_properties(
+                sprite,
+                descriptor,
+                tile,
+                palette
+            )
 
         return fix_count
 

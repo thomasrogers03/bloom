@@ -149,7 +149,7 @@ class ObjectEditor:
             command=self._auto_light
         )
         self._menu.add_command(
-            label="Cleanup Sector Geometry",
+            label="Fix Common Map Errors",
             command=self._fix_sectors
         )
 
