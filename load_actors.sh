@@ -3,12 +3,12 @@
 set -eou pipefail
 
 if [ "$#" -ne 1 ]; then
-    echo Need path to kpx file
+    echo Need path to kpf file
     exit 1
 fi
 
-kpx_path=$1
-rm -rf kpx
-unzip -q $kpx_path -d kpx
+kpf_path=$1
+rm -rf kpf
+unzip -q $kpf_path -d kpf
 
 python load_actors.py

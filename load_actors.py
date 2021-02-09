@@ -226,7 +226,7 @@ def _process_sounds(sfx_definitions: typing.Dict[str, int]):
 
 def main():
     previous_directory = os.getcwd()
-    os.chdir('kpx')
+    os.chdir('kpf')
 
     paths = [
         actor_path
