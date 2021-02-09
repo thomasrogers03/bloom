@@ -9,6 +9,6 @@ fi
 
 kpf_path=$1
 rm -rf kpf
-unzip -q $kpf_path -d kpf
+unzip -q "$kpf_path" -d kpf
 
 python load_actors.py
