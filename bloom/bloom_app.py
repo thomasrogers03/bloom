@@ -19,6 +19,7 @@ from .audio import midi_to_wav
 from .edit_modes import edit_mode_2d, edit_mode_3d
 from .editor import map_editor
 from .rff import RFF
+from .seq import manager as seq_manager
 from .tiles import manager
 
 logger = logging.getLogger(__name__)
@@ -100,7 +101,7 @@ class Bloom(ShowBase):
                 sound_font_path = None
 
             self._config['sound_font_path'] = sound_font_path
-    
+
         if self._current_addon_path is None:
             self._current_addon_path = f'{self._blood_path}/BLOOD.INI'
 
@@ -202,6 +203,7 @@ class Bloom(ShowBase):
         self._rff = RFF(f'{self._blood_path}/BLOOD.RFF')
         self._sounds_rff = RFF(f'{self._blood_path}/SOUNDS.RFF')
         self._addon = addon.Addon(self._current_addon_path)
+        self._seq_manager = seq_manager.Manager(self._rff)
         self._meta_data = {}
 
         for path in self._recent:
@@ -441,7 +443,7 @@ class Bloom(ShowBase):
     @property
     def _current_addon_path(self):
         return self._config.get('addon_path', None)
-    
+
     @_current_addon_path.setter
     def _current_addon_path(self, value: str):
         self._config['addon_path'] = value
