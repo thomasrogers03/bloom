@@ -150,7 +150,7 @@ class SpriteDialog:
 
     def show(self, sprite: map_objects.EditorSprite):
         self._sprite = sprite
-        self._current_descriptor = descriptors.sprite_types[self._sprite.get_type()]
+        self._current_descriptor = self._sprite.type_descriptor
 
         self._sprite_category_options.set(self._current_descriptor.category)
         self._current_palette = self._sprite.sprite.sprite.palette
@@ -220,8 +220,8 @@ class SpriteDialog:
         picnum: int,
         palette: int
     ):
-        sprite.sprite.sprite.tags[0] = descriptor.sprite_type
-        sprite.sprite.sprite.picnum = picnum
+        sprite.set_type(descriptor.sprite_type)
+        sprite.set_picnum(None, picnum)
         sprite.sprite.sprite.palette = palette
         sprite.sprite.sprite.status_number = descriptor.get_status_number(
             descriptors.sprite_category_descriptors

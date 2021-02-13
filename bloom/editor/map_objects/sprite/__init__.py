@@ -11,6 +11,7 @@ from ....tiles import manager
 from ... import (event_grouping, marker_constants, plane, sector_geometry,
                  segment, undo_stack)
 from .. import empty_object, sprite_highlight
+from . import sprite_constants
 
 
 class EditorSprite(empty_object.EmptyObject):
@@ -50,6 +51,10 @@ class EditorSprite(empty_object.EmptyObject):
 
     def get_stat_for_part(self, part: str):
         return self._sprite.sprite.stat
+
+    @property
+    def type_descriptor(self):
+        return sprite_constants.sprite_types[self.get_type()]
 
     @property
     def size(self):
@@ -193,6 +198,9 @@ class EditorSprite(empty_object.EmptyObject):
 
     def get_type(self) -> int:
         return self._sprite.sprite.tags[0]
+
+    def set_type(self, sprite_type: int):
+        self._sprite.sprite.tags[0] = sprite_type
 
     def get_picnum(self, part: str):
         return self._sprite.sprite.picnum
