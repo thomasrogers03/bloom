@@ -220,7 +220,7 @@ class SpriteDialog:
         picnum: int,
         palette: int
     ):
-        sprite.set_type(descriptor.sprite_type)
+        sprite.type_descriptor = descriptor
         sprite.set_picnum(None, picnum)
         sprite.sprite.sprite.palette = palette
         sprite.sprite.sprite.status_number = descriptor.get_status_number(

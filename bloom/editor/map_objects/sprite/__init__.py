@@ -12,6 +12,7 @@ from ... import (event_grouping, marker_constants, plane, sector_geometry,
                  segment, undo_stack)
 from .. import empty_object, sprite_highlight
 from . import sprite_constants
+from . import type_descriptor as sprite_type_descriptor
 
 
 class EditorSprite(empty_object.EmptyObject):
@@ -54,7 +55,19 @@ class EditorSprite(empty_object.EmptyObject):
 
     @property
     def type_descriptor(self):
-        return sprite_constants.sprite_types[self.get_type()]
+        return sprite_constants.sprite_types[self._type_number]
+
+    @type_descriptor.setter
+    def type_descriptor(self, value: sprite_type_descriptor.Descriptor):
+        self._type_number = value.sprite_type
+
+    @property
+    def _type_number(self):
+        return self._sprite.sprite.tags[0]
+
+    @_type_number.setter
+    def _type_number(self, value: int):
+        self._sprite.sprite.tags[0] = value
 
     @property
     def size(self):
@@ -195,12 +208,6 @@ class EditorSprite(empty_object.EmptyObject):
         self.invalidate_geometry()
         self._sprite.sprite.repeat_x = editor.to_build_sprite_repeat(x_repeat)
         self._sprite.sprite.repeat_y = editor.to_build_sprite_repeat(y_repeat)
-
-    def get_type(self) -> int:
-        return self._sprite.sprite.tags[0]
-
-    def set_type(self, sprite_type: int):
-        self._sprite.sprite.tags[0] = sprite_type
 
     def get_picnum(self, part: str):
         return self._sprite.sprite.picnum
