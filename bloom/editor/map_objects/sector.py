@@ -4,20 +4,25 @@
 import math
 import typing
 
-from panda3d import bullet, core
+from panda3d import core
 
 from ... import audio, constants, editor, game_map, map_data, seq
 from ...tiles import manager as tile_manager
-from .. import (event_grouping, marker_constants, plane, ror_constants,
-                sector_geometry, segment, undo_stack)
-from . import (empty_object, geometry_highlight, marker, sprite, wall,
-               z_motion_marker)
+from .. import (
+    marker_constants,
+    plane,
+    ror_constants,
+    sector_geometry,
+    segment,
+    undo_stack,
+)
+from . import empty_object, geometry_highlight, marker, sprite, wall, z_motion_marker
 from .drawing import sector as drawing_sector
 
 
 class EditorSector(empty_object.EmptyObject):
-    FLOOR_PART = 'floor_highlight'
-    CEILING_PART = 'ceiling_highlight'
+    FLOOR_PART = "floor_highlight"
+    CEILING_PART = "ceiling_highlight"
 
     def __init__(
         self,
@@ -27,7 +32,7 @@ class EditorSector(empty_object.EmptyObject):
         seq_manager: seq.Manager,
         geometry_factory: sector_geometry.SectorGeometryFactory,
         suggest_sky_picnum: typing.Callable[[int], int],
-        undos: undo_stack.UndoStack
+        undos: undo_stack.UndoStack,
     ):
         super().__init__(undos)
 
@@ -51,33 +56,37 @@ class EditorSector(empty_object.EmptyObject):
         self._display: core.NodePath = None
         self._needs_geometry_reset = True
 
-        self._floor_z_motion_markers: typing.List[z_motion_marker.EditorZMotionMarker] = [
+        self._floor_z_motion_markers: typing.List[
+            z_motion_marker.EditorZMotionMarker
+        ] = [
             z_motion_marker.EditorZMotionMarker(
                 z_motion_marker.EditorZMotionMarker.POSITION_OFF,
                 self.FLOOR_PART,
                 self,
-                self._undo_stack
+                self._undo_stack,
             ),
             z_motion_marker.EditorZMotionMarker(
                 z_motion_marker.EditorZMotionMarker.POSITION_ON,
                 self.FLOOR_PART,
                 self,
-                self._undo_stack
-            )
+                self._undo_stack,
+            ),
         ]
-        self._ceiling_z_motion_markers: typing.List[z_motion_marker.EditorZMotionMarker] = [
+        self._ceiling_z_motion_markers: typing.List[
+            z_motion_marker.EditorZMotionMarker
+        ] = [
             z_motion_marker.EditorZMotionMarker(
                 z_motion_marker.EditorZMotionMarker.POSITION_OFF,
                 self.CEILING_PART,
                 self,
-                self._undo_stack
+                self._undo_stack,
             ),
             z_motion_marker.EditorZMotionMarker(
                 z_motion_marker.EditorZMotionMarker.POSITION_ON,
                 self.CEILING_PART,
                 self,
-                self._undo_stack
-            )
+                self._undo_stack,
+            ),
         ]
 
         self._floor_part: typing.Optional[sector_geometry.GeometryPart] = None
@@ -88,7 +97,7 @@ class EditorSector(empty_object.EmptyObject):
         map_to_load: game_map.Map,
         sector_index: int,
         sprite_mapping: typing.Dict[int, sprite.EditorSprite],
-        marker_sprite_mapping: typing.Dict[int, sprite.EditorSprite]
+        marker_sprite_mapping: typing.Dict[int, sprite.EditorSprite],
     ):
         for wall_index in self._wall_indices():
             self.add_wall(map_to_load.walls[wall_index])
@@ -98,18 +107,20 @@ class EditorSector(empty_object.EmptyObject):
             sprite_mapping[sprite_index] = editor_sprite
             if editor_sprite.sprite.sprite.velocity_x >= marker_constants.START_ID:
                 if editor_sprite.sprite.sprite.tags[0] in marker_constants.MARKER_TYPES:
-                    marker_sprite_mapping[editor_sprite.sprite.sprite.velocity_x] = editor_sprite
+                    marker_sprite_mapping[
+                        editor_sprite.sprite.sprite.velocity_x
+                    ] = editor_sprite
                 else:
                     editor_sprite.sprite.sprite.velocity_x = 0
 
     def setup_walls_and_sprites_after_load(
         self,
-        sectors: typing.List['EditorSector'],
+        sectors: typing.List["EditorSector"],
         map_to_load: game_map.Map,
-        lower_sectors: typing.Dict[int, 'EditorSector'],
-        upper_sectors: typing.Dict[int, 'EditorSector'],
+        lower_sectors: typing.Dict[int, "EditorSector"],
+        upper_sectors: typing.Dict[int, "EditorSector"],
         sprite_mapping: typing.Dict[int, sprite.EditorSprite],
-        marker_sprite_mapping: typing.Dict[int, sprite.EditorSprite]
+        marker_sprite_mapping: typing.Dict[int, sprite.EditorSprite],
     ):
         for wall_index in self._wall_indices():
             blood_wall = map_to_load.walls[wall_index]
@@ -124,25 +135,26 @@ class EditorSector(empty_object.EmptyObject):
                 )
 
             point_1 = self._walls[sector_wall_index]
-            point_2 = self._wall_from_global_index(
-                blood_wall.wall.point2_index
-            )
+            point_2 = self._wall_from_global_index(blood_wall.wall.point2_index)
             point_2.wall_previous_point = point_1
-            point_1.setup(
-                point_2,
-                other_side_wall
-            )
+            point_1.setup(point_2, other_side_wall)
 
         sprites_to_remove: typing.List[sprite.EditorSprite] = []
         editor_sprite: typing.Optional[sprite.EditorSprite] = None
         for editor_sprite in self._sprites:
             if editor_sprite.sprite.sprite.tags[0] in ror_constants.UPPER_LINK_TYPES:
-                self._ror_type = ror_constants.UPPER_TAG_REVERSE_MAPPING[editor_sprite.sprite.sprite.tags[0]]
+                self._ror_type = ror_constants.UPPER_TAG_REVERSE_MAPPING[
+                    editor_sprite.sprite.sprite.tags[0]
+                ]
                 sprites_to_remove.append(editor_sprite)
-                self._sector_below_floor = lower_sectors[editor_sprite.sprite.data.data1]
+                self._sector_below_floor = lower_sectors[
+                    editor_sprite.sprite.data.data1
+                ]
             elif editor_sprite.sprite.sprite.tags[0] in ror_constants.LOWER_LINK_TYPES:
                 sprites_to_remove.append(editor_sprite)
-                self._sector_above_ceiling = upper_sectors[editor_sprite.sprite.data.data1]
+                self._sector_above_ceiling = upper_sectors[
+                    editor_sprite.sprite.data.data1
+                ]
 
         for editor_sprite in sprites_to_remove:
             self.remove_sprite(editor_sprite)
@@ -157,18 +169,14 @@ class EditorSector(empty_object.EmptyObject):
 
             sprite_type = editor_sprite.sprite.sprite.tags[0]
             if sprite_type not in marker_constants.MARKER_TYPES:
-                raise AssertionError(
-                    f'Invalid sprite type marker found: {sprite_type}')
+                raise AssertionError(f"Invalid sprite type marker found: {sprite_type}")
 
             self.set_marker(marker_index, editor_sprite.sprite)
             editor_sprite.sector.remove_sprite(editor_sprite)
 
     def set_marker(self, marker_index: int, blood_sprite: map_data.sprite.Sprite):
         self._markers[marker_index] = marker.EditorMarker(
-            blood_sprite,
-            f'marker_{marker_index}',
-            self,
-            self._undo_stack
+            blood_sprite, f"marker_{marker_index}", self, self._undo_stack
         )
 
     def _setup_geometry(self):
@@ -197,21 +205,21 @@ class EditorSector(empty_object.EmptyObject):
     def validate(self):
         wall_set = set(self._walls)
         for editor_wall in self._walls:
-            assert(not editor_wall.is_destroyed)
-            assert(not editor_wall.line_segment.is_empty)
+            assert not editor_wall.is_destroyed
+            assert not editor_wall.line_segment.is_empty
 
             if editor_wall.wall_point_2.wall_point_2 == editor_wall:
-                messsage = f'Circular wall reference found: {editor_wall.point_1} -> {editor_wall.point_2} -> {editor_wall.wall_point_2.point_2}'
+                messsage = f"Circular wall reference found: {editor_wall.point_1} -> {editor_wall.point_2} -> {editor_wall.wall_point_2.point_2}"
                 raise AssertionError(messsage)
             if editor_wall.wall_previous_point.wall_previous_point == editor_wall:
-                messsage = f'Circular wall reference found: {editor_wall.point_1} -> {editor_wall.wall_previous_point.point_1} -> {editor_wall.wall_previous_point.point_2}'
+                messsage = f"Circular wall reference found: {editor_wall.point_1} -> {editor_wall.wall_previous_point.point_1} -> {editor_wall.wall_previous_point.point_2}"
                 raise AssertionError(messsage)
 
-            assert(editor_wall.wall_point_2 in wall_set)
-            assert(editor_wall.wall_point_2.sector == self)
+            assert editor_wall.wall_point_2 in wall_set
+            assert editor_wall.wall_point_2.sector == self
 
-            assert(editor_wall.wall_previous_point in wall_set)
-            assert(editor_wall.wall_previous_point.sector == self)
+            assert editor_wall.wall_previous_point in wall_set
+            assert editor_wall.wall_previous_point.sector == self
 
     def destroy(self):
         if self._sector_below_floor is not None:
@@ -255,11 +263,13 @@ class EditorSector(empty_object.EmptyObject):
 
         geometry = self._get_animated_geometry()
         for node_path in geometry:
-            animation_data_and_lookup = node_path.get_python_tag('animation_data')
+            animation_data_and_lookup = node_path.get_python_tag("animation_data")
             animation_data: tile_manager.AnimationData = animation_data_and_lookup[0]
 
             lookup: int = animation_data_and_lookup[1]
-            offset = (ticks // animation_data.ticks_per_frame) % animation_data.animation_count
+            offset = (
+                ticks // animation_data.ticks_per_frame
+            ) % animation_data.animation_count
             new_picnum = animation_data.picnum + offset
 
             node_path.set_texture(art_manager.get_tile(new_picnum, lookup))
@@ -277,13 +287,21 @@ class EditorSector(empty_object.EmptyObject):
         panning = core.Vec3(
             -ticks * self._sector.data.speed * x_panning / 768,
             -ticks * self._sector.data.speed * y_panning / 768,
-            0
+            0,
         )
 
-        if self._floor_part is not None and self._floor_part.pannable and self._floor_part.node_path is not None:
+        if (
+            self._floor_part is not None
+            and self._floor_part.pannable
+            and self._floor_part.node_path is not None
+        ):
             self._floor_part.node_path.set_tex_pos(texture_stage, panning)
 
-        if self._ceiling_part is not None and self._ceiling_part.pannable and self._ceiling_part.node_path is not None:
+        if (
+            self._ceiling_part is not None
+            and self._ceiling_part.pannable
+            and self._ceiling_part.node_path is not None
+        ):
             self._ceiling_part.node_path.set_tex_pos(texture_stage, panning)
 
     def get_below_draw_offset(self):
@@ -299,8 +317,9 @@ class EditorSector(empty_object.EmptyObject):
         below_point_2d = self._sector_below_floor.min_point()
 
         point = core.Point3(point_2d.x, point_2d.y, self.floor_z)
-        below_point = core.Point3(below_point_2d.x, below_point_2d.y,
-                                  self._sector_below_floor.ceiling_z)
+        below_point = core.Point3(
+            below_point_2d.x, below_point_2d.y, self._sector_below_floor.ceiling_z
+        )
         return point - below_point
 
     def set_draw_offset(self, position: core.Point3):
@@ -310,7 +329,7 @@ class EditorSector(empty_object.EmptyObject):
     def get_geometry_part(self, part: str) -> core.NodePath:
         if self._display is None:
             return core.NodePath()
-        return self._display.find(f'**/{part}')
+        return self._display.find(f"**/{part}")
 
     def find_wall_on_point(self, point: core.Point2):
         for wall in self.walls:
@@ -327,7 +346,7 @@ class EditorSector(empty_object.EmptyObject):
         if self._display is None:
             return []
 
-        return self._display.find_all_matches('**/animated_geometry*')
+        return self._display.find_all_matches("**/animated_geometry*")
 
     def show(self):
         self._visible = True
@@ -345,7 +364,7 @@ class EditorSector(empty_object.EmptyObject):
             self._display.set_pos(0, 0, 0)
             self._display.hide(constants.SCENE_3D)
 
-    def adjacent_sectors(self) -> typing.List['EditorSector']:
+    def adjacent_sectors(self) -> typing.List["EditorSector"]:
         seen = {portal.other_side_sector for portal in self.portal_walls()}
         return list(seen)
 
@@ -354,11 +373,15 @@ class EditorSector(empty_object.EmptyObject):
         return self._markers
 
     @property
-    def floor_z_motion_markers(self) -> typing.List[z_motion_marker.EditorZMotionMarker]:
+    def floor_z_motion_markers(
+        self,
+    ) -> typing.List[z_motion_marker.EditorZMotionMarker]:
         return self._floor_z_motion_markers
 
     @property
-    def ceiling_z_motion_markers(self) -> typing.List[z_motion_marker.EditorZMotionMarker]:
+    def ceiling_z_motion_markers(
+        self,
+    ) -> typing.List[z_motion_marker.EditorZMotionMarker]:
         return self._ceiling_z_motion_markers
 
     @property
@@ -388,9 +411,7 @@ class EditorSector(empty_object.EmptyObject):
     def move_ceiling_to(self, height: float):
         with self.change_blood_object():
             self._invalidate_adjacent_sectors()
-            self._sector.sector.ceiling_z = editor.to_build_height(
-                height
-            )
+            self._sector.sector.ceiling_z = editor.to_build_height(height)
 
     def swap_parallax(self, part: str):
         if part == self.FLOOR_PART:
@@ -398,9 +419,7 @@ class EditorSector(empty_object.EmptyObject):
                 not self._sector.sector.floor_stat.parallax
             )
             if self._sector.sector.floor_stat.parallax:
-                sky_picnum = self._suggest_sky_picnum(
-                    self._sector.sector.floor_picnum
-                )
+                sky_picnum = self._suggest_sky_picnum(self._sector.sector.floor_picnum)
                 self._sector.sector.floor_picnum = sky_picnum
         else:
             self._sector.sector.ceiling_stat.parallax = int(
@@ -450,7 +469,9 @@ class EditorSector(empty_object.EmptyObject):
         self._walls[0] = editor_wall
         self._walls[index] = old_first_wall
 
-    def prepare_to_persist(self, wall_mapping: typing.Dict[wall.EditorWall, int]) -> map_data.sector.Sector:
+    def prepare_to_persist(
+        self, wall_mapping: typing.Dict[wall.EditorWall, int]
+    ) -> map_data.sector.Sector:
         self._sector.sector.first_wall_index = wall_mapping[self._walls[0]]
         self._sector.sector.wall_count = len(self._walls)
 
@@ -464,7 +485,7 @@ class EditorSector(empty_object.EmptyObject):
             self._sector.sector.floor_picnum,
             self._sector.sector.floor_palette,
             self._sector.data.pan_always and self._sector.data.pan_floor,
-            'floor'
+            "floor",
         )
         self._add_geometry(
             geometry,
@@ -473,14 +494,14 @@ class EditorSector(empty_object.EmptyObject):
             self.floor_y_panning,
             self._sector.sector.floor_stat,
             self.floor_shade,
-            self._floor_part
+            self._floor_part,
         )
 
         self._ceiling_part = sector_geometry.GeometryPart(
             self._sector.sector.ceiling_picnum,
             self._sector.sector.ceiling_palette,
             self._sector.data.pan_always and self._sector.data.pan_ceiling,
-            'ceiling'
+            "ceiling",
         )
         self._add_geometry(
             geometry,
@@ -489,7 +510,7 @@ class EditorSector(empty_object.EmptyObject):
             self.ceiling_y_panning,
             self._sector.sector.ceiling_stat,
             self.ceiling_shade,
-            self._ceiling_part
+            self._ceiling_part,
         )
 
     def _add_geometry(
@@ -500,13 +521,12 @@ class EditorSector(empty_object.EmptyObject):
         y_panning: float,
         stat: map_data.sector.Stat,
         shade: float,
-        part: sector_geometry.GeometryPart
+        part: sector_geometry.GeometryPart,
     ):
         shade = self._shade_to_colour_channel(shade)
 
         for sub_sector in drawing_sector.Sector(self._walls).get_sub_sectors():
-            polygon = drawing_sector.Sector.get_wall_bunch_points(
-                sub_sector.outer_wall)
+            polygon = drawing_sector.Sector.get_wall_bunch_points(sub_sector.outer_wall)
             self._cleanup_polygon(polygon)
 
             holes = []
@@ -528,23 +548,19 @@ class EditorSector(empty_object.EmptyObject):
             triangulator.triangulate()
 
             vertex_data = core.GeomVertexData(
-                'shape',
-                constants.VERTEX_FORMAT,
-                core.Geom.UH_static
+                "shape", constants.VERTEX_FORMAT, core.Geom.UH_static
             )
             vertex_data.set_num_rows(triangulator.get_num_vertices())
-            position_writer = core.GeomVertexWriter(vertex_data, 'vertex')
-            colour_writer = core.GeomVertexWriter(vertex_data, 'color')
-            texcoord_writer = core.GeomVertexWriter(
-                vertex_data,
-                'texcoord'
-            )
+            position_writer = core.GeomVertexWriter(vertex_data, "vertex")
+            colour_writer = core.GeomVertexWriter(vertex_data, "color")
+            texcoord_writer = core.GeomVertexWriter(vertex_data, "texcoord")
 
             first_wall = self._walls[0]
             direction_segment = first_wall.line_segment
             first_wall_orthogonal = first_wall.get_orthogonal_vector()
             orthogonal_segment = segment.Segment(
-                first_wall.point_1, first_wall.point_1 + first_wall_orthogonal)
+                first_wall.point_1, first_wall.point_1 + first_wall_orthogonal
+            )
 
             texture_size = all_geometry.get_tile_dimensions(part.picnum)
             if texture_size.x < 1:
@@ -555,17 +571,17 @@ class EditorSector(empty_object.EmptyObject):
             for point in triangulator.get_vertices():
                 point_2d = core.Point2(point.x, point.y)
                 position_writer.add_data3(
-                    point_2d.x,
-                    point_2d.y,
-                    height_callback(point_2d)
+                    point_2d.x, point_2d.y, height_callback(point_2d)
                 )
                 colour_writer.add_data4(shade, shade, shade, 1)
 
                 if stat.align:
                     new_y = direction_segment.get_point_distance(
-                        point_2d, ignore_on_line=True)
+                        point_2d, ignore_on_line=True
+                    )
                     new_x = orthogonal_segment.get_point_distance(
-                        point_2d, ignore_on_line=True)
+                        point_2d, ignore_on_line=True
+                    )
                     point_2d = core.Point2(new_x, new_y)
 
                 if stat.swapxy:
@@ -595,14 +611,14 @@ class EditorSector(empty_object.EmptyObject):
                     primitive.add_vertices(
                         triangulator.get_triangle_v2(triangle_index),
                         triangulator.get_triangle_v1(triangle_index),
-                        triangulator.get_triangle_v0(triangle_index)
+                        triangulator.get_triangle_v0(triangle_index),
                     )
             else:
                 for triangle_index in range(triangulator.get_num_triangles()):
                     primitive.add_vertices(
                         triangulator.get_triangle_v0(triangle_index),
                         triangulator.get_triangle_v1(triangle_index),
-                        triangulator.get_triangle_v2(triangle_index)
+                        triangulator.get_triangle_v2(triangle_index),
                     )
             primitive.close_primitive()
 
@@ -613,10 +629,7 @@ class EditorSector(empty_object.EmptyObject):
                 all_geometry.add_geometry(geometry, part)
             else:
                 part.node = None
-            all_geometry.add_highlight_geometry(
-                geometry,
-                part.part
-            )
+            all_geometry.add_highlight_geometry(geometry, part.part)
 
     @staticmethod
     def _cleanup_polygon(polygon: typing.List[core.Vec2]):
@@ -642,12 +655,7 @@ class EditorSector(empty_object.EmptyObject):
     def _get_outer_most_wall(self):
         used_walls: typing.Set[wall.EditorWall] = set()
         outermost_wall: wall.EditorWall = None
-        bounding_rectangle = core.Vec4(
-            1 < 31,
-            -(1 << 31),
-            1 << 31,
-            -(1 << 31)
-        )
+        bounding_rectangle = core.Vec4(1 < 31, -(1 << 31), 1 << 31, -(1 << 31))
 
         for editor_wall in self._walls:
             while editor_wall not in used_walls:
@@ -807,21 +815,9 @@ class EditorSector(empty_object.EmptyObject):
         point_2_2d = core.Point2(point_1_2d.x + 1, point_1_2d.y)
         point_3_2d = core.Point2(point_1_2d.x, point_1_2d.y + 1)
         return plane.Plane(
-            core.Point3(
-                point_1_2d.x,
-                point_1_2d.y,
-                self.floor_z_at_point(point_1_2d)
-            ),
-            core.Point3(
-                point_2_2d.x,
-                point_2_2d.y,
-                self.floor_z_at_point(point_2_2d)
-            ),
-            core.Point3(
-                point_3_2d.x,
-                point_3_2d.y,
-                self.floor_z_at_point(point_3_2d)
-            )
+            core.Point3(point_1_2d.x, point_1_2d.y, self.floor_z_at_point(point_1_2d)),
+            core.Point3(point_2_2d.x, point_2_2d.y, self.floor_z_at_point(point_2_2d)),
+            core.Point3(point_3_2d.x, point_3_2d.y, self.floor_z_at_point(point_3_2d)),
         )
 
     @property
@@ -831,20 +827,14 @@ class EditorSector(empty_object.EmptyObject):
         point_3_2d = core.Point2(point_1_2d.x, point_1_2d.y + 1)
         return plane.Plane(
             core.Point3(
-                point_1_2d.x,
-                point_1_2d.y,
-                self.ceiling_z_at_point(point_1_2d)
+                point_1_2d.x, point_1_2d.y, self.ceiling_z_at_point(point_1_2d)
             ),
             core.Point3(
-                point_2_2d.x,
-                point_2_2d.y,
-                self.ceiling_z_at_point(point_2_2d)
+                point_2_2d.x, point_2_2d.y, self.ceiling_z_at_point(point_2_2d)
             ),
             core.Point3(
-                point_3_2d.x,
-                point_3_2d.y,
-                self.ceiling_z_at_point(point_3_2d)
-            )
+                point_3_2d.x, point_3_2d.y, self.ceiling_z_at_point(point_3_2d)
+            ),
         )
 
     @property
@@ -853,11 +843,7 @@ class EditorSector(empty_object.EmptyObject):
 
     @property
     def origin(self):
-        return core.Point3(
-            self.origin_2d.x,
-            self.origin_2d.y,
-            self.floor_z
-        )
+        return core.Point3(self.origin_2d.x, self.origin_2d.y, self.floor_z)
 
     @property
     def sector_below_floor(self):
@@ -866,12 +852,12 @@ class EditorSector(empty_object.EmptyObject):
     @property
     def sector_above_ceiling(self):
         return self._sector_above_ceiling
-    
+
     @property
     def ror_type(self):
         return self._ror_type
 
-    def link(self, ror_type: str, sector_below_floor: 'EditorSector'):
+    def link(self, ror_type: str, sector_below_floor: "EditorSector"):
         self._ror_type = ror_type
         self._sector_below_floor = sector_below_floor
         self._sector_below_floor._sector_above_ceiling = self
@@ -907,14 +893,14 @@ class EditorSector(empty_object.EmptyObject):
 
     def remove_sprite(self, editor_sprite: sprite.EditorSprite):
         if self._is_destroyed:
-            raise ValueError('Tried to remove sprite from destroyed sector!')
+            raise ValueError("Tried to remove sprite from destroyed sector!")
 
         self._sprites.remove(editor_sprite)
         editor_sprite.invalidate_geometry()
 
     def remove_wall(self, editor_wall: wall.EditorWall):
         if self._is_destroyed:
-            raise ValueError('Tried to remove wall from destroyed sector!')
+            raise ValueError("Tried to remove wall from destroyed sector!")
 
         self._walls.remove(editor_wall)
         editor_wall.invalidate_geometry()
@@ -924,10 +910,7 @@ class EditorSector(empty_object.EmptyObject):
 
         new_wall_index = len(self._walls)
         new_wall = wall.EditorWall(
-            blood_wall,
-            str(new_wall_index),
-            self,
-            self._undo_stack
+            blood_wall, str(new_wall_index), self, self._undo_stack
         )
 
         def _undo():
@@ -940,9 +923,7 @@ class EditorSector(empty_object.EmptyObject):
         return new_wall
 
     def migrate_wall_to_other_sector(
-        self,
-        wall_to_move: wall.EditorWall,
-        new_sector: 'EditorSector'
+        self, wall_to_move: wall.EditorWall, new_sector: "EditorSector"
     ):
         if self == new_sector:
             return
@@ -959,9 +940,7 @@ class EditorSector(empty_object.EmptyObject):
         wall_to_move.set_sector(new_sector, new_name)
 
     def migrate_sprite_to_other_sector(
-        self,
-        sprite_to_move: sprite.EditorSprite,
-        new_sector: 'EditorSector'
+        self, sprite_to_move: sprite.EditorSprite, new_sector: "EditorSector"
     ):
         if self == new_sector:
             return
@@ -988,7 +967,7 @@ class EditorSector(empty_object.EmptyObject):
             self._audio_manager,
             self._geometry_factory.tile_manager,
             self._seq_manager,
-            self._undo_stack
+            self._undo_stack,
         )
 
         def _undo():

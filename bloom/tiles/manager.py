@@ -18,21 +18,13 @@ class AnimationData(typing.NamedTuple):
     ticks_per_frame: int
     animation_count: int
 
-
 class Manager:
-    _QUEUE_TYPE = """queue.Queue[
-        typing.Tuple[
-            int,
-            int,
-            typing.Callable[[core.Texture], None]
-        ]
-    ]"""
 
     def __init__(self, blood_path: str, rff: RFF, edit_mode_selector: edit_mode.EditMode):
         self._edit_mode_selector = edit_mode_selector
         self._tiles: typing.Dict[int, typing.Dict[int, core.Texture]] = {}
-        self._tile_loads: queue.Queue[typing.Tuple[int, int,
-                                                   typing.Callable[[core.Texture], None]]] = queue.Queue()
+        self._tile_loads: 'queue.Queue[typing.Tuple[int,int,typing.Callable[[core.Texture], None]]]' = queue.Queue(
+        )
 
         art_paths = glob(f'{blood_path}/*.[aA][rR][tT]')
         self._art_manager = art.ArtManager(rff, art_paths)
