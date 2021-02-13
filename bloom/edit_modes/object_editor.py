@@ -11,7 +11,7 @@ from .. import cameras, dialogs, edit_menu, edit_mode, editor, map_data
 from .. import menu as context_menu
 from ..editor import highlighter, map_editor, map_objects, operations
 from ..editor.descriptors import constants as descriptor_constants
-from ..editor.descriptors import sprite_type_descriptor
+from ..editor.descriptors import sprite_type
 from ..editor.highlighting import highlight_details
 from ..editor.properties import sprite_properties
 from .sector_effects import property_editor
@@ -500,7 +500,7 @@ class ObjectEditor:
     def _add_sprite_from_context_menu_callback(
         self,
         sprite_type: int,
-        descriptor: sprite_type_descriptor.SpriteTypeDescriptor
+        descriptor: sprite_type.SpriteType
     ):
         def _callback():
             with self._editor.undo_stack.multi_step_undo('Add Sprite'):
