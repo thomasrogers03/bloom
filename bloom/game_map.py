@@ -245,7 +245,7 @@ class Map:
         else:
             self._header_2.has_sky = 0
 
-    def save(self, map_path: str) -> bytes:
+    def save(self, map_path: str) -> typing.Tuple[bytes, int]:
         packer = data_loading.Packer()
 
         reverse_counter = self._MAX_XSPRITES

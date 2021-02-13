@@ -84,12 +84,12 @@ class AutoSave:
             path = self._map_path(0)
             meta_data_path = self._meta_data_path(0)
 
-            result, _ = map_to_save.save(path)
-            with open(path, 'w+b') as file:
-                file.write(result)
+            map_data, _ = map_to_save.save(path)
+            with open(path, 'w+b') as map_file:
+                map_file.write(map_data)
 
-            with open(meta_data_path, 'w+') as file:
-                file.write(yaml.dump(self._meta_data))
+            with open(meta_data_path, 'w+') as meta_file:
+                meta_file.write(yaml.dump(self._meta_data))
         except Exception as error:
             self._log_info(f'Failed to save due to: {error}')
 

@@ -38,20 +38,20 @@ class EditorSector(empty_object.EmptyObject):
         self._geometry_factory = geometry_factory
         self._suggest_sky_picnum = suggest_sky_picnum
 
-        self._sector_below_floor: EditorSector = None
-        self._sector_above_ceiling: EditorSector = None
-        self._ror_type: str = None
+        self._sector_below_floor: typing.Optional[EditorSector] = None
+        self._sector_above_ceiling: typing.Optional[EditorSector] = None
+        self._ror_type: typing.Optional[str] = None
 
         self._is_destroyed = False
         self._visible = False
 
         self._walls: typing.List[wall.EditorWall] = []
         self._sprites: typing.List[sprite.EditorSprite] = []
-        self._markers: typing.List[marker.EditorMarker] = [None, None]
+        self._markers: typing.List[typing.Optional[marker.EditorMarker]] = [None, None]
         self._display: core.NodePath = None
         self._needs_geometry_reset = True
 
-        self._floor_z_motion_markers: typing.List[marker.EditorMarker] = [
+        self._floor_z_motion_markers: typing.List[z_motion_marker.EditorZMotionMarker] = [
             z_motion_marker.EditorZMotionMarker(
                 z_motion_marker.EditorZMotionMarker.POSITION_OFF,
                 self.FLOOR_PART,
@@ -65,7 +65,7 @@ class EditorSector(empty_object.EmptyObject):
                 self._undo_stack
             )
         ]
-        self._ceiling_z_motion_markers: typing.List[marker.EditorMarker] = [
+        self._ceiling_z_motion_markers: typing.List[z_motion_marker.EditorZMotionMarker] = [
             z_motion_marker.EditorZMotionMarker(
                 z_motion_marker.EditorZMotionMarker.POSITION_OFF,
                 self.CEILING_PART,
@@ -80,8 +80,8 @@ class EditorSector(empty_object.EmptyObject):
             )
         ]
 
-        self._floor_part: sector_geometry.GeometryPart = None
-        self._ceiling_part: sector_geometry.GeometryPart = None
+        self._floor_part: typing.Optional[sector_geometry.GeometryPart] = None
+        self._ceiling_part: typing.Optional[sector_geometry.GeometryPart] = None
 
     def load(
         self,
@@ -116,8 +116,7 @@ class EditorSector(empty_object.EmptyObject):
             sector_wall_index = self._relative_wall_index(wall_index)
 
             if blood_wall.wall.other_side_sector_index < 0:
-                other_side_sector: EditorSector = None
-                other_side_wall: wall.EditorWall = None
+                other_side_wall: typing.Optional[wall.EditorWall] = None
             else:
                 other_side_sector = sectors[blood_wall.wall.other_side_sector_index]
                 other_side_wall = other_side_sector._wall_from_global_index(
@@ -135,6 +134,7 @@ class EditorSector(empty_object.EmptyObject):
             )
 
         sprites_to_remove: typing.List[sprite.EditorSprite] = []
+        editor_sprite: typing.Optional[sprite.EditorSprite] = None
         for editor_sprite in self._sprites:
             if editor_sprite.sprite.sprite.tags[0] in ror_constants.UPPER_LINK_TYPES:
                 self._ror_type = ror_constants.UPPER_TAG_REVERSE_MAPPING[editor_sprite.sprite.sprite.tags[0]]
@@ -259,7 +259,7 @@ class EditorSector(empty_object.EmptyObject):
             animation_data: tile_manager.AnimationData = animation_data_and_lookup[0]
 
             lookup: int = animation_data_and_lookup[1]
-            offset = (ticks // animation_data.ticks_per_frame) % animation_data.count
+            offset = (ticks // animation_data.ticks_per_frame) % animation_data.animation_count
             new_picnum = animation_data.picnum + offset
 
             node_path.set_texture(art_manager.get_tile(new_picnum, lookup))
@@ -350,7 +350,7 @@ class EditorSector(empty_object.EmptyObject):
         return list(seen)
 
     @property
-    def markers(self) -> typing.List[marker.EditorMarker]:
+    def markers(self) -> typing.List[typing.Optional[marker.EditorMarker]]:
         return self._markers
 
     @property
@@ -874,7 +874,7 @@ class EditorSector(empty_object.EmptyObject):
     def link(self, ror_type: str, sector_below_floor: 'EditorSector'):
         self._ror_type = ror_type
         self._sector_below_floor = sector_below_floor
-        self._sector_below_floor.sector_above_ceiling = self
+        self._sector_below_floor._sector_above_ceiling = self
 
     def get_bounding_rectangle(self):
         result = core.Vec4(
@@ -1042,10 +1042,6 @@ class EditorSector(empty_object.EmptyObject):
     @property
     def can_see_below(self):
         return self._sector.sector.floor_picnum == 504
-
-    @property
-    def sector_below_floor(self):
-        return self._sector_below_floor
 
     def point_in_sector(self, point: core.Point2):
         ray_start = core.Point2(-(1 << 31), point.y)

@@ -20,7 +20,7 @@ class Descriptor:
         return self._sprite_type
 
     @property
-    def blocking(self) -> typing.Union[int, None]:
+    def blocking(self) -> typing.Optional[int]:
         if self._is_decoration:
             return None
 
@@ -75,7 +75,7 @@ class Descriptor:
         return None
 
     @property
-    def seq(self) -> typing.Union[int, None]:
+    def seq(self) -> typing.Optional[int]:
         return self._descriptor.get('seq', None)
 
     @property

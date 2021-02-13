@@ -48,7 +48,7 @@ class Manager:
 
     def __init__(self, rff: RFF):
         self._rff = rff
-        self._seqs: typing.Dict[int, typing.Union[Seq, None]] = {}
+        self._seqs: typing.Dict[int, typing.Optional[Seq]] = {}
 
     def get_seq(self, index: int):
         if index not in self._seqs:

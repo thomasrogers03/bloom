@@ -35,7 +35,7 @@ class Sky:
         card.set_depth_write(False)
         card.set_two_sided(True)
 
-        left = 0
+        left = 0.0
         for texture_index, texture in enumerate(textures):
             sky_part = self._display.attach_new_node(f'sky_{texture_index}')
             card.copy_to(sky_part)

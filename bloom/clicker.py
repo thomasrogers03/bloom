@@ -47,8 +47,8 @@ class Clicker:
         self._on_click_after_move = on_click_after_move
         self._id = str(uuid.uuid4)
 
-        self._mouse_down_point: core.Point2() = None
-        self._last_mouse_point: core.Point2() = None
+        self._last_mouse_point: core.Point2 = None
+        self._mouse_down_point: core.Point2 = None
         self._delta: core.Vec2 = None
         self._moved_when_down = False
 

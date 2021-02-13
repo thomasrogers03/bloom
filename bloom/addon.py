@@ -29,7 +29,7 @@ class Addon:
         config.read(self._path)
 
         self._episodes: typing.Dict[int, Episode] = {}
-        self._all_maps: typing.Dict[int, Map] = {}
+        self._all_maps: typing.Dict[str, Map] = {}
         for section in config:
             episode_number = self._section_episode_number(section)
             if episode_number is None:

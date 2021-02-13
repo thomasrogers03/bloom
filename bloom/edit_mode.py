@@ -24,7 +24,7 @@ class EditMode(DirectObject.DirectObject):
         self._task_manager = task_manager
         self._cancel_tick = False
 
-        self._current_edit_mode: empty_edit_mode.EditMode = None
+        self._current_edit_mode: typing.Optional[empty_edit_mode.EditMode] = None
         self._always_tickers: typing.List[typing.Callable[[], None]] = []
         self._mode_stack: typing.List[typing.Tuple[empty_edit_mode.EditMode, dict]] = []
         self._current_pstats_name = 'App:Show code:global_ticker'

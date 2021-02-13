@@ -71,7 +71,7 @@ class Menu:
         self._frame.show()
         self._auto_hide_task = self._task_manager.add(self._auto_hide_sub_menus)
 
-    def add_command(self, text: str, command: typing.Callable[[], None]):
+    def add_command(self, text: str, command: typing.Optional[typing.Callable[[], None]]):
         new_button = DirectGui.DirectButton(
             parent=self._frame,
             pos=core.Vec3(0, self._bottom - self._TEXT_SIZE / 2 - constants.PADDING),

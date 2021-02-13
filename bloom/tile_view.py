@@ -24,7 +24,7 @@ class TileView:
     ):
         self._tile_manager = tile_manager
         self._on_tile_selected = on_tile_selected
-        self._tile_indices: typing.List[int] = None
+        self._tile_indices: typing.Optional[typing.List[int]] = None
 
         self._frame = DirectGui.DirectScrolledFrame(
             parent=parent,

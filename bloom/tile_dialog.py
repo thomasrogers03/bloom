@@ -8,11 +8,12 @@ from direct.task import Task
 from panda3d import core
 
 from . import constants, edit_mode, tile_view
+from .edit_modes import empty_edit_mode
 from .tiles import manager
 from .utils import gui
 
 
-class TileDialog:
+class TileDialog(empty_edit_mode.EditMode):
 
     def __init__(
         self,
@@ -28,7 +29,7 @@ class TileDialog:
         self._dialog.hide()
 
         self._tile_manager = tile_manager
-        self._tile_selected: typing.Callable[[int], None] = None
+        self._tile_selected: typing.Optional[typing.Callable[[int], None]] = None
         DirectGui.DirectButton(
             parent=self._dialog,
             text='Ok',
@@ -55,7 +56,7 @@ class TileDialog:
         self._task_manager = task_manager
 
         self._edit_mode = edit_mode
-        self._selected_picnum: int = None
+        self._selected_picnum: typing.Optional[int] = None
 
     @property
     def tile_manager(self):
@@ -67,8 +68,8 @@ class TileDialog:
 
         self._selected_picnum = picnum
         self._task_manager.do_method_later(
-            constants.DOUBLE_CLICK_TIMEOUT, 
-            self._reset_selected_picnum, 
+            constants.DOUBLE_CLICK_TIMEOUT,
+            self._reset_selected_picnum,
             'reset_double_click_tile'
         )
 

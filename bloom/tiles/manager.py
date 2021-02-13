@@ -12,17 +12,27 @@ from .. import constants, edit_mode
 from ..rff import RFF
 from . import art
 
+
 class AnimationData(typing.NamedTuple):
     picnum: int
     ticks_per_frame: int
-    count: int
+    animation_count: int
+
 
 class Manager:
+    _QUEUE_TYPE = """queue.Queue[
+        typing.Tuple[
+            int,
+            int,
+            typing.Callable[[core.Texture], None]
+        ]
+    ]"""
 
     def __init__(self, blood_path: str, rff: RFF, edit_mode_selector: edit_mode.EditMode):
         self._edit_mode_selector = edit_mode_selector
         self._tiles: typing.Dict[int, typing.Dict[int, core.Texture]] = {}
-        self._tile_loads = queue.Queue()
+        self._tile_loads: queue.Queue[typing.Tuple[int, int,
+                                                   typing.Callable[[core.Texture], None]]] = queue.Queue()
 
         art_paths = glob(f'{blood_path}/*.[aA][rR][tT]')
         self._art_manager = art.ArtManager(rff, art_paths)
@@ -30,7 +40,6 @@ class Manager:
 
     def get_all_tiles(self) -> typing.List[int]:
         return sorted(self._art_manager.get_tile_indices())
-        
 
     def get_tile_dimensions(self, picnum: int):
         width, height = self._art_manager.get_tile_dimensions(picnum)

@@ -7,14 +7,15 @@ from direct.gui import DirectGui, DirectGuiGlobals
 from panda3d import core
 
 from . import constants, edit_mode
+from .edit_modes import empty_edit_mode
 from .editor import map_objects, ror_constants
 
 
-class RORTypeSelector:
+class RORTypeSelector(empty_edit_mode.EditMode):
 
     def __init__(self, parent: core.NodePath, edit_mode_selector: edit_mode.EditMode):
         self._edit_mode_selector = edit_mode_selector
-        self._type_selected: typing.Callable[[str], None] = None
+        self._type_selected: typing.Optional[typing.Callable[[str], None]] = None
 
         self._frame = DirectGui.DirectFrame(
             parent=parent,

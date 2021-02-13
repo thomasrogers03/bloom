@@ -7,6 +7,7 @@ import os.path
 import tkinter
 import tkinter.filedialog
 import tkinter.messagebox
+import typing
 
 import yaml
 from direct.showbase.ShowBase import ShowBase
@@ -34,7 +35,8 @@ class Bloom(ShowBase):
         self._setup_window()
         self._setup_menu()
         self._path = path
-        self._auto_save: auto_save.AutoSave = None
+        self._auto_save: typing.Optional[auto_save.AutoSave] = None
+        self._map_editor: typing.Optional[map_editor.MapEditor] = None
 
         if not os.path.isdir(constants.CACHE_PATH):
             os.mkdir(constants.CACHE_PATH)

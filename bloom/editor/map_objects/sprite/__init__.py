@@ -374,7 +374,7 @@ class EditorSprite(empty_object.EmptyObject):
         elif animation_data_and_lookup is not None:
             animation_data: manager.AnimationData = animation_data_and_lookup[0]
             lookup: int = animation_data_and_lookup[1]
-            offset = (ticks // animation_data.ticks_per_frame) % animation_data.count
+            offset = (ticks // animation_data.ticks_per_frame) % animation_data.animation_count
             new_picnum = animation_data.picnum + offset
 
             self._set_display_size(new_picnum)

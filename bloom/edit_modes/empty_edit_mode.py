@@ -15,6 +15,3 @@ class EditMode:
 
     def exit_mode(self):
         raise NotImplementedError
-
-    def tick(self):
-        raise NotImplementedError
