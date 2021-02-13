@@ -23,7 +23,10 @@ class SpriteTypeDescriptor:
         return self._sprite_type
 
     @property
-    def blocking(self) -> int:
+    def blocking(self) -> typing.Union[int, None]:
+        if self._is_decoration:
+            return None
+
         return self._descriptor.get('blocking', 0)
 
     @property
@@ -40,11 +43,11 @@ class SpriteTypeDescriptor:
 
     @property
     def palette(self) -> int:
+        if self._is_decoration:
+            return None
+
         if 'palette' in self._descriptor:
             return self._descriptor['palette']
-
-        if self._descriptor['category'] == self._DECORATION_CATEGORY:
-            return None
 
         return 0
 
@@ -213,3 +216,7 @@ class SpriteTypeDescriptor:
                 data.data4 = value
             else:
                 raise ValueError(f'Unsupported property source {value_from}')
+
+    @property
+    def _is_decoration(self):
+        return self.category == self._DECORATION_CATEGORY

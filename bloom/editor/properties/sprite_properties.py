@@ -242,12 +242,13 @@ class SpriteDialog:
         if descriptor.invisible:
             sprite.sprite.sprite.stat.invisible = 1
 
-        sprite.sprite.sprite.stat.blocking = 0
-        sprite.sprite.sprite.stat.blocking2 = 0
-        if descriptor.blocking >= 1:
-            sprite.sprite.sprite.stat.blocking = 1
-        if descriptor.blocking >= 2:
-            sprite.sprite.sprite.stat.blocking2 = 1
+        if descriptor.blocking is not None:
+            sprite.sprite.sprite.stat.blocking = 0
+            sprite.sprite.sprite.stat.blocking2 = 0
+            if descriptor.blocking >= 1:
+                sprite.sprite.sprite.stat.blocking = 1
+            if descriptor.blocking >= 2:
+                sprite.sprite.sprite.stat.blocking2 = 1
 
         repeats = descriptor.sprite_repeats
         if repeats is not None:
