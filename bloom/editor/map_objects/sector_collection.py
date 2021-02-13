@@ -5,7 +5,7 @@ import typing
 
 from panda3d import bullet, core
 
-from ... import audio, constants, editor, game_map, map_data
+from ... import audio, constants, editor, game_map, map_data, seq
 from .. import (event_grouping, marker_constants, plane, ror_constants,
                 sector_geometry, sprite_find_sector, undo_stack)
 from . import empty_object, geometry_highlight, sprite, wall
@@ -19,11 +19,13 @@ class SectorCollection:
         self,
         map_to_load: game_map.Map,
         audio_manager: audio.Manager,
+        seq_manager: seq.Manager,
         geometry_factory: sector_geometry.SectorGeometryFactory,
         suggest_sky_picnum: typing.Callable[[int], int],
         undos: undo_stack.UndoStack
     ):
         self._audio_manager = audio_manager
+        self._seq_manager = seq_manager
         self._geometry_factory = geometry_factory
         self._suggest_sky_picnum = suggest_sky_picnum
         self._event_groupings = event_grouping.EventGroupingCollection()
@@ -102,6 +104,7 @@ class SectorCollection:
             blood_sector,
             str(index),
             self._audio_manager,
+            self._seq_manager,
             self._geometry_factory,
             self._suggest_sky_picnum,
             self._undo_stack

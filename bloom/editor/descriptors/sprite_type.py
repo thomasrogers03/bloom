@@ -4,88 +4,15 @@
 import typing
 
 from .. import map_objects
+from ..map_objects.sprite import type_descriptor
 from . import object_property
 
 
-class SpriteTypeDescriptor:
+class SpriteType:
     _DECORATION_CATEGORY = 'decoration'
 
-    def __init__(self, sprite_type: int, descriptor: dict):
-        self._sprite_type = sprite_type
+    def __init__(self, descriptor: type_descriptor.Descriptor):
         self._descriptor = descriptor
-
-    @property
-    def sprite_repeats(self):
-        return self._descriptor.get('repeats', None)
-
-    @property
-    def sprite_type(self):
-        return self._sprite_type
-
-    @property
-    def blocking(self) -> int:
-        return self._descriptor.get('blocking', 0)
-
-    @property
-    def category(self):
-        return self._descriptor['category']
-
-    @property
-    def name(self):
-        return self._descriptor['name']
-
-    @property
-    def invisible(self):
-        return self._descriptor.get('invisible', False)
-
-    @property
-    def palette(self) -> int:
-        if 'palette' in self._descriptor:
-            return self._descriptor['palette']
-
-        if self._descriptor['category'] == self._DECORATION_CATEGORY:
-            return None
-
-        return 0
-
-    @property
-    def default_tile(self) -> int:
-        if 'tile_config' in self._descriptor:
-            tile_config = self._descriptor['tile_config']
-            if 'tile' in tile_config:
-                return tile_config['tile']
-            elif 'tiles' in tile_config:
-                return tile_config['tiles'][0]
-            elif 'start_tile' in tile_config:
-                return tile_config['start_tile']
-
-        return 0
-
-    @property
-    def valid_tiles(self) -> typing.List[int]:
-        if 'tile_config' in self._descriptor:
-            tile_config = self._descriptor['tile_config']
-            if 'tile' in tile_config:
-                return [tile_config['tile']]
-            elif 'tiles' in tile_config:
-                return tile_config['tiles']
-            elif 'start_tile' in tile_config:
-                return [tile_config['start_tile']]
-
-        return None
-
-    @property
-    def property_descriptors(self) -> typing.List[dict]:
-        return self._descriptor.get('properties', [])
-
-    def get_is_droppable(self, category_descriptors: dict) -> bool:
-        return category_descriptors[self.category].get('droppable', False)
-
-    def get_status_number(self, category_descriptors: dict):
-        return self._descriptor.get(
-            'status_number',
-            category_descriptors[self.category]['status_number']
-        )
 
     def get_sprite_properties(self, sprite: map_objects.EditorSprite, droppables: typing.Dict[str, int]):
         stat = sprite.sprite.sprite.stat
@@ -124,7 +51,7 @@ class SpriteTypeDescriptor:
             'Drop Item': object_property.Property.create_enum(data.drop_item, droppables),
         }
 
-        for descriptor in self.property_descriptors:
+        for descriptor in self._descriptor.property_descriptors:
             name = descriptor['name']
             property_type = descriptor['type']
 
@@ -198,7 +125,7 @@ class SpriteTypeDescriptor:
         stat.invisible = int(values['Invisible'])
         data.drop_item = int(values['Drop Item'])
 
-        for descriptor in self.property_descriptors:
+        for descriptor in self._descriptor.property_descriptors:
             name = descriptor['name']
             value = int(values[name])
 

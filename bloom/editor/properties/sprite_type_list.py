@@ -9,7 +9,7 @@ from panda3d import core
 from ... import constants
 from ...tiles import manager
 from ...utils import gui
-from ..descriptors import sprite_type_descriptor
+from ..descriptors import sprite_type
 
 
 class SpriteTypeList:
@@ -20,7 +20,7 @@ class SpriteTypeList:
         self,
         parent: core.NodePath,
         tile_manager: manager.Manager,
-        handle_type_selected: typing.Callable[[sprite_type_descriptor.SpriteTypeDescriptor], None]
+        handle_type_selected: typing.Callable[[sprite_type.SpriteType], None]
     ):
         self._tile_manager = tile_manager
         self._handle_type_selected = handle_type_selected
@@ -47,7 +47,7 @@ class SpriteTypeList:
         self._sprite_frames.clear()
         self._selected_frame = None
 
-    def add_sprite_type(self, descriptor: sprite_type_descriptor.SpriteTypeDescriptor):
+    def add_sprite_type(self, descriptor: sprite_type.SpriteType):
         frame = DirectGui.DirectButton(
             parent=self._canvas,
             pos=core.Vec3(0, self._top),
@@ -114,7 +114,7 @@ class SpriteTypeList:
 
         self._sprite_frames.append(frame)
 
-    def set_current_type(self, descriptor: sprite_type_descriptor.SpriteTypeDescriptor):
+    def set_current_type(self, descriptor: sprite_type.SpriteType):
         for frame in self._sprite_frames:
             frame_descriptor = self._get_frame_descriptor(frame)
             if frame_descriptor == descriptor:
@@ -137,7 +137,7 @@ class SpriteTypeList:
         self._selected_frame['frameColor'] = (0, 0, 1, 1)
 
     @staticmethod
-    def _get_frame_descriptor(frame: core.NodePath) -> sprite_type_descriptor.SpriteTypeDescriptor:
+    def _get_frame_descriptor(frame: core.NodePath) -> sprite_type.SpriteType:
         return frame.get_python_tag('descriptor')
 
     def _update_canvas_size(self):

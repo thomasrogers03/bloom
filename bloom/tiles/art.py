@@ -116,13 +116,17 @@ class Art:
             self._palettes[palette_entry] = palette
 
         self._lookups = []
-        for lookup_entry in rff.find_matching_entries('*.plu'):
-            lookup = numpy.frombuffer(
-                rff.data_for_entry(lookup_entry),
-                dtype='uint8'
-            ).reshape((64, 256))
-            lookup = numpy.array(lookup)
-            lookup[:, 255] = 255
+        for lookup_index in range(128):
+            lookup_data = rff.data_for_entry_by_index('PLU', lookup_index)
+            if lookup_data is None:
+                lookup = numpy.zeros((64, 256))
+            else:
+                lookup = numpy.frombuffer(
+                    lookup_data,
+                    dtype='uint8'
+                ).reshape((64, 256))
+                lookup = numpy.array(lookup)
+                lookup[:, 255] = 255
             self._lookups.append(lookup)
 
         self._default_palette = self._palettes['BLOOD.PAL']

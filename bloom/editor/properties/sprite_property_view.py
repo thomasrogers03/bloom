@@ -12,7 +12,7 @@ from ... import constants
 from ...audio import sound_view
 from ...utils import gui
 from ..descriptors.object_property import Property
-from ..descriptors.sprite_type_descriptor import SpriteTypeDescriptor
+from ..descriptors.sprite_type import SpriteType
 
 _PROPERTY_LIST_TYPE = typing.List[
     typing.Tuple[
@@ -174,7 +174,8 @@ class SpritePropertyView:
                 value = setter.get_python_tag('sound_index') + descriptor.offset
             elif descriptor.property_type == Property.ENUM_PROPERTY:
                 enum_name = setter.get()
-                value = setter.get_python_tag('enum_values')[enum_name] + descriptor.offset
+                value = setter.get_python_tag('enum_values')[
+                    enum_name] + descriptor.offset
             new_values[property_name] = value
 
         return new_values

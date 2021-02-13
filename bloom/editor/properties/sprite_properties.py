@@ -13,11 +13,8 @@ from ...audio import sound_view
 from ...tiles import manager
 from ...utils import gui
 from .. import descriptors, event_grouping, map_objects
-from ..descriptors import sprite_type_descriptor
+from ..descriptors import sprite_type
 from . import sprite_property_view, sprite_type_list
-
-_SPRITE_CATEGORIES_TYPE = typing.Dict[str,
-                                      typing.List[sprite_type_descriptor.SpriteTypeDescriptor]]
 
 
 class SpriteDialog:
@@ -82,26 +79,16 @@ class SpriteDialog:
         self._edit_mode = edit_mode
 
         self._sprite: map_objects.EditorSprite = None
-        self._selected_descriptor: sprite_type_descriptor.SpriteTypeDescriptor = None
-        self._current_descriptor: sprite_type_descriptor.SpriteTypeDescriptor = None
+        self._selected_descriptor: sprite_type.SpriteType = None
+        self._current_descriptor: sprite_type.SpriteType = None
         self._current_picnum: int = None
         self._current_palette: int = None
         self._current_status_number: int = None
 
-        category_names = descriptors.sprite_category_descriptors.keys()
-        category_names = sorted(category_names)
-        category_names = list(category_names)
-        self._sprite_categories: _SPRITE_CATEGORIES_TYPE = {
-            category_name: []
-            for category_name in category_names
-        }
-        for descriptor in descriptors.sprite_types.values():
-            self._sprite_categories[descriptor.category].append(descriptor)
-
         self._sprite_category_options = DirectGui.DirectOptionMenu(
             parent=self._dialog,
             pos=core.Vec3(0.04, 1.72),
-            items=category_names,
+            items=list(descriptors.sprite_category_descriptors.keys()),
             command=self._select_sprite_category,
             scale=constants.TEXT_SIZE,
             text_align=core.TextNode.A_left
@@ -163,7 +150,7 @@ class SpriteDialog:
 
     def show(self, sprite: map_objects.EditorSprite):
         self._sprite = sprite
-        self._current_descriptor = descriptors.sprite_types[self._sprite.get_type()]
+        self._current_descriptor = self._sprite.type_descriptor
 
         self._sprite_category_options.set(self._current_descriptor.category)
         self._current_palette = self._sprite.sprite.sprite.palette
@@ -194,7 +181,7 @@ class SpriteDialog:
         if new_picnum is not None:
             self._current_picnum = new_picnum
 
-        self._current_descriptor.apply_sprite_properties(self._sprite, new_values)
+        self._current_sprite_type.apply_sprite_properties(self._sprite, new_values)
         self.apply_sprite_properties(
             self._sprite,
             self._current_descriptor,
@@ -229,12 +216,12 @@ class SpriteDialog:
     @staticmethod
     def apply_sprite_properties(
         sprite: map_objects.EditorSprite,
-        descriptor: sprite_type_descriptor.SpriteTypeDescriptor,
+        descriptor: sprite_type.SpriteType,
         picnum: int,
         palette: int
     ):
-        sprite.sprite.sprite.tags[0] = descriptor.sprite_type
-        sprite.sprite.sprite.picnum = picnum
+        sprite.type_descriptor = descriptor
+        sprite.set_picnum(None, picnum)
         sprite.sprite.sprite.palette = palette
         sprite.sprite.sprite.status_number = descriptor.get_status_number(
             descriptors.sprite_category_descriptors
@@ -242,16 +229,21 @@ class SpriteDialog:
         if descriptor.invisible:
             sprite.sprite.sprite.stat.invisible = 1
 
-        sprite.sprite.sprite.stat.blocking = 0
-        sprite.sprite.sprite.stat.blocking2 = 0
-        if descriptor.blocking >= 1:
-            sprite.sprite.sprite.stat.blocking = 1
-        if descriptor.blocking >= 2:
-            sprite.sprite.sprite.stat.blocking2 = 1
+        if descriptor.blocking is not None:
+            sprite.sprite.sprite.stat.blocking = 0
+            sprite.sprite.sprite.stat.blocking2 = 0
+            if descriptor.blocking >= 1:
+                sprite.sprite.sprite.stat.blocking = 1
+            if descriptor.blocking >= 2:
+                sprite.sprite.sprite.stat.blocking2 = 1
 
         repeats = descriptor.sprite_repeats
         if repeats is not None:
             sprite.set_repeats(repeats['x'], repeats['y'])
+
+    @property
+    def _current_sprite_type(self):
+        return sprite_type.SpriteType(self._current_descriptor)
 
     def _clear_property_view(self):
         if self._properties is not None:
@@ -263,7 +255,7 @@ class SpriteDialog:
         self._properties = sprite_property_view.SpritePropertyView(
             self._property_parent,
             self._current_descriptor.default_tile,
-            self._current_descriptor.get_sprite_properties(
+            self._current_sprite_type.get_sprite_properties(
                 self._sprite,
                 self._droppables
             ),
@@ -276,11 +268,11 @@ class SpriteDialog:
 
     def _select_sprite_category(self, value: str):
         self._sprite_type_list.clear()
-        for descriptor in self._sprite_categories[value]:
+        for descriptor in descriptors.categorized_sprites[value]:
             self._sprite_type_list.add_sprite_type(descriptor)
         self._sprite_type_list.set_current_type(self._current_descriptor)
 
-    def _select_sprite_type(self, descriptor: sprite_type_descriptor.SpriteTypeDescriptor):
+    def _select_sprite_type(self, descriptor: sprite_type.SpriteType):
         if self._selected_descriptor == descriptor:
             self._save_changes()
             return

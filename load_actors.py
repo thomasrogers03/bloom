@@ -190,6 +190,9 @@ def _load_sprite_type(actor: Actor, sprite: dict):
     if 'sprite.blocking' in actor.properties:
         sprite['blocking'] = int(actor.properties['sprite.blocking'])
 
+    if 'actor.spawnSeq' in actor.properties:
+        sprite['seq'] = int(actor.properties['actor.spawnSeq'])
+
 
 def _process_actors(all_actors: typing.List[Actor]):
     with open('bloom/resources/sprite_types.yaml', 'r') as file:
