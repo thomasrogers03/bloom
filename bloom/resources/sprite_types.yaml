@@ -753,6 +753,7 @@
   repeats:
     x: 0
     y: 0
+  seq: 0
   tile_config:
     tile: 832
 201:
@@ -764,6 +765,7 @@
   repeats:
     x: 9
     y: 10
+  seq: 4096
   tile_config:
     tile: 2820
 202:
@@ -774,6 +776,7 @@
   repeats:
     x: 9
     y: 10
+  seq: 11520
   tile_config:
     tile: 2820
 203:
@@ -784,6 +787,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 4352
   tile_config:
     tile: 1170
 204:
@@ -794,6 +798,7 @@
   repeats:
     x: 12
     y: 12
+  seq: 4608
   tile_config:
     tile: 1370
 205:
@@ -804,6 +809,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 4352
   tile_config:
     tile: 3054
 206:
@@ -814,6 +820,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 4864
   tile_config:
     tile: 1470
 207:
@@ -825,6 +832,7 @@
   repeats:
     x: 16
     y: 16
+  seq: 5120
   tile_config:
     tile: 1470
 208:
@@ -856,6 +864,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 5376
   tile_config:
     tile: 3060
 211:
@@ -866,6 +875,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 5632
   tile_config:
     tile: 1270
 212:
@@ -876,6 +886,7 @@
   repeats:
     x: 8
     y: 8
+  seq: 5888
   tile_config:
     tile: 1980
 213:
@@ -887,6 +898,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 6144
   tile_config:
     tile: 1920
 214:
@@ -898,6 +910,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 6400
   tile_config:
     tile: 1920
 215:
@@ -909,6 +922,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 6656
   tile_config:
     tile: 1920
 216:
@@ -919,6 +933,7 @@
   repeats:
     x: 20
     y: 20
+  seq: 6912
   tile_config:
     tile: 1920
 217:
@@ -929,6 +944,7 @@
   repeats:
     x: 12
     y: 12
+  seq: 7168
   tile_config:
     tile: 1570
 218:
@@ -939,6 +955,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 7424
   tile_config:
     tile: 1870
 219:
@@ -949,6 +966,7 @@
   repeats:
     x: 8
     y: 8
+  seq: 7680
   tile_config:
     tile: 1912
 220:
@@ -959,6 +977,7 @@
   repeats:
     x: 6
     y: 6
+  seq: 7936
   tile_config:
     tile: 1745
 221:
@@ -969,6 +988,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 8192
   tile_config:
     tile: 1792
 222:
@@ -979,6 +999,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 8448
   tile_config:
     tile: 1797
 223:
@@ -990,6 +1011,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 8704
   tile_config:
     tile: 1792
 224:
@@ -1001,6 +1023,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 8960
   tile_config:
     tile: 1797
 225:
@@ -1012,6 +1035,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 9216
   tile_config:
     tile: 1792
 226:
@@ -1023,6 +1047,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 9472
   tile_config:
     tile: 1797
 227:
@@ -1033,6 +1058,7 @@
   repeats:
     x: 16
     y: 16
+  seq: 9728
   tile_config:
     tile: 2680
 228:
@@ -1043,6 +1069,7 @@
   repeats:
     x: 16
     y: 16
+  seq: 9984
   tile_config:
     tile: 0
 229:
@@ -1053,6 +1080,7 @@
   repeats:
     x: 16
     y: 16
+  seq: 10240
   tile_config:
     tile: 3140
 230:
@@ -1064,6 +1092,7 @@
   repeats:
     x: 9
     y: 10
+  seq: 4096
   tile_config:
     tile: 3385
 231:
@@ -1074,6 +1103,7 @@
   repeats:
     x: 8
     y: 9
+  seq: 12032
   tile_config:
     tile: 0
 232:
@@ -1084,6 +1114,7 @@
   repeats:
     x: 8
     y: 9
+  seq: 12032
   tile_config:
     tile: 0
 233:
@@ -1094,6 +1125,7 @@
   repeats:
     x: 8
     y: 9
+  seq: 12032
   tile_config:
     tile: 0
 234:
@@ -1104,6 +1136,7 @@
   repeats:
     x: 8
     y: 9
+  seq: 12032
   tile_config:
     tile: 0
 235:
@@ -1114,6 +1147,7 @@
   repeats:
     x: 8
     y: 9
+  seq: 12032
   tile_config:
     tile: 0
 236:
@@ -1124,6 +1158,7 @@
   repeats:
     x: 8
     y: 9
+  seq: 12032
   tile_config:
     tile: 0
 237:
@@ -1134,6 +1169,7 @@
   repeats:
     x: 8
     y: 9
+  seq: 12032
   tile_config:
     tile: 0
 238:
@@ -1144,6 +1180,7 @@
   repeats:
     x: 8
     y: 9
+  seq: 12032
   tile_config:
     tile: 0
 239:
@@ -1154,6 +1191,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 12544
   tile_config:
     tile: 0
 240:
@@ -1164,6 +1202,7 @@
   repeats:
     x: 9
     y: 10
+  seq: 4096
   tile_config:
     tile: 0
 241:
@@ -1174,6 +1213,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 4352
   tile_config:
     tile: 0
 242:
@@ -1184,6 +1224,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 4608
   tile_config:
     tile: 0
 243:
@@ -1193,6 +1234,7 @@
   name: Unknown
   palette: 0
   repeats: {}
+  seq: 4096
   tile_config:
     tile: 0
 244:
@@ -1203,6 +1245,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 4352
   tile_config:
     tile: 1209
 245:
@@ -1213,6 +1256,7 @@
   repeats:
     x: 10
     y: 10
+  seq: 12544
   tile_config:
     tile: 3798
 246:
@@ -1223,6 +1267,7 @@
   repeats:
     x: 9
     y: 10
+  seq: 11520
   tile_config:
     tile: 3385
 247:
@@ -1234,6 +1279,7 @@
   repeats:
     x: 9
     y: 10
+  seq: 12800
   tile_config:
     tile: 2820
 248:
@@ -1245,6 +1291,7 @@
   repeats:
     x: 9
     y: 10
+  seq: 13056
   tile_config:
     tile: 2820
 249:
@@ -1256,6 +1303,7 @@
   repeats:
     x: 9
     y: 10
+  seq: 13312
   tile_config:
     tile: 2820
 250:
@@ -1266,6 +1314,7 @@
   repeats:
     x: 4
     y: 4
+  seq: 13568
   tile_config:
     tile: 3870
 251:
@@ -1276,6 +1325,7 @@
   repeats:
     x: 9
     y: 10
+  seq: 10752
   tile_config:
     tile: 2690
 252:
@@ -1285,6 +1335,7 @@
   name: Unknown
   palette: 0
   repeats: {}
+  seq: 13568
   tile_config:
     tile: 0
 253:
@@ -1294,6 +1345,7 @@
   name: Unknown
   palette: 41
   repeats: {}
+  seq: 10752
   tile_config:
     tile: 0
 300:
@@ -1348,6 +1400,7 @@
   repeats:
     x: 8
     y: 8
+  seq: 22
   tile_config:
     tile: 0
 306:
@@ -1375,6 +1428,7 @@
   repeats:
     x: 6
     y: 6
+  seq: 27
   tile_config:
     tile: 0
 309:
@@ -1384,6 +1438,7 @@
   repeats:
     x: 4
     y: 4
+  seq: 29
   tile_config:
     tile: 0
 310:
@@ -1411,6 +1466,7 @@
   repeats:
     x: 8
     y: 8
+  seq: 61
   tile_config:
     tile: 0
 313:
@@ -1420,6 +1476,7 @@
   repeats:
     x: 8
     y: 8
+  seq: 61
   tile_config:
     tile: 0
 314:
@@ -1429,6 +1486,7 @@
   repeats:
     x: 6
     y: 6
+  seq: 23
   tile_config:
     tile: 0
 315:
@@ -1757,6 +1815,7 @@
   repeats:
     x: 16
     y: 16
+  seq: 22
   tile_config:
     tile: 0
 429:
@@ -1959,6 +2018,7 @@
   repeats:
     x: 8
     y: 9
+  seq: 12032
   tile_config:
     tile: 0
 10232:
@@ -1969,6 +2029,7 @@
   repeats:
     x: 8
     y: 9
+  seq: 12032
   tile_config:
     tile: 0
 10233:
@@ -1979,5 +2040,6 @@
   repeats:
     x: 8
     y: 9
+  seq: 12032
   tile_config:
     tile: 0
