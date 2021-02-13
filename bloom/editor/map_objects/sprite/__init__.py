@@ -352,26 +352,33 @@ class EditorSprite(empty_object.EmptyObject):
         self._needs_geometry_reset = False
 
     def update(self, ticks: int, art_manager: manager.Manager):
-        if self._seq is None:
-            return
-
         node_path: core.NodePath = self._sprite_collision.find('**/geometry')
         if node_path.is_empty():
             return
 
-        frame_index = int(
-            (4 * ticks) / self._seq.header.ticks_per_frame
-        ) % self._seq.header.frame_count
-        frame = self._seq.frames[frame_index]
+        animation_data_and_lookup = node_path.get_python_tag('animation_data')
+        if self._seq is not None:
+            frame_index = int(
+                (4 * ticks) / self._seq.header.ticks_per_frame
+            ) % self._seq.header.frame_count
+            frame = self._seq.frames[frame_index]
 
-        self._set_display_size(frame.stat.tile)
-
-        node_path.set_texture(
-            art_manager.get_tile(
-                frame.stat.tile,
-                frame.palette
+            self._set_display_size(frame.stat.tile)
+            node_path.set_texture(
+                art_manager.get_tile(
+                    frame.stat.tile,
+                    frame.palette
+                )
             )
-        )
+
+        elif animation_data_and_lookup is not None:
+            animation_data: manager.AnimationData = animation_data_and_lookup[0]
+            lookup: int = animation_data_and_lookup[1]
+            offset = (ticks // animation_data.ticks_per_frame) % animation_data.count
+            new_picnum = animation_data.picnum + offset
+
+            self._set_display_size(new_picnum)
+            node_path.set_texture(art_manager.get_tile(new_picnum, lookup))
 
     def update_ambient_sound(self):
         if self._sprite.sprite.tags[0] != self._AMBIENT_SFX_TYPE or \

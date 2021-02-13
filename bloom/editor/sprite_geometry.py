@@ -50,7 +50,6 @@ class SpriteGeometry:
         display.set_texture(self._tile_manager.get_tile(picnum, lookup), 1)
         animation_data = self._tile_manager.get_animation_data(picnum)
         if animation_data is not None:
-            display.set_name('animated_geometry')
             display.set_python_tag('animation_data', (animation_data, lookup))
         display.set_depth_offset(constants.DEPTH_OFFSET, 1)
         display.set_transparency(True)
