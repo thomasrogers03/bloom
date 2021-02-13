@@ -8,7 +8,6 @@ from .map_objects import empty_object
 
 
 class EventGrouping:
-
     def __init__(self):
         self._sources: typing.Set[empty_object.EmptyObject] = set()
         self._targets: typing.Set[empty_object.EmptyObject] = set()
@@ -29,8 +28,8 @@ class EventGrouping:
     def special_transmitter_id(self):
         return None
 
-class SpecialGrouping:
 
+class SpecialGrouping:
     def __init__(self, transmitter_id: int, receiver_id: int):
         self._sources: typing.Set[empty_object.EmptyObject] = set()
         self._targets: typing.Set[empty_object.EmptyObject] = set()
@@ -62,11 +61,10 @@ class EventGroupingCollection:
     def __init__(self):
         self._groupings: typing.List[EventGrouping] = []
 
-    def load(
-        self, 
-        map_objects: typing.List[empty_object.EmptyObject]
-    ):
-        groupings: typing.Dict[int, EventGrouping] = defaultdict(lambda: EventGrouping())
+    def load(self, map_objects: typing.List[empty_object.EmptyObject]):
+        groupings: typing.Dict[int, EventGrouping] = defaultdict(
+            lambda: EventGrouping()
+        )
         groupings[4] = self.END_LEVEL_GROUPING
         groupings[5] = self.SECRET_END_LEVEL_GROUPING
         groupings[7] = self.START_LEVEL_GROUPING
@@ -83,9 +81,9 @@ class EventGroupingCollection:
         self._groupings[:] = groupings.values()
 
     def get_grouping(
-        self, 
-        transmitter: empty_object.EmptyObject, 
-        receivers: typing.List[empty_object.EmptyObject]
+        self,
+        transmitter: empty_object.EmptyObject,
+        receivers: typing.List[empty_object.EmptyObject],
     ) -> EventGrouping:
         for receiver in receivers:
             if receiver.source_event_grouping is not None:
@@ -119,4 +117,3 @@ class EventGroupingCollection:
         grouping = EventGrouping()
         self._groupings.append(grouping)
         return grouping
-        

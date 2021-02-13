@@ -8,8 +8,7 @@ from direct.gui import DirectGui, DirectGuiGlobals
 from direct.task import Task
 from panda3d import core
 
-from . import (addon, audio, constants, edit_mode, ror_type_selector,
-               tile_dialog)
+from . import addon, audio, constants, edit_mode, ror_type_selector, tile_dialog
 from .audio import sound_view
 from .editor import properties
 from .gui import mod_editor
@@ -18,7 +17,6 @@ from .utils import gui
 
 
 class Dialogs:
-
     def __init__(
         self,
         parent: core.NodePath,
@@ -26,40 +24,29 @@ class Dialogs:
         edit_mode_selector: edit_mode.EditMode,
         audio_manager: audio.Manager,
         task_manager: Task.TaskManager,
-        get_addons: typing.Callable[[], typing.List[addon.Addon]]
+        get_addons: typing.Callable[[], typing.List[addon.Addon]],
     ):
         self._tile_dialog = tile_dialog.TileDialog(
-            parent,
-            tile_manager,
-            edit_mode_selector,
-            task_manager
+            parent, tile_manager, edit_mode_selector, task_manager
         )
         self._sound_view = sound_view.SoundView(
-            parent,
-            audio_manager,
-            task_manager,
-            edit_mode_selector
+            parent, audio_manager, task_manager, edit_mode_selector
         )
         self._sprite_properties = properties.sprite_properties.SpriteDialog(
             parent,
             edit_mode_selector,
             task_manager,
             self._sound_view,
-            self._tile_dialog
+            self._tile_dialog,
         )
         self._wall_properties = properties.wall_properties.WallDialog(
-            parent,
-            edit_mode_selector
+            parent, edit_mode_selector
         )
         self._ror_type_selector = ror_type_selector.RORTypeSelector(
-            parent,
-            edit_mode_selector
+            parent, edit_mode_selector
         )
         self._mod_editor = mod_editor.ModEditor(
-            parent,
-            edit_mode_selector,
-            audio_manager,
-            get_addons
+            parent, edit_mode_selector, audio_manager, get_addons
         )
 
     @property

@@ -100,7 +100,7 @@ class Map:
     @staticmethod
     def _get_cache_name(map_path: str):
         map_name = os.path.basename(map_path)
-        return os.path.join(constants.CACHE_PATH, f'{map_name}.mapcache')
+        return os.path.join(constants.CACHE_PATH, f"{map_name}.mapcache")
 
     def _load_from_cache(self, map_path) -> bool:
         if not constants.MAP_CACHE_ENABLED:
@@ -108,7 +108,7 @@ class Map:
 
         cache_path = self._get_cache_name(map_path)
         if os.path.exists(cache_path):
-            with open(cache_path, 'rb') as file:
+            with open(cache_path, "rb") as file:
                 self._header_0 = pickle.load(file)
                 self._encrypted = pickle.load(file)
                 self._header_1 = pickle.load(file)
@@ -127,7 +127,7 @@ class Map:
             return
 
         cache_path = self._get_cache_name(map_path)
-        with open(cache_path, 'w+b') as file:
+        with open(cache_path, "w+b") as file:
             pickle.dump(self._header_0, file)
             pickle.dump(self._encrypted, file)
             pickle.dump(self._header_1, file)
@@ -151,43 +151,30 @@ class Map:
         elif self._header_0.major_version == 7 and self._header_0.minor_version == 0:
             self._encrypted = True
         else:
-            raise ValueError('Unsupported map format')
+            raise ValueError("Unsupported map format")
 
         if self._encrypted:
             self._header_1 = unpacker.read_xor_encrypted_struct(
-                headers.MapHeader1,
-                0x4D
+                headers.MapHeader1, 0x4D
             )
         else:
             self._header_1 = unpacker.read_struct(headers.MapHeader1)
 
         if self._encrypted:
             key = (0x4D + headers.MapHeader1.size()) & 0xFF
-            self._header_2 = unpacker.read_xor_encrypted_struct(
-                headers.MapHeader2,
-                key
-            )
+            self._header_2 = unpacker.read_xor_encrypted_struct(headers.MapHeader2, key)
         else:
             self._header_2 = unpacker.read_struct(headers.MapHeader2)
 
         if self._encrypted:
-            key = (
-                0x4D + headers.MapHeader1.size() +
-                headers.MapHeader2.size()
-            ) & 0xFF
-            self._header_3 = unpacker.read_xor_encrypted_struct(
-                headers.MapHeader3,
-                key
-            )
+            key = (0x4D + headers.MapHeader1.size() + headers.MapHeader2.size()) & 0xFF
+            self._header_3 = unpacker.read_xor_encrypted_struct(headers.MapHeader3, key)
         else:
             self._header_3 = unpacker.read_struct(headers.MapHeader3)
 
         if self._encrypted:
             key = self._header_3.wall_count & 0xFF
-            self._header_4 = unpacker.read_xor_encrypted_struct(
-                headers.MapHeader4,
-                key
-            )
+            self._header_4 = unpacker.read_xor_encrypted_struct(headers.MapHeader4, key)
         else:
             self._header_4 = None
 
@@ -195,9 +182,7 @@ class Map:
             sky_offsets_size = unpacker.get_xor_encrypted_bytes(2, 0x00)
             unpacker.seek_incrementally(-2)
             self._sky_offsets = unpacker.read_multiple_xor_encrypted_members(
-                data_loading.Int16,
-                sky_offsets_size[0] // 2,
-                sky_offsets_size[0]
+                data_loading.Int16, sky_offsets_size[0] // 2, sky_offsets_size[0]
             )
         else:
             self._sky_offsets = unpacker.read_multiple_members(data_loading.Int16, 16)
@@ -205,21 +190,9 @@ class Map:
         if not self._header_2.has_sky:
             self._sky_offsets = [0]
 
-        self._sectors = sector.load_sectors(
-            unpacker,
-            self._encrypted,
-            self._header_3
-        )
-        self._walls = wall.load_walls(
-            unpacker,
-            self._encrypted,
-            self._header_3
-        )
-        self._sprites = sprite.load_sprites(
-            unpacker,
-            self._encrypted,
-            self._header_3
-        )
+        self._sectors = sector.load_sectors(unpacker, self._encrypted, self._header_3)
+        self._walls = wall.load_walls(unpacker, self._encrypted, self._header_3)
+        self._sprites = sprite.load_sprites(unpacker, self._encrypted, self._header_3)
         self._crc = unpacker.read_member(data_loading.UInt32)
 
         self._save_to_cache(map_path)
@@ -230,7 +203,7 @@ class Map:
         start_position_y: int,
         start_position_z: int,
         start_theta: int,
-        start_sector_index: int
+        start_sector_index: int,
     ):
         self._header_1.player_position[0] = start_position_x
         self._header_1.player_position[1] = start_position_y
@@ -295,10 +268,7 @@ class Map:
             packer.write_struct(self._header_2)
 
         if self._encrypted:
-            key = (
-                0x4D + headers.MapHeader1.size() +
-                headers.MapHeader2.size()
-            ) & 0xFF
+            key = (0x4D + headers.MapHeader1.size() + headers.MapHeader2.size()) & 0xFF
             packer.write_xor_encrypted_struct(self._header_3, key)
         else:
             packer.write_struct(self._header_3)
@@ -309,31 +279,14 @@ class Map:
 
         if self._encrypted:
             packer.write_multiple_xor_encrypted_members(
-                data_loading.UInt16,
-                self._sky_offsets,
-                len(self._sky_offsets) * 2
+                data_loading.UInt16, self._sky_offsets, len(self._sky_offsets) * 2
             )
         else:
             packer.write_multiple_members(data_loading.UInt16, self._sky_offsets)
 
-        sector.save_sectors(
-            packer,
-            self._encrypted,
-            self._header_3,
-            self._sectors
-        )
-        wall.save_walls(
-            packer,
-            self._encrypted,
-            self._header_3,
-            self._walls
-        )
-        sprite.save_sprites(
-            packer,
-            self._encrypted,
-            self._header_3,
-            self._sprites
-        )
+        sector.save_sectors(packer, self._encrypted, self._header_3, self._sectors)
+        wall.save_walls(packer, self._encrypted, self._header_3, self._walls)
+        sprite.save_sprites(packer, self._encrypted, self._header_3, self._sprites)
 
         self._crc = zlib.crc32(packer.get_bytes())
         packer.write_member(data_loading.UInt32, self._crc)

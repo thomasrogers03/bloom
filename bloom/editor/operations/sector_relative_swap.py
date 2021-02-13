@@ -3,8 +3,8 @@
 
 from .. import map_objects
 
-class SectorRelativeSwap:
 
+class SectorRelativeSwap:
     def __init__(self, sector: map_objects.EditorSector, part: str):
         self._sector = sector
         self._stat = self._sector.get_stat_for_part(part)

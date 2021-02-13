@@ -10,7 +10,6 @@ from . import empty_move
 
 
 class SpriteMove(empty_move.EmptyMove):
-
     def __init__(self, sprite: EditorSprite):
         self._sprite = sprite
         self._start_position = self._sprite.origin

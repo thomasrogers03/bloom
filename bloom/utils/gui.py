@@ -13,7 +13,7 @@ from .. import constants
 def bind_scroll(
     control: DirectGuiBase.DirectGuiBase,
     scroll_up: typing.Callable[[typing.Any], None],
-    scroll_down: typing.Callable[[typing.Any], None]
+    scroll_down: typing.Callable[[typing.Any], None],
 ):
     control.bind(constants.DIRECT_GUI_WHEELUP, scroll_up)
     control.bind(constants.DIRECT_GUI_WHEELDOWN, scroll_down)
@@ -36,7 +36,7 @@ def size_inside_square_for_texture(texture: core.Texture, square_size: float):
 
 
 def bind_gui_for_focus(control: DirectGuiBase.DirectGuiBase):
-    control['state'] = DirectGuiGlobals.NORMAL
+    control["state"] = DirectGuiGlobals.NORMAL
     control.bind(DirectGuiGlobals.WITHIN, dispatch_has_focus)
     control.bind(DirectGuiGlobals.WITHOUT, dispatch_lost_focus)
 

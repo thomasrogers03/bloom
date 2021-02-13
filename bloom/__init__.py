@@ -7,9 +7,12 @@ try:
     import pkg_resources
 
     def find_resource(name: str):
-        return pkg_resources.resource_filename(__name__, os.path.join('resources', name))
+        return pkg_resources.resource_filename(
+            __name__, os.path.join("resources", name)
+        )
+
 
 except ImportError:
 
     def find_resource(name: str):
-        return os.path.join('bloom/resources', name)
+        return os.path.join("bloom/resources", name)

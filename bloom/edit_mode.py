@@ -16,8 +16,9 @@ logger = logging.getLogger(__name__)
 
 
 class EditMode(DirectObject.DirectObject):
-
-    def __init__(self, mouse_watcher: core.MouseWatcher, task_manager: Task.TaskManager):
+    def __init__(
+        self, mouse_watcher: core.MouseWatcher, task_manager: Task.TaskManager
+    ):
         super().__init__()
 
         self._mouse_watcher = mouse_watcher
@@ -27,14 +28,12 @@ class EditMode(DirectObject.DirectObject):
         self._current_edit_mode: typing.Optional[empty_edit_mode.EditMode] = None
         self._always_tickers: typing.List[typing.Callable[[], None]] = []
         self._mode_stack: typing.List[typing.Tuple[empty_edit_mode.EditMode, dict]] = []
-        self._current_pstats_name = 'App:Show code:global_ticker'
+        self._current_pstats_name = "App:Show code:global_ticker"
 
         self._task_manager.do_method_later(
-            constants.TICK_RATE,
-            self._tick,
-            'global_ticker'
+            constants.TICK_RATE, self._tick, "global_ticker"
         )
-        self.accept('escape', self.pop_mode)
+        self.accept("escape", self.pop_mode)
 
     @property
     def mouse_watcher(self):
@@ -46,10 +45,10 @@ class EditMode(DirectObject.DirectObject):
 
     @contextmanager
     def track_performance_stats(self, name: str):
-        logger.debug(f'Start tracking stats for {name}')
+        logger.debug(f"Start tracking stats for {name}")
 
         old_name = self._current_pstats_name
-        self._current_pstats_name = f'{self._current_pstats_name}:{name}'
+        self._current_pstats_name = f"{self._current_pstats_name}:{name}"
         tracker = core.PStatCollector(self._current_pstats_name)
         tracker.start()
         try:
@@ -89,12 +88,12 @@ class EditMode(DirectObject.DirectObject):
         self._always_tickers.append(callback)
 
     def _tick(self, task):
-        with self.track_performance_stats('always_tick'):
+        with self.track_performance_stats("always_tick"):
             for ticker in self._always_tickers:
                 ticker()
 
         if self._current_edit_mode is not None:
-            with self.track_performance_stats('current_edit_mode'):
+            with self.track_performance_stats("current_edit_mode"):
                 self._current_edit_mode.tick()
 
         self._cancel_tick = False

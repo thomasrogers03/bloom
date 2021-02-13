@@ -13,7 +13,6 @@ from . import utils
 
 
 class TestWallDelete(unittest.TestCase):
-
     def setUp(self):
         self._sectors = utils.new_sector_collection()
 
@@ -21,9 +20,7 @@ class TestWallDelete(unittest.TestCase):
         test_id = self.id()
         for sector_index, sector in enumerate(self._sectors.sectors):
             utils.save_sector_images(
-                f'{test_id}-sector_{sector_index}', 
-                sector,
-                self._sectors
+                f"{test_id}-sector_{sector_index}", sector, self._sectors
             )
 
     def test_can_delete(self):
@@ -46,7 +43,7 @@ class TestWallDelete(unittest.TestCase):
         operations.wall_link.SectorWallLink(wall, self._sectors).try_link_wall()
 
         operations.wall_split.WallSplit(wall, core.Point2(0, 1)).split()
-        
+
         wall = utils.find_wall_on_point(sector, core.Point2(0, 1))
         operations.wall_delete.WallDelete(wall).delete()
 
@@ -61,7 +58,9 @@ class TestWallDelete(unittest.TestCase):
         wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
         operations.wall_link.SectorWallLink(wall, self._sectors).try_link_wall()
 
-        other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        other_side_wall = utils.find_wall_on_point(
+            other_side_sector, core.Point2(-1, 1)
+        )
         operations.wall_delete.WallDelete(other_side_wall).delete()
 
         wall = utils.find_wall_on_point(sector, core.Point2(1, 1))

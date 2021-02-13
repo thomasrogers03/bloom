@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-
 from panda3d import bullet, core
 
 from .. import clicker, constants
@@ -13,18 +12,13 @@ from . import drawing_display, navigation_mode_2d, sector_drawer
 
 
 class EditMode(navigation_mode_2d.EditMode):
-
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._sector_drawer = sector_drawer.SectorDrawer(
             self._camera_collection,
             self._tickers,
             self._make_clicker,
-            self._extrude_mouse_to_scene_transform
+            self._extrude_mouse_to_scene_transform,
         )
 
     def start_drawing(self, sector: EditorSector, hit_point: core.Point3, insert: bool):

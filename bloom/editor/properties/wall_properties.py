@@ -15,25 +15,25 @@ from .. import descriptors, event_grouping, map_objects
 from ..descriptors import wall_type_descriptor
 from . import sprite_property_view
 
-_WALL_CATEGORIES_TYPE = typing.Dict[str, typing.List[wall_type_descriptor.WallTypeDescriptor]]
+_WALL_CATEGORIES_TYPE = typing.Dict[
+    str, typing.List[wall_type_descriptor.WallTypeDescriptor]
+]
+
 
 class WallDialog:
-
-    def __init__(
-        self,
-        parent: core.NodePath,
-        edit_mode: edit_mode.EditMode
-    ):
+    def __init__(self, parent: core.NodePath, edit_mode: edit_mode.EditMode):
         self._dialog = DirectGui.DirectFrame(
             parent=parent,
             pos=core.Vec3(-0.78, -0.9),
             frameSize=(0, 1.58, 0, 1.8),
             relief=DirectGuiGlobals.RAISED,
-            borderWidth=(0.01, 0.01)
+            borderWidth=(0.01, 0.01),
         )
         self._dialog.hide()
 
-        self._property_parent: core.NodePath = self._dialog.attach_new_node('properties')
+        self._property_parent: core.NodePath = self._dialog.attach_new_node(
+            "properties"
+        )
         self._property_parent.set_pos(0.04, 0, 0.38)
 
         self._edit_mode = edit_mode
@@ -57,65 +57,74 @@ class WallDialog:
             pos=core.Vec3(0.05, 0.38),
             scale=constants.TEXT_SIZE,
             items=type_names,
-            command=self._type_changed
+            command=self._type_changed,
         )
 
         DirectGui.DirectLabel(
             parent=self._dialog,
-            text='Special Source:',
+            text="Special Source:",
             pos=core.Vec3(1.12, 0.38),
-            scale=constants.TEXT_SIZE
+            scale=constants.TEXT_SIZE,
         )
         self._special_source_menu = DirectGui.DirectOptionMenu(
             parent=self._dialog,
             pos=core.Vec3(1.28, 0.38),
-            items=['None', 'Level Start'],
-            scale=constants.TEXT_SIZE
+            items=["None", "Level Start"],
+            scale=constants.TEXT_SIZE,
         )
 
         DirectGui.DirectLabel(
             parent=self._dialog,
-            text='Special Target:',
+            text="Special Target:",
             pos=core.Vec3(1.12, 0.38 - constants.TEXT_SIZE - 0.02),
-            scale=constants.TEXT_SIZE
+            scale=constants.TEXT_SIZE,
         )
         self._special_target_menu = DirectGui.DirectOptionMenu(
             parent=self._dialog,
             pos=core.Vec3(1.28, 0.38 - constants.TEXT_SIZE - 0.02),
-            items=['None', 'Next Level', 'Secret Level'],
-            scale=constants.TEXT_SIZE
+            items=["None", "Next Level", "Secret Level"],
+            scale=constants.TEXT_SIZE,
         )
 
         DirectGui.DirectButton(
             parent=self._dialog,
             pos=core.Vec3(1.36, 0.07),
-            text='Ok',
+            text="Ok",
             scale=constants.TEXT_SIZE,
-            command=self._save_changes
+            command=self._save_changes,
         )
         DirectGui.DirectButton(
             parent=self._dialog,
             pos=core.Vec3(1.48, 0.07),
-            text='Cancel',
+            text="Cancel",
             scale=constants.TEXT_SIZE,
-            command=self._hide
+            command=self._hide,
         )
 
     def show(self, wall: map_objects.EditorWall):
         self._wall = wall
         self._current_descriptor = descriptors.wall_types[self._wall.get_type()]
 
-        if self._wall.target_event_grouping == event_grouping.EventGroupingCollection.END_LEVEL_GROUPING:
-            self._special_target_menu.set('Next Level')
-        elif self._wall.target_event_grouping == event_grouping.EventGroupingCollection.SECRET_END_LEVEL_GROUPING:
-            self._special_target_menu.set('Secret Level')
+        if (
+            self._wall.target_event_grouping
+            == event_grouping.EventGroupingCollection.END_LEVEL_GROUPING
+        ):
+            self._special_target_menu.set("Next Level")
+        elif (
+            self._wall.target_event_grouping
+            == event_grouping.EventGroupingCollection.SECRET_END_LEVEL_GROUPING
+        ):
+            self._special_target_menu.set("Secret Level")
         else:
-            self._special_target_menu.set('None')
+            self._special_target_menu.set("None")
 
-        if self._wall.source_event_grouping == event_grouping.EventGroupingCollection.START_LEVEL_GROUPING:
-            self._special_source_menu.set('Next Level')
+        if (
+            self._wall.source_event_grouping
+            == event_grouping.EventGroupingCollection.START_LEVEL_GROUPING
+        ):
+            self._special_source_menu.set("Next Level")
         else:
-            self._special_source_menu.set('None')
+            self._special_source_menu.set("None")
 
         type_name = self._current_descriptor.name
         self._type_selector.set(type_name)
@@ -135,19 +144,29 @@ class WallDialog:
         self._wall.invalidate_geometry()
 
         target_special_value = self._special_target_menu.get()
-        if target_special_value == 'Next Level':
-            self._wall.set_target_event_grouping(event_grouping.EventGroupingCollection.END_LEVEL_GROUPING)
-        elif target_special_value == 'Secret Level':
-            self._wall.set_target_event_grouping(event_grouping.EventGroupingCollection.SECRET_END_LEVEL_GROUPING)
-        elif self._wall.target_event_grouping is not None and \
-                self._wall.target_event_grouping.special_receiver_id is not None:
+        if target_special_value == "Next Level":
+            self._wall.set_target_event_grouping(
+                event_grouping.EventGroupingCollection.END_LEVEL_GROUPING
+            )
+        elif target_special_value == "Secret Level":
+            self._wall.set_target_event_grouping(
+                event_grouping.EventGroupingCollection.SECRET_END_LEVEL_GROUPING
+            )
+        elif (
+            self._wall.target_event_grouping is not None
+            and self._wall.target_event_grouping.special_receiver_id is not None
+        ):
             self._wall.set_target_event_grouping(None)
 
         source_special_value = self._special_source_menu.get()
-        if source_special_value == 'Level Start':
-            self._wall.set_source_event_grouping(event_grouping.EventGroupingCollection.START_LEVEL_GROUPING)
-        elif self._wall.source_event_grouping is not None and \
-                self._wall.source_event_grouping.special_receiver_id is not None:
+        if source_special_value == "Level Start":
+            self._wall.set_source_event_grouping(
+                event_grouping.EventGroupingCollection.START_LEVEL_GROUPING
+            )
+        elif (
+            self._wall.source_event_grouping is not None
+            and self._wall.source_event_grouping.special_receiver_id is not None
+        ):
             self._wall.set_source_event_grouping(None)
 
         self._hide()
@@ -167,9 +186,9 @@ class WallDialog:
             None,
             1.65,
             1.5,
-            1.25
+            1.25,
         )
-        
+
     def _type_changed(self, value):
         type_index = self._type_lookup[value]
         self._current_descriptor = descriptors.wall_types[type_index]

@@ -20,7 +20,6 @@ class Camera(typing.NamedTuple):
 
 
 class Cameras:
-
     def __init__(
         self,
         resource_loader: Loader.Loader,
@@ -31,7 +30,7 @@ class Cameras:
         aspect_2d_top_left: core.NodePath,
         scene: core.NodePath,
         default_camera: Camera,
-        task_manager: Task.TaskManager
+        task_manager: Task.TaskManager,
     ):
         self._resource_loader = resource_loader
         self._window = window
@@ -39,13 +38,13 @@ class Cameras:
         self._render_2d = render_2d
         self._aspect_2d = aspect_2d
         self._scene = scene
-        self._builder_2d: core.NodePath = self._scene.attach_new_node('builder_2d')
-        self._builder: core.NodePath = self._builder_2d.attach_new_node('builder_3d')
+        self._builder_2d: core.NodePath = self._scene.attach_new_node("builder_2d")
+        self._builder: core.NodePath = self._builder_2d.attach_new_node("builder_3d")
         self._default_camera = default_camera
-        self._cameras: typing.Dict[str, Camera] = {'default': self._default_camera}
+        self._cameras: typing.Dict[str, Camera] = {"default": self._default_camera}
         self._task_manager = task_manager
 
-        builder_arrow_segments = core.LineSegs('builder_2d_arrow')
+        builder_arrow_segments = core.LineSegs("builder_2d_arrow")
         builder_arrow_segments.set_thickness(6)
         builder_arrow_segments.set_color(0.85, 0.85, 0.85, 1)
         builder_arrow_segments.draw_to(0, -512, 0)
@@ -53,10 +52,12 @@ class Cameras:
         builder_arrow_segments.draw_to(-512, 0, 0)
         builder_arrow_segments.draw_to(0, 512, 0)
         builder_arrow_segments.draw_to(512, 0, 0)
-        builder_arrow: core.NodePath = self._builder.attach_new_node(builder_arrow_segments.create())
+        builder_arrow: core.NodePath = self._builder.attach_new_node(
+            builder_arrow_segments.create()
+        )
         builder_arrow.set_depth_write(False)
         builder_arrow.set_depth_test(False)
-        builder_arrow.set_bin('fixed', constants.FRONT_MOST)
+        builder_arrow.set_bin("fixed", constants.FRONT_MOST)
         builder_arrow.hide(constants.SCENE_3D)
 
         self._default_camera.camera.reparent_to(self._builder)
@@ -64,25 +65,22 @@ class Cameras:
         self._default_camera.lens.set_fov(90)
         self._default_camera.lens.set_near_far(10, constants.REALLY_BIG_NUMBER)
 
-
-        builder_camera: core.NodePath = self._builder.attach_new_node(
-            'builder_camera'
-        )
+        builder_camera: core.NodePath = self._builder.attach_new_node("builder_camera")
         builder_camera.hide(constants.SCENE_3D)
         builder_camera.set_depth_write(False)
         builder_camera.set_depth_test(False)
-        builder_camera.set_bin('fixed', constants.FRONT_MOST)
+        builder_camera.set_bin("fixed", constants.FRONT_MOST)
         builder_camera.set_scale(500)
 
         self._info_display = DirectGui.DirectLabel(
             parent=aspect_2d_top_left,
             pos=core.Vec3(0, 0, -constants.TEXT_SIZE),
             scale=constants.TEXT_SIZE,
-            text='A',
+            text="A",
             text_bg=(0, 0, 0, 1),
             text_fg=(1, 1, 1, 1),
             frameColor=(0, 0, 0, 0),
-            text_align=core.TextNode.A_left
+            text_align=core.TextNode.A_left,
         )
         self._info_display_alpha = 1
         self._info_fade_task: Task.Task = None
@@ -116,20 +114,22 @@ class Cameras:
         return self._builder
 
     def set_info_text(self, text: str):
-        self._info_display['text'] = text
+        self._info_display["text"] = text
         self._info_display_alpha = 1
         self._set_info_text_alpha()
         self._info_display.show()
-        
+
         if self._info_fade_task is not None:
             self._info_fade_task.cancel()
             self._info_fade_task = None
-        self._info_fade_task = self._task_manager.do_method_later(0.025, self._fade_info_text, 'fade_info_text')
+        self._info_fade_task = self._task_manager.do_method_later(
+            0.025, self._fade_info_text, "fade_info_text"
+        )
 
     def load_model_into_scene(self, path: str):
         model = self._resource_loader.load_model(path)
         model.reparent_to(self.scene)
-        
+
         return model
 
     def get_builder_position(self) -> core.Point3:
@@ -146,7 +146,7 @@ class Cameras:
         lens.set_film_size(1, 1)
         lens.set_near_far(-1, 1)
 
-        camera_node = core.Camera(f'{name}_camera')
+        camera_node = core.Camera(f"{name}_camera")
         camera_node.set_scene(self._scene)
         camera_node.set_lens(lens)
         camera_node.set_camera_mask(constants.SCENE_2D)
@@ -159,12 +159,7 @@ class Cameras:
         display_region.set_sort(constants.FRONT_MOST)
         display_region.set_active(False)
 
-        camera = Camera(
-            camera,
-            camera_node,
-            lens,
-            display_region
-        )
+        camera = Camera(camera, camera_node, lens, display_region)
         self._cameras[name] = camera
 
         return camera
@@ -178,7 +173,7 @@ class Cameras:
         lens.set_film_size(film_size.x * 1280, film_size.y * 1280)
         lens.set_near_far(16, 1_024_000)
 
-        camera_node = core.Camera(f'{name}_camera')
+        camera_node = core.Camera(f"{name}_camera")
         camera_node.set_scene(self._scene)
         camera_node.set_lens(lens)
         camera_node.set_camera_mask(constants.SCENE_2D)
@@ -194,12 +189,7 @@ class Cameras:
         display_region.set_sort(constants.SORT_2D_MODE)
         display_region.set_active(False)
 
-        camera = Camera(
-            camera,
-            camera_node,
-            lens,
-            display_region
-        )
+        camera = Camera(camera, camera_node, lens, display_region)
         self._cameras[name] = camera
 
         return camera
@@ -216,10 +206,7 @@ class Cameras:
 
         builder_transform: core.TransformState = self._builder_2d.get_transform()
         builder_transform = builder_transform.get_inverse()
-        rotation = core.Mat4.rotate_mat(
-            -rotation,
-            core.Vec3(0, 0, 1)
-        )
+        rotation = core.Mat4.rotate_mat(-rotation, core.Vec3(0, 0, 1))
         builder_matrix: core.Mat4 = builder_transform.get_mat() * rotation
 
         lens = self._default_camera.lens
@@ -236,14 +223,8 @@ class Cameras:
         x_direction = -sin_theta * delta.y + cos_theta * delta.x
         y_direction = cos_theta * delta.y + sin_theta * delta.x
 
-        self._builder_2d.set_x(
-            self._builder_2d,
-            x_direction * constants.TICK_SCALE
-        )
-        self._builder_2d.set_y(
-            self._builder_2d,
-            y_direction * constants.TICK_SCALE
-        )
+        self._builder_2d.set_x(self._builder_2d, x_direction * constants.TICK_SCALE)
+        self._builder_2d.set_y(self._builder_2d, y_direction * constants.TICK_SCALE)
 
     def strafe_camera(self, delta: core.Vec2):
         delta *= 100
@@ -255,18 +236,10 @@ class Cameras:
         x_direction = cos_theta * delta.x
         y_direction = sin_theta * delta.x
 
-        self._builder.set_z(
-            self._builder.get_z() + delta.y * 512
-        )
+        self._builder.set_z(self._builder.get_z() + delta.y * 512)
 
-        self._builder_2d.set_x(
-            self._builder_2d,
-            x_direction * 512
-        )
-        self._builder_2d.set_y(
-            self._builder_2d,
-            y_direction * 512
-        )
+        self._builder_2d.set_x(self._builder_2d, x_direction * 512)
+        self._builder_2d.set_y(self._builder_2d, y_direction * 512)
 
     def rotate_camera(self, delta: core.Vec2):
         hpr = self._builder.get_hpr()
@@ -287,7 +260,7 @@ class Cameras:
 
         x_direction = sin_theta * mouse_delta.y + cos_theta * -mouse_delta.x
         y_direction = cos_theta * mouse_delta.y - sin_theta * -mouse_delta.x
-        
+
         return core.Vec3(x_direction, y_direction, -mouse_delta.y)
 
     def transform_to_camera_delta_2d(self, mouse_delta: core.Vec2) -> core.Vec3:
@@ -306,5 +279,5 @@ class Cameras:
         return result
 
     def _set_info_text_alpha(self):
-        self._info_display['text_bg'] = (0, 0, 0, self._info_display_alpha)
-        self._info_display['text_fg'] = (1, 1, 1, self._info_display_alpha)
+        self._info_display["text_bg"] = (0, 0, 0, self._info_display_alpha)
+        self._info_display["text_fg"] = (1, 1, 1, self._info_display_alpha)

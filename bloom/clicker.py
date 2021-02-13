@@ -16,13 +16,15 @@ class Clicker:
         core.MouseButton.two(),
         core.MouseButton.three(),
         core.MouseButton.four(),
-        core.MouseButton.five()
+        core.MouseButton.five(),
     }
-    ALL_BUTTONS = ALL_MOUSE_BUTTONS.union({
-        core.KeyboardButton.control(),
-        core.KeyboardButton.shift(),
-        core.KeyboardButton.alt()
-    })
+    ALL_BUTTONS = ALL_MOUSE_BUTTONS.union(
+        {
+            core.KeyboardButton.control(),
+            core.KeyboardButton.shift(),
+            core.KeyboardButton.alt(),
+        }
+    )
 
     def __init__(
         self,
@@ -88,7 +90,10 @@ class Clicker:
                         if self._on_click_after_move is not None:
                             self._on_click_after_move()
                     else:
-                        if self._mouse_button_released and self._on_double_click is not None:
+                        if (
+                            self._mouse_button_released
+                            and self._on_double_click is not None
+                        ):
                             self._on_double_click()
                         else:
                             self._mouse_button_released = True
@@ -97,7 +102,7 @@ class Clicker:
                             self._task_manager.do_method_later(
                                 constants.DOUBLE_CLICK_TIMEOUT,
                                 self._reset_double_click,
-                                self._id
+                                self._id,
                             )
                 self._mouse_down_point = None
                 self._moved_when_down = False
@@ -110,7 +115,9 @@ class Clicker:
         return self._wanted_buttons_down() and not self._any_unwanted_buttons_down()
 
     def _wanted_buttons_down(self):
-        return all(self._watcher.is_button_down(button) for button in self._mouse_buttons)
+        return all(
+            self._watcher.is_button_down(button) for button in self._mouse_buttons
+        )
 
     def _any_unwanted_buttons_down(self):
         return any(
@@ -119,4 +126,6 @@ class Clicker:
         )
 
     def _no_mouse_buttons_down(self):
-        return not any(self._watcher.is_button_down(button) for button in self.ALL_MOUSE_BUTTONS)
+        return not any(
+            self._watcher.is_button_down(button) for button in self.ALL_MOUSE_BUTTONS
+        )

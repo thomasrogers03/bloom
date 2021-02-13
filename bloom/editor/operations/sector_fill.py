@@ -12,19 +12,21 @@ from . import sector_draw, sprite_find_sector
 
 
 class SectorFill:
-
-    def __init__(self, sector_to_split: map_objects.EditorSector, all_sectors: map_objects.SectorCollection):
+    def __init__(
+        self,
+        sector_to_split: map_objects.EditorSector,
+        all_sectors: map_objects.SectorCollection,
+    ):
         self._sector_to_split = sector_to_split
         self._all_sectors = all_sectors
 
-    def fill(
-        self,
-        start_wall: map_objects.EditorWall
-    ):
+    def fill(self, start_wall: map_objects.EditorWall):
         if not drawing_sector.Sector.is_sector_section_clockwise(start_wall):
             return False
 
-        walls: typing.List[map_objects.EditorWall] = list(start_wall.iterate_wall_bunch())
+        walls: typing.List[map_objects.EditorWall] = list(
+            start_wall.iterate_wall_bunch()
+        )
         for wall in walls:
             if wall.other_side_wall is not None:
                 return False

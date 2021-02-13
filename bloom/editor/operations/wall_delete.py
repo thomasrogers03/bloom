@@ -6,7 +6,6 @@ from ..geometry import wall_repeat_adjust
 
 
 class WallDelete:
-
     def __init__(self, wall: map_objects.EditorWall):
         self._wall = wall
 
@@ -35,7 +34,9 @@ class WallDelete:
                 other_side_wall.set_wall_point_2(other_side_remove_wall.wall_point_2)
                 adjust.adjust()
 
-                other_side_remove_wall.wall_point_2.wall_previous_point = other_side_wall
+                other_side_remove_wall.wall_point_2.wall_previous_point = (
+                    other_side_wall
+                )
                 other_side_wall.sector.remove_wall(other_side_remove_wall)
                 other_side_remove_wall.destroy()
             else:

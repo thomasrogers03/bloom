@@ -3,7 +3,6 @@
 
 
 class EditMode:
-
     def set_editor(self, editor):
         raise NotImplementedError
 

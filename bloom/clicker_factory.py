@@ -10,11 +10,8 @@ from . import clicker, edit_mode
 
 
 class ClickerFactory:
-
     def __init__(
-        self, 
-        mouse_watcher: core.MouseWatcher, 
-        task_manager: Task.TaskManager
+        self, mouse_watcher: core.MouseWatcher, task_manager: Task.TaskManager
     ):
         self._mouse_watcher = mouse_watcher
         self._task_manager = task_manager
@@ -26,7 +23,7 @@ class ClickerFactory:
         on_click: typing.Callable[[], None] = None,
         on_double_click: typing.Callable[[], None] = None,
         on_click_move: typing.Callable[[core.Vec2], None] = None,
-        on_click_after_move: typing.Callable[[], None] = None
+        on_click_after_move: typing.Callable[[], None] = None,
     ):
         return clicker.Clicker(
             self._mouse_watcher,

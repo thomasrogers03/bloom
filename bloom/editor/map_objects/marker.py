@@ -19,8 +19,8 @@ class EditorMarker(empty_object.EmptyObject):
         self,
         sprite: map_data.sprite.Sprite,
         name: str,
-        sector: 'bloom.editor.map_objects.sector.EditorSector',
-        undos: undo_stack.UndoStack
+        sector: "bloom.editor.map_objects.sector.EditorSector",
+        undos: undo_stack.UndoStack,
     ):
         super().__init__(undos)
 
@@ -49,11 +49,7 @@ class EditorMarker(empty_object.EmptyObject):
 
     @property
     def origin(self):
-        return core.Point3(
-            self.origin_2d.x,
-            self.origin_2d.y,
-            self._z
-        )
+        return core.Point3(self.origin_2d.x, self.origin_2d.y, self._z)
 
     @property
     def sector(self):
@@ -91,18 +87,20 @@ class EditorMarker(empty_object.EmptyObject):
         relative_point = point - self.origin
         theta_radians = math.radians(self.theta)
         relative_point = core.Point3(
-            math.cos(theta_radians) * relative_point.x -
-            math.sin(theta_radians) * relative_point.y,
-            math.sin(theta_radians) * relative_point.x +
-            math.cos(theta_radians) * relative_point.y,
-            relative_point.z
+            math.cos(theta_radians) * relative_point.x
+            - math.sin(theta_radians) * relative_point.y,
+            math.sin(theta_radians) * relative_point.x
+            + math.cos(theta_radians) * relative_point.y,
+            relative_point.z,
         )
         half_size = self.size / 2
-        if relative_point.x >= -half_size.x and \
-                relative_point.x <= half_size.x and \
-                relative_point.y >= -half_size.y and \
-                relative_point.y <= half_size.y and \
-                round(relative_point.z) == 0:
+        if (
+            relative_point.x >= -half_size.x
+            and relative_point.x <= half_size.x
+            and relative_point.y >= -half_size.y
+            and relative_point.y <= half_size.y
+            and round(relative_point.z) == 0
+        ):
             return self._name
 
         return None
@@ -117,16 +115,8 @@ class EditorMarker(empty_object.EmptyObject):
         sprite_position = self.origin
         sprite_plane = plane.Plane(
             sprite_position,
-            core.Point3(
-                sprite_position.x + 1,
-                sprite_position.y,
-                sprite_position.z
-            ),
-            core.Point3(
-                sprite_position.x,
-                sprite_position.y + 1,
-                sprite_position.z
-            ),
+            core.Point3(sprite_position.x + 1, sprite_position.y, sprite_position.z),
+            core.Point3(sprite_position.x, sprite_position.y + 1, sprite_position.z),
         )
         intersection = sprite_plane.intersect_line(point, direction)
         if intersection is not None:
@@ -135,10 +125,7 @@ class EditorMarker(empty_object.EmptyObject):
     def setup_geometry(self, all_geometry: sector_geometry.SectorGeometry):
         self._clear_display()
         self._display = shapes.make_circle(
-            all_geometry.display,
-            core.Point3(0, 0, 0),
-            self._RADIUS,
-            12
+            all_geometry.display, core.Point3(0, 0, 0), self._RADIUS, 12
         )
         self._display.set_pos(self.origin)
         if self.get_type() == marker_constants.AXIS_MARKER_TAG:
@@ -162,8 +149,7 @@ class EditorMarker(empty_object.EmptyObject):
         pass
 
     def prepare_to_persist(
-        self,
-        sector_mapping: typing.Dict['editor.sector.EditorSector', int]
+        self, sector_mapping: typing.Dict["editor.sector.EditorSector", int]
     ) -> map_data.sprite.Sprite:
         self._sprite.sprite.sector_index = sector_mapping[self._sector]
         self._sprite.sprite.owner = sector_mapping[self._sector]

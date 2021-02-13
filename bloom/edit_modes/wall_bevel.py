@@ -12,7 +12,6 @@ from . import base_edit_mode
 
 
 class EditMode(base_edit_mode.EditMode):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._wall: map_objects.EditorWall = None
@@ -32,21 +31,16 @@ class EditMode(base_edit_mode.EditMode):
 
         self._menu.add_separator()
         self._menu.add_command(
-            label="Decrease point count (-)",
-            command=self._decrease_point_count
+            label="Decrease point count (-)", command=self._decrease_point_count
         )
         self._menu.add_command(
-            label="Increase point count (=)",
-            command=self._increase_point_count
+            label="Increase point count (=)", command=self._increase_point_count
         )
-        self._menu.add_command(
-            label="Commit bevel (space)",
-            command=self._do_split
-        )
+        self._menu.add_command(label="Commit bevel (space)", command=self._do_split)
 
-        self.accept('-', self._decrease_point_count)
-        self.accept('=', self._increase_point_count)
-        self.accept('space', self._do_split)
+        self.accept("-", self._decrease_point_count)
+        self.accept("=", self._increase_point_count)
+        self.accept("space", self._do_split)
 
         self._setup_curve()
         self._camera.display_region.set_active(True)
@@ -96,7 +90,7 @@ class EditMode(base_edit_mode.EditMode):
         points = self._get_curve_points()
         self._split_points = [point.xy for point in points[1:-1]]
 
-        segments = core.LineSegs('curve')
+        segments = core.LineSegs("curve")
         segments.set_color(1, 1, 0, 1)
         segments.set_thickness(2)
         for point in points:
@@ -124,4 +118,4 @@ class EditMode(base_edit_mode.EditMode):
 
     @property
     def _camera(self) -> cameras.Camera:
-        return self._camera_collection['editor_2d']
+        return self._camera_collection["editor_2d"]

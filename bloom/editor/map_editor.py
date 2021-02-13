@@ -7,13 +7,22 @@ import typing
 import yaml
 from panda3d import bullet, core
 
-from .. import (audio, cameras, constants, data_loading, edit_mode, editor,
-                find_resource, game_map, map_data, seq)
+from .. import (
+    audio,
+    cameras,
+    constants,
+    data_loading,
+    edit_mode,
+    editor,
+    find_resource,
+    game_map,
+    map_data,
+    seq,
+)
 from ..tiles import manager
 from ..utils import sky
 from . import grid_snapper, sector_geometry, undo_stack, view_clipping
-from .map_objects import (EditorSector, EditorSprite, EditorWall,
-                          SectorCollection)
+from .map_objects import EditorSector, EditorSprite, EditorWall, SectorCollection
 
 logger = logging.getLogger(__name__)
 
@@ -28,13 +37,13 @@ class MapEditor:
         map_to_load: game_map.Map,
         audio_manager: audio.Manager,
         seq_manager: seq.Manager,
-        tile_manager: manager.Manager
+        tile_manager: manager.Manager,
     ):
-        logger.info('Setting up sector editor')
+        logger.info("Setting up sector editor")
 
         self._camera_collection = camera_collection
         self._scene: core.NodePath = self._camera_collection.scene.attach_new_node(
-            '3d_view'
+            "3d_view"
         )
         self._tile_manager = tile_manager
         self._texture_stage = core.TextureStage.get_default()
@@ -51,13 +60,12 @@ class MapEditor:
         self._sky_offsets = map_to_load.sky_offsets
         self._setup_sky_box()
 
-        path = find_resource('sky_indices.yaml')
-        with open(path, 'r') as file:
+        path = find_resource("sky_indices.yaml")
+        with open(path, "r") as file:
             self._sky_indices = yaml.load(file.read(), Loader=yaml.SafeLoader)
 
         geometry_factory = sector_geometry.SectorGeometryFactory(
-            self._scene,
-            self._tile_manager
+            self._scene, self._tile_manager
         )
         self._sectors = SectorCollection(
             map_to_load,
@@ -65,7 +73,7 @@ class MapEditor:
             seq_manager,
             geometry_factory,
             self._suggest_sky,
-            self._undo_stack
+            self._undo_stack,
         )
 
         self._last_builder_sector: EditorSector = None
@@ -103,16 +111,14 @@ class MapEditor:
     def builder_sector(self):
         return self._builder_sector
 
-    def _find_sector_for_sprite(self, last_known_sector: EditorSector, position: core.Point3):
+    def _find_sector_for_sprite(
+        self, last_known_sector: EditorSector, position: core.Point3
+    ):
         seen: typing.Set[EditorSector] = set()
         candidates: typing.List[EditorSector] = []
         if last_known_sector is not None:
             self._find_sector_through_portals(
-                last_known_sector,
-                seen,
-                candidates,
-                position.xy,
-                10
+                last_known_sector, seen, candidates, position.xy, 10
             )
 
         portal_candidate_count = len(candidates)
@@ -122,11 +128,7 @@ class MapEditor:
 
         for editor_sector in self._sectors.sectors:
             self._find_sector_through_portals(
-                editor_sector,
-                seen,
-                candidates,
-                position.xy,
-                1000
+                editor_sector, seen, candidates, position.xy, 1000
             )
 
         if len(candidates) < 1:
@@ -139,8 +141,9 @@ class MapEditor:
         return candidates[0]
 
     def _z_in_sector(self, position: core.Point3, editor_sector: EditorSector):
-        return position.z <= editor_sector.floor_z_at_point(position.xy) and \
-            position.z >= editor_sector.ceiling_z_at_point(position.xy)
+        return position.z <= editor_sector.floor_z_at_point(
+            position.xy
+        ) and position.z >= editor_sector.ceiling_z_at_point(position.xy)
 
     def update_builder_sector(self, builder_position: core.Vec3, force=False):
         self.invalidate_view_clipping()
@@ -148,8 +151,7 @@ class MapEditor:
             self._builder_sector = None
         self._last_builder_sector = self._builder_sector
         self._builder_sector = self._find_sector_for_sprite(
-            self._last_builder_sector,
-            builder_position
+            self._last_builder_sector, builder_position
         )
 
     @property
@@ -171,7 +173,7 @@ class MapEditor:
             if value not in found:
                 return value
 
-        raise Exception('Ran out of sprite data 1!')
+        raise Exception("Ran out of sprite data 1!")
 
     def update_for_frame(self):
         for sector in self._sectors.sectors:
@@ -201,15 +203,30 @@ class MapEditor:
         self._view_clipping_invalid = True
 
     def prepare_to_persist(self, builder_position: core.Point3):
-        blood_sectors, blood_walls, blood_sprites, builder_sector_index = self._sectors.prepare_to_persist(
+        (
+            blood_sectors,
+            blood_walls,
+            blood_sprites,
+            builder_sector_index,
+        ) = self._sectors.prepare_to_persist(
             self._find_sector_for_sprite, builder_position
         )
-        return self._sky_offsets, blood_sectors, blood_walls, blood_sprites, builder_sector_index
+        return (
+            self._sky_offsets,
+            blood_sectors,
+            blood_walls,
+            blood_sprites,
+            builder_sector_index,
+        )
 
     def to_game_map(self, builder_position: core.Point3):
-        sky_offsets, sectors, walls, sprites, builder_sector_index = self.prepare_to_persist(
-            builder_position
-        )
+        (
+            sky_offsets,
+            sectors,
+            walls,
+            sprites,
+            builder_sector_index,
+        ) = self.prepare_to_persist(builder_position)
         map_to_save = game_map.Map()
         map_to_save.sectors[:] = sectors
         map_to_save.walls[:] = walls
@@ -220,11 +237,7 @@ class MapEditor:
         position_z = editor.to_build_height(builder_position.z)
         theta = editor.to_build_angle(self._camera_collection.builder.get_h())
         map_to_save.set_builder_position(
-            position_x,
-            position_y,
-            position_z,
-            theta,
-            builder_sector_index
+            position_x, position_y, position_z, theta, builder_sector_index
         )
 
         map_to_save.set_sky_offsets(sky_offsets)
@@ -235,8 +248,7 @@ class MapEditor:
         if self._sky_picnum is None:
             self._sky_picnum = suggested_picnum
             sky_range = self._sky_indices.get(
-                self._sky_picnum,
-                self._DEFAULT_SKY_INDEX_RANGE
+                self._sky_picnum, self._DEFAULT_SKY_INDEX_RANGE
             )
             self._sky_offsets = list(range(sky_range))
             self._setup_sky_box()
@@ -248,7 +260,7 @@ class MapEditor:
                 self._camera_collection,
                 self._tile_manager,
                 self._sky_picnum,
-                self._sky_offsets
+                self._sky_offsets,
             )
 
     def _find_sector_through_portals(
@@ -257,9 +269,13 @@ class MapEditor:
         seen: typing.Set[EditorSector],
         candidates: typing.List[EditorSector],
         position: core.Vec2,
-        depth_left: int
+        depth_left: int,
     ):
-        if current_sector in seen or depth_left < 1 or len(candidates) >= self._MAX_FIND_SECTOR_CANDIDATES:
+        if (
+            current_sector in seen
+            or depth_left < 1
+            or len(candidates) >= self._MAX_FIND_SECTOR_CANDIDATES
+        ):
             return
 
         seen.add(current_sector)
@@ -268,11 +284,7 @@ class MapEditor:
 
         for adjacent_sector in current_sector.adjacent_sectors():
             self._find_sector_through_portals(
-                adjacent_sector,
-                seen,
-                candidates,
-                position,
-                depth_left - 1
+                adjacent_sector, seen, candidates, position, depth_left - 1
             )
 
         return None
@@ -286,11 +298,9 @@ class MapEditor:
             self._clipping_debug = None
 
         if self._builder_sector is not None:
-            self._clipping_debug = self._scene.attach_new_node('clipping_debug')
+            self._clipping_debug = self._scene.attach_new_node("clipping_debug")
             clipper = view_clipping.ViewClipping(
-                self._builder_sector,
-                self._camera_collection,
-                self._clipping_debug
+                self._builder_sector, self._camera_collection, self._clipping_debug
             )
             clipper.clip()
             for editor_sector in self._sectors.sectors:

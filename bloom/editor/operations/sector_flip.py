@@ -10,11 +10,7 @@ from . import wall_split
 
 
 class SectorFlip:
-
-    def __init__(
-        self,
-        sectors: typing.List[map_objects.EditorSector]
-    ):
+    def __init__(self, sectors: typing.List[map_objects.EditorSector]):
         self._sectors = sectors
 
     def flip(self, vertical: bool, horizontal: bool):
@@ -28,13 +24,14 @@ class SectorFlip:
             sector.invalidate_geometry()
 
             old_previous_points: typing.Dict[
-                map_objects.EditorWall,
-                map_objects.EditorWall
+                map_objects.EditorWall, map_objects.EditorWall
             ] = {}
 
             for wall in sector.walls:
-                if wall.other_side_sector is not None and \
-                        wall.other_side_sector not in sector_set:
+                if (
+                    wall.other_side_sector is not None
+                    and wall.other_side_sector not in sector_set
+                ):
                     wall.unlink()
 
                 new_position = wall.origin_2d
@@ -64,10 +61,7 @@ class SectorFlip:
 
         if vertical ^ horizontal:
             relinked_walls: typing.List[
-                typing.Tuple[
-                    map_objects.EditorWall,
-                    map_objects.EditorWall
-                ]
+                typing.Tuple[map_objects.EditorWall, map_objects.EditorWall]
             ] = []
             for sector in self._sectors:
                 for wall in sector.walls:
@@ -78,7 +72,7 @@ class SectorFlip:
                         relinked_walls.append(
                             (
                                 wall.wall_previous_point,
-                                other_side_wall.wall_previous_point
+                                other_side_wall.wall_previous_point,
                             )
                         )
 

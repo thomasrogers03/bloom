@@ -8,15 +8,21 @@ from panda3d import bullet, core
 
 from .... import audio, constants, editor, game_map, map_data, seq
 from ....tiles import manager
-from ... import (event_grouping, marker_constants, plane, sector_geometry,
-                 segment, undo_stack)
+from ... import (
+    event_grouping,
+    marker_constants,
+    plane,
+    sector_geometry,
+    segment,
+    undo_stack,
+)
 from .. import empty_object, sprite_highlight
 from . import sprite_constants
 from . import type_descriptor as sprite_type_descriptor
 
 
 class EditorSprite(empty_object.EmptyObject):
-    PART_NAME = 'sprite'
+    PART_NAME = "sprite"
     _AMBIENT_SFX_TYPE = 710
     _SOUND_DISTANCE_SCALE = 20
     _STATE_OFF = 0
@@ -26,11 +32,11 @@ class EditorSprite(empty_object.EmptyObject):
         self,
         sprite: map_data.sprite.Sprite,
         name: str,
-        sector: 'bloom.editor.map_objects.sector.EditorSector',
+        sector: "bloom.editor.map_objects.sector.EditorSector",
         audio_manager: audio.Manager,
         tile_manager: manager.Manager,
         seq_manager: seq.Manager,
-        undos: undo_stack.UndoStack
+        undos: undo_stack.UndoStack,
     ):
         super().__init__(undos)
 
@@ -42,7 +48,9 @@ class EditorSprite(empty_object.EmptyObject):
         self._seq_manager = seq_manager
         self._sprite_collision: core.NodePath = None
 
-    def move_to_sector(self, new_sector: 'bloom.editor.map_objects.sector.EditorSector'):
+    def move_to_sector(
+        self, new_sector: "bloom.editor.map_objects.sector.EditorSector"
+    ):
         self._sector = new_sector
         self.invalidate_geometry()
 
@@ -86,8 +94,7 @@ class EditorSprite(empty_object.EmptyObject):
     def _set_z(self, value: float):
         if self._sprite_collision is not None:
             self._sprite_collision.set_z(value)
-        self._sprite.sprite.position_z = editor.to_build_height(
-            value + self._offsets.y)
+        self._sprite.sprite.position_z = editor.to_build_height(value + self._offsets.y)
 
     @property
     def z_at_bottom(self):
@@ -112,17 +119,12 @@ class EditorSprite(empty_object.EmptyObject):
 
     @property
     def origin(self):
-        return core.Point3(
-            self.origin_2d.x,
-            self.origin_2d.y,
-            self._z
-        )
+        return core.Point3(self.origin_2d.x, self.origin_2d.y, self._z)
 
     @property
     def position_2d(self):
         return core.Point2(
-            self._sprite.sprite.position_x,
-            self._sprite.sprite.position_y
+            self._sprite.sprite.position_x, self._sprite.sprite.position_y
         )
 
     @property
@@ -235,18 +237,20 @@ class EditorSprite(empty_object.EmptyObject):
         relative_point = point - self.position
         theta_radians = math.radians(self.theta)
         relative_point = core.Point3(
-            math.cos(theta_radians) * relative_point.x -
-            math.sin(theta_radians) * relative_point.y,
-            math.sin(theta_radians) * relative_point.x +
-            math.cos(theta_radians) * relative_point.y,
-            relative_point.z
+            math.cos(theta_radians) * relative_point.x
+            - math.sin(theta_radians) * relative_point.y,
+            math.sin(theta_radians) * relative_point.x
+            + math.cos(theta_radians) * relative_point.y,
+            relative_point.z,
         )
         half_size = self.size / 2
-        if relative_point.x >= -half_size.x and \
-                relative_point.x <= half_size.x and \
-                relative_point.y >= -half_size.y and \
-                relative_point.y <= half_size.y and \
-                round(relative_point.z) == 0:
+        if (
+            relative_point.x >= -half_size.x
+            and relative_point.x <= half_size.x
+            and relative_point.y >= -half_size.y
+            and relative_point.y <= half_size.y
+            and round(relative_point.z) == 0
+        ):
             return self._name
 
         return None
@@ -262,8 +266,7 @@ class EditorSprite(empty_object.EmptyObject):
             orthogonal *= half_width
 
             return segment.Segment(
-                self.position_2d + orthogonal,
-                self.position_2d - orthogonal
+                self.position_2d + orthogonal, self.position_2d - orthogonal
             ).intersect_line(point.xy, direction_2d)
         elif self.is_floor:
             sprite_position = self.position
@@ -271,13 +274,10 @@ class EditorSprite(empty_object.EmptyObject):
             sprite_plane = plane.Plane(
                 sprite_position,
                 core.Point3(
-                    sprite_position.x + 1,
-                    sprite_position.y,
-                    sprite_position.z),
+                    sprite_position.x + 1, sprite_position.y, sprite_position.z
+                ),
                 core.Point3(
-                    sprite_position.x,
-                    sprite_position.y + 1,
-                    sprite_position.z
+                    sprite_position.x, sprite_position.y + 1, sprite_position.z
                 ),
             )
             intersection = sprite_plane.intersect_line(point, direction)
@@ -291,13 +291,11 @@ class EditorSprite(empty_object.EmptyObject):
                 core.Point3(
                     sprite_position.x + sprite_direction.x,
                     sprite_position.y + sprite_direction.y,
-                    sprite_position.z
+                    sprite_position.z,
                 ),
                 core.Point3(
-                    sprite_position.x,
-                    sprite_position.y,
-                    sprite_position.z - 1
-                )
+                    sprite_position.x, sprite_position.y, sprite_position.z - 1
+                ),
             )
             intersection = sprite_plane.intersect_line(point, direction)
             if intersection is not None:
@@ -326,14 +324,14 @@ class EditorSprite(empty_object.EmptyObject):
             sprite_create = all_geometry.sprite_geometry.add_directional_sprite
         sprite_collision = sprite_create(
             self._name,
-            {'sprite': self},
+            {"sprite": self},
             picnum,
             self._sprite.sprite.palette,
-            self._sprite.sprite.stat.blocking | (
-                self._sprite.sprite.stat.blocking2 << 1),
+            self._sprite.sprite.stat.blocking
+            | (self._sprite.sprite.stat.blocking2 << 1),
             self._sprite.sprite.stat.centring,
             self._sprite.sprite.stat.one_sided,
-            self.theta
+            self.theta,
         )
 
         self._sprite_collision = sprite_collision
@@ -352,38 +350,38 @@ class EditorSprite(empty_object.EmptyObject):
         self._needs_geometry_reset = False
 
     def update(self, ticks: int, art_manager: manager.Manager):
-        node_path: core.NodePath = self._sprite_collision.find('**/geometry')
+        node_path: core.NodePath = self._sprite_collision.find("**/geometry")
         if node_path.is_empty():
             return
 
-        animation_data_and_lookup = node_path.get_python_tag('animation_data')
+        animation_data_and_lookup = node_path.get_python_tag("animation_data")
         if self._seq is not None:
-            frame_index = int(
-                (4 * ticks) / self._seq.header.ticks_per_frame
-            ) % self._seq.header.frame_count
+            frame_index = (
+                int((4 * ticks) / self._seq.header.ticks_per_frame)
+                % self._seq.header.frame_count
+            )
             frame = self._seq.frames[frame_index]
 
             self._set_display_size(frame.stat.tile)
-            node_path.set_texture(
-                art_manager.get_tile(
-                    frame.stat.tile,
-                    frame.palette
-                )
-            )
+            node_path.set_texture(art_manager.get_tile(frame.stat.tile, frame.palette))
 
         elif animation_data_and_lookup is not None:
             animation_data: manager.AnimationData = animation_data_and_lookup[0]
             lookup: int = animation_data_and_lookup[1]
-            offset = (ticks // animation_data.ticks_per_frame) % animation_data.animation_count
+            offset = (
+                ticks // animation_data.ticks_per_frame
+            ) % animation_data.animation_count
             new_picnum = animation_data.picnum + offset
 
             self._set_display_size(new_picnum)
             node_path.set_texture(art_manager.get_tile(new_picnum, lookup))
 
     def update_ambient_sound(self):
-        if self._sprite.sprite.tags[0] != self._AMBIENT_SFX_TYPE or \
-                self._sprite.data.state != self._STATE_ON or \
-                self._sprite_collision is None:
+        if (
+            self._sprite.sprite.tags[0] != self._AMBIENT_SFX_TYPE
+            or self._sprite.data.state != self._STATE_ON
+            or self._sprite_collision is None
+        ):
             return
 
         attachment = audio.manager.SoundAttachment(
@@ -391,7 +389,7 @@ class EditorSprite(empty_object.EmptyObject):
             self._sprite_collision,
             self._sprite.data.data1 * self._SOUND_DISTANCE_SCALE,
             self._sprite.data.data2 * self._SOUND_DISTANCE_SCALE,
-            self._sprite.data.data4 / 100
+            self._sprite.data.data4 / 100,
         )
 
         self._audio_manager.attach_sound_to_object(attachment)
@@ -404,8 +402,7 @@ class EditorSprite(empty_object.EmptyObject):
         self._set_z(position.z)
 
     def prepare_to_persist(
-        self,
-        sector_mapping: typing.Dict['editor.sector.EditorSector', int]
+        self, sector_mapping: typing.Dict["editor.sector.EditorSector", int]
     ) -> map_data.sprite.Sprite:
         self._sprite.sprite.sector_index = sector_mapping[self._sector]
         self._sprite.sprite.owner = -1
@@ -413,7 +410,9 @@ class EditorSprite(empty_object.EmptyObject):
 
     def _size_for_tile(self, tile: int):
         tile_dimensions = self._tile_manager.get_tile_dimensions(tile)
-        return core.Vec2(tile_dimensions.x * self.x_repeat, tile_dimensions.y * self.y_repeat)
+        return core.Vec2(
+            tile_dimensions.x * self.x_repeat, tile_dimensions.y * self.y_repeat
+        )
 
     def _set_display_size(self, tile: int):
         sprite_size = self._size_for_tile(tile)
@@ -424,11 +423,7 @@ class EditorSprite(empty_object.EmptyObject):
             y_scale = sprite_size.x
             z_scale = sprite_size.y
 
-        self._sprite_collision.set_scale(
-            sprite_size.x,
-            y_scale,
-            z_scale
-        )
+        self._sprite_collision.set_scale(sprite_size.x, y_scale, z_scale)
 
         texture_scale = core.Vec2(-1, 1)
         if self._sprite.sprite.stat.xflip:
@@ -436,8 +431,7 @@ class EditorSprite(empty_object.EmptyObject):
         if self._sprite.sprite.stat.yflip:
             texture_scale.y = -1
         self._sprite_collision.set_tex_scale(
-            core.TextureStage.get_default(),
-            texture_scale
+            core.TextureStage.get_default(), texture_scale
         )
 
     @property
@@ -455,9 +449,7 @@ class EditorSprite(empty_object.EmptyObject):
 
     @property
     def _offsets(self):
-        tile_offsets = self._tile_manager.get_tile_offsets(
-            self._sprite.sprite.picnum
-        )
+        tile_offsets = self._tile_manager.get_tile_offsets(self._sprite.sprite.picnum)
         return core.Vec2(tile_offsets.x * self.x_repeat, tile_offsets.y * self.y_repeat)
 
     def _get_highlighter(self):

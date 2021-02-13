@@ -14,8 +14,21 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d import bullet, core
 from panda3d.direct import init_app_for_gui
 
-from . import (addon, audio, auto_save, cameras, clicker, constants, dialogs,
-               edit_menu, edit_mode, editor, game_map, tile_dialog, utils)
+from . import (
+    addon,
+    audio,
+    auto_save,
+    cameras,
+    clicker,
+    constants,
+    dialogs,
+    edit_menu,
+    edit_mode,
+    editor,
+    game_map,
+    tile_dialog,
+    utils,
+)
 from .audio import midi_to_wav
 from .edit_modes import edit_mode_2d, edit_mode_3d
 from .editor import map_editor
@@ -27,8 +40,8 @@ logger = logging.getLogger(__name__)
 
 
 class Bloom(ShowBase):
-    _CONFIG_PATH = 'config.yaml'
-    _META_PATH = 'meta.yaml'
+    _CONFIG_PATH = "config.yaml"
+    _META_PATH = "meta.yaml"
     _AUTO_SAVE_TIMEOUT = 1 * 60
 
     def __init__(self, path: str):
@@ -42,30 +55,32 @@ class Bloom(ShowBase):
             os.mkdir(constants.CACHE_PATH)
 
         if os.path.exists(self._CONFIG_PATH):
-            with open(self._CONFIG_PATH, 'r') as file:
+            with open(self._CONFIG_PATH, "r") as file:
                 self._config = yaml.safe_load(file.read())
         else:
             self._config = {}
             blood_path = tkinter.filedialog.askdirectory(
                 initialdir=os.getcwd(),
-                title='Specify Blood Game Path',
+                title="Specify Blood Game Path",
             )
-            if not (blood_path and os.path.exists(os.path.join(blood_path, 'BLOOD.RFF'))):
-                message = 'Unable to proceed without a valid blood path'
-                tkinter.messagebox.showerror(title='Cannot load', message=message)
+            if not (
+                blood_path and os.path.exists(os.path.join(blood_path, "BLOOD.RFF"))
+            ):
+                message = "Unable to proceed without a valid blood path"
+                tkinter.messagebox.showerror(title="Cannot load", message=message)
                 raise ValueError(message)
 
-            self._config['blood_path'] = blood_path
-            with open(self._CONFIG_PATH, 'w+') as file:
+            self._config["blood_path"] = blood_path
+            with open(self._CONFIG_PATH, "w+") as file:
                 file.write(yaml.dump(self._config))
 
         if os.path.exists(self._META_PATH):
-            with open(self._META_PATH, 'r') as file:
+            with open(self._META_PATH, "r") as file:
                 self._bloom_meta = yaml.safe_load(file.read())
         else:
             self._bloom_meta = {}
 
-        if 'fluid_synth_path' not in self._config:
+        if "fluid_synth_path" not in self._config:
             fluid_synth_path = distutils.spawn.find_executable("fluidsynth.exe")
             if not fluid_synth_path:
                 fluid_synth_path = distutils.spawn.find_executable("fluidsynth")
@@ -73,51 +88,53 @@ class Bloom(ShowBase):
             if not fluid_synth_path:
                 fluid_synth_path = tkinter.filedialog.askopenfilename(
                     initialdir=self._blood_path,
-                    title='Path to fluidsynth executable',
-                    filetypes=(('Executable Files', '*.EXE'),)
+                    title="Path to fluidsynth executable",
+                    filetypes=(("Executable Files", "*.EXE"),),
                 )
 
             if not fluid_synth_path:
-                message = 'Unable to play music without fluid synth, it will be disabled'
+                message = (
+                    "Unable to play music without fluid synth, it will be disabled"
+                )
                 tkinter.messagebox.showwarning(
-                    title='Cannot play music',
-                    message=message
+                    title="Cannot play music", message=message
                 )
                 fluid_synth_path = None
 
-            self._config['fluid_synth_path'] = fluid_synth_path
+            self._config["fluid_synth_path"] = fluid_synth_path
 
-        if 'sound_font_path' not in self._config:
+        if "sound_font_path" not in self._config:
             sound_font_path = tkinter.filedialog.askopenfilename(
                 initialdir=self._blood_path,
-                title='Specify Sound Font Path to Use for Conversion',
-                filetypes=(('Sound Font Files', '*.SF2'),)
+                title="Specify Sound Font Path to Use for Conversion",
+                filetypes=(("Sound Font Files", "*.SF2"),),
             )
 
             if not sound_font_path:
-                message = 'Unable to play music without a sound font, it will be disabled'
+                message = (
+                    "Unable to play music without a sound font, it will be disabled"
+                )
                 tkinter.messagebox.showwarning(
-                    title='Cannot play music',
-                    message=message
+                    title="Cannot play music", message=message
                 )
                 sound_font_path = None
 
-            self._config['sound_font_path'] = sound_font_path
+            self._config["sound_font_path"] = sound_font_path
 
         if self._current_addon_path is None:
-            self._current_addon_path = f'{self._blood_path}/BLOOD.INI'
+            self._current_addon_path = f"{self._blood_path}/BLOOD.INI"
 
-        self.task_mgr.do_method_later(0.1, self._initialize, 'initialize')
+        self.task_mgr.do_method_later(0.1, self._initialize, "initialize")
 
     def _setup_window(self):
-        ShowBase.__init__(self, windowType='none')
+        ShowBase.__init__(self, windowType="none")
 
         frame = tkinter.Tk()
 
         try:
             frame.state("zoomed")
         except:
-            frame.attributes('-zoomed', True)
+            frame.attributes("-zoomed", True)
         frame.title("Bloom")
         frame.bind("<Configure>", self._handle_resize)
         frame.protocol("WM_DELETE_WINDOW", self._handle_exit)
@@ -126,7 +143,7 @@ class Bloom(ShowBase):
         self.tkRoot = frame
         init_app_for_gui()
 
-        tk_frame_rate = core.ConfigVariableDouble('tk-frame-rate', 60.0)
+        tk_frame_rate = core.ConfigVariableDouble("tk-frame-rate", 60.0)
         self._tk_delay = int(1000.0 / tk_frame_rate.get_value())
         self.tkRoot.after(self._tk_delay, self._tk_timer_callback)
 
@@ -164,8 +181,7 @@ class Bloom(ShowBase):
 
         view_menu = tkinter.Menu(menu_bar, tearoff=0)
         view_menu.add_command(
-            label="Screenshot (ctrl+p)",
-            command=self._save_screenshot
+            label="Screenshot (ctrl+p)", command=self._save_screenshot
         )
         menu_bar.add_cascade(label="View", menu=view_menu)
 
@@ -176,7 +192,7 @@ class Bloom(ShowBase):
             try:
                 self.task_mgr.step()
             except Exception as error:
-                message = f'Error running application: {error}'
+                message = f"Error running application: {error}"
                 logger.error(message, exc_info=error)
                 tkinter.messagebox.showerror("Error running Bloom", message)
                 self.tkRoot.quit()
@@ -202,8 +218,8 @@ class Bloom(ShowBase):
             self.win.request_properties(props)
 
     def _initialize(self, task):
-        self._rff = RFF(f'{self._blood_path}/BLOOD.RFF')
-        self._sounds_rff = RFF(f'{self._blood_path}/SOUNDS.RFF')
+        self._rff = RFF(f"{self._blood_path}/BLOOD.RFF")
+        self._sounds_rff = RFF(f"{self._blood_path}/SOUNDS.RFF")
         self._addon = addon.Addon(self._current_addon_path)
         self._seq_manager = seq_manager.Manager(self._rff)
         self._meta_data = {}
@@ -211,14 +227,13 @@ class Bloom(ShowBase):
         for path in self._recent:
             self._add_recent_menu_item(path)
 
-        for map_name in self._rff.find_matching_entries('*.MAP'):
-            map_name = map_name[:constants.MAP_EXTENSION_SKIP]
+        for map_name in self._rff.find_matching_entries("*.MAP"):
+            map_name = map_name[: constants.MAP_EXTENSION_SKIP]
             self._open_from_rff_menu.add_command(
-                label=map_name,
-                command=self._open_map_from_rff(map_name)
+                label=map_name, command=self._open_map_from_rff(map_name)
             )
 
-        self._scene: core.NodePath = self.render.attach_new_node('scene')
+        self._scene: core.NodePath = self.render.attach_new_node("scene")
         self._scene.set_scale(constants.SCENE_SCALE)
 
         self._camera_collection = cameras.Cameras(
@@ -230,12 +245,9 @@ class Bloom(ShowBase):
             self.a2dTopLeft,
             self._scene,
             cameras.Camera(
-                self.cam,
-                self.cam.node(),
-                self.camLens,
-                self.win.get_display_region(0)
+                self.cam, self.cam.node(), self.camLens, self.win.get_display_region(0)
             ),
-            self.task_mgr
+            self.task_mgr,
         )
 
         self._audio_manager = audio.Manager(
@@ -244,7 +256,7 @@ class Bloom(ShowBase):
             self._camera_collection.builder,
             self._sounds_rff,
             self._fluid_synth_path,
-            self._sound_font_path
+            self._sound_font_path,
         )
 
         if self._path is None:
@@ -256,14 +268,11 @@ class Bloom(ShowBase):
         self._add_recent(self._path)
 
         self._edit_mode_selector = edit_mode.EditMode(
-            self.mouseWatcherNode,
-            self.task_mgr
+            self.mouseWatcherNode, self.task_mgr
         )
 
         self._tile_manager = manager.Manager(
-            self._blood_path,
-            self._rff,
-            self._edit_mode_selector
+            self._blood_path, self._rff, self._edit_mode_selector
         )
         self._dialogs = dialogs.Dialogs(
             self.aspect2d,
@@ -271,14 +280,14 @@ class Bloom(ShowBase):
             self._edit_mode_selector,
             self._audio_manager,
             self.task_mgr,
-            lambda: addon.Addon.addons_in_path(self._blood_path)
+            lambda: addon.Addon.addons_in_path(self._blood_path),
         )
 
         self._mode_3d = edit_mode_3d.EditMode(
             self._dialogs,
             camera_collection=self._camera_collection,
             edit_mode_selector=self._edit_mode_selector,
-            menu=self._edit_menu
+            menu=self._edit_menu,
         )
 
         self._map_editor: map_editor.MapEditor = None
@@ -291,7 +300,7 @@ class Bloom(ShowBase):
 
         self.disable_mouse()
 
-        camera = self._camera_collection.make_2d_camera('editor_2d')
+        camera = self._camera_collection.make_2d_camera("editor_2d")
         camera.camera.reparent_to(self._camera_collection.builder_2d)
 
         self._edit_mode_selector.always_run(self._tick_map_editor)
@@ -300,53 +309,56 @@ class Bloom(ShowBase):
 
         self._edit_mode_selector.push_mode(self._mode_3d)
 
-        self.accept('control-n', self._new_map)
-        self.accept('control-o', self._open_map)
-        self.accept('control-s', self._save_map)
-        self.accept('control-p', self._save_screenshot)
-        self.accept('f9', self._run_map)
+        self.accept("control-n", self._new_map)
+        self.accept("control-o", self._open_map)
+        self.accept("control-s", self._save_map)
+        self.accept("control-p", self._save_screenshot)
+        self.accept("f9", self._run_map)
 
-        self.task_mgr.add(self._update_for_frame, 'frame_update')
+        self.task_mgr.add(self._update_for_frame, "frame_update")
 
         return task.done
 
     def _make_new_board(self):
-        self._path = os.path.join(self._blood_path, 'NEWBOARD.MAP')
+        self._path = os.path.join(self._blood_path, "NEWBOARD.MAP")
         self._last_map = self._path
 
     def _update_for_frame(self, task):
-        if self.mouseWatcherNode.has_mouse() or self.win.get_properties().get_foreground():
+        if (
+            self.mouseWatcherNode.has_mouse()
+            or self.win.get_properties().get_foreground()
+        ):
             self._audio_manager.unpause()
         else:
             self._audio_manager.pause()
 
-        with self._edit_mode_selector.track_performance_stats('frame_update'):
+        with self._edit_mode_selector.track_performance_stats("frame_update"):
             self._map_editor.update_for_frame()
 
         return task.cont
 
     def _tick_map_editor(self):
-        with self._edit_mode_selector.track_performance_stats('map_editor_tick'):
+        with self._edit_mode_selector.track_performance_stats("map_editor_tick"):
             self._map_editor.tick()
 
     def _save_screenshot(self):
-        self.screenshot('screenshot.png', defaultFilename=False)
-        self._log_info('Saved screenshot to screenshot.png')
+        self.screenshot("screenshot.png", defaultFilename=False)
+        self._log_info("Saved screenshot to screenshot.png")
 
     def _run_map(self):
-        if 'executable_path' not in self._config:
+        if "executable_path" not in self._config:
             path: str = tkinter.filedialog.askopenfilename(
                 initialdir=self._blood_path,
-                title='Path to Blood Executable',
-                filetypes=(('Executable Files', '*.EXE'),)
+                title="Path to Blood Executable",
+                filetypes=(("Executable Files", "*.EXE"),),
             )
             if not path:
                 return
 
-            if not path.upper().endswith('.MAP'):
-                path += '.MAP'
+            if not path.upper().endswith(".MAP"):
+                path += ".MAP"
 
-            self._config['executable_path'] = path
+            self._config["executable_path"] = path
         raise NotImplementedError()
 
     def _load_map_into_editor(self, map_to_load: game_map.Map):
@@ -362,7 +374,7 @@ class Bloom(ShowBase):
 
         self._meta_data = {}
         if self._meta_data_path is not None and os.path.exists(self._meta_data_path):
-            with open(self._meta_data_path, 'r') as file:
+            with open(self._meta_data_path, "r") as file:
                 self._meta_data = yaml.safe_load(file.read())
 
         self._map_editor = map_editor.MapEditor(
@@ -370,7 +382,7 @@ class Bloom(ShowBase):
             map_to_load,
             self._audio_manager,
             self._seq_manager,
-            self._tile_manager
+            self._tile_manager,
         )
 
         self._setup_auto_save()
@@ -406,58 +418,53 @@ class Bloom(ShowBase):
 
         if self._path:
             self._auto_save = auto_save.AutoSave(
-                self._map_editor,
-                self._meta_data,
-                self._camera_collection,
-                self._path
+                self._map_editor, self._meta_data, self._camera_collection, self._path
             )
             self.task_mgr.do_method_later(
-                self._AUTO_SAVE_TIMEOUT,
-                self._auto_save.perform_save,
-                'auto-save'
+                self._AUTO_SAVE_TIMEOUT, self._auto_save.perform_save, "auto-save"
             )
 
     @property
     def _last_map(self):
-        return self._bloom_meta.get('last_map', None)
+        return self._bloom_meta.get("last_map", None)
 
     @_last_map.setter
     def _last_map(self, value: str):
-        self._bloom_meta['last_map'] = value
+        self._bloom_meta["last_map"] = value
 
     @property
     def _recent(self):
-        if 'recent' not in self._bloom_meta:
-            self._bloom_meta['recent'] = []
-        return self._bloom_meta['recent']
+        if "recent" not in self._bloom_meta:
+            self._bloom_meta["recent"] = []
+        return self._bloom_meta["recent"]
 
     @property
     def _blood_path(self):
-        return self._config['blood_path']
+        return self._config["blood_path"]
 
     @property
     def _fluid_synth_path(self):
-        return self._config.get('fluid_synth_path', None)
+        return self._config.get("fluid_synth_path", None)
 
     @property
     def _sound_font_path(self):
-        return self._config.get('sound_font_path', None)
+        return self._config.get("sound_font_path", None)
 
     @property
     def _current_addon_path(self):
-        return self._config.get('addon_path', None)
+        return self._config.get("addon_path", None)
 
     @_current_addon_path.setter
     def _current_addon_path(self, value: str):
-        self._config['addon_path'] = value
+        self._config["addon_path"] = value
 
     @property
     def _meta_data_path(self):
         if self._path is None:
             return None
 
-        base = self._path[:constants.MAP_EXTENSION_SKIP]
-        return f'{base}.YAML'
+        base = self._path[: constants.MAP_EXTENSION_SKIP]
+        return f"{base}.YAML"
 
     def _new_map(self):
         self._make_new_board()
@@ -469,8 +476,8 @@ class Bloom(ShowBase):
     def _open_map(self):
         path = tkinter.filedialog.askopenfilename(
             initialdir=self._blood_path,
-            title='Open map',
-            filetypes=(('Map files', '*.MAP'),)
+            title="Open map",
+            filetypes=(("Map files", "*.MAP"),),
         )
         if path:
             self._open_map_from_path(path)
@@ -478,6 +485,7 @@ class Bloom(ShowBase):
     def _open_map_from_path_callback(self, path: str):
         def _callback():
             self._open_map_from_path(path)
+
         return _callback
 
     def _open_map_from_path(self, path: str):
@@ -494,15 +502,13 @@ class Bloom(ShowBase):
         if path not in self._recent:
             self._recent.append(path)
             self._open_recent_menu.add_command(
-                label=path,
-                command=self._open_map_from_path_callback(path)
+                label=path, command=self._open_map_from_path_callback(path)
             )
 
     def _add_recent_menu_item(self, path: str):
         path = self._full_path(path)
         self._open_recent_menu.add_command(
-            label=path,
-            command=self._open_map_from_path_callback(path)
+            label=path, command=self._open_map_from_path_callback(path)
         )
 
     @staticmethod
@@ -514,12 +520,11 @@ class Bloom(ShowBase):
         def _callback():
             self._path = None
             map_to_load, crc = game_map.Map.load(
-                map_name,
-                self._rff.data_for_entry(f'{map_name}.MAP')
+                map_name, self._rff.data_for_entry(f"{map_name}.MAP")
             )
             self._load_map_into_editor(map_to_load)
 
-            self._log_info(f'Loaded map {self._path} (hash: {hex(crc)})')
+            self._log_info(f"Loaded map {self._path} (hash: {hex(crc)})")
 
             song_name = self._addon.song_for_map(map_name)
             self._audio_manager.load_song(song_name)
@@ -527,20 +532,20 @@ class Bloom(ShowBase):
         return _callback
 
     def _do_open_map(self):
-        with open(self._path, 'rb') as file:
+        with open(self._path, "rb") as file:
             map_to_load, crc = game_map.Map.load(self._path, file.read())
         self._load_map_into_editor(map_to_load)
-        self._log_info(f'Loaded map {self._path} (hash: {hex(crc)})')
+        self._log_info(f"Loaded map {self._path} (hash: {hex(crc)})")
 
-        map_name = os.path.basename(self._path)[:constants.MAP_EXTENSION_SKIP]
+        map_name = os.path.basename(self._path)[: constants.MAP_EXTENSION_SKIP]
         song_name = self._addon.song_for_map(map_name)
         self._audio_manager.load_song(song_name)
 
     def _save_map_as(self):
         path = tkinter.filedialog.asksaveasfilename(
             initialdir=self._blood_path,
-            title='Save map to...',
-            filetypes=(('Map files', '*.MAP'),)
+            title="Save map to...",
+            filetypes=(("Map files", "*.MAP"),),
         )
         self._last_map = path
         if not path:
@@ -558,22 +563,22 @@ class Bloom(ShowBase):
         position = self._camera_collection.get_builder_position()
         map_to_save = self._map_editor.to_game_map(position)
         result, crc = map_to_save.save(self._path)
-        with open(self._path, 'w+b') as file:
+        with open(self._path, "w+b") as file:
             file.write(result)
 
-        with open(self._meta_data_path, 'w+') as file:
+        with open(self._meta_data_path, "w+") as file:
             file.write(yaml.dump(self._meta_data))
 
-        self._log_info(f'Saved map to {self._path} (hash: {hex(crc)})')
+        self._log_info(f"Saved map to {self._path} (hash: {hex(crc)})")
 
     def _edit_mod(self):
         self._dialogs.mod_editor.show(self._map_editor, self._path)
 
     def _handle_exit(self):
-        logger.info('Shutting down...')
-        with open(self._CONFIG_PATH, 'w+') as file:
+        logger.info("Shutting down...")
+        with open(self._CONFIG_PATH, "w+") as file:
             file.write(yaml.dump(self._config))
-        with open(self._META_PATH, 'w+') as file:
+        with open(self._META_PATH, "w+") as file:
             file.write(yaml.dump(self._bloom_meta))
         self.tkRoot.destroy()
 

@@ -13,14 +13,12 @@ from .utils import gui
 
 
 class TileView:
-
-
     def __init__(
-        self, 
-        parent: DirectGui.DirectFrame, 
+        self,
+        parent: DirectGui.DirectFrame,
         frame_size: typing.Tuple[float, float, float, float],
         tile_manager: manager.Manager,
-        on_tile_selected: typing.Callable[[int], None]
+        on_tile_selected: typing.Callable[[int], None],
     ):
         self._tile_manager = tile_manager
         self._on_tile_selected = on_tile_selected
@@ -33,7 +31,7 @@ class TileView:
             frameColor=(0.65, 0.65, 0.65, 1),
             relief=DirectGuiGlobals.SUNKEN,
             scrollBarWidth=0.04,
-            state=DirectGuiGlobals.NORMAL
+            state=DirectGuiGlobals.NORMAL,
         )
         self._bind_scroll(self._frame)
 
@@ -63,7 +61,7 @@ class TileView:
                 picnum_index = y * 10 + x
                 if picnum_index >= tile_count:
                     break
-                
+
                 picnum = tile_indices[picnum_index]
 
                 frame = self._get_tile_frame(picnum)
@@ -71,9 +69,9 @@ class TileView:
                 frame.show()
         self._top = min(-1, self._top)
 
-        frame_size = list(self._frame['canvasSize'])
+        frame_size = list(self._frame["canvasSize"])
         frame_size[2] = self._top
-        self._frame['canvasSize'] = frame_size
+        self._frame["canvasSize"] = frame_size
 
     def _get_tile_frame(self, picnum: int):
         if picnum not in self._tile_frames:
@@ -83,9 +81,9 @@ class TileView:
                 frameColor=(0, 0, 0, 0),
                 relief=DirectGuiGlobals.FLAT,
                 command=self._select_tile,
-                extraArgs=[picnum]
+                extraArgs=[picnum],
             )
-            frame.set_python_tag('picnum', picnum)
+            frame.set_python_tag("picnum", picnum)
             self._bind_scroll(frame)
             self._tile_frames[picnum] = frame
 
@@ -102,7 +100,7 @@ class TileView:
             self._scroll_bar.setValue(value)
 
     def get_selected(self) -> int:
-        return self._selected_tile.get_python_tag('picnum')
+        return self._selected_tile.get_python_tag("picnum")
 
     def _bind_scroll(self, control):
         gui.bind_scroll(control, self._scroll_up, self._scroll_down)
@@ -124,10 +122,7 @@ class TileView:
             if parent_frame.is_empty():
                 return
 
-            frame_size = gui.size_inside_square_for_texture(
-                texture,
-                0.2
-            )
+            frame_size = gui.size_inside_square_for_texture(texture, 0.2)
 
             if frame_size is None:
                 return
@@ -138,7 +133,7 @@ class TileView:
                 frameTexture=texture,
                 relief=DirectGuiGlobals.FLAT,
                 command=self._select_tile,
-                extraArgs=[picnum]
+                extraArgs=[picnum],
             )
             self._bind_scroll(tile)
 
@@ -149,7 +144,7 @@ class TileView:
                 text=str(picnum),
                 frameColor=(0, 0, 0, 0),
                 text_align=core.TextNode.A_left,
-                text_fg=(1, 1, 1, 0.75)
+                text_fg=(1, 1, 1, 0.75),
             )
             self._bind_scroll(tile_number)
 
@@ -157,9 +152,9 @@ class TileView:
 
     def _select_tile(self, picnum: int):
         if self._selected_tile is not None:
-            self._selected_tile['frameColor'] = (0, 0, 0, 0)
+            self._selected_tile["frameColor"] = (0, 0, 0, 0)
         self._selected_tile = self._tile_frames[picnum]
-        self._selected_tile['frameColor'] = (0, 0, 1, 1)
+        self._selected_tile["frameColor"] = (0, 0, 1, 1)
 
         self._on_tile_selected(picnum)
 
@@ -170,4 +165,3 @@ class TileView:
     @property
     def _scroll_bar(self) -> DirectGui.DirectScrollBar:
         return self._frame.verticalScroll
-

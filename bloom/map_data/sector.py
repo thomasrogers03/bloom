@@ -145,7 +145,9 @@ class Sector(data_loading.CustomStruct):
     data: BloodSectorData
 
 
-def load_sectors(unpacker: data_loading.Unpacker, encrypted: bool, header_3: headers.MapHeader3):
+def load_sectors(
+    unpacker: data_loading.Unpacker, encrypted: bool, header_3: headers.MapHeader3
+):
     key = (header_3.revisions * BuildSector.size()) & 0xFF
 
     result: typing.List[Sector] = []
@@ -162,7 +164,7 @@ def load_sectors(unpacker: data_loading.Unpacker, encrypted: bool, header_3: hea
         elif sector.sector.tags[2] >= -1:
             sector.data = BloodSectorData()
         else:
-            raise ValueError('Unable to parse sector data')
+            raise ValueError("Unable to parse sector data")
 
         result.append(sector)
 
@@ -173,7 +175,7 @@ def save_sectors(
     packer: data_loading.Packer,
     encrypted: bool,
     header_3: headers.MapHeader3,
-    sectors: typing.List[Sector]
+    sectors: typing.List[Sector],
 ):
     key = (header_3.revisions * BuildSector.size()) & 0xFF
 
@@ -186,4 +188,4 @@ def save_sectors(
         if sector.sector.tags[2] > 0:
             packer.write_struct(sector.data)
         elif sector.sector.tags[2] < -1:
-            raise Exception('Ran out of XSectors!')
+            raise Exception("Ran out of XSectors!")

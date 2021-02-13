@@ -118,6 +118,7 @@ class BloodSpriteData(data_loading.CustomStruct):
 
     unknown14: data_loading.SizedType(data_loading.UInt8, 26)
 
+
 class Sprite(data_loading.CustomStruct):
     sprite: BuildSprite
     data: BloodSpriteData
@@ -136,7 +137,10 @@ class Sprite(data_loading.CustomStruct):
 
         return new_blood_sprite
 
-def load_sprites(unpacker: data_loading.Unpacker, encrypted: bool, header_3: headers.MapHeader3):
+
+def load_sprites(
+    unpacker: data_loading.Unpacker, encrypted: bool, header_3: headers.MapHeader3
+):
     key = ((header_3.revisions * BuildSprite.size()) | 0x4D) & 0xFF
 
     result: typing.List[Sprite] = []
@@ -152,13 +156,19 @@ def load_sprites(unpacker: data_loading.Unpacker, encrypted: bool, header_3: hea
         elif sprite.sprite.tags[2] >= -1:
             sprite.data = BloodSpriteData()
         else:
-            raise ValueError('Unable to parse sprite data')
+            raise ValueError("Unable to parse sprite data")
 
         result.append(sprite)
 
     return result
 
-def save_sprites(packer: data_loading.Packer, encrypted: bool, header_3: headers.MapHeader3, sprites: typing.List[Sprite]):
+
+def save_sprites(
+    packer: data_loading.Packer,
+    encrypted: bool,
+    header_3: headers.MapHeader3,
+    sprites: typing.List[Sprite],
+):
     key = ((header_3.revisions * BuildSprite.size()) | 0x4D) & 0xFF
 
     for sprite in sprites:
@@ -170,4 +180,4 @@ def save_sprites(packer: data_loading.Packer, encrypted: bool, header_3: headers
         if sprite.sprite.tags[2] > 0:
             packer.write_struct(sprite.data)
         elif sprite.sprite.tags[2] < -1:
-            raise Exception('Ran out of XSprites!')
+            raise Exception("Ran out of XSprites!")

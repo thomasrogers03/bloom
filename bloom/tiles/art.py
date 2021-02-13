@@ -31,8 +31,9 @@ class AnimationData(data_loading.CustomStruct):
 
 
 class Tile:
-
-    def __init__(self, width: int, height: int, animation_data: AnimationData, data_offset: int):
+    def __init__(
+        self, width: int, height: int, animation_data: AnimationData, data_offset: int
+    ):
         self._width = width
         self._height = height
         self._animation_data = animation_data
@@ -64,10 +65,11 @@ class Tile:
 
     def load(self, unpacker: data_loading.Unpacker, palette, palette_lookup):
         unpacker.seek(self._data_offset)
-        indices = numpy.frombuffer(
-            unpacker.get_bytes(self.data_size),
-            dtype='uint8'
-        ).reshape((self._width, self._height)).T
+        indices = (
+            numpy.frombuffer(unpacker.get_bytes(self.data_size), dtype="uint8")
+            .reshape((self._width, self._height))
+            .T
+        )
 
         return palette[palette_lookup[indices]]
 
@@ -80,9 +82,8 @@ class ArtData(typing.NamedTuple):
 
 
 class Art:
-
     def __init__(self, rff: RFF, path: str):
-        with open(path, 'rb') as file:
+        with open(path, "rb") as file:
             tile_data = file.read()
         self._unpacker = data_loading.Unpacker(tile_data)
 
@@ -94,9 +95,7 @@ class Art:
 
         self._tiles: typing.List[Tile] = []
         combined_tile_data = zip(
-            art_data.widths,
-            art_data.heights,
-            art_data.animation_data
+            art_data.widths, art_data.heights, art_data.animation_data
         )
         for width, height, animation_data in combined_tile_data:
             tile = Tile(width, height, animation_data, data_offset)
@@ -105,51 +104,42 @@ class Art:
             data_offset += tile.data_size
 
         self._palettes = {}
-        for palette_entry in rff.find_matching_entries('*.pal'):
+        for palette_entry in rff.find_matching_entries("*.pal"):
             palette = numpy.frombuffer(
-                rff.data_for_entry(palette_entry),
-                dtype='uint8'
+                rff.data_for_entry(palette_entry), dtype="uint8"
             ).reshape((256, 3))
             b, g, r = palette[:, 0], palette[:, 1], palette[:, 2]
             a = [255] * 255 + [0]
-            palette = numpy.array(list(zip(r, g, b, a))).astype('uint8')
+            palette = numpy.array(list(zip(r, g, b, a))).astype("uint8")
             self._palettes[palette_entry] = palette
 
         self._lookups = []
         for lookup_index in range(128):
-            lookup_data = rff.data_for_entry_by_index('PLU', lookup_index)
+            lookup_data = rff.data_for_entry_by_index("PLU", lookup_index)
             if lookup_data is None:
                 lookup = numpy.zeros((64, 256))
             else:
-                lookup = numpy.frombuffer(
-                    lookup_data,
-                    dtype='uint8'
-                ).reshape((64, 256))
+                lookup = numpy.frombuffer(lookup_data, dtype="uint8").reshape((64, 256))
                 lookup = numpy.array(lookup)
                 lookup[:, 255] = 255
             self._lookups.append(lookup)
 
-        self._default_palette = self._palettes['BLOOD.PAL']
+        self._default_palette = self._palettes["BLOOD.PAL"]
 
     def _load_art_data(self, path: str):
         art_name = os.path.basename(path)
-        cache_path = f'cache/{art_name}.data.bin'
+        cache_path = f"cache/{art_name}.data.bin"
 
         if os.path.exists(cache_path):
-            with open(cache_path, 'rb') as file:
+            with open(cache_path, "rb") as file:
                 return pickle.load(file)
 
         widths = self._unpacker.read_multiple_members(data_loading.UInt16, self._count)
         heights = self._unpacker.read_multiple_members(data_loading.UInt16, self._count)
         animation_data = self._unpacker.read_multiple(AnimationData, self._count)
-        art_data = ArtData(
-            widths,
-            heights,
-            animation_data,
-            self._unpacker.offset
-        )
+        art_data = ArtData(widths, heights, animation_data, self._unpacker.offset)
 
-        with open(cache_path, 'w+b') as file:
+        with open(cache_path, "w+b") as file:
             pickle.dump(art_data, file)
 
         return art_data
@@ -164,7 +154,10 @@ class Art:
         ]
 
     def has_tile(self, tile_number):
-        return tile_number >= self._header.tile_start and tile_number <= self._header.tile_end
+        return (
+            tile_number >= self._header.tile_start
+            and tile_number <= self._header.tile_end
+        )
 
     def get_tile_animation_data(self, tile_number: int):
         return self.get_tile(tile_number).animation_data
@@ -182,7 +175,9 @@ class Art:
             lookup = self._lookups[0]
         else:
             lookup = self._lookups[lookup]
-        return self.get_tile(tile_number).load(self._unpacker, self._default_palette, lookup[0])
+        return self.get_tile(tile_number).load(
+            self._unpacker, self._default_palette, lookup[0]
+        )
 
     def get_tile(self, tile_number: int):
         return self._tiles[tile_number - self._header.tile_start]
@@ -197,7 +192,9 @@ class ArtManager:
 
     def get_tile_indices(self):
         return [
-            index for art in self._art for index in art.get_tile_indices()
+            index
+            for art in self._art
+            for index in art.get_tile_indices()
             if index < self.MAX_TILES
         ]
 
@@ -218,4 +215,4 @@ class ArtManager:
             if art.has_tile(tile_number):
                 return art
 
-        raise ValueError(f'Tile {tile_number} not available')
+        raise ValueError(f"Tile {tile_number} not available")

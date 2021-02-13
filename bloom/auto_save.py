@@ -23,12 +23,12 @@ class AutoSave:
         editor: map_editor.MapEditor,
         meta_data: dict,
         camera_collection: cameras.Cameras,
-        map_path: str
+        map_path: str,
     ):
         self._editor = editor
         self._meta_data = meta_data
         self._camera_collection = camera_collection
-        self._map_path_prefix = map_path[:constants.MAP_EXTENSION_SKIP]
+        self._map_path_prefix = map_path[: constants.MAP_EXTENSION_SKIP]
         self._stopped = False
 
     def perform_save(self, task):
@@ -42,7 +42,7 @@ class AutoSave:
         self._executor.submit(self._do_save, map_to_save)
 
         path = self._map_path(0)
-        self._log_info(f'Auto saving to {path}')
+        self._log_info(f"Auto saving to {path}")
 
         return task.again
 
@@ -74,10 +74,10 @@ class AutoSave:
             os.rename(old_meta_data_path, new_meta_data_path)
 
     def _map_path(self, index: int):
-        return f'{self._map_path_prefix}-BACKUP-{index}.MAP'
+        return f"{self._map_path_prefix}-BACKUP-{index}.MAP"
 
     def _meta_data_path(self, index: int):
-        return f'{self._map_path_prefix}-BACKUP-{index}.YAML'
+        return f"{self._map_path_prefix}-BACKUP-{index}.YAML"
 
     def _do_save(self, map_to_save: game_map.Map):
         try:
@@ -85,13 +85,13 @@ class AutoSave:
             meta_data_path = self._meta_data_path(0)
 
             map_data, _ = map_to_save.save(path)
-            with open(path, 'w+b') as map_file:
+            with open(path, "w+b") as map_file:
                 map_file.write(map_data)
 
-            with open(meta_data_path, 'w+') as meta_file:
+            with open(meta_data_path, "w+") as meta_file:
                 meta_file.write(yaml.dump(self._meta_data))
         except Exception as error:
-            self._log_info(f'Failed to save due to: {error}')
+            self._log_info(f"Failed to save due to: {error}")
 
     def _log_info(self, message: str):
         logger.info(message)

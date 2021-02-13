@@ -6,15 +6,21 @@ import typing
 from panda3d import bullet, core
 
 from ... import audio, constants, editor, game_map, map_data, seq
-from .. import (event_grouping, marker_constants, plane, ror_constants,
-                sector_geometry, sprite_find_sector, undo_stack)
+from .. import (
+    event_grouping,
+    marker_constants,
+    plane,
+    ror_constants,
+    sector_geometry,
+    sprite_find_sector,
+    undo_stack,
+)
 from . import empty_object, geometry_highlight, sprite, wall
 from .drawing import sector as drawing_sector
 from .sector import EditorSector
 
 
 class SectorCollection:
-
     def __init__(
         self,
         map_to_load: game_map.Map,
@@ -22,7 +28,7 @@ class SectorCollection:
         seq_manager: seq.Manager,
         geometry_factory: sector_geometry.SectorGeometryFactory,
         suggest_sky_picnum: typing.Callable[[int], int],
-        undos: undo_stack.UndoStack
+        undos: undo_stack.UndoStack,
     ):
         self._audio_manager = audio_manager
         self._seq_manager = seq_manager
@@ -36,19 +42,20 @@ class SectorCollection:
         marker_sprite_mapping: typing.Dict[int, sprite.EditorSprite] = {}
         for sector_index, map_sector in enumerate(map_to_load.sectors):
             self.new_sector(map_sector).load(
-                map_to_load,
-                sector_index,
-                sprite_mapping,
-                marker_sprite_mapping
+                map_to_load, sector_index, sprite_mapping, marker_sprite_mapping
             )
 
         lower_sectors: typing.Dict[int, EditorSector] = {}
         upper_sectors: typing.Dict[int, EditorSector] = {}
         for blood_sprite in map_to_load.sprites:
             if blood_sprite.sprite.tags[0] in ror_constants.LOWER_LINK_TYPES:
-                lower_sectors[blood_sprite.data.data1] = self._sectors[blood_sprite.sprite.sector_index]
+                lower_sectors[blood_sprite.data.data1] = self._sectors[
+                    blood_sprite.sprite.sector_index
+                ]
             elif blood_sprite.sprite.tags[0] in ror_constants.UPPER_LINK_TYPES:
-                upper_sectors[blood_sprite.data.data1] = self._sectors[blood_sprite.sprite.sector_index]
+                upper_sectors[blood_sprite.data.data1] = self._sectors[
+                    blood_sprite.sprite.sector_index
+                ]
 
         all_objects: typing.List[empty_object.EmptyObject] = []
         for editor_sector in self._sectors:
@@ -88,8 +95,7 @@ class SectorCollection:
         new_build_sector = template.sector.sector.copy()
         new_build_sector.tags[0] = 0
         new_blood_sector = map_data.sector.Sector(
-            sector=new_build_sector,
-            data=map_data.sector.BloodSectorData()
+            sector=new_build_sector, data=map_data.sector.BloodSectorData()
         )
 
         return self.new_sector(new_blood_sector)
@@ -107,7 +113,7 @@ class SectorCollection:
             self._seq_manager,
             self._geometry_factory,
             self._suggest_sky_picnum,
-            self._undo_stack
+            self._undo_stack,
         )
 
         def _undo():
@@ -117,11 +123,7 @@ class SectorCollection:
             new_sector.undestroy()
             self._sectors.append(new_sector)
 
-        operation = undo_stack.SimpleUndoableOperation(
-            'Add Sector',
-            _undo,
-            _redo
-        )
+        operation = undo_stack.SimpleUndoableOperation("Add Sector", _undo, _redo)
         operation.apply()
         self._undo_stack.add_operation(operation)
 
@@ -129,8 +131,10 @@ class SectorCollection:
 
     def prepare_to_persist(
         self,
-        find_sector: typing.Callable[['editor.sector.EditorSector', core.Point3], 'editor.sector.EditorSector'],
-        builder_position: core.Point3
+        find_sector: typing.Callable[
+            ["editor.sector.EditorSector", core.Point3], "editor.sector.EditorSector"
+        ],
+        builder_position: core.Point3,
     ):
         blood_sectors: typing.List[map_data.sector.Sector] = []
         blood_walls: typing.List[map_data.wall.Wall] = []
@@ -166,14 +170,14 @@ class SectorCollection:
         for editor_sector in self._sectors:
             for editor_wall in editor_sector.walls:
                 blood_wall = editor_wall.prepare_to_persist(
-                    sector_index_mapping,
-                    wall_index_mapping
+                    sector_index_mapping, wall_index_mapping
                 )
                 blood_walls.append(blood_wall)
 
             for editor_sprite in editor_sector.sprites:
                 sprite_find_sector.SpriteFindSector(
-                    editor_sprite, self._sectors).update_sector()
+                    editor_sprite, self._sectors
+                ).update_sector()
                 blood_sprite = editor_sprite.prepare_to_persist(sector_index_mapping)
                 blood_sprites.append(blood_sprite)
 
@@ -181,7 +185,8 @@ class SectorCollection:
             for marker_index, editor_marker in enumerate(editor_sector.markers):
                 if editor_marker is not None:
                     blood_sprite = editor_marker.prepare_to_persist(
-                        sector_index_mapping)
+                        sector_index_mapping
+                    )
                     markers[marker_index] = blood_sprite.sprite.velocity_x
                     blood_sprites.append(blood_sprite)
 
@@ -201,9 +206,13 @@ class SectorCollection:
                 above_point = editor_sector.min_point()
                 blood_sprite.sprite.position_x = int(above_point.x)
                 blood_sprite.sprite.position_y = int(above_point.y)
-                blood_sprite.sprite.position_z = editor.to_build_height(editor_sector.floor_z)
+                blood_sprite.sprite.position_z = editor.to_build_height(
+                    editor_sector.floor_z
+                )
 
-                blood_sprite.sprite.tags[0] = ror_constants.UPPER_TAG_MAPPING[editor_sector.ror_type]
+                blood_sprite.sprite.tags[0] = ror_constants.UPPER_TAG_MAPPING[
+                    editor_sector.ror_type
+                ]
                 blood_sprite.sprite.sector_index = sector_index
                 blood_sprite.data.data1 = ror_data
                 blood_sprites.append(blood_sprite)
@@ -212,9 +221,13 @@ class SectorCollection:
                 below_point = editor_sector.sector_below_floor.min_point()
                 blood_sprite.sprite.position_x = int(below_point.x)
                 blood_sprite.sprite.position_y = int(below_point.y)
-                blood_sprite.sprite.position_z = editor.to_build_height(editor_sector.sector_below_floor.ceiling_z)
+                blood_sprite.sprite.position_z = editor.to_build_height(
+                    editor_sector.sector_below_floor.ceiling_z
+                )
 
-                blood_sprite.sprite.tags[0] = ror_constants.LOWER_TAG_MAPPING[editor_sector.ror_type]
+                blood_sprite.sprite.tags[0] = ror_constants.LOWER_TAG_MAPPING[
+                    editor_sector.ror_type
+                ]
                 blood_sprite.sprite.sector_index = below_sector_index
                 blood_sprite.data.data1 = ror_data
                 blood_sprites.append(blood_sprite)

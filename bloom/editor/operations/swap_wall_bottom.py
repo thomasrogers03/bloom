@@ -3,8 +3,8 @@
 
 from .. import map_objects
 
-class SwapWallBottom:
 
+class SwapWallBottom:
     def __init__(self, wall: map_objects.EditorWall):
         self._wall = wall
         self._stat = self._wall.get_stat_for_part(None)

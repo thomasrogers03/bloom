@@ -31,7 +31,7 @@ class RFF:
     _FLAG_ENCRYPTED = 1 << 4
 
     def __init__(self, path: str):
-        with open(path, 'rb') as file:
+        with open(path, "rb") as file:
             data = file.read()
         self._unpacker = data_loading.Unpacker(data)
         self._header = self._unpacker.read_struct(Header)
@@ -44,16 +44,20 @@ class RFF:
 
         for index in range(0, len(encrypted_entries), 2):
             encrypted_entries[index] ^= self._crypto_byte
-            encrypted_entries[index+1] ^= self._crypto_byte
+            encrypted_entries[index + 1] ^= self._crypto_byte
             self._crypto_byte = (self._crypto_byte + 1) & 0xFF
 
-        entries = data_loading.Unpacker(encrypted_entries).read_multiple(Entry, self._header.number_of_entries)
+        entries = data_loading.Unpacker(encrypted_entries).read_multiple(
+            Entry, self._header.number_of_entries
+        )
         self._entries: typing.Dict[str, Entry] = {}
-        self._indexed_entries: typing.Dict[str, typing.Dict[int, Entry]] = defaultdict(lambda: {})
+        self._indexed_entries: typing.Dict[str, typing.Dict[int, Entry]] = defaultdict(
+            lambda: {}
+        )
         for entry in entries:
-            file_name = entry.name.rstrip('\x00')
+            file_name = entry.name.rstrip("\x00")
             extension = file_name[0:3]
-            file_name = f'{file_name[3:]}.{extension}'
+            file_name = f"{file_name[3:]}.{extension}"
             self._entries[file_name] = entry
             self._indexed_entries[extension][entry.indexer] = entry
 
@@ -64,7 +68,9 @@ class RFF:
         for entry_name, _ in self._matching_entries(fnmatcher):
             yield entry_name
 
-    def find_matching_entries_with_indexes(self, fnmatcher: str) -> typing.Iterable[typing.Tuple[str, int]]:
+    def find_matching_entries_with_indexes(
+        self, fnmatcher: str
+    ) -> typing.Iterable[typing.Tuple[str, int]]:
         for entry_name, entry in self._matching_entries(fnmatcher):
             yield entry_name, entry.indexer
 
@@ -93,6 +99,6 @@ class RFF:
         data = bytearray(self._unpacker.get_bytes(entry.size))
         if (entry.flags & self._FLAG_ENCRYPTED) != 0:
             for index in range(min(256, entry.size)):
-                data[index] ^= (index >> 1)
+                data[index] ^= index >> 1
 
         return bytes(data)

@@ -9,7 +9,6 @@ from . import empty_move, wall_repeat_adjust
 
 
 class WallMove(empty_move.EmptyMove):
-
     def __init__(self, wall: map_objects.EditorWall, part: str):
         self._wall = wall
         self._part = part
@@ -19,7 +18,7 @@ class WallMove(empty_move.EmptyMove):
 
     @property
     def _is_vertex(self):
-        return '_vertex_' in self._part
+        return "_vertex_" in self._part
 
     def get_move_direction(self) -> core.Vec3:
         if self._is_vertex:
@@ -45,10 +44,12 @@ class WallMove(empty_move.EmptyMove):
     def _move_vertex(wall: map_objects.EditorWall, new_position: core.Point2):
         walls_to_move = wall.all_walls_at_point_1()
         for point in walls_to_move:
-            repeat_adjust_previous_point = wall_repeat_adjust.WallRepeatAdjust(point.wall_previous_point)
+            repeat_adjust_previous_point = wall_repeat_adjust.WallRepeatAdjust(
+                point.wall_previous_point
+            )
             repeat_adjust = wall_repeat_adjust.WallRepeatAdjust(point)
-            
+
             point.teleport_point_1_to(new_position)
-            
+
             repeat_adjust_previous_point.adjust()
             repeat_adjust.adjust()

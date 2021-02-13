@@ -13,7 +13,6 @@ from . import utils
 
 
 class TestWallLink(unittest.TestCase):
-
     def setUp(self):
         self._sectors = utils.new_sector_collection()
 
@@ -21,9 +20,7 @@ class TestWallLink(unittest.TestCase):
         test_id = self.id()
         for sector_index, sector in enumerate(self._sectors.sectors):
             utils.save_sector_images(
-                f'{test_id}-sector_{sector_index}', 
-                sector,
-                self._sectors
+                f"{test_id}-sector_{sector_index}", sector, self._sectors
             )
 
     def test_can_link(self):
@@ -33,7 +30,9 @@ class TestWallLink(unittest.TestCase):
         link_wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
         operations.wall_link.SectorWallLink(link_wall, self._sectors).try_link_wall()
 
-        link_other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        link_other_side_wall = utils.find_wall_on_point(
+            other_side_sector, core.Point2(-1, 1)
+        )
         self.assertEqual(link_wall.other_side_wall, link_other_side_wall)
 
     def test_no_link_when_facing_same_direction(self):
@@ -53,7 +52,9 @@ class TestWallLink(unittest.TestCase):
         operations.wall_link.SectorWallLink(link_wall, self._sectors).try_link_wall()
 
         split_wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
-        other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        other_side_wall = utils.find_wall_on_point(
+            other_side_sector, core.Point2(-1, 1)
+        )
         self.assertEqual(split_wall.other_side_wall, other_side_wall)
 
     def test_can_link_smaller_to_bigger_one_split_first_wall(self):
@@ -63,7 +64,9 @@ class TestWallLink(unittest.TestCase):
         link_wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
         operations.wall_link.SectorWallLink(link_wall, self._sectors).try_link_wall()
 
-        link_other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        link_other_side_wall = utils.find_wall_on_point(
+            other_side_sector, core.Point2(-1, 1)
+        )
         self.assertEqual(link_wall.other_side_wall, link_other_side_wall)
 
     def test_can_link_smaller_to_bigger_one_split_second_wall(self):
@@ -73,7 +76,9 @@ class TestWallLink(unittest.TestCase):
         link_wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
         operations.wall_link.SectorWallLink(link_wall, self._sectors).try_link_wall()
 
-        link_other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        link_other_side_wall = utils.find_wall_on_point(
+            other_side_sector, core.Point2(-1, 1)
+        )
         self.assertEqual(link_wall.other_side_wall, link_other_side_wall)
 
     def test_can_link_smaller_to_bigger_two_splits(self):
@@ -83,7 +88,9 @@ class TestWallLink(unittest.TestCase):
         link_wall = utils.find_wall_on_point(sector, core.Point2(1, 1))
         operations.wall_link.SectorWallLink(link_wall, self._sectors).try_link_wall()
 
-        link_other_side_wall = utils.find_wall_on_point(other_side_sector, core.Point2(-1, 1))
+        link_other_side_wall = utils.find_wall_on_point(
+            other_side_sector, core.Point2(-1, 1)
+        )
         self.assertEqual(link_wall.other_side_wall, link_other_side_wall)
 
     @unittest.skip

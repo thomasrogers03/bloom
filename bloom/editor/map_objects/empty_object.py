@@ -10,7 +10,6 @@ from .. import undo_stack
 
 
 class EmptyObject:
-
     def __init__(self, undos: undo_stack.UndoStack):
         self._undo_stack = undos
         self._source_event_grouping = None
@@ -140,7 +139,6 @@ class EmptyObject:
 
 
 class ChangeAttribute(undo_stack.UndoableOperation):
-
     def __init__(self, map_object: EmptyObject, undo, redo):
         self._map_object = map_object
         self._undo = undo

@@ -84,7 +84,12 @@ def snap_to_grid(value: float, grid_size: float):
     return round(value / grid_size) * grid_size
 
 
-def side_of_line(point: core.Point2, line_point_1: core.Point2, line_point_3: core.Point2, tolerance=0.0):
+def side_of_line(
+    point: core.Point2,
+    line_point_1: core.Point2,
+    line_point_3: core.Point2,
+    tolerance=0.0,
+):
     line_direction = line_point_3 - line_point_1
     orthogonal = core.Vec2(line_direction.y, -line_direction.x)
 
@@ -102,7 +107,7 @@ def line_intersection(
     segment_1_point_1: core.Point2,
     segment_1_point_2: core.Point2,
     segment_2_point_1: core.Point2,
-    segment_2_point_2: core.Point2
+    segment_2_point_2: core.Point2,
 ):
     segment_1_diff = segment_1_point_1 - segment_1_point_2
     segment_2_diff = segment_2_point_1 - segment_2_point_2
@@ -112,11 +117,11 @@ def line_intersection(
 
     divisor = determinant(x_diff, y_diff)
     if divisor == 0:
-        raise ValueError('Lines do not intersect')
+        raise ValueError("Lines do not intersect")
 
     det = core.Vec2(
         determinant(segment_1_point_1, segment_1_point_2),
-        determinant(segment_2_point_1, segment_2_point_2)
+        determinant(segment_2_point_1, segment_2_point_2),
     )
 
     x = determinant(det, x_diff) / divisor

@@ -12,14 +12,13 @@ from . import drawing_display
 
 
 class SectorDrawer:
-
     def __init__(
         self,
         camera_collection: cameras.Camera,
         tickers: typing.List[typing.Callable[[], None]],
         make_clicker,
-        extrude_mouse_to_scene_transform: typing.Callable[[bool], core.Point3]
-    ): 
+        extrude_mouse_to_scene_transform: typing.Callable[[bool], core.Point3],
+    ):
         self._camera_collection = camera_collection
         self._extrude_mouse_to_scene_transform = extrude_mouse_to_scene_transform
 
@@ -28,9 +27,7 @@ class SectorDrawer:
         self._sector: map_objects.EditorSector = None
         self._insert = True
         self._points: typing.List[core.Point2] = []
-        self._display = drawing_display.DrawingDisplay(
-            self._camera_collection
-        )
+        self._display = drawing_display.DrawingDisplay(self._camera_collection)
         self._current_point: core.Point2 = None
 
         make_clicker(
@@ -41,11 +38,11 @@ class SectorDrawer:
         tickers.append(self._show_next_point)
 
     def start_drawing(
-        self, 
-        editor: map_editor.MapEditor, 
-        sector: map_objects.EditorSector, 
-        hit_point: core.Point3, 
-        insert: bool
+        self,
+        editor: map_editor.MapEditor,
+        sector: map_objects.EditorSector,
+        hit_point: core.Point3,
+        insert: bool,
     ):
         self._editor = editor
         self._sector = sector
@@ -55,8 +52,10 @@ class SectorDrawer:
                 distance_to_wall = editor_wall.line_segment.get_point_distance(
                     hit_point.xy
                 )
-                if distance_to_wall is not None and \
-                        distance_to_wall < self._editor.snapper.grid_size:
+                if (
+                    distance_to_wall is not None
+                    and distance_to_wall < self._editor.snapper.grid_size
+                ):
                     insert = False
                     projected_point = editor_wall.line_segment.project_point(
                         hit_point.xy
@@ -72,20 +71,14 @@ class SectorDrawer:
             point_neat_wall = self._point_near_wall(hit_point.xy)
             if point_neat_wall is not None:
                 position_2d = point_neat_wall
-        
+
         self._current_point = position_2d
         self._points[:] = [self._current_point]
 
         grid_position = core.Point3(
-            position_2d.x,
-            position_2d.y,
-            self._floor_z_at_point(position_2d)
+            position_2d.x, position_2d.y, self._floor_z_at_point(position_2d)
         )
-        self._display.start_drawing(
-            self._sector,
-            grid_position,
-            self._editor.snapper
-        )
+        self._display.start_drawing(self._sector, grid_position, self._editor.snapper)
         self._update_debug_display()
 
     def _floor_z_at_point(self, point: core.Point2):
@@ -93,13 +86,17 @@ class SectorDrawer:
             return 0
         return self._sector.floor_z_at_point(point)
 
-    def show(self, acceptor: DirectObject.DirectObject, done_callback: typing.Callable[[], None]):
+    def show(
+        self,
+        acceptor: DirectObject.DirectObject,
+        done_callback: typing.Callable[[], None],
+    ):
         self._display.show_grid()
         self._done_callback = done_callback
 
-        acceptor.accept('backspace', self._remove_last_point)
-        acceptor.accept('space', self._insert_point)
-        acceptor.accept('enter', self._finish_shape)
+        acceptor.accept("backspace", self._remove_last_point)
+        acceptor.accept("space", self._insert_point)
+        acceptor.accept("enter", self._finish_shape)
 
     def hide(self):
         self._display.hide_grid()
@@ -113,13 +110,11 @@ class SectorDrawer:
 
         if self._insert:
             operations.sector_insert.SectorInsert(
-                self._sector,
-                self._editor.sectors
+                self._sector, self._editor.sectors
             ).insert(self._points)
         else:
             operations.sector_split.SectorSplit(
-                self._sector,
-                self._editor.sectors
+                self._sector, self._editor.sectors
             ).split(self._points)
 
         self._editor.invalidate_view_clipping()
@@ -150,10 +145,7 @@ class SectorDrawer:
         if self._sector is None:
             position = target
         else:
-            position = self._sector.floor_plane.intersect_line(
-                source,
-                target - source
-            )
+            position = self._sector.floor_plane.intersect_line(source, target - source)
             if position is None:
                 return None
 
@@ -181,7 +173,9 @@ class SectorDrawer:
 
     def _vertex_near_point(self, point: core.Point2) -> map_objects.EditorWall:
         result: map_objects.EditorWall = None
-        closest_distance_squared = self._editor.snapper.grid_size * self._editor.snapper.grid_size
+        closest_distance_squared = (
+            self._editor.snapper.grid_size * self._editor.snapper.grid_size
+        )
         for wall in self._sector.walls:
             distance_squared = (point - wall.point_1).length_squared()
             if distance_squared < closest_distance_squared:
@@ -202,8 +196,4 @@ class SectorDrawer:
         return result
 
     def _update_debug_display(self):
-        self._display.update(
-            self._current_point,
-            self._points,
-            self._insert
-        )
+        self._display.update(self._current_point, self._points, self._insert)

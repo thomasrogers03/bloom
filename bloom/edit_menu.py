@@ -1,7 +1,8 @@
 import tkinter
 
+
 class EditMenu:
-    _MENU_NAME = 'Edit'
+    _MENU_NAME = "Edit"
 
     def __init__(self, menu_bar: tkinter.Menu):
         self._menu_bar = menu_bar
@@ -15,7 +16,9 @@ class EditMenu:
         self._menu_bar.delete(self._MENU_NAME)
 
         self._edit_menu = self._make_menu()
-        self._menu_bar.insert_cascade(self._index, label=self._MENU_NAME, menu=self._edit_menu)
+        self._menu_bar.insert_cascade(
+            self._index, label=self._MENU_NAME, menu=self._edit_menu
+        )
 
     def add_command(self, *args, **kwargs):
         return self._edit_menu.add_command(*args, **kwargs)

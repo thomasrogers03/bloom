@@ -45,14 +45,13 @@ class Seq(typing.NamedTuple):
 
 
 class Manager:
-
     def __init__(self, rff: RFF):
         self._rff = rff
         self._seqs: typing.Dict[int, typing.Optional[Seq]] = {}
 
     def get_seq(self, index: int):
         if index not in self._seqs:
-            data = self._rff.data_for_entry_by_index('SEQ', index)
+            data = self._rff.data_for_entry_by_index("SEQ", index)
             if data is None:
                 self._seqs[index] = None
             else:

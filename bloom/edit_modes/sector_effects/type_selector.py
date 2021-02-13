@@ -15,8 +15,9 @@ from ...utils import gui
 
 
 class TypeSelector:
-
-    def __init__(self, aspect_2d: core.NodePath, on_type_changed: typing.Callable[[], None]):
+    def __init__(
+        self, aspect_2d: core.NodePath, on_type_changed: typing.Callable[[], None]
+    ):
         self._aspect_2d = aspect_2d
         self._on_type_changed = on_type_changed
 
@@ -26,19 +27,21 @@ class TypeSelector:
             relief=DirectGuiGlobals.RAISED,
             borderWidth=(0.01, 0.01),
             frameColor=(0.85, 0.85, 0.85, 0.75),
-            state=DirectGuiGlobals.NORMAL
+            state=DirectGuiGlobals.NORMAL,
         )
         gui.bind_gui_for_focus(self._frame)
         self._frame.hide()
 
-        self._property_parent: core.NodePath = self._aspect_2d.attach_new_node('properties')
+        self._property_parent: core.NodePath = self._aspect_2d.attach_new_node(
+            "properties"
+        )
         self._properties_frame = DirectGui.DirectFrame(
             parent=self._property_parent,
             frameSize=(-0.02, 1.02, 0.02, 1.32),
             relief=DirectGuiGlobals.RAISED,
             borderWidth=(0.01, 0.01),
             frameColor=(0.85, 0.85, 0.85, 0.75),
-            state=DirectGuiGlobals.NORMAL
+            state=DirectGuiGlobals.NORMAL,
         )
         gui.bind_gui_for_focus(self._properties_frame)
         self._properties_frame.hide()
@@ -57,7 +60,7 @@ class TypeSelector:
             pos=core.Vec3(0.05, 0.08),
             scale=constants.BIG_TEXT_SIZE,
             items=type_names,
-            command=self._type_changed
+            command=self._type_changed,
         )
 
         self._update_frame_position()
@@ -94,7 +97,10 @@ class TypeSelector:
 
         for marker_index, marker in enumerate(markers):
             current_marker = self._sector.markers[marker_index]
-            if current_marker is not None and current_marker.sprite.sprite.tags[0] == marker:
+            if (
+                current_marker is not None
+                and current_marker.sprite.sprite.tags[0] == marker
+            ):
                 continue
 
             sprite_type = descriptors.sprite_types[marker]
@@ -111,7 +117,7 @@ class TypeSelector:
             blood_sprite = map_data.sprite.Sprite.new()
             blood_sprite.sprite.stat.invisible = 1
             blood_sprite.sprite.tags[0] = marker
-            blood_sprite.sprite.status_number = category['status_number']
+            blood_sprite.sprite.status_number = category["status_number"]
             blood_sprite.sprite.position_x = int(self._sector.walls[0].point_1.x)
             blood_sprite.sprite.position_y = int(self._sector.walls[0].point_1.y)
 
@@ -133,10 +139,9 @@ class TypeSelector:
     def _update_sector_properties(self):
         if self._properties is None:
             return
-        
+
         self._current_sector_type.apply_sector_type_properties(
-            self._sector,
-            self._properties.get_values()
+            self._sector, self._properties.get_values()
         )
         self._sector.invalidate_geometry()
 
@@ -151,7 +156,7 @@ class TypeSelector:
             2.35,
             1,
             1.25,
-            alpha=0.5
+            alpha=0.5,
         )
 
     def _clear_property_view(self):

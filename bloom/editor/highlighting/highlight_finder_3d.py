@@ -10,8 +10,12 @@ from . import highlight_details, sector_intersect_3d
 
 
 class HighlightFinder3D:
-
-    def __init__(self, editor: map_editor.MapEditor, start_position: core.Point3, end_position: core.Point3):
+    def __init__(
+        self,
+        editor: map_editor.MapEditor,
+        start_position: core.Point3,
+        end_position: core.Point3,
+    ):
         self._editor = editor
         self._start_position = start_position
         self._end_position = end_position
@@ -19,7 +23,7 @@ class HighlightFinder3D:
     def find_highlight(
         self,
         current_highlight: highlight_details.HighlightDetails,
-        selected: typing.List[highlight_details.HighlightDetails]
+        selected: typing.List[highlight_details.HighlightDetails],
     ):
         if self._editor.builder_sector is None:
             return current_highlight
@@ -48,7 +52,9 @@ class HighlightFinder3D:
 
         return current_highlight
 
-    def _wall_highlight(self, editor_wall: map_objects.EditorWall, part: str, hit: core.Point3):
+    def _wall_highlight(
+        self, editor_wall: map_objects.EditorWall, part: str, hit: core.Point3
+    ):
         tolerance = self._editor.snapper.grid_size
         tolerance_squared = tolerance * tolerance
 
@@ -58,12 +64,13 @@ class HighlightFinder3D:
         ).length_squared()
 
         if distance_from_point_1_squared < tolerance_squared:
-            part = f'{editor_wall.vertex_part_name}_highlight'
+            part = f"{editor_wall.vertex_part_name}_highlight"
         else:
             distance_from_point_2_squared = (
-                snapped_hit - editor_wall.point_2).length_squared()
+                snapped_hit - editor_wall.point_2
+            ).length_squared()
             if distance_from_point_2_squared < tolerance_squared:
                 editor_wall = editor_wall.wall_point_2
-                part = f'{editor_wall.vertex_part_name}_highlight'
+                part = f"{editor_wall.vertex_part_name}_highlight"
 
         return highlight_details.HighlightDetails(editor_wall, part, hit)

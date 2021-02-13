@@ -13,7 +13,6 @@ from . import utils
 
 
 class TestWallSplit(unittest.TestCase):
-
     def setUp(self):
         self._sectors = utils.new_sector_collection()
 
@@ -21,14 +20,12 @@ class TestWallSplit(unittest.TestCase):
         test_id = self.id()
         for sector_index, sector in enumerate(self._sectors.sectors):
             utils.save_sector_images(
-                f'{test_id}-sector_{sector_index}', 
-                sector,
-                self._sectors
+                f"{test_id}-sector_{sector_index}", sector, self._sectors
             )
 
     def test_can_split(self):
         sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
-        
+
         wall_to_split = utils.find_wall_on_point(sector, core.Point2(-1, 1))
         operations.wall_split.WallSplit(wall_to_split, core.Point2(-1, 0)).split()
 
@@ -42,7 +39,7 @@ class TestWallSplit(unittest.TestCase):
 
     def test_can_split_on_point_1(self):
         sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
-        
+
         wall_to_split = utils.find_wall_on_point(sector, core.Point2(-1, 1))
         operations.wall_split.WallSplit(wall_to_split, core.Point2(-1, 1)).split()
 
@@ -50,7 +47,7 @@ class TestWallSplit(unittest.TestCase):
 
     def test_can_split_on_point_2(self):
         sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
-        
+
         wall_to_split = utils.find_wall_on_point(sector, core.Point2(-1, 1))
         operations.wall_split.WallSplit(wall_to_split, core.Point2(-1, -1)).split()
 
@@ -62,8 +59,7 @@ class TestWallSplit(unittest.TestCase):
 
         wall_to_link = utils.find_wall_on_point(sector, core.Point2(1, 1))
         other_side_wall_to_link = utils.find_wall_on_point(
-            other_side_sector, 
-            core.Point2(-1, 1)
+            other_side_sector, core.Point2(-1, 1)
         )
         wall_to_link.link(other_side_wall_to_link)
 

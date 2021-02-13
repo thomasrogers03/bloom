@@ -8,17 +8,11 @@ from panda3d import core
 from .. import cameras, constants, dialogs
 from ..editor import highlighter, map_objects
 from ..editor.highlighting import find_in_marquee, highlight_finder_2d
-from . import (base_edit_mode, keyboard_camera, moving_clicker, object_editor,
-               wall_bevel)
+from . import base_edit_mode, keyboard_camera, moving_clicker, object_editor, wall_bevel
 
 
 class EditMode(base_edit_mode.EditMode):
-
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._make_clicker(
@@ -36,9 +30,7 @@ class EditMode(base_edit_mode.EditMode):
         self._camera.display_region.set_active(True)
 
         keyboard_camera.KeyboardCamera(
-            self._camera_collection,
-            self._editor,
-            self.accept
+            self._camera_collection, self._editor, self.accept
         )
 
     def exit_mode(self):
@@ -50,15 +42,15 @@ class EditMode(base_edit_mode.EditMode):
         y_direction = (delta.y * self._camera.camera.get_sx()) / 50
 
         self._camera_collection.builder_2d.set_x(
-            self._camera_collection.builder_2d,
-            x_direction * constants.TICK_SCALE
+            self._camera_collection.builder_2d, x_direction * constants.TICK_SCALE
         )
         self._camera_collection.builder_2d.set_y(
-            self._camera_collection.builder_2d,
-            y_direction * constants.TICK_SCALE
+            self._camera_collection.builder_2d, y_direction * constants.TICK_SCALE
         )
 
-        self._editor.update_builder_sector(self._camera_collection.get_builder_position())
+        self._editor.update_builder_sector(
+            self._camera_collection.get_builder_position()
+        )
 
     def _strafe_camera_2d(self, total_delta: core.Vec2, delta: core.Vec2):
         delta *= constants.TICK_SCALE / 100.0
@@ -78,9 +70,13 @@ class EditMode(base_edit_mode.EditMode):
             new_zoom = 1
 
         self._camera.camera.set_scale(new_zoom)
-        self._camera_collection.builder_2d.set_x(self._camera_collection.builder_2d, delta.x * 512)
+        self._camera_collection.builder_2d.set_x(
+            self._camera_collection.builder_2d, delta.x * 512
+        )
 
-        self._editor.update_builder_sector(self._camera_collection.get_builder_position())
+        self._editor.update_builder_sector(
+            self._camera_collection.get_builder_position()
+        )
 
     def _scale_x(self, value: float):
         inverse_aspect_ratio = 1.0 / self._camera_collection.aspect_2d.get_sx()
@@ -88,4 +84,4 @@ class EditMode(base_edit_mode.EditMode):
 
     @property
     def _camera(self) -> cameras.Camera:
-        return self._camera_collection['editor_2d']
+        return self._camera_collection["editor_2d"]

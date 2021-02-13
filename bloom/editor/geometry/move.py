@@ -7,13 +7,12 @@ from panda3d import core
 
 from .. import grid_snapper, highlighter, map_objects, operations
 from ..highlighting import highlight_details
-from . import (empty_move, sector_move, sector_move_walls, sprite_move,
-               wall_move)
+from . import empty_move, sector_move, sector_move_walls, sprite_move, wall_move
 
 from .. import undo_stack
 
-class Move:
 
+class Move:
     def __init__(
         self,
         selected_objects: typing.List[highlight_details.HighlightDetails],
@@ -22,7 +21,7 @@ class Move:
         all_sectors: map_objects.SectorCollection,
         move_sprites_on_sectors: bool,
         move_sector_walls: bool,
-        undos: undo_stack.UndoStack
+        undos: undo_stack.UndoStack,
     ):
         self._hit = highlighted_object.hit_position
         self._move_sector_walls = move_sector_walls
@@ -54,45 +53,43 @@ class Move:
                     operations.wall_delete.WallDelete(next_wall).delete()
 
                 if previous_wall.other_side_wall is not None:
-                    wall: map_objects.EditorWall = previous_wall.other_side_wall.wall_previous_point
+                    wall: map_objects.EditorWall = (
+                        previous_wall.other_side_wall.wall_previous_point
+                    )
                     if wall.line_segment.is_empty:
                         operations.wall_delete.WallDelete(wall).delete()
 
             elif isinstance(selected.map_object, map_objects.EditorSprite):
                 operations.sprite_find_sector.SpriteFindSector(
-                    selected.map_object,
-                    self._all_sectors.sectors
+                    selected.map_object, self._all_sectors.sectors
                 ).update_sector()
 
         for editor_sector in ajusted_sector_shapes:
             for sprite in editor_sector.sprites:
                 operations.sprite_find_sector.SpriteFindSector(
-                    sprite,
-                    self._all_sectors.sectors
+                    sprite, self._all_sectors.sectors
                 ).update_sector()
 
         for selected in self._selected_objects:
             if isinstance(selected.map_object, map_objects.EditorWall):
                 operations.wall_link.SectorWallLink(
-                    selected.map_object,
-                    self._all_sectors
+                    selected.map_object, self._all_sectors
                 ).try_link_wall()
                 operations.wall_link.SectorWallLink(
-                    selected.map_object.wall_previous_point,
-                    self._all_sectors
+                    selected.map_object.wall_previous_point, self._all_sectors
                 ).try_link_wall()
 
         self._undo_stack.end_multi_step_undo()
 
     def move(self, delta: core.Vec3):
-        self._undo_stack.begin_multi_step_undo('Move Objects')
+        self._undo_stack.begin_multi_step_undo("Move Objects")
         if self._direction is None:
             self.move_modified(delta)
         else:
             self._do_move(self._direction * self._direction.dot(delta))
 
     def move_modified(self, delta: core.Vec3):
-        self._undo_stack.begin_multi_step_undo('Move Objects Modified')
+        self._undo_stack.begin_multi_step_undo("Move Objects Modified")
         self._do_move(core.Vec3(delta.x, delta.y, 0))
 
     def _do_move(self, delta: core.Vec3):
@@ -102,17 +99,20 @@ class Move:
     def _mover_for_object(self, details: highlight_details.HighlightDetails):
         if self._move_sector_walls:
             if not isinstance(details.map_object, map_objects.EditorSector):
-                raise ValueError('Invalid map object for sector wall move')
+                raise ValueError("Invalid map object for sector wall move")
             return sector_move_walls.SectorMoveWalls(details.map_object)
 
         if isinstance(details.map_object, map_objects.EditorWall):
             return wall_move.WallMove(details.map_object, details.part)
 
         if isinstance(details.map_object, map_objects.EditorSector):
-            return sector_move.SectorMove(details.map_object, details.part, self._move_sprites_on_sectors)
+            return sector_move.SectorMove(
+                details.map_object, details.part, self._move_sprites_on_sectors
+            )
 
-        if isinstance(details.map_object, map_objects.EditorSprite) or \
-                isinstance(details.map_object, map_objects.EditorMarker):
+        if isinstance(details.map_object, map_objects.EditorSprite) or isinstance(
+            details.map_object, map_objects.EditorMarker
+        ):
             return sprite_move.SpriteMove(details.map_object)
 
         raise NotImplementedError()

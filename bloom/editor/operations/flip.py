@@ -6,8 +6,9 @@ from ..undo_stack import SimpleUndoableOperation, UndoStack
 
 
 class Flip:
-
-    def __init__(self, undo_stack: UndoStack, map_object: map_objects.EmptyObject, part: str):
+    def __init__(
+        self, undo_stack: UndoStack, map_object: map_objects.EmptyObject, part: str
+    ):
         self._undo_stack = undo_stack
         self._map_object = map_object
         self._part = part
@@ -16,11 +17,7 @@ class Flip:
         self._map_object.invalidate_geometry()
 
         with self._undo_stack.property_change(
-            'Sprite/Wall Flip',
-            self._map_object,
-            self._part,
-            'xflip',
-            'yflip'
+            "Sprite/Wall Flip", self._map_object, self._part, "xflip", "yflip"
         ):
             if self._stat.xflip and self._stat.yflip:
                 self._stat.xflip = 0

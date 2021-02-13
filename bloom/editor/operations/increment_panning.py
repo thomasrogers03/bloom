@@ -9,12 +9,11 @@ from .. import map_objects
 
 
 class IncrementPanning:
-
     def __init__(
-        self, 
-        camera_collection: cameras.Cameras, 
-        map_object: map_objects.EmptyObject, 
-        part: str
+        self,
+        camera_collection: cameras.Cameras,
+        map_object: map_objects.EmptyObject,
+        part: str,
     ):
         self._camera_collection = camera_collection
         self._map_object = map_object
@@ -23,7 +22,7 @@ class IncrementPanning:
     def increment(self, amount: core.Vec2):
         from . import increment_repeats
 
-        with self._map_object.undos.multi_step_undo('Increment Panning'):
+        with self._map_object.undos.multi_step_undo("Increment Panning"):
             with self._map_object.change_blood_object():
                 if isinstance(self._map_object, map_objects.EditorWall):
                     wall: map_data.wall.BuildWall = self._map_object.blood_wall.wall
@@ -33,7 +32,7 @@ class IncrementPanning:
                     wall.panning_y = editor.to_build_panning_y(
                         self._map_object.y_panning + amount.y
                     )
-                    message = f'Wall Panning: ({wall.panning_x}, {wall.panning_y})'
+                    message = f"Wall Panning: ({wall.panning_x}, {wall.panning_y})"
                     self._camera_collection.set_info_text(message)
                 elif isinstance(self._map_object, map_objects.EditorSector):
                     amount *= 16
@@ -46,7 +45,7 @@ class IncrementPanning:
                         sector.floor_ypanning = editor.to_build_panning_y(
                             self._map_object.floor_y_panning + amount.y
                         )
-                        message = f'Sector Floor Panning: ({sector.floor_xpanning}, {sector.floor_ypanning})'
+                        message = f"Sector Floor Panning: ({sector.floor_xpanning}, {sector.floor_ypanning})"
                     else:
                         sector.ceiling_xpanning = editor.to_build_panning_x(
                             self._map_object.ceiling_x_panning + amount.x
@@ -54,11 +53,9 @@ class IncrementPanning:
                         sector.ceiling_ypanning = editor.to_build_panning_y(
                             self._map_object.ceiling_y_panning + amount.y
                         )
-                        message = f'Sector Ceiling Panning: ({sector.ceiling_xpanning}, {sector.ceiling_ypanning})'
+                        message = f"Sector Ceiling Panning: ({sector.ceiling_xpanning}, {sector.ceiling_ypanning})"
                     self._camera_collection.set_info_text(message)
                 elif isinstance(self._map_object, map_objects.EditorSprite):
                     increment_repeats.IncrementRepeats(
-                        self._camera_collection,
-                        self._map_object,
-                        self._part
+                        self._camera_collection, self._map_object, self._part
                     ).increment(amount)

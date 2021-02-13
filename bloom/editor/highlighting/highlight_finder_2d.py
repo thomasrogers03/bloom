@@ -12,26 +12,28 @@ from . import highlight_details, sprite_finder_2d, wall_finder_2d
 class HighlightFinder2D:
     _VERTEX_OFFSET = 1 / 32
 
-    def __init__(self, editor: map_editor.MapEditor, position: core.Point2, view_scale: core.Vec2):
+    def __init__(
+        self, editor: map_editor.MapEditor, position: core.Point2, view_scale: core.Vec2
+    ):
         self._editor = editor
         self._position = position
         self._view_scale = view_scale.length()
         self._sprite_finder = sprite_finder_2d.SpriteFinder2D(self._position)
         self._wall_finder = wall_finder_2d.WallFinder2D(
-            self._position,
-            self._editor.snapper.grid_size,
-            self._view_scale
+            self._position, self._editor.snapper.grid_size, self._view_scale
         )
 
     def find_highlight(
         self,
         current_highlight: highlight_details.HighlightDetails,
-        selected: typing.List[highlight_details.HighlightDetails]
+        selected: typing.List[highlight_details.HighlightDetails],
     ):
         selected_highlight = self._highlight_from_selected(selected)
         found_highlight = self._find_highlight(current_highlight)
 
-        if self._highlight_priorty(selected_highlight) >= self._highlight_priorty(found_highlight):
+        if self._highlight_priorty(selected_highlight) >= self._highlight_priorty(
+            found_highlight
+        ):
             return selected_highlight
         return found_highlight
 
@@ -42,9 +44,7 @@ class HighlightFinder2D:
             start_sector = self._editor.builder_sector
 
         highlighted_sector = point_sector_finder.PointSectorFinder(
-            self._position,
-            self._editor.sectors.sectors,
-            start_sector
+            self._position, self._editor.sectors.sectors, start_sector
         ).get_new_sector()
 
         closest_distance = self._vertex_offset
@@ -52,16 +52,10 @@ class HighlightFinder2D:
             closest_highlight: map_objects.EmptyObject = None
             for sector in self._editor.sectors.sectors:
                 hit_z = sector.floor_z_at_point(self._position)
-                hit = core.Point3(
-                    self._position.x,
-                    self._position.y,
-                    hit_z
-                )
+                hit = core.Point3(self._position.x, self._position.y, hit_z)
 
                 highlight, new_distance = self._find_highlight_in_sector(
-                    closest_distance,
-                    sector,
-                    hit
+                    closest_distance, sector, hit
                 )
                 if highlight is not None and new_distance < closest_distance:
                     closest_distance = new_distance
@@ -78,9 +72,7 @@ class HighlightFinder2D:
             return highlight
 
         return highlight_details.HighlightDetails(
-            highlighted_sector,
-            map_objects.EditorSector.FLOOR_PART,
-            hit
+            highlighted_sector, map_objects.EditorSector.FLOOR_PART, hit
         )
 
     @staticmethod
@@ -98,7 +90,9 @@ class HighlightFinder2D:
     def _vertex_offset(self):
         return self._VERTEX_OFFSET * self._view_scale
 
-    def _highlight_from_selected(self, selected: typing.List[highlight_details.HighlightDetails]):
+    def _highlight_from_selected(
+        self, selected: typing.List[highlight_details.HighlightDetails]
+    ):
         if len(selected) < 1:
             return None
 
@@ -143,22 +137,21 @@ class HighlightFinder2D:
 
         if highlighted_sector is not None:
             return highlight_details.HighlightDetails(
-                highlighted_sector,
-                map_objects.EditorSector.FLOOR_PART,
-                hit
+                highlighted_sector, map_objects.EditorSector.FLOOR_PART, hit
             )
 
         return None
 
     def _get_hit(self, sector: map_objects.EditorSector):
         hit_z = sector.floor_z_at_point(self._position)
-        return core.Point3(
-            self._position.x,
-            self._position.y,
-            hit_z
-        )
+        return core.Point3(self._position.x, self._position.y, hit_z)
 
-    def _find_highlight_in_sector(self, closest_distance: float, sector: map_objects.EditorSector, hit: core.Point3):
+    def _find_highlight_in_sector(
+        self,
+        closest_distance: float,
+        sector: map_objects.EditorSector,
+        hit: core.Point3,
+    ):
         highlight, distance = self._closest_sprite_highlight(hit, sector.sprites)
         if highlight is not None:
             return highlight, distance
@@ -173,32 +166,39 @@ class HighlightFinder2D:
 
         return None, closest_distance
 
-    def _closest_sprite_highlight(self, hit: core.Point3, sprites: typing.List[map_objects.EditorSprite]):
+    def _closest_sprite_highlight(
+        self, hit: core.Point3, sprites: typing.List[map_objects.EditorSprite]
+    ):
         closest_sprite, distance = self._sprite_finder.closest_sprite(sprites)
         if closest_sprite is not None:
-            return highlight_details.HighlightDetails(
-                closest_sprite,
-                closest_sprite.default_part,
-                hit
-            ), distance
+            return (
+                highlight_details.HighlightDetails(
+                    closest_sprite, closest_sprite.default_part, hit
+                ),
+                distance,
+            )
         return None, None
 
-    def _closest_vertex_highlight(self, hit: core.Point3, walls: typing.List[map_objects.EditorWall]):
+    def _closest_vertex_highlight(
+        self, hit: core.Point3, walls: typing.List[map_objects.EditorWall]
+    ):
         vertex, distance = self._wall_finder.closest_vertex(walls)
         if vertex is not None:
-            return highlight_details.HighlightDetails(
-                vertex,
-                f'{vertex.vertex_part_name}_highlight',
-                hit
-            ), distance
+            return (
+                highlight_details.HighlightDetails(
+                    vertex, f"{vertex.vertex_part_name}_highlight", hit
+                ),
+                distance,
+            )
         return None, None
 
-    def _closest_wall_highlight(self, hit: core.Point3, walls: typing.List[map_objects.EditorWall]):
+    def _closest_wall_highlight(
+        self, hit: core.Point3, walls: typing.List[map_objects.EditorWall]
+    ):
         wall, distance = self._wall_finder.closest_wall(walls)
         if wall is not None:
-            return highlight_details.HighlightDetails(
-                wall,
-                wall.default_part,
-                hit
-            ), distance
+            return (
+                highlight_details.HighlightDetails(wall, wall.default_part, hit),
+                distance,
+            )
         return None, None

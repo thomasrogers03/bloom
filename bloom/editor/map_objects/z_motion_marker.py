@@ -11,21 +11,18 @@ from . import marker
 
 
 class EditorZMotionMarker(marker.EditorMarker):
-    POSITION_OFF = 'off'
-    POSITION_ON = 'on'
+    POSITION_OFF = "off"
+    POSITION_ON = "on"
 
     def __init__(
         self,
         position: str,
         sector_part: str,
-        sector: 'bloom.editor.map_objects.sector.EditorSector',
-        undos: undo_stack.UndoStack
+        sector: "bloom.editor.map_objects.sector.EditorSector",
+        undos: undo_stack.UndoStack,
     ):
         super().__init__(
-            map_data.sprite.Sprite.new(),
-            f'z_motion_marker_{position}',
-            sector,
-            undos
+            map_data.sprite.Sprite.new(), f"z_motion_marker_{position}", sector, undos
         )
         self._position = position
         self._sector_part = sector_part

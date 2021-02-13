@@ -20,7 +20,7 @@ class SpriteTypeList:
         self,
         parent: core.NodePath,
         tile_manager: manager.Manager,
-        handle_type_selected: typing.Callable[[sprite_type.SpriteType], None]
+        handle_type_selected: typing.Callable[[sprite_type.SpriteType], None],
     ):
         self._tile_manager = tile_manager
         self._handle_type_selected = handle_type_selected
@@ -33,7 +33,7 @@ class SpriteTypeList:
             frameColor=(0.65, 0.65, 0.65, 1),
             relief=DirectGuiGlobals.SUNKEN,
             scrollBarWidth=0.04,
-            state=DirectGuiGlobals.NORMAL
+            state=DirectGuiGlobals.NORMAL,
         )
         self._selected_frame: DirectGui.DirectButton = None
         self._sprite_frames: typing.List[DirectGui.DirectButton] = []
@@ -56,18 +56,16 @@ class SpriteTypeList:
             relief=DirectGuiGlobals.FLAT,
             command=self._select_sprite_type,
         )
-        frame['extraArgs'] = [frame]
+        frame["extraArgs"] = [frame]
         self._bind_scroll(frame)
-        frame.set_python_tag('descriptor', descriptor)
+        frame.set_python_tag("descriptor", descriptor)
 
         texture = self._tile_manager.get_tile(
-            descriptor.default_tile,
-            descriptor.palette or 0
+            descriptor.default_tile, descriptor.palette or 0
         )
 
         texture_frame_size = gui.size_inside_square_for_texture(
-            texture,
-            self._SPRITE_FRAME_SIZE
+            texture, self._SPRITE_FRAME_SIZE
         )
 
         if texture_frame_size is None:
@@ -82,18 +80,21 @@ class SpriteTypeList:
             frameTexture=texture,
             relief=DirectGuiGlobals.FLAT,
             command=self._select_sprite_type,
-            extraArgs=[frame]
+            extraArgs=[frame],
         )
         sprite_frame.set_transparency(True)
         self._bind_scroll(sprite_frame)
 
         word_wrap = (0.54 - texture_frame_size.x) / constants.LARGE_TEXT_SIZE
-        frame_size = core.Vec4(
-            0,
-            0.54 - texture_frame_size.x - 0.02,
-            self._SPRITE_FRAME_SIZE / 2,
-            -self._SPRITE_FRAME_SIZE / 2
-        ) / constants.LARGE_TEXT_SIZE
+        frame_size = (
+            core.Vec4(
+                0,
+                0.54 - texture_frame_size.x - 0.02,
+                self._SPRITE_FRAME_SIZE / 2,
+                -self._SPRITE_FRAME_SIZE / 2,
+            )
+            / constants.LARGE_TEXT_SIZE
+        )
         label_frame = DirectGui.DirectButton(
             parent=frame,
             pos=core.Vec3(texture_frame_size.x + 0.02, -self._SPRITE_FRAME_SIZE / 2),
@@ -105,7 +106,7 @@ class SpriteTypeList:
             text_align=core.TextNode.A_left,
             text_wordwrap=word_wrap,
             command=self._select_sprite_type,
-            extraArgs=[frame]
+            extraArgs=[frame],
         )
         self._bind_scroll(label_frame)
 
@@ -127,23 +128,23 @@ class SpriteTypeList:
 
     def _select_sprite_type(self, frame: DirectGui.DirectButton):
         if self._selected_frame is not None:
-            self._selected_frame['frameColor'] = (0, 0, 0, 0)
+            self._selected_frame["frameColor"] = (0, 0, 0, 0)
 
         self._set_selected_frame(frame)
         self._handle_type_selected(self._get_frame_descriptor(frame))
 
     def _set_selected_frame(self, frame: DirectGui.DirectButton):
         self._selected_frame = frame
-        self._selected_frame['frameColor'] = (0, 0, 1, 1)
+        self._selected_frame["frameColor"] = (0, 0, 1, 1)
 
     @staticmethod
     def _get_frame_descriptor(frame: core.NodePath) -> sprite_type.SpriteType:
-        return frame.get_python_tag('descriptor')
+        return frame.get_python_tag("descriptor")
 
     def _update_canvas_size(self):
-        frame_size = list(self._frame['canvasSize'])
+        frame_size = list(self._frame["canvasSize"])
         frame_size[2] = self._top
-        self._frame['canvasSize'] = frame_size
+        self._frame["canvasSize"] = frame_size
 
     def _bind_scroll(self, control):
         gui.bind_scroll(control, self._scroll_up, self._scroll_down)

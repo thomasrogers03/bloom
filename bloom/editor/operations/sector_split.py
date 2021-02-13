@@ -11,20 +11,16 @@ from . import sector_draw, sprite_find_sector, wall_split
 
 
 class SectorSplit:
-
     def __init__(
-        self, 
+        self,
         sector_to_split: map_objects.EditorSector,
-        all_sectors: map_objects.SectorCollection
+        all_sectors: map_objects.SectorCollection,
     ):
         self._sector_to_split = sector_to_split
         self._all_sectors = all_sectors
         self._allocated_walls: typing.Set[map_objects.EditorWall] = set()
 
-    def split(
-        self,
-        points: typing.List[core.Point2]
-    ):
+    def split(self, points: typing.List[core.Point2]):
         if len(points) < 2:
             return
 
@@ -42,8 +38,12 @@ class SectorSplit:
             return
 
         if first_wall == last_wall:
-            first_point_portion = first_wall.line_segment.get_point_portion_of_line(points[0])
-            last_point_portion = first_wall.line_segment.get_point_portion_of_line(points[-1])
+            first_point_portion = first_wall.line_segment.get_point_portion_of_line(
+                points[0]
+            )
+            last_point_portion = first_wall.line_segment.get_point_portion_of_line(
+                points[-1]
+            )
             if last_point_portion > first_point_portion:
                 wall_split.WallSplit(first_wall, points[-1]).split()
                 wall_split.WallSplit(first_wall, points[0]).split()
@@ -58,34 +58,30 @@ class SectorSplit:
         self._migrate_new_walls(new_sector, points[0], points[-1])
 
         new_points = sector_draw.make_wall_points(
-            self._wall_base,
-            self._sector_to_split,
-            points[:-1]
+            self._wall_base, self._sector_to_split, points[:-1]
         )
         self._allocated_walls |= set(new_points)
 
         new_other_side_points = sector_draw.make_wall_points(
-            self._wall_base,
-            new_sector,
-            other_side_points[:-1]
+            self._wall_base, new_sector, other_side_points[:-1]
         )
         self._allocated_walls |= set(new_other_side_points)
-    
+
         self._join_walls(new_points)
         self._join_walls(new_other_side_points)
 
-        previous_wall_current_sector, next_wall_current_sector = self._get_walls_to_join_points_to_current_sector(
-            new_sector,
-            new_points[0],
-            new_points[-1],
-            points[-1]
+        (
+            previous_wall_current_sector,
+            next_wall_current_sector,
+        ) = self._get_walls_to_join_points_to_current_sector(
+            new_sector, new_points[0], new_points[-1], points[-1]
         )
 
-        previous_wall_new_sector, next_wall_new_sector = self._get_walls_to_join_points_to_new_sector(
-            new_sector,
-            new_other_side_points[0],
-            new_other_side_points[-1],
-            points[0]
+        (
+            previous_wall_new_sector,
+            next_wall_new_sector,
+        ) = self._get_walls_to_join_points_to_new_sector(
+            new_sector, new_other_side_points[0], new_other_side_points[-1], points[0]
         )
 
         previous_wall_current_sector.set_wall_point_2(new_points[0])
@@ -133,15 +129,14 @@ class SectorSplit:
 
         for sprite in self._sector_to_split.sprites:
             sprite_find_sector.SpriteFindSector(
-                sprite,
-                self._all_sectors.sectors
+                sprite, self._all_sectors.sectors
             ).update_sector()
 
     def _migrate_new_walls(
-        self, 
-        new_sector: map_objects.EditorSector, 
-        first_point: core.Point2, 
-        last_point: core.Point2
+        self,
+        new_sector: map_objects.EditorSector,
+        first_point: core.Point2,
+        last_point: core.Point2,
     ):
         start_wall = self._find_split_sector_wall_on_point(first_point)
         stop_wall = self._find_split_sector_wall_on_point(last_point)
@@ -157,11 +152,11 @@ class SectorSplit:
             current_wall = current_wall.wall_point_2
 
     def _get_walls_to_join_points_to_current_sector(
-        self, 
+        self,
         new_sector: map_objects.EditorSector,
         first_new_wall: map_objects.EditorWall,
         last_new_wall: map_objects.EditorWall,
-        last_point: core.Point2
+        last_point: core.Point2,
     ):
         old_point_2 = sector_draw.find_wall_on_point(new_sector, first_new_wall.point_1)
         first_wall: map_objects.EditorWall = old_point_2.wall_previous_point
@@ -170,11 +165,11 @@ class SectorSplit:
         return first_wall, last_wall
 
     def _get_walls_to_join_points_to_new_sector(
-        self, 
+        self,
         new_sector: map_objects.EditorSector,
         first_new_wall: map_objects.EditorWall,
         last_new_wall: map_objects.EditorWall,
-        last_point: core.Point2
+        last_point: core.Point2,
     ):
         old_point_2 = self._find_split_sector_wall_on_point(first_new_wall.point_1)
         first_wall: map_objects.EditorWall = old_point_2.wall_previous_point
@@ -191,8 +186,7 @@ class SectorSplit:
 
     @staticmethod
     def _can_path_to_wall(
-        start_wall: map_objects.EditorWall, 
-        end_wall: map_objects.EditorWall
+        start_wall: map_objects.EditorWall, end_wall: map_objects.EditorWall
     ):
         if start_wall == end_wall:
             return True

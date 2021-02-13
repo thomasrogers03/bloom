@@ -1,8 +1,10 @@
 from panda3d import core
 
-class Plane:
 
-    def __init__(self, point_1: core.Point3, point_2: core.Point3, point_3: core.Point3):
+class Plane:
+    def __init__(
+        self, point_1: core.Point3, point_2: core.Point3, point_3: core.Point3
+    ):
         self._point_1 = point_1
         self._point_2 = point_2
         self._point_3 = point_3

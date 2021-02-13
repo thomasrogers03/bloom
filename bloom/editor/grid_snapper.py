@@ -9,7 +9,6 @@ from .. import editor
 
 
 class GridSnapper:
-
     def __init__(self):
         self._grid_size = 256
         self._angular_grid_size = 15
@@ -52,7 +51,7 @@ class GridSnapper:
 
     def snap_to_angular_grid_2d(self, direction: core.Vec2):
         theta = math.atan2(direction.y, direction.x)
-        
+
         theta = self.snap_to_angular_grid(math.degrees(theta))
         cos_theta = math.cos(math.radians(theta))
         sin_theta = math.sin(math.radians(theta))

@@ -15,12 +15,14 @@ class Map(typing.NamedTuple):
     endings: typing.List[int]
     messages: typing.List[str]
 
+
 class Episode(typing.NamedTuple):
     title: str
     maps: typing.Dict[str, Map]
 
+
 class Addon:
-    _EXTENSION_SKIP = -len('.INI')
+    _EXTENSION_SKIP = -len(".INI")
 
     def __init__(self, path: str):
         self._path = path
@@ -35,7 +37,7 @@ class Addon:
             if episode_number is None:
                 continue
 
-            self._episodes[episode_number] = Episode(config[section]['Title'], {})
+            self._episodes[episode_number] = Episode(config[section]["Title"], {})
             for sub_section in config[section]:
                 map_number = self._section_map_number(sub_section)
                 if map_number is None:
@@ -49,11 +51,11 @@ class Addon:
                 map_section = config[map_name]
                 map_definition = Map(
                     map_name,
-                    map_section['Title'],
-                    map_section.get('Author', 'unknown'),
-                    map_section.get('Song', '').upper(),
+                    map_section["Title"],
+                    map_section.get("Author", "unknown"),
+                    map_section.get("Song", "").upper(),
                     [],
-                    []
+                    [],
                 )
                 self._episodes[episode_number].maps[map_number] = map_definition
                 self._all_maps[map_name] = map_definition
@@ -64,7 +66,7 @@ class Addon:
 
     @property
     def name(self):
-        return os.path.basename(self._path)[:self._EXTENSION_SKIP]
+        return os.path.basename(self._path)[: self._EXTENSION_SKIP]
 
     def song_for_map(self, map_name: str):
         map_name = map_name.lower()
@@ -74,19 +76,19 @@ class Addon:
 
     @staticmethod
     def addons_in_path(search_path: str):
-        search = os.path.join(search_path, '*.INI')
+        search = os.path.join(search_path, "*.INI")
         return [Addon(path) for path in glob(search)]
-            
+
     @staticmethod
     def _section_episode_number(section: str):
-        episode = 'episode'
+        episode = "episode"
         if section.lower().startswith(episode):
-            return int(section[len(episode):])
+            return int(section[len(episode) :])
         return None
-            
+
     @staticmethod
     def _section_map_number(section: str):
-        map = 'map'
+        map = "map"
         if section.lower().startswith(map):
-            return int(section[len(map):])
+            return int(section[len(map) :])
         return None

@@ -11,13 +11,12 @@ from ..editor import map_editor
 
 
 class ModEditor:
-
     def __init__(
         self,
         parent: core.NodePath,
         edit_mode_selector: edit_mode.EditMode,
         audio_manager: audio.Manager,
-        get_addons: typing.Callable[[], typing.List[addon.Addon]]
+        get_addons: typing.Callable[[], typing.List[addon.Addon]],
     ):
         self._edit_mode_selector = edit_mode_selector
         self._audio_manager = audio_manager
@@ -31,7 +30,7 @@ class ModEditor:
             pos=core.Vec3(-1.1, -0.9),
             frameSize=(0, 2.2, 0, 1.8),
             relief=DirectGuiGlobals.RAISED,
-            borderWidth=(0.01, 0.01)
+            borderWidth=(0.01, 0.01),
         )
         self._dialog.hide()
 

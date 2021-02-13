@@ -12,6 +12,8 @@ def error_wrapped(logger_name):
             try:
                 return callback(*args, **kwargs)
             except Exception as error:
-                logger.warn(f'Error running {callback}', exc_info=error)
+                logger.warn(f"Error running {callback}", exc_info=error)
+
         return _wrapped
+
     return _with_logger

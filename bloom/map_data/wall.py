@@ -90,7 +90,9 @@ class Wall(data_loading.CustomStruct):
     data: BloodWallData
 
 
-def load_walls(unpacker: data_loading.Unpacker, encrypted: bool, header_3: headers.MapHeader3):
+def load_walls(
+    unpacker: data_loading.Unpacker, encrypted: bool, header_3: headers.MapHeader3
+):
     key = ((header_3.revisions * sector.BuildSector.size()) | 0x4D) & 0xFF
 
     result: typing.List[Wall] = []
@@ -106,14 +108,19 @@ def load_walls(unpacker: data_loading.Unpacker, encrypted: bool, header_3: heade
         elif wall.wall.tags[2] >= -1:
             wall.data = BloodWallData()
         else:
-            raise ValueError('Unable to parse wall data')
+            raise ValueError("Unable to parse wall data")
 
         result.append(wall)
 
     return result
 
 
-def save_walls(packer: data_loading.Packer, encrypted: bool, header_3: headers.MapHeader3, walls: typing.List[Wall]):
+def save_walls(
+    packer: data_loading.Packer,
+    encrypted: bool,
+    header_3: headers.MapHeader3,
+    walls: typing.List[Wall],
+):
     key = ((header_3.revisions * sector.BuildSector.size()) | 0x4D) & 0xFF
 
     for wall in walls:
@@ -125,4 +132,4 @@ def save_walls(packer: data_loading.Packer, encrypted: bool, header_3: headers.M
         if wall.wall.tags[2] > 0:
             packer.write_struct(wall.data)
         elif wall.wall.tags[2] < -1:
-            raise Exception('Ran out of XWalls!')
+            raise Exception("Ran out of XWalls!")

@@ -10,7 +10,6 @@ from .. import map_objects
 
 
 class SpriteFinder2D:
-
     def __init__(self, position: core.Point2):
         self._position = position
 

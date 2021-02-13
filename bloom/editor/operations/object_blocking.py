@@ -5,7 +5,6 @@ from .. import map_objects
 
 
 class ObjectBlocking:
-
     def __init__(self, map_object: map_objects.EmptyObject, part: str):
         self._map_object = map_object
         self._part = part
@@ -22,8 +21,10 @@ class ObjectBlocking:
         else:
             stat.blocking = 1
 
-        if isinstance(self._map_object, map_objects.EditorWall) and \
-                self._map_object.other_side_wall is not None:
+        if (
+            isinstance(self._map_object, map_objects.EditorWall)
+            and self._map_object.other_side_wall is not None
+        ):
             other_side_wall: map_objects.EditorWall = self._map_object.other_side_wall
             other_side_wall.invalidate_geometry()
             other_side_stat = other_side_wall.get_stat_for_part(None)

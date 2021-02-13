@@ -9,12 +9,11 @@ from .. import map_objects
 
 
 class IncrementRepeats:
-
     def __init__(
-        self, 
-        camera_collection: cameras.Cameras, 
-        map_object: map_objects.EmptyObject, 
-        part: str
+        self,
+        camera_collection: cameras.Cameras,
+        map_object: map_objects.EmptyObject,
+        part: str,
     ):
         self._camera_collection = camera_collection
         self._map_object = map_object
@@ -23,7 +22,7 @@ class IncrementRepeats:
     def increment(self, amount: core.Vec2):
         from . import increment_panning
 
-        with self._map_object.undos.multi_step_undo('Increment Repeats'):
+        with self._map_object.undos.multi_step_undo("Increment Repeats"):
             with self._map_object.change_blood_object():
                 if isinstance(self._map_object, map_objects.EditorWall):
                     wall: map_data.wall.BuildWall = self._map_object.blood_wall.wall
@@ -34,13 +33,11 @@ class IncrementRepeats:
                     wall.repeat_y = editor.to_build_repeat_y(
                         self._map_object.y_repeat + amount.y / 64
                     )
-                    message = f'Wall Repeats: ({wall.repeat_x}, {wall.repeat_y})'
+                    message = f"Wall Repeats: ({wall.repeat_x}, {wall.repeat_y})"
                     self._camera_collection.set_info_text(message)
                 elif isinstance(self._map_object, map_objects.EditorSector):
                     increment_panning.IncrementPanning(
-                        self._camera_collection,
-                        self._map_object,
-                        self._part
+                        self._camera_collection, self._map_object, self._part
                     ).increment(amount)
                 elif isinstance(self._map_object, map_objects.EditorSprite):
                     sprite: map_data.sprite.BuildSprite = self._map_object.sprite.sprite
@@ -51,5 +48,5 @@ class IncrementRepeats:
                     sprite.repeat_y = editor.to_build_sprite_repeat(
                         self._map_object.y_repeat + amount.y
                     )
-                    message = f'Sprite Repeats: ({sprite.repeat_x}, {sprite.repeat_y})'
+                    message = f"Sprite Repeats: ({sprite.repeat_x}, {sprite.repeat_y})"
                     self._camera_collection.set_info_text(message)

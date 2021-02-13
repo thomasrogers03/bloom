@@ -28,7 +28,7 @@ class MovingClicker:
         all_sectors: map_objects.SectorCollection,
         undos: undo_stack.UndoStack,
         highlighter_filter_types=None,
-        move_sprites_on_sectors=True
+        move_sprites_on_sectors=True,
     ):
         self._camera_collection = camera_collection
         self._transform_to_camera_delta = transform_to_camera_delta
@@ -54,8 +54,7 @@ class MovingClicker:
             [
                 core.KeyboardButton.control(),
                 core.KeyboardButton.shift(),
-                core.MouseButton.one()
-
+                core.MouseButton.one(),
             ],
             on_click_after_move=self._end_move_selection,
             on_click_move=self._move_entire_sector,
@@ -74,9 +73,9 @@ class MovingClicker:
         return not self._grid.is_hidden()
 
     def setup_keyboard(self, acceptor: DirectObject):
-        acceptor.accept('g', self._toggle_grid)
-        acceptor.accept('[', self._decrease_grid)
-        acceptor.accept(']', self._increase_grid)
+        acceptor.accept("g", self._toggle_grid)
+        acceptor.accept("[", self._decrease_grid)
+        acceptor.accept("]", self._increase_grid)
 
     def set_updated_callback(self, updated_callback: typing.Callable[[], None]):
         self._updated_callback = updated_callback
@@ -112,21 +111,23 @@ class MovingClicker:
             return
 
         first_selected = self._object_highlighter.selected[0].map_object
-        message = ''
+        message = ""
         if isinstance(first_selected, map_objects.EditorSector):
-            message = f'Floor: {first_selected.floor_z}, Ceiling: {first_selected.ceiling_z}'
+            message = (
+                f"Floor: {first_selected.floor_z}, Ceiling: {first_selected.ceiling_z}"
+            )
         elif isinstance(first_selected, map_objects.EditorWall):
             point_1 = first_selected.point_1
-            point_1_message = f'(x: {point_1.x}, y: {point_1.y})'
+            point_1_message = f"(x: {point_1.x}, y: {point_1.y})"
 
             point_2 = first_selected.point_2
-            point_2_message = f'(x: {point_2.x}, y: {point_2.y})'
+            point_2_message = f"(x: {point_2.x}, y: {point_2.y})"
 
-            message = f'Point 1: {point_1_message}, Point 2: {point_2_message}'
+            message = f"Point 1: {point_1_message}, Point 2: {point_2_message}"
         elif isinstance(first_selected, map_objects.EditorSprite):
             point = first_selected.position
-            point_message = f'(x: {point.x}, y: {point.y}, z: {point.z})'
-            message = f'Position: {point_message}'
+            point_message = f"(x: {point.x}, y: {point.y}, z: {point.z})"
+            message = f"Position: {point_message}"
         if message:
             self._camera_collection.set_info_text(message)
 
@@ -161,7 +162,7 @@ class MovingClicker:
         if self._mover is None:
             selected = self._object_highlighter.select_append(
                 no_append_if_not_selected=True,
-                selected_type_or_types=map_objects.EditorSector
+                selected_type_or_types=map_objects.EditorSector,
             )
             if len(selected) < 1:
                 return False
@@ -173,7 +174,7 @@ class MovingClicker:
         if self._mover is None:
             selected = self._object_highlighter.select_append(
                 no_append_if_not_selected=True,
-                selected_type_or_types=self._highlighter_filter_types
+                selected_type_or_types=self._highlighter_filter_types,
             )
             if len(selected) < 1:
                 return False
@@ -181,7 +182,9 @@ class MovingClicker:
             self._initialize_mover(selected[-1], False)
         return True
 
-    def _initialize_mover(self, highlight: highlight_details.HighlightDetails, move_sector_walls):
+    def _initialize_mover(
+        self, highlight: highlight_details.HighlightDetails, move_sector_walls
+    ):
         self._mover = move.Move(
             self._object_highlighter.selected,
             highlight,
@@ -189,7 +192,7 @@ class MovingClicker:
             self._all_sectors,
             self._move_sprites_on_sectors,
             move_sector_walls,
-            self._undo_stack
+            self._undo_stack,
         )
         self._show_grids()
 
@@ -203,9 +206,7 @@ class MovingClicker:
             return
 
         self._grid.update(
-            self._snapper,
-            highlight.hit_position,
-            highlight.map_object.get_sector()
+            self._snapper, highlight.hit_position, highlight.map_object.get_sector()
         )
 
     def _show_grids(self):

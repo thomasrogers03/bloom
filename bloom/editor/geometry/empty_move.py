@@ -7,7 +7,6 @@ from .. import grid_snapper
 
 
 class EmptyMove:
-
     def get_move_direction(self) -> core.Vec3:
         raise NotImplementedError
 

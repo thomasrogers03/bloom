@@ -27,17 +27,17 @@ class SoundView:
         parent: core.NodePath,
         audio_manager: manager.Manager,
         task_manager: Task.TaskManager,
-        edit_mode_selector: edit_mode.EditMode
+        edit_mode_selector: edit_mode.EditMode,
     ):
-        path = find_resource('sound_names.yaml')
-        with open(path, 'r') as file:
+        path = find_resource("sound_names.yaml")
+        with open(path, "r") as file:
             self._sound_descriptors = yaml.safe_load(file.read())
         self._dialog = DirectGui.DirectFrame(
             parent=parent,
             frameSize=(-1.02, 1.02, -0.95, 0.95),
             frameColor=(0.85, 0.85, 0.85, 1),
             relief=DirectGuiGlobals.RAISED,
-            borderWidth=(0.01, 0.01)
+            borderWidth=(0.01, 0.01),
         )
         self._dialog.hide()
 
@@ -47,7 +47,7 @@ class SoundView:
             frameSize=(-1, 1, -0.8, 0.93),
             canvasSize=(0, self._CANVAS_WIDTH, -1, 0),
             scrollBarWidth=0.04,
-            relief=DirectGuiGlobals.SUNKEN
+            relief=DirectGuiGlobals.SUNKEN,
         )
         self._bind_scroll(self._frame)
 
@@ -66,7 +66,7 @@ class SoundView:
             lambda: []
         )
         for index, descriptor in self._sound_descriptors.items():
-            sounds = self._categorized_sound_names[descriptor['category']]
+            sounds = self._categorized_sound_names[descriptor["category"]]
             sounds.append(index)
 
         self._labels: typing.Dict[int, DirectGui.DirectButton] = {}
@@ -79,22 +79,21 @@ class SoundView:
                     0,
                     self._DESCRIPTION_WIDTH / constants.TEXT_SIZE,
                     -half_height,
-                    half_height
+                    half_height,
                 ),
                 frameColor=(0, 0, 0, 0),
                 scale=constants.TEXT_SIZE,
                 text=text,
                 text_align=core.TextNode.A_left,
-                text_wordwrap=(self._DESCRIPTION_WIDTH) / constants.TEXT_SIZE
-
+                text_wordwrap=(self._DESCRIPTION_WIDTH) / constants.TEXT_SIZE,
             )
             self._bind_scroll(label)
 
-            label['extraArgs'] = [label, sound_index, descriptor]
-            label['command'] = self._select_sound
+            label["extraArgs"] = [label, sound_index, descriptor]
+            label["command"] = self._select_sound
             self._labels[sound_index] = label
 
-        self._show_category('misc')
+        self._show_category("misc")
 
         items = self._categorized_sound_names.keys()
         items = list(sorted(items))
@@ -104,34 +103,30 @@ class SoundView:
             items=items,
             scale=constants.TEXT_SIZE,
             text_align=core.TextNode.A_left,
-            command=self._show_category
+            command=self._show_category,
         )
 
         DirectGui.DirectButton(
             parent=self._dialog,
             pos=core.Vec3(0.8, -0.9),
-            text='Ok',
+            text="Ok",
             scale=constants.TEXT_SIZE,
-            command=self._confirm
+            command=self._confirm,
         )
         DirectGui.DirectButton(
             parent=self._dialog,
             pos=core.Vec3(0.92, -0.9),
-            text='Cancel',
+            text="Cancel",
             scale=constants.TEXT_SIZE,
-            command=self._hide
+            command=self._hide,
         )
 
     def show(self, sound_index: int, sound_selected: typing.Callable[[int], None]):
         self._sound_selected = sound_selected
 
         descriptor = self._sound_descriptors[sound_index]
-        self._show_category(descriptor['category'])
-        self._select_sound(
-            self._labels[sound_index],
-            sound_index,
-            descriptor
-        )
+        self._show_category(descriptor["category"])
+        self._select_sound(self._labels[sound_index], sound_index, descriptor)
 
         self._edit_mode_selector.push_mode(self)
 
@@ -153,33 +148,31 @@ class SoundView:
             self._preview_sound = None
 
     def _select_sound(
-        self,
-        label: DirectGui.DirectButton,
-        sound_index: int,
-        descriptor: dict
+        self, label: DirectGui.DirectButton, sound_index: int, descriptor: dict
     ):
         self._stop_playing()
 
         if self._selected_label is not None:
-            self._selected_label['frameColor'] = (0, 0, 0, 0)
+            self._selected_label["frameColor"] = (0, 0, 0, 0)
 
-        self._preview_sound, self._stop_sound_callback = self._audio_manager.play_sound_once(
-            sound_index
-        )
-        
+        (
+            self._preview_sound,
+            self._stop_sound_callback,
+        ) = self._audio_manager.play_sound_once(sound_index)
+
         if label == self._clicked_label:
             self._confirm()
             return
 
         self._clicked_label = label
         self._task_manager.do_method_later(
-            constants.DOUBLE_CLICK_TIMEOUT, 
+            constants.DOUBLE_CLICK_TIMEOUT,
             self._reset_selected_label,
-            'reset_selected_label'
+            "reset_selected_label",
         )
 
         self._selected_label = label
-        self._selected_label['frameColor'] = (0, 0, 1, 1)
+        self._selected_label["frameColor"] = (0, 0, 1, 1)
         self._selected_sound_index = sound_index
 
     def _reset_selected_label(self, task):
@@ -201,14 +194,13 @@ class SoundView:
             label.set_pos(x, 0, top)
             label.show()
 
-        canvas_size = list(self._frame['canvasSize'])
+        canvas_size = list(self._frame["canvasSize"])
         canvas_size[2] = top - self._TEXT_FRAME_SCALE
-        self._frame['canvasSize'] = canvas_size
+        self._frame["canvasSize"] = canvas_size
 
     def _labels_for_category(self, category: str):
         return [
-            self._labels[index]
-            for index in self._categorized_sound_names[category]
+            self._labels[index] for index in self._categorized_sound_names[category]
         ]
 
     def _bind_scroll(self, control):

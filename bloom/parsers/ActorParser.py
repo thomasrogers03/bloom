@@ -3,10 +3,11 @@
 from antlr4 import *
 from io import StringIO
 import sys
+
 if sys.version_info[1] > 5:
-	from typing import TextIO
+    from typing import TextIO
 else:
-	from typing.io import TextIO
+    from typing.io import TextIO
 
 
 def serializedATN():
@@ -23,28 +24,37 @@ def serializedATN():
         buf.write("\3\3\2\2\2\26\27\7\3\2\2\27\30\7\6\2\2\30\34\7\4\2\2\31")
         buf.write("\33\5\6\4\2\32\31\3\2\2\2\33\36\3\2\2\2\34\32\3\2\2\2")
         buf.write("\34\35\3\2\2\2\35\37\3\2\2\2\36\34\3\2\2\2\37 \7\5\2\2")
-        buf.write(" \5\3\2\2\2!\"\5\b\5\2\"\7\3\2\2\2#$\5\f\7\2$%\5\n\6\2")
-        buf.write("%\t\3\2\2\2&\'\t\2\2\2\'\13\3\2\2\2(,\7\n\2\2)+\7\t\2")
+        buf.write(' \5\3\2\2\2!"\5\b\5\2"\7\3\2\2\2#$\5\f\7\2$%\5\n\6\2')
+        buf.write("%\t\3\2\2\2&'\t\2\2\2'\13\3\2\2\2(,\7\n\2\2)+\7\t\2")
         buf.write("\2*)\3\2\2\2+.\3\2\2\2,*\3\2\2\2,-\3\2\2\2-\r\3\2\2\2")
         buf.write(".,\3\2\2\2\5\21\34,")
         return buf.getvalue()
 
 
-class ActorParser ( Parser ):
+class ActorParser(Parser):
 
     grammarFileName = "Actor.g4"
 
     atn = ATNDeserializer().deserialize(serializedATN())
 
-    decisionsToDFA = [ DFA(ds, i) for i, ds in enumerate(atn.decisionToState) ]
+    decisionsToDFA = [DFA(ds, i) for i, ds in enumerate(atn.decisionToState)]
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'Actor'", "'{'", "'}'" ]
+    literalNames = ["<INVALID>", "'Actor'", "'{'", "'}'"]
 
-    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "INT", "FLOAT", "STRING", "SUB_PROPERTY_NAME", "ID", 
-                      "WHITE_SPACE" ]
+    symbolicNames = [
+        "<INVALID>",
+        "<INVALID>",
+        "<INVALID>",
+        "<INVALID>",
+        "INT",
+        "FLOAT",
+        "STRING",
+        "SUB_PROPERTY_NAME",
+        "ID",
+        "WHITE_SPACE",
+    ]
 
     RULE_program = 0
     RULE_actor = 1
@@ -53,71 +63,74 @@ class ActorParser ( Parser ):
     RULE_property_value = 4
     RULE_property_name = 5
 
-    ruleNames =  [ "program", "actor", "statement", "property_definition", 
-                   "property_value", "property_name" ]
+    ruleNames = [
+        "program",
+        "actor",
+        "statement",
+        "property_definition",
+        "property_value",
+        "property_name",
+    ]
 
     EOF = Token.EOF
-    T__0=1
-    T__1=2
-    T__2=3
-    INT=4
-    FLOAT=5
-    STRING=6
-    SUB_PROPERTY_NAME=7
-    ID=8
-    WHITE_SPACE=9
+    T__0 = 1
+    T__1 = 2
+    T__2 = 3
+    INT = 4
+    FLOAT = 5
+    STRING = 6
+    SUB_PROPERTY_NAME = 7
+    ID = 8
+    WHITE_SPACE = 9
 
-    def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
+    def __init__(self, input: TokenStream, output: TextIO = sys.stdout):
         super().__init__(input, output)
         self.checkVersion("4.9.1")
-        self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
+        self._interp = ParserATNSimulator(
+            self, self.atn, self.decisionsToDFA, self.sharedContextCache
+        )
         self._predicates = None
 
-
-
-
     class ProgramContext(ParserRuleContext):
-        __slots__ = 'parser'
+        __slots__ = "parser"
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(
+            self, parser, parent: ParserRuleContext = None, invokingState: int = -1
+        ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def EOF(self):
             return self.getToken(ActorParser.EOF, 0)
 
-        def actor(self, i:int=None):
+        def actor(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ActorParser.ActorContext)
             else:
-                return self.getTypedRuleContext(ActorParser.ActorContext,i)
-
+                return self.getTypedRuleContext(ActorParser.ActorContext, i)
 
         def getRuleIndex(self):
             return ActorParser.RULE_program
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterProgram" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterProgram"):
                 listener.enterProgram(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitProgram" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitProgram"):
                 listener.exitProgram(self)
-
-
-
 
     def program(self):
 
         localctx = ActorParser.ProgramContext(self, self._ctx, self.state)
         self.enterRule(localctx, 0, self.RULE_program)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 15
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==ActorParser.T__0:
+            while _la == ActorParser.T__0:
                 self.state = 12
                 self.actor()
                 self.state = 17
@@ -134,43 +147,40 @@ class ActorParser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ActorContext(ParserRuleContext):
-        __slots__ = 'parser'
+        __slots__ = "parser"
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(
+            self, parser, parent: ParserRuleContext = None, invokingState: int = -1
+        ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def INT(self):
             return self.getToken(ActorParser.INT, 0)
 
-        def statement(self, i:int=None):
+        def statement(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(ActorParser.StatementContext)
             else:
-                return self.getTypedRuleContext(ActorParser.StatementContext,i)
-
+                return self.getTypedRuleContext(ActorParser.StatementContext, i)
 
         def getRuleIndex(self):
             return ActorParser.RULE_actor
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterActor" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterActor"):
                 listener.enterActor(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitActor" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitActor"):
                 listener.exitActor(self)
-
-
-
 
     def actor(self):
 
         localctx = ActorParser.ActorContext(self, self._ctx, self.state)
         self.enterRule(localctx, 2, self.RULE_actor)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 20
@@ -182,7 +192,7 @@ class ActorParser ( Parser ):
             self.state = 26
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==ActorParser.ID:
+            while _la == ActorParser.ID:
                 self.state = 23
                 self.statement()
                 self.state = 28
@@ -199,31 +209,28 @@ class ActorParser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class StatementContext(ParserRuleContext):
-        __slots__ = 'parser'
+        __slots__ = "parser"
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(
+            self, parser, parent: ParserRuleContext = None, invokingState: int = -1
+        ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def property_definition(self):
-            return self.getTypedRuleContext(ActorParser.Property_definitionContext,0)
-
+            return self.getTypedRuleContext(ActorParser.Property_definitionContext, 0)
 
         def getRuleIndex(self):
             return ActorParser.RULE_statement
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStatement" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterStatement"):
                 listener.enterStatement(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStatement" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitStatement"):
                 listener.exitStatement(self)
-
-
-
 
     def statement(self):
 
@@ -241,35 +248,31 @@ class ActorParser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Property_definitionContext(ParserRuleContext):
-        __slots__ = 'parser'
+        __slots__ = "parser"
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(
+            self, parser, parent: ParserRuleContext = None, invokingState: int = -1
+        ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def property_name(self):
-            return self.getTypedRuleContext(ActorParser.Property_nameContext,0)
-
+            return self.getTypedRuleContext(ActorParser.Property_nameContext, 0)
 
         def property_value(self):
-            return self.getTypedRuleContext(ActorParser.Property_valueContext,0)
-
+            return self.getTypedRuleContext(ActorParser.Property_valueContext, 0)
 
         def getRuleIndex(self):
             return ActorParser.RULE_property_definition
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterProperty_definition" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterProperty_definition"):
                 listener.enterProperty_definition(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitProperty_definition" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitProperty_definition"):
                 listener.exitProperty_definition(self)
-
-
-
 
     def property_definition(self):
 
@@ -289,11 +292,12 @@ class ActorParser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Property_valueContext(ParserRuleContext):
-        __slots__ = 'parser'
+        __slots__ = "parser"
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(
+            self, parser, parent: ParserRuleContext = None, invokingState: int = -1
+        ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -312,27 +316,38 @@ class ActorParser ( Parser ):
         def getRuleIndex(self):
             return ActorParser.RULE_property_value
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterProperty_value" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterProperty_value"):
                 listener.enterProperty_value(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitProperty_value" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitProperty_value"):
                 listener.exitProperty_value(self)
-
-
-
 
     def property_value(self):
 
         localctx = ActorParser.Property_valueContext(self, self._ctx, self.state)
         self.enterRule(localctx, 8, self.RULE_property_value)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 36
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << ActorParser.INT) | (1 << ActorParser.FLOAT) | (1 << ActorParser.STRING) | (1 << ActorParser.ID))) != 0)):
+            if not (
+                (
+                    ((_la) & ~0x3F) == 0
+                    and (
+                        (1 << _la)
+                        & (
+                            (1 << ActorParser.INT)
+                            | (1 << ActorParser.FLOAT)
+                            | (1 << ActorParser.STRING)
+                            | (1 << ActorParser.ID)
+                        )
+                    )
+                    != 0
+                )
+            ):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -345,18 +360,19 @@ class ActorParser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class Property_nameContext(ParserRuleContext):
-        __slots__ = 'parser'
+        __slots__ = "parser"
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(
+            self, parser, parent: ParserRuleContext = None, invokingState: int = -1
+        ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def ID(self):
             return self.getToken(ActorParser.ID, 0)
 
-        def SUB_PROPERTY_NAME(self, i:int=None):
+        def SUB_PROPERTY_NAME(self, i: int = None):
             if i is None:
                 return self.getTokens(ActorParser.SUB_PROPERTY_NAME)
             else:
@@ -365,22 +381,19 @@ class ActorParser ( Parser ):
         def getRuleIndex(self):
             return ActorParser.RULE_property_name
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterProperty_name" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterProperty_name"):
                 listener.enterProperty_name(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitProperty_name" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitProperty_name"):
                 listener.exitProperty_name(self)
-
-
-
 
     def property_name(self):
 
         localctx = ActorParser.Property_nameContext(self, self._ctx, self.state)
         self.enterRule(localctx, 10, self.RULE_property_name)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 38
@@ -388,7 +401,7 @@ class ActorParser ( Parser ):
             self.state = 42
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==ActorParser.SUB_PROPERTY_NAME:
+            while _la == ActorParser.SUB_PROPERTY_NAME:
                 self.state = 39
                 self.match(ActorParser.SUB_PROPERTY_NAME)
                 self.state = 44
@@ -402,8 +415,3 @@ class ActorParser ( Parser ):
         finally:
             self.exitRule()
         return localctx
-
-
-
-
-

@@ -7,7 +7,6 @@ from .. import map_objects
 
 
 class SectorRotate:
-
     def __init__(self, sector: map_objects.EditorSector):
         self._sector = sector
 

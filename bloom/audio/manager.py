@@ -28,7 +28,6 @@ class SoundAttachment(typing.NamedTuple):
 
 
 class Manager:
-
     def __init__(
         self,
         loader: Loader.Loader,
@@ -36,7 +35,7 @@ class Manager:
         listener: core.NodePath,
         sounds_rff: rff.RFF,
         fluid_synth_path: str,
-        sound_font_path: str
+        sound_font_path: str,
     ):
         self._loader = loader
         self._task_manager = task_manager
@@ -52,7 +51,7 @@ class Manager:
 
         self._sound_names: typing.Dict[int, str] = {
             index: name
-            for name, index in self._rff.find_matching_entries_with_indexes('*.SFX')
+            for name, index in self._rff.find_matching_entries_with_indexes("*.SFX")
         }
 
         self._task_manager.add(self._update)
@@ -61,10 +60,7 @@ class Manager:
     def rff(self):
         return self._rff
 
-    def attach_sound_to_object(
-        self,
-        attachment: SoundAttachment
-    ):
+    def attach_sound_to_object(self, attachment: SoundAttachment):
         self._sound_attachments.append(attachment)
         sound_index = attachment.sound
         if sound_index not in self._active_sounds:
@@ -94,7 +90,7 @@ class Manager:
             sound.set_volume(0)
 
         self._paused = True
-        logger.info('Sound system paused')
+        logger.info("Sound system paused")
 
     def unpause(self):
         if not self._paused:
@@ -104,7 +100,7 @@ class Manager:
             self._song.set_volume(1)
 
         self._paused = False
-        logger.info('Sound system unpaused')
+        logger.info("Sound system unpaused")
 
     def clear(self):
         for sound in self._active_sounds.values():
@@ -120,7 +116,7 @@ class Manager:
         if sound is None:
             return None
 
-        sound_path = f'cache/{sound_index}.wav'
+        sound_path = f"cache/{sound_index}.wav"
         if not os.path.exists(sound_path):
             if sound is None or not sound.has_data:
                 return None
@@ -151,7 +147,9 @@ class Manager:
             distance_squared = attachment.node_path.get_pos(
                 self._listener
             ).length_squared()
-            cut_off_squared = attachment.distance_to_cut_off * attachment.distance_to_cut_off
+            cut_off_squared = (
+                attachment.distance_to_cut_off * attachment.distance_to_cut_off
+            )
             if distance_squared > cut_off_squared:
                 continue
 
@@ -159,8 +157,9 @@ class Manager:
             if distance_squared <= max_volume_distance_squared:
                 portion = 1
             else:
-                portion = 1 - math.sqrt(distance_squared) / \
-                    attachment.distance_to_cut_off
+                portion = (
+                    1 - math.sqrt(distance_squared) / attachment.distance_to_cut_off
+                )
             volume = portion * attachment.max_volume
 
             if volume > volumes[attachment.sound]:
@@ -187,7 +186,9 @@ class Manager:
 
         return task.cont
 
-    def play_sound_once(self, sound_index: int) -> typing.Tuple[core.AudioSound, typing.Callable[[], None]]:
+    def play_sound_once(
+        self, sound_index: int
+    ) -> typing.Tuple[core.AudioSound, typing.Callable[[], None]]:
         sound = self._load_sound(sound_index)
         if sound is not None:
             sound.set_volume(1)
@@ -199,7 +200,7 @@ class Manager:
                 self._check_unload_sound,
                 name=task_id,
                 extraArgs=[sound_index, sound, stop_event],
-                appendTask=True
+                appendTask=True,
             )
 
             def _stop_sound():
@@ -215,7 +216,7 @@ class Manager:
         sound_index: int,
         sound: core.AudioSound,
         stop_event: threading.Event,
-        task
+        task,
     ):
         if sound.status() != core.AudioSound.PLAYING:
             sfx_sound = self._get_sfx(sound_index)
@@ -238,10 +239,10 @@ class Manager:
         if not song_name:
             return
 
-        midi_path = f'cache/{song_name}.mid'
+        midi_path = f"cache/{song_name}.mid"
         if not os.path.exists(midi_path):
-            song_data = self._rff.data_for_entry(f'{song_name}.MID')
-            with open(midi_path, 'w+b') as file:
+            song_data = self._rff.data_for_entry(f"{song_name}.MID")
+            with open(midi_path, "w+b") as file:
                 file.write(song_data)
 
         converter = midi_to_wav.MidiToWav(midi_path)

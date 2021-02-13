@@ -6,7 +6,6 @@ from .. import editor
 
 
 class Segment:
-
     def __init__(self, point_1: core.Point2, point_2: core.Point2):
         self._point_1 = point_1
         self._point_2 = point_2
@@ -27,8 +26,10 @@ class Segment:
     def get_centre(self) -> core.Point2:
         return (self._point_1 + self._point_2) / 2
 
-    def side_of_line(self, point: core.Point2, tolerance = 0.0):
-        return editor.side_of_line(point, self._point_1, self._point_2, tolerance=tolerance)
+    def side_of_line(self, point: core.Point2, tolerance=0.0):
+        return editor.side_of_line(
+            point, self._point_1, self._point_2, tolerance=tolerance
+        )
 
     def get_point_distance(self, point: core.Point2, ignore_on_line=False):
         projected_point = self.project_point(point, ignore_on_line=ignore_on_line)
@@ -79,12 +80,14 @@ class Segment:
     def get_normalized_direction(self) -> core.Vec2:
         return self.get_direction().normalized()
 
-    def segment_within(self, other: 'Segment') -> 'Segment':
+    def segment_within(self, other: "Segment") -> "Segment":
         if self.is_empty:
             return None
 
-        if self.side_of_line(other._point_1) == 0 and \
-                self.side_of_line(other._point_2) == 0:
+        if (
+            self.side_of_line(other._point_1) == 0
+            and self.side_of_line(other._point_2) == 0
+        ):
             direction = self.get_direction()
             is_more_vertical = math.fabs(direction.y) > math.fabs(direction.x)
 
@@ -145,20 +148,15 @@ class Segment:
             facing = direction.dot(self.get_orthogonal_vector())
             if facing >= 0:
                 segment_side_of_line_point_1 = editor.side_of_line(
-                    self._point_1, 
-                    point, 
-                    point_on_line
+                    self._point_1, point, point_on_line
                 )
-                
+
                 segment_side_of_line_point_2 = editor.side_of_line(
-                    self._point_2, 
-                    point, 
-                    point_on_line
+                    self._point_2, point, point_on_line
                 )
 
                 if segment_side_of_line_point_1 != segment_side_of_line_point_2:
                     return editor.line_intersection(
-                        point, point_on_line,
-                        self._point_1, self._point_2
+                        point, point_on_line, self._point_1, self._point_2
                     )
         return None

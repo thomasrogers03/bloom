@@ -12,7 +12,6 @@ from . import utils
 
 
 class TestWallJoin(unittest.TestCase):
-
     def setUp(self):
         self._sectors = utils.new_sector_collection()
 
@@ -20,9 +19,7 @@ class TestWallJoin(unittest.TestCase):
         test_id = self.id()
         for sector_index, sector in enumerate(self._sectors.sectors):
             utils.save_sector_images(
-                f'{test_id}-sector_{sector_index}', 
-                sector,
-                self._sectors
+                f"{test_id}-sector_{sector_index}", sector, self._sectors
             )
 
     def test_completely_overlapping(self):
@@ -31,7 +28,7 @@ class TestWallJoin(unittest.TestCase):
 
         wall = utils.find_wall_on_point(first_sector, core.Point2(0, -1))
         operations.wall_link.SectorWallLink(wall, self._sectors).try_link_wall()
-        
+
         other_side_wall = utils.find_wall_on_point(second_sector, core.Point2(0, 1))
         self.assertEqual(wall.other_side_wall, other_side_wall)
         self.assertEqual(other_side_wall.other_side_wall, wall)
@@ -51,7 +48,7 @@ class TestWallJoin(unittest.TestCase):
 
         other_side_wall_3 = other_side_wall_2.wall_point_2
         self.assertEqual(other_side_wall_3.point_2, core.Point2(0, -2))
-        
+
         self.assertEqual(wall.other_side_wall, other_side_wall_2)
         self.assertEqual(other_side_wall_2.other_side_wall, wall)
 
@@ -86,7 +83,7 @@ class TestWallJoin(unittest.TestCase):
 
         other_side_wall_2 = other_side_wall.wall_point_2
         self.assertEqual(other_side_wall_2.point_2, core.Point2(0, -2))
-        
+
         self.assertEqual(wall.other_side_wall, other_side_wall)
         self.assertEqual(other_side_wall.other_side_wall, wall)
 
@@ -102,7 +99,7 @@ class TestWallJoin(unittest.TestCase):
 
         other_side_wall_2 = other_side_wall.wall_point_2
         self.assertEqual(other_side_wall_2.point_2, core.Point2(0, -1))
-        
+
         self.assertEqual(wall.other_side_wall, other_side_wall_2)
         self.assertEqual(other_side_wall_2.other_side_wall, wall)
 

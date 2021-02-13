@@ -6,19 +6,17 @@ import typing
 from direct.showbase import DirectObject
 from panda3d import bullet, core
 
-from .. import (cameras, clicker, clicker_factory, constants, edit_menu,
-                edit_mode)
+from .. import cameras, clicker, clicker_factory, constants, edit_menu, edit_mode
 from ..editor import map_editor
 from ..menu import Menu
 
 
 class EditMode(DirectObject.DirectObject):
-
     def __init__(
         self,
         camera_collection: cameras.Cameras,
         menu: edit_menu.EditMenu,
-        edit_mode_selector: edit_mode.EditMode
+        edit_mode_selector: edit_mode.EditMode,
     ):
         super().__init__()
 
@@ -30,7 +28,7 @@ class EditMode(DirectObject.DirectObject):
         self._editor: map_editor.MapEditor = None
         self._clicker_factory = clicker_factory.ClickerFactory(
             self._edit_mode_selector.mouse_watcher,
-            self._edit_mode_selector.task_manager
+            self._edit_mode_selector.task_manager,
         )
         self._events_enabled = True
         self._old_accept = super().accept
@@ -72,28 +70,21 @@ class EditMode(DirectObject.DirectObject):
     def enter_mode(self, state: dict):
         self._menu.clear()
         self._menu.add_command(
-            label="Exit current mode (esc)",
-            command=self._exit_current_mode
+            label="Exit current mode (esc)", command=self._exit_current_mode
         )
         self._menu.add_separator()
         self._context_menu.clear()
         self._old_accept(constants.GUI_HAS_FOCUS, self.disable_events)
         self._old_accept(constants.GUI_LOST_FOCUS, self.enable_events)
 
-        self._menu.add_command(
-            label='Undo (ctrl+z)',
-            command=self._undo
-        )
-        self._menu.add_command(
-            label='Redo (ctrl+y)',
-            command=self._redo
-        )
+        self._menu.add_command(label="Undo (ctrl+z)", command=self._undo)
+        self._menu.add_command(label="Redo (ctrl+y)", command=self._redo)
 
-        self._context_menu.add_command('Undo (ctrl+z)', self._undo)
-        self._context_menu.add_command('Redo (ctrl+y)', self._redo)
+        self._context_menu.add_command("Undo (ctrl+z)", self._undo)
+        self._context_menu.add_command("Redo (ctrl+y)", self._redo)
 
-        self.accept('control-z', self._undo)
-        self.accept('control-y', self._redo)
+        self.accept("control-z", self._undo)
+        self.accept("control-y", self._redo)
 
     def exit_mode(self):
         self._context_menu.hide()
@@ -122,6 +113,7 @@ class EditMode(DirectObject.DirectObject):
         def _callback(*args, **kwargs):
             if self._events_enabled:
                 return handler(*args, **kwargs)
+
         return _callback
 
     def _make_clicker(
@@ -146,7 +138,10 @@ class EditMode(DirectObject.DirectObject):
         if not self._mouse_watcher.has_mouse():
             return None, None
 
-        if check_buttons and any(self._mouse_watcher.is_button_down(button) for button in clicker.Clicker.ALL_MOUSE_BUTTONS):
+        if check_buttons and any(
+            self._mouse_watcher.is_button_down(button)
+            for button in clicker.Clicker.ALL_MOUSE_BUTTONS
+        ):
             return None, None
 
         mouse = self._mouse_watcher.get_mouse()
@@ -156,9 +151,11 @@ class EditMode(DirectObject.DirectObject):
         self._camera.lens.extrude(mouse, source, target)
 
         source = self._camera_collection.scene.get_relative_point(
-            self._camera.camera, source)
+            self._camera.camera, source
+        )
         target = self._camera_collection.scene.get_relative_point(
-            self._camera.camera, target)
+            self._camera.camera, target
+        )
 
         return source, target
 

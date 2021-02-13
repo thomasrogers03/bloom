@@ -6,7 +6,6 @@ from .. import map_objects
 
 
 class SpriteAngleUpdate:
-
     def __init__(self, sprite: map_objects.EditorSprite):
         self._sprite = sprite
 

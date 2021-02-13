@@ -14,17 +14,15 @@ from .utils import gui
 
 
 class TileDialog(empty_edit_mode.EditMode):
-
     def __init__(
         self,
         parent: core.NodePath,
         tile_manager: manager.Manager,
         edit_mode: edit_mode.EditMode,
-        task_manager: Task.TaskManager
+        task_manager: Task.TaskManager,
     ):
         self._dialog = DirectGui.DirectFrame(
-            parent=parent,
-            frameSize=(-1.1, 1.1, -0.9, 0.9)
+            parent=parent, frameSize=(-1.1, 1.1, -0.9, 0.9)
         )
         self._dialog.hide()
 
@@ -32,24 +30,24 @@ class TileDialog(empty_edit_mode.EditMode):
         self._tile_selected: typing.Optional[typing.Callable[[int], None]] = None
         DirectGui.DirectButton(
             parent=self._dialog,
-            text='Ok',
+            text="Ok",
             scale=0.05,
             pos=core.Vec3(0.81, -0.85),
-            command=self._confirm
+            command=self._confirm,
         )
         DirectGui.DirectButton(
             parent=self._dialog,
-            text='Cancel',
+            text="Cancel",
             scale=0.05,
             pos=core.Vec3(0.95, -0.85),
-            command=self._hide
+            command=self._hide,
         )
 
         self._tiles = tile_view.TileView(
             self._dialog,
             (-1.05, 1.05, -0.8, 0.88),
             self._tile_manager,
-            self._select_tile
+            self._select_tile,
         )
         self._tiles.load_tiles()
 
@@ -70,7 +68,7 @@ class TileDialog(empty_edit_mode.EditMode):
         self._task_manager.do_method_later(
             constants.DOUBLE_CLICK_TIMEOUT,
             self._reset_selected_picnum,
-            'reset_double_click_tile'
+            "reset_double_click_tile",
         )
 
     def _reset_selected_picnum(self, task):

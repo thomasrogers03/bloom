@@ -3,12 +3,12 @@
 
 from .. import map_objects
 
-class SectorDelete:
 
+class SectorDelete:
     def __init__(
-        self, 
-        sector: map_objects.EditorSector, 
-        all_sectors: map_objects.SectorCollection
+        self,
+        sector: map_objects.EditorSector,
+        all_sectors: map_objects.SectorCollection,
     ):
         self._sector = sector
         self._all_sectors = all_sectors

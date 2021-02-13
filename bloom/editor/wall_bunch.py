@@ -10,8 +10,9 @@ from .map_objects.wall import EditorWall
 
 
 class ProjectedWall:
-
-    def __init__(self, wall: EditorWall, project_point: typing.Callable[[core.Vec2], core.Point3]):
+    def __init__(
+        self, wall: EditorWall, project_point: typing.Callable[[core.Vec2], core.Point3]
+    ):
         self.wall = wall
         self._point: core.Point3 = project_point(self.wall.point_1)
         self.previous_wall: ProjectedWall = None
@@ -32,17 +33,16 @@ class WallBunch:
     WIDTH_RANGE = ABSOLUTE_MAX_X - ABSOLUTE_MIN_X
     ABSOLUTE_MAX_Z = 1
 
-    def __init__(
-        self,
-        start_wall: ProjectedWall
-    ):
+    def __init__(self, start_wall: ProjectedWall):
         self._start_wall = start_wall
         self._editor_walls_previous: typing.List[EditorWall] = []
         self._editor_walls_next: typing.List[EditorWall] = [start_wall.wall]
 
         self._other_side_sector: EditorSector = None
         if self._start_wall.wall.is_other_side_sector_visible():
-            self._other_side_sector: EditorSector = self._start_wall.wall.other_side_sector
+            self._other_side_sector: EditorSector = (
+                self._start_wall.wall.other_side_sector
+            )
 
         self._no_more_previous = False
         self._no_more_next = False
@@ -139,10 +139,10 @@ class WallBunch:
         return True
 
     def __str__(self, *args, **kwargs):
-        return f'portal_sector: {self._other_side_sector}, min_x: {self._min_x}, max_x: {self._max_x}, max_z: {self._max_z}, min_z: {self._min_z}'
+        return f"portal_sector: {self._other_side_sector}, min_x: {self._min_x}, max_x: {self._max_x}, max_z: {self._max_z}, min_z: {self._min_z}"
 
     def __repr__(self, *args, **kwargs):
-        return f'({self})'
+        return f"({self})"
 
     def _check_sameness(self, wall: ProjectedWall, other_side_sector: EditorSector):
         if other_side_sector != self._other_side_sector:

@@ -10,7 +10,6 @@ from . import empty_move
 
 
 class SectorMoveWalls(empty_move.EmptyMove):
-
     def __init__(self, sector: map_objects.EditorSector):
         self._sector = sector
         self._wall_start_points = [wall.point_1 for wall in self._sector.walls]
@@ -30,6 +29,6 @@ class SectorMoveWalls(empty_move.EmptyMove):
             new_position = core.Point3(
                 start_point.x + move_delta_2d.x,
                 start_point.y + move_delta_2d.y,
-                start_point.z
+                start_point.z,
             )
             sprite.move_to(new_position)

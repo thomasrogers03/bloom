@@ -9,8 +9,14 @@ from panda3d import core
 from .. import cameras, constants
 
 
-def make_grid(camera_collection: cameras.Cameras, name: str, thickness: float, line_count: int, colour: core.Vec4):
-    cache_path = f'bloom/pre_cache/{name}.bam'
+def make_grid(
+    camera_collection: cameras.Cameras,
+    name: str,
+    thickness: float,
+    line_count: int,
+    colour: core.Vec4,
+):
+    cache_path = f"bloom/pre_cache/{name}.bam"
     if os.path.exists(cache_path):
         return camera_collection.load_model_into_scene(cache_path)
 
@@ -43,8 +49,14 @@ def make_grid(camera_collection: cameras.Cameras, name: str, thickness: float, l
     return grid
 
 
-def make_z_grid(camera_collection: cameras.Cameras, name: str, thickness: float, segment_count: int, colour: core.Vec4):
-    cache_path = f'bloom/pre_cache/vertical_{name}.bam'
+def make_z_grid(
+    camera_collection: cameras.Cameras,
+    name: str,
+    thickness: float,
+    segment_count: int,
+    colour: core.Vec4,
+):
+    cache_path = f"bloom/pre_cache/vertical_{name}.bam"
     if os.path.exists(cache_path):
         return camera_collection.load_model_into_scene(cache_path)
 
@@ -85,35 +97,20 @@ def make_z_grid(camera_collection: cameras.Cameras, name: str, thickness: float,
 
 
 def align_grid_to_angle(
-    scene: core.NodePath,
-    grid: core.NodePath,
-    grid_size: float,
-    slope: core.Vec2
+    scene: core.NodePath, grid: core.NodePath, grid_size: float, slope: core.Vec2
 ):
-    grid.set_hpr(
-        0,
-        slope.y,
-        slope.x
-    )
+    grid.set_hpr(0, slope.y, slope.x)
     grid.set_scale(1)
-    inverse_scale = scene.get_relative_vector(
-        grid, core.Vec3(1, 1, 0))
-    grid.set_scale(
-        grid_size / inverse_scale.x,
-        grid_size / inverse_scale.y,
-        1
-    )
+    inverse_scale = scene.get_relative_vector(grid, core.Vec3(1, 1, 0))
+    grid.set_scale(grid_size / inverse_scale.x, grid_size / inverse_scale.y, 1)
 
 
 def make_circle(
-    scene: core.NodePath,
-    position: core.Point3,
-    radius: float,
-    point_count: int
+    scene: core.NodePath, position: core.Point3, radius: float, point_count: int
 ):
     vertex_data = _make_vertex_data(point_count)
-    position_writer = core.GeomVertexWriter(vertex_data, 'vertex')
-    colour_writer = core.GeomVertexWriter(vertex_data, 'color')
+    position_writer = core.GeomVertexWriter(vertex_data, "vertex")
+    colour_writer = core.GeomVertexWriter(vertex_data, "color")
 
     for index in range(point_count):
         theta = (2 * math.pi * index) / point_count
@@ -133,7 +130,7 @@ def make_circle(
     geometry = core.Geom(vertex_data)
     geometry.add_primitive(primitive)
 
-    geometry_node = core.GeomNode('circle')
+    geometry_node = core.GeomNode("circle")
     geometry_node.add_geom(geometry)
 
     result: core.NodePath = scene.attach_new_node(geometry_node)
@@ -142,17 +139,18 @@ def make_circle(
 
     return result
 
+
 def make_arc(
     scene: core.NodePath,
     position: core.Point3,
     radius: float,
     theta_degrees: float,
-    point_count: int
+    point_count: int,
 ):
     theta_radians = math.radians(theta_degrees)
     vertex_data = _make_vertex_data(point_count + 1)
-    position_writer = core.GeomVertexWriter(vertex_data, 'vertex')
-    colour_writer = core.GeomVertexWriter(vertex_data, 'color')
+    position_writer = core.GeomVertexWriter(vertex_data, "vertex")
+    colour_writer = core.GeomVertexWriter(vertex_data, "color")
 
     position_writer.add_data3(position.x, position.y, position.z)
     colour_writer.add_data4(1, 1, 1, 1)
@@ -176,7 +174,7 @@ def make_arc(
     geometry = core.Geom(vertex_data)
     geometry.add_primitive(primitive)
 
-    geometry_node = core.GeomNode('arc')
+    geometry_node = core.GeomNode("arc")
     geometry_node.add_geom(geometry)
 
     result: core.NodePath = scene.attach_new_node(geometry_node)
@@ -185,11 +183,10 @@ def make_arc(
 
     return result
 
+
 def _make_vertex_data(vertex_count: int):
     vertex_data = core.GeomVertexData(
-        'shape',
-        constants.VERTEX_FORMAT,
-        core.Geom.UH_static
+        "shape", constants.VERTEX_FORMAT, core.Geom.UH_static
     )
     vertex_data.set_num_rows(vertex_count)
     return vertex_data

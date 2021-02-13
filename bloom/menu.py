@@ -14,22 +14,17 @@ from .utils import gui
 class Menu:
     _TEXT_SIZE = constants.TEXT_SIZE
 
-    def __init__(self, parent: core.NodePath, parent_menu: 'Menu' = None):
+    def __init__(self, parent: core.NodePath, parent_menu: "Menu" = None):
         self._parent = parent
         self._parent_menu = parent_menu
         self._task_manager = TaskManagerGlobal.taskMgr
 
         self._frame = DirectGui.DirectFrame(
             parent=parent,
-            frameSize=(
-                -constants.PADDING,
-                constants.PADDING,
-                0,
-                constants.PADDING
-            ),
+            frameSize=(-constants.PADDING, constants.PADDING, 0, constants.PADDING),
             relief=DirectGuiGlobals.RAISED,
             borderWidth=(0.01, 0.01),
-            state=DirectGuiGlobals.NORMAL
+            state=DirectGuiGlobals.NORMAL,
         )
         self._frame.hide()
         self._items: typing.List[DirectGui.DirectButton] = []
@@ -71,7 +66,9 @@ class Menu:
         self._frame.show()
         self._auto_hide_task = self._task_manager.add(self._auto_hide_sub_menus)
 
-    def add_command(self, text: str, command: typing.Optional[typing.Callable[[], None]]):
+    def add_command(
+        self, text: str, command: typing.Optional[typing.Callable[[], None]]
+    ):
         new_button = DirectGui.DirectButton(
             parent=self._frame,
             pos=core.Vec3(0, self._bottom - self._TEXT_SIZE / 2 - constants.PADDING),
@@ -81,11 +78,15 @@ class Menu:
             command=self._wrapped_command(command),
             relief=DirectGuiGlobals.FLAT,
             pressEffect=False,
-            frameColor=(0, 0, 0, 0)
+            frameColor=(0, 0, 0, 0),
         )
         self._adjust_frame(new_button)
-        new_button.bind(DirectGuiGlobals.ENTER, self._highlight_button, extraArgs=[new_button])
-        new_button.bind(DirectGuiGlobals.EXIT, self._unhighlight_button, extraArgs=[new_button])
+        new_button.bind(
+            DirectGuiGlobals.ENTER, self._highlight_button, extraArgs=[new_button]
+        )
+        new_button.bind(
+            DirectGuiGlobals.EXIT, self._unhighlight_button, extraArgs=[new_button]
+        )
 
         return new_button
 
@@ -100,10 +101,10 @@ class Menu:
         return menu
 
     def _highlight_button(self, button: DirectGui.DirectButton, _):
-        button['frameColor'] = (0.95, 0.95, 0.95, 1)
+        button["frameColor"] = (0.95, 0.95, 0.95, 1)
 
     def _unhighlight_button(self, button: DirectGui.DirectButton, _):
-        button['frameColor'] = (0, 0, 0, 0)
+        button["frameColor"] = (0, 0, 0, 0)
 
     def _wrapped_command(self, command):
         def _wrapped(*args, **kwargs):
@@ -121,8 +122,9 @@ class Menu:
         return task.cont
 
     def _is_mouse_inside(self):
-        return self._mouse_within or \
-            any(menu._is_mouse_inside() for menu in self._sub_menus)
+        return self._mouse_within or any(
+            menu._is_mouse_inside() for menu in self._sub_menus
+        )
 
     def _mouse_in(self, event):
         self._mouse_within = True
@@ -132,7 +134,7 @@ class Menu:
         self._mouse_within = False
         gui.dispatch_lost_focus(event)
 
-    def _show_sub_menu(self, sub_menu: 'Menu', event):
+    def _show_sub_menu(self, sub_menu: "Menu", event):
         self._hide_sub_menus()
         sub_menu.show()
 
@@ -151,7 +153,7 @@ class Menu:
 
         self._bottom -= self._TEXT_SIZE + 2 * constants.PADDING
 
-        frame_size = list(self._frame['frameSize'])
+        frame_size = list(self._frame["frameSize"])
         frame_size[2] = self._bottom
         frame_size[1] = self._width + constants.PADDING
-        self._frame['frameSize'] = frame_size
+        self._frame["frameSize"] = frame_size

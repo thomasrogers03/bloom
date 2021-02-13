@@ -12,35 +12,34 @@ import numpy
 
 logger = logging.getLogger(__name__)
 
-T = typing.TypeVar('T')
+T = typing.TypeVar("T")
 
 
 class SizedType:
-
     def __init__(self, variable_type: type, count: int, default=None):
         self._variable_type = variable_type
         self._count = count
         self._default = default
 
     def format_string(self) -> bytes:
-        callback = getattr(self._variable_type, 'format_string', None)
+        callback = getattr(self._variable_type, "format_string", None)
         if callback is not None:
-            return f'{self._count}{callback().decode()}'.encode()
+            return f"{self._count}{callback().decode()}".encode()
 
         if self._variable_type == bytes:
-            return f'{self._count}s'.encode()
+            return f"{self._count}s".encode()
 
-        raise ValueError('Unknown type')
+        raise ValueError("Unknown type")
 
     def size(self):
-        callback = getattr(self._variable_type, 'size', None)
+        callback = getattr(self._variable_type, "size", None)
         if callback is not None:
             return callback() * self._count
 
         if self._variable_type == bytes:
             return self._count
 
-        raise ValueError('Unknown type')
+        raise ValueError("Unknown type")
 
     def flatten(self, value: typing.Iterable[T]):
         if self._variable_type == bytes:
@@ -58,23 +57,22 @@ class SizedType:
         if self._default is not None:
             return self._default
 
-        callback = getattr(self._variable_type, 'default', None)
+        callback = getattr(self._variable_type, "default", None)
         if callback is not None:
             return [callback()] * self._count
 
         if self._variable_type == bytes:
-            return b'\0' * self._count
+            return b"\0" * self._count
 
-        raise ValueError('Unknown type')
+        raise ValueError("Unknown type")
 
 
 class FixedLengthString:
-
     def __init__(self, count: int):
         self._count = count
 
     def format_string(self) -> bytes:
-        return f'{self._count}s'.encode()
+        return f"{self._count}s".encode()
 
     def size(self):
         return self._count
@@ -86,11 +84,10 @@ class FixedLengthString:
         return [value.encode()]
 
     def default(self):
-        return b'\0' * self._count
+        return b"\0" * self._count
 
 
 class FixedSizeInteger:
-
     def __init__(self, size: int, signed=True, default=0):
         self._size = size
         self._signed = signed
@@ -103,20 +100,20 @@ class FixedSizeInteger:
     def format_string(self) -> bytes:
         if self._signed:
             if self._size == 1:
-                return b'b'
+                return b"b"
             if self._size == 2:
-                return b'h'
+                return b"h"
             if self._size == 4:
-                return b'i'
+                return b"i"
         else:
             if self._size == 1:
-                return b'B'
+                return b"B"
             if self._size == 2:
-                return b'H'
+                return b"H"
             if self._size == 4:
-                return b'I'
+                return b"I"
 
-        raise ValueError(f'Invalid integer size {self._size}')
+        raise ValueError(f"Invalid integer size {self._size}")
 
     def size(self):
         return self._size
@@ -142,7 +139,6 @@ Magic = SizedType(bytes, 4)
 
 
 class PartialInteger:
-
     def __init__(self, expected_integer_type: FixedSizeInteger, bits: int, default=0):
         self._bits = bits
         self._signed = expected_integer_type.signed and self._bits > 1
@@ -155,8 +151,12 @@ class PartialInteger:
         return self._bits / 8.0
 
     @staticmethod
-    def next_required_for_full_integer(type_hints, index) -> typing.Tuple[int, FixedSizeInteger]:
-        if index >= len(type_hints) or not isinstance(type_hints[index], PartialInteger):
+    def next_required_for_full_integer(
+        type_hints, index
+    ) -> typing.Tuple[int, FixedSizeInteger]:
+        if index >= len(type_hints) or not isinstance(
+            type_hints[index], PartialInteger
+        ):
             return 0, None
 
         bits = 0
@@ -164,29 +164,32 @@ class PartialInteger:
         expected_size: int = None
         while index < len(type_hints):
             if not isinstance(type_hints[index], PartialInteger):
-                raise ValueError('Not enough bits to form a byte')
+                raise ValueError("Not enough bits to form a byte")
 
             if expected_size is None:
                 expected_size = type_hints[index]._expected_size
 
             if expected_size != type_hints[index]._expected_size:
-                raise ValueError('Found incomplete partial integer')
+                raise ValueError("Found incomplete partial integer")
 
             bits += type_hints[index]._bits
             count += 1
 
             if bits > expected_size:
                 raise ValueError(
-                    f'Impossible to read partial integers -> reached {bits} bits')
+                    f"Impossible to read partial integers -> reached {bits} bits"
+                )
             elif bits == expected_size:
                 return count, FixedSizeInteger(expected_size / 8, signed=False)
 
             index += 1
 
-        raise ValueError('Impossible to read partial integers')
+        raise ValueError("Impossible to read partial integers")
 
     @staticmethod
-    def read_values(type_hints: typing.List['PartialInteger'], read_value: int) -> typing.List[int]:
+    def read_values(
+        type_hints: typing.List["PartialInteger"], read_value: int
+    ) -> typing.List[int]:
         result = []
         for hint in type_hints:
             value = read_value & (hint._bit_shift - 1)
@@ -200,7 +203,9 @@ class PartialInteger:
         return result
 
     @staticmethod
-    def write_value(type_hints: typing.List['PartialInteger'], values: typing.List[int]) -> int:
+    def write_value(
+        type_hints: typing.List["PartialInteger"], values: typing.List[int]
+    ) -> int:
         result = 0
         bits = 0
         for hint, value in zip(type_hints, values):
@@ -218,7 +223,6 @@ class PartialInteger:
 
 
 class Unpacker:
-
     def __init__(self, buffer: bytes):
         self._buffer = buffer
         self._offset = 0
@@ -233,11 +237,7 @@ class Unpacker:
         index += skip_members
         while index < len(hint_hint_types):
             index = self._read_bits(
-                result,
-                struct_type,
-                hint_member_names,
-                hint_hint_types,
-                index
+                result, struct_type, hint_member_names, hint_hint_types, index
             )
             if index >= len(hint_hint_types):
                 break
@@ -261,11 +261,7 @@ class Unpacker:
         format_string = hint_type.format_string()
 
         size = struct.calcsize(format_string)
-        member_value = struct.unpack_from(
-            format_string,
-            self._buffer,
-            self._offset
-        )
+        member_value = struct.unpack_from(format_string, self._buffer, self._offset)
         member_value = hint_type.flatten(member_value)
         self._offset += size
 
@@ -289,7 +285,7 @@ class Unpacker:
         self._offset += amount
 
     def get_bytes(self, count: int) -> bytes:
-        data = self._buffer[self._offset:self._offset+count]
+        data = self._buffer[self._offset : self._offset + count]
         self._offset += count
 
         return data
@@ -307,7 +303,9 @@ class Unpacker:
         data = self.get_xor_encrypted_bytes(hint_type.size(), key)
         return Unpacker(data).read_member(hint_type)
 
-    def read_multiple_xor_encrypted_members(self, hint_type, count: int, key: int) -> typing.List[T]:
+    def read_multiple_xor_encrypted_members(
+        self, hint_type, count: int, key: int
+    ) -> typing.List[T]:
         data = self.get_xor_encrypted_bytes(hint_type.size() * count, key)
         return Unpacker(data).read_multiple_members(hint_type, count)
 
@@ -315,28 +313,29 @@ class Unpacker:
         data = self.get_xor_encrypted_bytes(struct_type.size(), key)
         return Unpacker(data).read_struct(struct_type)
 
-    def read_xor_encrypted_multiple(self, struct_type: type, count: int, key: int) -> typing.List[T]:
+    def read_xor_encrypted_multiple(
+        self, struct_type: type, count: int, key: int
+    ) -> typing.List[T]:
         data = self.get_xor_encrypted_bytes(struct_type.size() * count, key)
         return Unpacker(data).read_multiple(struct_type, count)
 
-    def _read_bits(self, result, struct_type, hint_member_names, hint_hint_types, index):
+    def _read_bits(
+        self, result, struct_type, hint_member_names, hint_hint_types, index
+    ):
         while True:
-            count, integer_type = struct_type.next_required_for_full_integer(
-                index
-            )
+            count, integer_type = struct_type.next_required_for_full_integer(index)
 
             if integer_type is None:
                 break
 
             bit_member_values = PartialInteger.read_values(
-                hint_hint_types[index:index+count],
-                self.read_member(integer_type)
+                hint_hint_types[index : index + count], self.read_member(integer_type)
             )
             for bit_type_index in range(count):
                 setattr(
                     result,
                     hint_member_names[index + bit_type_index],
-                    bit_member_values[bit_type_index]
+                    bit_member_values[bit_type_index],
                 )
 
             index += count
@@ -345,7 +344,6 @@ class Unpacker:
 
 
 class Packer:
-
     def __init__(self):
         self._stream = io.BytesIO()
 
@@ -374,7 +372,7 @@ class Packer:
                 structure.__class__,
                 hint_member_names,
                 hint_hint_types,
-                index
+                index,
             )
             if index >= len(hint_hint_types):
                 break
@@ -389,7 +387,9 @@ class Packer:
                 try:
                     self.write_member(hint_type, member_value)
                 except struct.error as error:
-                    logger.error(f'Error saving {member_name} value {member_value} as {hint_type}')
+                    logger.error(
+                        f"Error saving {member_name} value {member_value} as {hint_type}"
+                    )
                     raise
             index += 1
 
@@ -402,8 +402,7 @@ class Packer:
 
         size = struct.calcsize(format_string)
         serialized_struct = struct.pack(
-            format_string,
-            *hint_type.unflatten(member_value)
+            format_string, *hint_type.unflatten(member_value)
         )
         self._stream.write(serialized_struct)
 
@@ -411,11 +410,11 @@ class Packer:
         for structure in structures:
             self.write_struct(structure)
 
-    def _write_bits(self, structure, struct_type, hint_member_names, hint_hint_types, index):
+    def _write_bits(
+        self, structure, struct_type, hint_member_names, hint_hint_types, index
+    ):
         while True:
-            count, integer_type = struct_type.next_required_for_full_integer(
-                index
-            )
+            count, integer_type = struct_type.next_required_for_full_integer(index)
 
             if integer_type is None:
                 break
@@ -428,8 +427,7 @@ class Packer:
                 values.append(member_value)
 
             write_value = PartialInteger.write_value(
-                hint_hint_types[index:index+count],
-                values
+                hint_hint_types[index : index + count], values
             )
             self.write_member(integer_type, write_value)
             index += count
@@ -450,7 +448,9 @@ class Packer:
         packer.write_member(hint_type, member_value)
         self.write_xor_encrypted_bytes(packer.get_bytes(), key)
 
-    def write_multiple_xor_encrypted_members(self, hint_type, members: typing.List[T], key: int):
+    def write_multiple_xor_encrypted_members(
+        self, hint_type, members: typing.List[T], key: int
+    ):
         packer = Packer()
         packer.write_multiple_members(hint_type, members)
         self.write_xor_encrypted_bytes(packer.get_bytes(), key)
@@ -466,12 +466,11 @@ class Packer:
 
 
 class CustomStruct:
-
     def __init__(self, **kwargs):
         hints: typing.Dict[str, typing.Any] = self.type_hints()
         for key, hint_type in hints.items():
             if key not in kwargs:
-                default = getattr(hint_type, 'default', None)
+                default = getattr(hint_type, "default", None)
                 if default is not None:
                     value = default()
                 else:
@@ -480,12 +479,12 @@ class CustomStruct:
 
         for key, value in kwargs.items():
             if key not in hints:
-                raise ValueError(f'Member {key} not in {self.__class__}')
+                raise ValueError(f"Member {key} not in {self.__class__}")
             setattr(self, key, value)
 
     @classmethod
     def type_hints(cls) -> dict:
-        hints = getattr(cls, '_type_hints', None)
+        hints = getattr(cls, "_type_hints", None)
         if hints is None:
             cls._type_hints = typing.get_type_hints(cls)
             return cls._type_hints
@@ -493,7 +492,7 @@ class CustomStruct:
 
     @classmethod
     def type_hints_list(cls):
-        hints = getattr(cls, '_type_hints_list', None)
+        hints = getattr(cls, "_type_hints_list", None)
         if hints is None:
             cls._type_hints_list = list(cls.type_hints().values())
             cls._type_hints_list_bits_cache = [None] * len(cls._type_hints_list)
@@ -507,16 +506,15 @@ class CustomStruct:
             return 0, None
 
         if cls._type_hints_list_bits_cache[index] is None:
-            cls._type_hints_list_bits_cache[index] = PartialInteger.next_required_for_full_integer(
-                hints,
+            cls._type_hints_list_bits_cache[
                 index
-            )
+            ] = PartialInteger.next_required_for_full_integer(hints, index)
         return cls._type_hints_list_bits_cache[index]
 
     def is_default(self):
         hints: typing.Dict[str, typing.Any] = self.type_hints()
         for key, hint_type in hints.items():
-            default = getattr(hint_type, 'default', None)
+            default = getattr(hint_type, "default", None)
             if default is None:
                 return False
 
@@ -561,15 +559,15 @@ class CustomStruct:
 
     def diff(self, other):
         if not isinstance(other, self.__class__):
-            return f'{self.__class__} != {other.__class__}'
+            return f"{self.__class__} != {other.__class__}"
 
-        result = ''
+        result = ""
         hints: typing.Dict[str, typing.Any] = self.type_hints()
         for key in hints.keys():
             value = getattr(self, key)
             other_value = getattr(other, key)
             if value != other_value:
-                result += f'{key} -> {value} != {other_value}\n'
+                result += f"{key} -> {value} != {other_value}\n"
 
         return result
 

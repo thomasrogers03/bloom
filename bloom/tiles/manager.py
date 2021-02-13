@@ -18,15 +18,18 @@ class AnimationData(typing.NamedTuple):
     ticks_per_frame: int
     animation_count: int
 
-class Manager:
 
-    def __init__(self, blood_path: str, rff: RFF, edit_mode_selector: edit_mode.EditMode):
+class Manager:
+    def __init__(
+        self, blood_path: str, rff: RFF, edit_mode_selector: edit_mode.EditMode
+    ):
         self._edit_mode_selector = edit_mode_selector
         self._tiles: typing.Dict[int, typing.Dict[int, core.Texture]] = {}
-        self._tile_loads: 'queue.Queue[typing.Tuple[int,int,typing.Callable[[core.Texture], None]]]' = queue.Queue(
+        self._tile_loads: "queue.Queue[typing.Tuple[int,int,typing.Callable[[core.Texture], None]]]" = (
+            queue.Queue()
         )
 
-        art_paths = glob(f'{blood_path}/*.[aA][rR][tT]')
+        art_paths = glob(f"{blood_path}/*.[aA][rR][tT]")
         self._art_manager = art.ArtManager(rff, art_paths)
         self._edit_mode_selector.always_run(self._process_loading_tiles)
 
@@ -55,7 +58,7 @@ class Manager:
                 image.shape[1],
                 image.shape[0],
                 core.Texture.T_unsigned_byte,
-                core.Texture.F_rgba8
+                core.Texture.F_rgba8,
             )
             tile.set_ram_image(buffer)
             lookup_tiles[picnum] = tile
@@ -66,16 +69,16 @@ class Manager:
         animation_data = self._art_manager.get_tile_animation_data(picnum)
         if animation_data.count > 0:
             return AnimationData(
-                picnum,
-                animation_data.tics_per_frame,
-                animation_data.count
+                picnum, animation_data.tics_per_frame, animation_data.count
             )
 
-    def get_tile_async(self, picnum: int, lookup: int, callback: typing.Callable[[core.Texture], None]):
+    def get_tile_async(
+        self, picnum: int, lookup: int, callback: typing.Callable[[core.Texture], None]
+    ):
         self._tile_loads.put((picnum, lookup, callback))
 
     def _process_loading_tiles(self):
-        with self._edit_mode_selector.track_performance_stats('process_loading_tiles'):
+        with self._edit_mode_selector.track_performance_stats("process_loading_tiles"):
             now = time.time()
             while (time.time() - now) < constants.TICK_RATE / 2:
                 if self._tile_loads.empty():

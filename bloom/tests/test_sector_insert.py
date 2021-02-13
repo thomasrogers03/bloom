@@ -13,7 +13,6 @@ from . import utils
 
 
 class TestSectorInsert(unittest.TestCase):
-
     def setUp(self):
         self._sectors = utils.new_sector_collection()
 
@@ -21,9 +20,7 @@ class TestSectorInsert(unittest.TestCase):
         test_id = self.id()
         for sector_index, sector in enumerate(self._sectors.sectors):
             utils.save_sector_images(
-                f'{test_id}-sector_{sector_index}', 
-                sector,
-                self._sectors
+                f"{test_id}-sector_{sector_index}", sector, self._sectors
             )
 
     def test_can_draw(self):

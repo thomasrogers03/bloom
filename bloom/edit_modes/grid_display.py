@@ -14,34 +14,34 @@ class GridDisplay:
     def __init__(self, camera_collection: cameras.Cameras, map_scene: core.NodePath):
         self._camera_collection = camera_collection
 
-        self._grid_parent: core.NodePath = map_scene.attach_new_node('grid_3d')
+        self._grid_parent: core.NodePath = map_scene.attach_new_node("grid_3d")
         self._grid_parent.set_transparency(True)
 
         self._small_grid = shapes.make_grid(
             self._camera_collection,
-            'movement_grid',
+            "movement_grid",
             2,
             100,
-            core.Vec4(0.5, 0.55, 0.8, 0.85)
+            core.Vec4(0.5, 0.55, 0.8, 0.85),
         )
         self._small_grid.reparent_to(self._grid_parent)
 
         self._big_grid = shapes.make_grid(
             self._camera_collection,
-            'big_movement_grid',
+            "big_movement_grid",
             4,
             100,
-            core.Vec4(1, 0, 0, 0.95)
+            core.Vec4(1, 0, 0, 0.95),
         )
         self._big_grid.reparent_to(self._grid_parent)
         self._big_grid.set_scale(self._LARGE_GRID_SIZE)
 
         self._vertical_grid = shapes.make_z_grid(
             self._camera_collection,
-            'big_movement_grid',
+            "big_movement_grid",
             2,
             100,
-            core.Vec4(0, 0, 1, 0.95)
+            core.Vec4(0, 0, 1, 0.95),
         )
         self._vertical_grid.reparent_to(self._grid_parent)
 
@@ -69,7 +69,7 @@ class GridDisplay:
         self,
         snapper: grid_snapper.GridSnapper,
         position: core.Point3,
-        sector: map_objects.EditorSector
+        sector: map_objects.EditorSector,
     ):
         snapped_hit_2d = snapper.snap_to_grid_2d(position.xy)
 
@@ -80,23 +80,13 @@ class GridDisplay:
             snapped_z = sector.floor_z_at_point(snapped_hit_2d)
             slope = sector.floor_slope_direction()
 
-        snapped_hit = core.Point3(
-            snapped_hit_2d.x,
-            snapped_hit_2d.y,
-            snapped_z
-        )
+        snapped_hit = core.Point3(snapped_hit_2d.x, snapped_hit_2d.y, snapped_z)
 
         shapes.align_grid_to_angle(
-            self._camera_collection.scene,
-            self._small_grid,
-            snapper.grid_size,
-            slope
+            self._camera_collection.scene, self._small_grid, snapper.grid_size, slope
         )
         shapes.align_grid_to_angle(
-            self._camera_collection.scene,
-            self._big_grid,
-            self._LARGE_GRID_SIZE,
-            slope
+            self._camera_collection.scene, self._big_grid, self._LARGE_GRID_SIZE, slope
         )
 
         self._vertical_grid.set_scale(snapper.grid_size)

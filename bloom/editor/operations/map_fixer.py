@@ -32,10 +32,7 @@ class MapFixer:
             for sector in self._all_sectors.sectors
         ]
 
-        cleaned_objects = [
-            future.result()
-            for future in futures
-        ]
+        cleaned_objects = [future.result() for future in futures]
 
         sectors_removed = 0
         walls_removed = 0
@@ -43,12 +40,12 @@ class MapFixer:
         sprites_fixed = 0
 
         for result in cleaned_objects:
-            if 'sector' in result:
+            if "sector" in result:
                 sectors_removed += 1
-                self._all_sectors.destroy_sector(result['sector'])
-            walls_removed += len(result['walls'])
-            walls_fixed += result['fixed_wall_count']
-            sprites_fixed += result['fixed_sprite_count']
+                self._all_sectors.destroy_sector(result["sector"])
+            walls_removed += len(result["walls"])
+            walls_fixed += result["fixed_wall_count"]
+            sprites_fixed += result["fixed_sprite_count"]
 
         return FixDetails(sectors_removed, walls_removed, walls_fixed, sprites_fixed)
 
@@ -56,11 +53,11 @@ class MapFixer:
         result = {}
 
         if len(sector.walls) < 1:
-            result['sector'] = sector
+            result["sector"] = sector
             sector.invalidate_geometry()
 
-        result['walls'], result['fixed_wall_count'] = self._cleanup_walls(sector)
-        result['fixed_sprite_count'] = self._cleanup_sprites(sector)
+        result["walls"], result["fixed_wall_count"] = self._cleanup_walls(sector)
+        result["fixed_sprite_count"] = self._cleanup_sprites(sector)
         return result
 
     def _cleanup_sprites(self, sector: map_objects.EditorSector):
@@ -81,10 +78,7 @@ class MapFixer:
                 tile = descriptor.default_tile
 
             sprite_properties.SpriteDialog.apply_sprite_properties(
-                sprite,
-                descriptor,
-                tile,
-                palette
+                sprite, descriptor, tile, palette
             )
 
         return fix_count
@@ -110,8 +104,10 @@ class MapFixer:
                 fix_count += 1
 
             if wall.other_side_wall is not None:
-                if wall.other_side_wall.other_side_wall is None or \
-                        wall.other_side_wall.point_2 != wall.point_1:
+                if (
+                    wall.other_side_wall.other_side_wall is None
+                    or wall.other_side_wall.point_2 != wall.point_1
+                ):
                     fix_count += 1
                     wall.unlink()
 

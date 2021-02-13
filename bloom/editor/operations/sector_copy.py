@@ -10,11 +10,10 @@ from . import wall_split
 
 
 class SectorCopy:
-
     def __init__(
         self,
         sectors: typing.List[map_objects.EditorSector],
-        all_sectors: map_objects.SectorCollection
+        all_sectors: map_objects.SectorCollection,
     ):
         self._sectors = sectors
         self._all_sectors = all_sectors
@@ -24,10 +23,7 @@ class SectorCopy:
         if len(self._sectors) < 1:
             return result
 
-        new_walls: typing.Dict[
-            map_objects.EditorWall,
-            map_objects.EditorWall
-        ] = {}
+        new_walls: typing.Dict[map_objects.EditorWall, map_objects.EditorWall] = {}
 
         first_point = self._sectors[0].walls[0].origin_2d
         offset_2d = copy_to - first_point

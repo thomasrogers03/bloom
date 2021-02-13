@@ -7,27 +7,26 @@ import math
 from panda3d import core
 
 from ... import clicker, constants, dialogs
-from ...editor import (event_grouping, geometry, highlighter, map_objects,
-                       marker_constants, operations)
+from ...editor import (
+    event_grouping,
+    geometry,
+    highlighter,
+    map_objects,
+    marker_constants,
+    operations,
+)
 from ...editor.descriptors import constants as descriptor_constants
 from ...editor.highlighting import highlight_details
 from ...utils import shapes
-from .. import (drawing_mode_3d, edit_mode_2d, moving_clicker,
-                navigation_mode_3d)
+from .. import drawing_mode_3d, edit_mode_2d, moving_clicker, navigation_mode_3d
 from . import type_selector
 
 
 class EditMode(navigation_mode_3d.EditMode):
-
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._type_selector = type_selector.TypeSelector(
-            self._camera_collection.aspect_2d,
-            self._set_new_markers
+            self._camera_collection.aspect_2d, self._set_new_markers
         )
         self._type_selector.hide()
 
@@ -39,10 +38,7 @@ class EditMode(navigation_mode_3d.EditMode):
         self._tickers.append(self._mouse_collision_tests)
         self._tickers.append(self._update_mover)
 
-        self._make_clicker(
-            [core.MouseButton.one()],
-            on_click=self._select_object
-        )
+        self._make_clicker([core.MouseButton.one()], on_click=self._select_object)
 
         self._make_clicker(
             [core.KeyboardButton.control(), core.MouseButton.one()],
@@ -51,24 +47,24 @@ class EditMode(navigation_mode_3d.EditMode):
 
     def enter_mode(self, state):
         super().enter_mode(state)
-        self.accept('k', self._cycle_move_direction)
+        self.accept("k", self._cycle_move_direction)
 
-        self.accept('1', self._set_off_z_position)
-        self.accept('2', self._set_on_z_position)
+        self.accept("1", self._set_off_z_position)
+        self.accept("2", self._set_on_z_position)
 
-        self.accept(',', self._decrease_angle)
-        self.accept(',-repeat', self._decrease_angle)
-        self.accept('.', self._increase_angle)
-        self.accept('.-repeat', self._increase_angle)
+        self.accept(",", self._decrease_angle)
+        self.accept(",-repeat", self._decrease_angle)
+        self.accept(".", self._increase_angle)
+        self.accept(".-repeat", self._increase_angle)
 
         self._moving_clicker.setup_keyboard(self)
 
-        self._context_menu.add_command('Set Up Door', self._setup_door)
-        self._context_menu.add_command('Set Up Trap Wall', self._setup_trap_wall)
-        self._context_menu.add_command('Set Up Trap Bars', self._setup_trap_bars)
+        self._context_menu.add_command("Set Up Door", self._setup_door)
+        self._context_menu.add_command("Set Up Trap Wall", self._setup_trap_wall)
+        self._context_menu.add_command("Set Up Trap Bars", self._setup_trap_bars)
 
-        if 'grid_visible' in state:
-            if state['grid_visible']:
+        if "grid_visible" in state:
+            if state["grid_visible"]:
                 self._moving_clicker.show_grid()
         else:
             self._moving_clicker.show_grid()
@@ -78,7 +74,7 @@ class EditMode(navigation_mode_3d.EditMode):
 
     def exit_mode(self):
         state = super().exit_mode()
-        state['grid_visible'] = self._moving_clicker.grid_visible
+        state["grid_visible"] = self._moving_clicker.grid_visible
 
         self._clear_markers()
         self._type_selector.hide()
@@ -109,7 +105,7 @@ class EditMode(navigation_mode_3d.EditMode):
                 map_objects.EditorSector,
                 map_objects.EditorMarker,
             ],
-            move_sprites_on_sectors=False
+            move_sprites_on_sectors=False,
         )
         self._moving_clicker.set_updated_callback(self._update_markers)
 
@@ -118,8 +114,10 @@ class EditMode(navigation_mode_3d.EditMode):
         self._type_selector.tick()
 
     def _setup_door(self):
-        self._sector.sector.sector.tags[0] = descriptor_constants.reverse_sector_type_lookup['Z Motion']
-        
+        self._sector.sector.sector.tags[
+            0
+        ] = descriptor_constants.reverse_sector_type_lookup["Z Motion"]
+
         self._sector.floor_z_motion_markers[0].set_z(self._sector.floor_z)
         self._sector.floor_z_motion_markers[1].set_z(self._sector.floor_z)
 
@@ -129,16 +127,18 @@ class EditMode(navigation_mode_3d.EditMode):
                 lowest_adjacent = portal.other_side_sector.ceiling_z
 
         door_ceiling = lowest_adjacent + self._editor.snapper.grid_size
-        
+
         self._sector.ceiling_z_motion_markers[0].set_z(self._sector.floor_z)
         self._sector.ceiling_z_motion_markers[1].set_z(door_ceiling)
         self._sector.move_ceiling_to(door_ceiling)
-        
+
         self._update_markers()
 
     def _setup_trap_wall(self):
-        self._sector.sector.sector.tags[0] = descriptor_constants.reverse_sector_type_lookup['Z Motion']
-        
+        self._sector.sector.sector.tags[
+            0
+        ] = descriptor_constants.reverse_sector_type_lookup["Z Motion"]
+
         self._sector.ceiling_z_motion_markers[0].set_z(self._sector.ceiling_z)
         self._sector.ceiling_z_motion_markers[1].set_z(self._sector.ceiling_z)
 
@@ -154,8 +154,10 @@ class EditMode(navigation_mode_3d.EditMode):
         self._update_markers()
 
     def _setup_trap_bars(self):
-        self._sector.sector.sector.tags[0] = descriptor_constants.reverse_sector_type_lookup['Z Motion']
-        
+        self._sector.sector.sector.tags[
+            0
+        ] = descriptor_constants.reverse_sector_type_lookup["Z Motion"]
+
         self._sector.ceiling_z_motion_markers[0].set_z(self._sector.ceiling_z)
         self._sector.ceiling_z_motion_markers[1].set_z(self._sector.ceiling_z)
 
@@ -175,9 +177,9 @@ class EditMode(navigation_mode_3d.EditMode):
             selected_type_or_types=[map_objects.EditorMarker]
         )
 
-        operations.sprite_angle_update.SpriteAngleUpdate(
-            selected.map_object
-        ).increment(-15)
+        operations.sprite_angle_update.SpriteAngleUpdate(selected.map_object).increment(
+            -15
+        )
         self._update_markers()
 
     def _increase_angle(self):
@@ -185,8 +187,9 @@ class EditMode(navigation_mode_3d.EditMode):
             selected_type_or_types=[map_objects.EditorMarker]
         )
 
-        operations.sprite_angle_update.SpriteAngleUpdate(
-            selected.map_object).increment(15)
+        operations.sprite_angle_update.SpriteAngleUpdate(selected.map_object).increment(
+            15
+        )
         self._update_markers()
 
     def _update_mover(self):
@@ -203,7 +206,7 @@ class EditMode(navigation_mode_3d.EditMode):
             return
 
         first_marker, second_marker = self._sector.markers
-        self._marker_display = self._camera_collection.scene.attach_new_node('markers')
+        self._marker_display = self._camera_collection.scene.attach_new_node("markers")
         self._marker_display.set_depth_test(False)
 
         if first_marker is not None:
@@ -213,12 +216,14 @@ class EditMode(navigation_mode_3d.EditMode):
                 self._make_rotate_marker(first_marker)
 
         first_marker, second_marker = self._sector.floor_z_motion_markers
-        self._make_z_motion_marker(first_marker, second_marker,
-                                   core.Vec4(0, 0.8, 1, 0.8))
+        self._make_z_motion_marker(
+            first_marker, second_marker, core.Vec4(0, 0.8, 1, 0.8)
+        )
 
         first_marker, second_marker = self._sector.ceiling_z_motion_markers
-        self._make_z_motion_marker(first_marker, second_marker,
-                                   core.Vec4(0.8, 0, 1, 0.8))
+        self._make_z_motion_marker(
+            first_marker, second_marker, core.Vec4(0.8, 0, 1, 0.8)
+        )
 
     def _make_rotate_marker(self, marker: map_objects.EditorMarker):
         bounding_rectangle = self._sector.get_bounding_rectangle()
@@ -228,26 +233,19 @@ class EditMode(navigation_mode_3d.EditMode):
         radius = 3 * min(delta_x, delta_y) / 8
 
         display = shapes.make_circle(
-            self._marker_display,
-            marker.origin,
-            radius * 1.5,
-            12
+            self._marker_display, marker.origin, radius * 1.5, 12
         )
         self._setup_display(display, colour=core.Vec4(0, 1, 0, 0.5))
 
         display = shapes.make_arc(
-            self._marker_display,
-            marker.origin,
-            radius,
-            marker.theta - 90,
-            12
+            self._marker_display, marker.origin, radius, marker.theta - 90, 12
         )
         self._setup_display(display)
 
     def _make_slide_marker(
         self,
         first_marker: map_objects.EditorMarker,
-        second_marker: map_objects.EditorMarker
+        second_marker: map_objects.EditorMarker,
     ):
         direction = second_marker.origin_2d - first_marker.origin_2d
         length = direction.length()
@@ -261,7 +259,7 @@ class EditMode(navigation_mode_3d.EditMode):
         segments.draw_to(length, 0, 0)
         segments.draw_to(length - 64, -64, 0)
 
-        segments_node = segments.create('slide')
+        segments_node = segments.create("slide")
         display: core.NodePath = self._marker_display.attach_new_node(segments_node)
 
         display.set_pos(first_marker.origin)
@@ -272,7 +270,7 @@ class EditMode(navigation_mode_3d.EditMode):
         self,
         first_marker: map_objects.EditorMarker,
         second_marker: map_objects.EditorMarker,
-        colour: core.Vec4
+        colour: core.Vec4,
     ):
         length = second_marker.origin.z - first_marker.origin.z
         if length < 0:
@@ -288,7 +286,7 @@ class EditMode(navigation_mode_3d.EditMode):
         segments.draw_to(0, 0, length)
         segments.draw_to(0, -64, length - 64 * direction)
 
-        segments_node = segments.create('z_motion')
+        segments_node = segments.create("z_motion")
         display: core.NodePath = self._marker_display.attach_new_node(segments_node)
 
         display.set_pos(first_marker.origin)
@@ -335,13 +333,15 @@ class EditMode(navigation_mode_3d.EditMode):
     def _cycle_move_direction(self):
         selected = self._highlighter.select_append(
             no_append_if_not_selected=True,
-            selected_type_or_types=[map_objects.EditorWall, map_objects.EditorSprite]
+            selected_type_or_types=[map_objects.EditorWall, map_objects.EditorSprite],
         )
 
         for selected_object in selected:
             self._cycle_move_direction_for_object(selected_object.map_object)
 
-    def _cycle_move_direction_for_object(self, selected_object: map_objects.EmptyObject):
+    def _cycle_move_direction_for_object(
+        self, selected_object: map_objects.EmptyObject
+    ):
         if selected_object.is_marker:
             return
 
@@ -367,8 +367,9 @@ class EditMode(navigation_mode_3d.EditMode):
         return highlight.map_object.get_sector() == self._sector
 
     def _get_selected_colour(self, selected: highlight_details.HighlightDetails):
-        if isinstance(selected.map_object, map_objects.EditorSprite) or \
-                isinstance(selected.map_object, map_objects.EditorWall):
+        if isinstance(selected.map_object, map_objects.EditorSprite) or isinstance(
+            selected.map_object, map_objects.EditorWall
+        ):
             stat = selected.map_object.get_stat_for_part(None)
             if stat.poly_blue:
                 return core.Vec4(0, 0, 1, 1)
@@ -378,7 +379,7 @@ class EditMode(navigation_mode_3d.EditMode):
         return core.Vec4(1, 1, 1, 1)
 
     def _mouse_collision_tests(self):
-        with self._edit_mode_selector.track_performance_stats('mouse_collision_tests'):
+        with self._edit_mode_selector.track_performance_stats("mouse_collision_tests"):
             highlight_finder = self._make_highlight_finder_callback()
             self._highlighter.update(highlight_finder)
             self._highlighter.update_displays(self._editor.ticks)

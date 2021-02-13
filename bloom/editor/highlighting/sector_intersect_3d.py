@@ -14,27 +14,27 @@ class SectorIntersect3D:
     def __init__(self, sector: map_objects.EditorSector):
         self._sector = sector
 
-    def closest_object_intersecting_line(self, point: core.Point3, direction: core.Vec3):
+    def closest_object_intersecting_line(
+        self, point: core.Point3, direction: core.Vec3
+    ):
         normalized_direction = direction.normalized()
 
         normal_2d_length = core.Vec2(
-            normalized_direction.x,
-            normalized_direction.y
+            normalized_direction.x, normalized_direction.y
         ).length()
 
         closest_object = None
         closest_part: str = None
-        closest_distance_squared = constants.REALLY_BIG_NUMBER * constants.REALLY_BIG_NUMBER
+        closest_distance_squared = (
+            constants.REALLY_BIG_NUMBER * constants.REALLY_BIG_NUMBER
+        )
         closest_hit: core.Point3 = None
 
         part = self._sector.part_for_direction(normalized_direction)
         if part == map_objects.EditorSector.FLOOR_PART:
             hit = self._sector.floor_plane.intersect_line(point, normalized_direction)
         else:
-            hit = self._sector.ceiling_plane.intersect_line(
-                point,
-                normalized_direction
-            )
+            hit = self._sector.ceiling_plane.intersect_line(point, normalized_direction)
         if hit is not None and self._sector.point_in_sector(hit.xy):
             closest_object = self._sector
             closest_part = part
@@ -42,16 +42,10 @@ class SectorIntersect3D:
             closest_distance_squared = (hit - point).length_squared()
 
         for editor_wall in self._sector.walls:
-            intersection = editor_wall.intersect_line(
-                point,
-                normalized_direction
-            )
+            intersection = editor_wall.intersect_line(point, normalized_direction)
             if intersection is not None:
                 hit, distance_squared = self._hit_3d_and_squared_distance_from_hit_2d(
-                    intersection,
-                    point,
-                    normal_2d_length,
-                    normalized_direction
+                    intersection, point, normal_2d_length, normalized_direction
                 )
                 if hit is not None:
                     if distance_squared < closest_distance_squared:
@@ -62,16 +56,10 @@ class SectorIntersect3D:
                         closest_part = part
 
         for editor_sprite in self._sector.sprites:
-            intersection = editor_sprite.intersect_line(
-                point,
-                direction
-            )
+            intersection = editor_sprite.intersect_line(point, direction)
             if intersection is not None:
                 hit, distance_squared = self._hit_3d_and_squared_distance_from_hit_2d(
-                    intersection,
-                    point,
-                    normal_2d_length,
-                    normalized_direction
+                    intersection, point, normal_2d_length, normalized_direction
                 )
                 if hit is not None:
                     distance_squared -= self._SPRITE_BIAS_SQUARED
@@ -83,23 +71,19 @@ class SectorIntersect3D:
                             closest_object = editor_sprite
                             closest_part = part
 
-        markers = self._sector.markers + \
-            self._sector.floor_z_motion_markers + \
-            self._sector.ceiling_z_motion_markers
+        markers = (
+            self._sector.markers
+            + self._sector.floor_z_motion_markers
+            + self._sector.ceiling_z_motion_markers
+        )
         for editor_marker in markers:
             if editor_marker is None:
                 continue
 
-            intersection = editor_marker.intersect_line(
-                point,
-                direction
-            )
+            intersection = editor_marker.intersect_line(point, direction)
             if intersection is not None:
                 hit, distance_squared = self._hit_3d_and_squared_distance_from_hit_2d(
-                    intersection,
-                    point,
-                    normal_2d_length,
-                    normalized_direction
+                    intersection, point, normal_2d_length, normalized_direction
                 )
                 if hit is not None:
                     distance_squared -= self._SPRITE_BIAS_SQUARED
@@ -118,14 +102,12 @@ class SectorIntersect3D:
         intersection_2d: core.Point2,
         point: core.Point3,
         normal_2d_length: float,
-        normal: core.Vec3
+        normal: core.Vec3,
     ):
         line_portion = (intersection_2d - point.xy).length() / normal_2d_length
 
         hit = core.Point3(
-            intersection_2d.x,
-            intersection_2d.y,
-            point.z + normal.z * line_portion
+            intersection_2d.x, intersection_2d.y, point.z + normal.z * line_portion
         )
 
         above_floor = hit.z <= self._sector.floor_z_at_point(intersection_2d)

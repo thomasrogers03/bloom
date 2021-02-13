@@ -8,7 +8,6 @@ from .. import map_objects
 
 
 class SectorMoveToAdjacent:
-
     def __init__(self, sector: map_objects.EditorSector, part: str):
         self._sector = sector
         self._part = part

@@ -21,11 +21,11 @@ class Highlighter:
         self._selected_target_view = target_view.TargetView(self._editor.scene)
         self._highlighted: highlight_details.HighlightDetails = None
         self._selected: typing.List[highlight_details.HighlightDetails] = []
-        self._filter_callback: typing.Callable[[
-            highlight_details.HighlightDetails], bool] = None
+        self._filter_callback: typing.Callable[
+            [highlight_details.HighlightDetails], bool
+        ] = None
         self._get_selected_colour_callback: typing.Callable[
-            [highlight_details.HighlightDetails],
-            core.Vec4
+            [highlight_details.HighlightDetails], core.Vec4
         ] = None
 
     @property
@@ -39,15 +39,28 @@ class Highlighter:
     def set_highlighted(self, value: highlight_details.HighlightDetails):
         self.update(lambda _, __: value)
 
-    def set_filter_callback(self, filter_callback: typing.Callable[[highlight_details.HighlightDetails], bool]):
+    def set_filter_callback(
+        self,
+        filter_callback: typing.Callable[[highlight_details.HighlightDetails], bool],
+    ):
         self._filter_callback = filter_callback
 
-    def set_get_selected_colour_callback(self, get_selected_colour_callback: typing.Callable[[highlight_details.HighlightDetails], core.Vec4]):
+    def set_get_selected_colour_callback(
+        self,
+        get_selected_colour_callback: typing.Callable[
+            [highlight_details.HighlightDetails], core.Vec4
+        ],
+    ):
         self._get_selected_colour_callback = get_selected_colour_callback
 
-    def select_append(self, no_append_if_not_selected=False, selected_type_or_types=None) -> typing.List[highlight_details.HighlightDetails]:
-        with self._editor.undo_stack.multi_step_undo('Select'):
-            if not (self._highlight_valid(selected_type_or_types) and self._selected_are_valid(selected_type_or_types)):
+    def select_append(
+        self, no_append_if_not_selected=False, selected_type_or_types=None
+    ) -> typing.List[highlight_details.HighlightDetails]:
+        with self._editor.undo_stack.multi_step_undo("Select"):
+            if not (
+                self._highlight_valid(selected_type_or_types)
+                and self._selected_are_valid(selected_type_or_types)
+            ):
                 self.deselect_all()
                 return []
 
@@ -66,7 +79,7 @@ class Highlighter:
             return self._selected
 
     def select(self, selected_type_or_types=None) -> highlight_details.HighlightDetails:
-        with self._editor.undo_stack.multi_step_undo('Select'):
+        with self._editor.undo_stack.multi_step_undo("Select"):
             self.deselect_all()
             if not self._highlight_valid(selected_type_or_types):
                 return None
@@ -74,23 +87,23 @@ class Highlighter:
             self.update_selection([self._highlighted])
             return self._selected[0]
 
-    def set_selected_objects(self, objects_to_select: typing.List[empty_object.EmptyObject]):
+    def set_selected_objects(
+        self, objects_to_select: typing.List[empty_object.EmptyObject]
+    ):
         hit_position = core.Point3(0, 0, 0)
         if self._highlighted is not None:
             hit_position = self._highlighted.hit_position
 
         self._selected = [
-            highlight_details.HighlightDetails(
-                map_object,
-                part,
-                hit_position
-            )
+            highlight_details.HighlightDetails(map_object, part, hit_position)
             for map_object in objects_to_select
             for part in map_object.get_all_parts()
         ]
         self.update_selected_target_view()
 
-    def set_selected(self, highlight_details: typing.List[highlight_details.HighlightDetails]):
+    def set_selected(
+        self, highlight_details: typing.List[highlight_details.HighlightDetails]
+    ):
         for selected in self._selected:
             selected.map_object.hide_highlight(selected.part)
         self._selected = highlight_details
@@ -101,11 +114,11 @@ class Highlighter:
         for selected in self._selected:
             self._selected_target_view.show_targets(selected.map_object)
 
-    def update_selection(self, new_selection: typing.List[highlight_details.HighlightDetails]):
+    def update_selection(
+        self, new_selection: typing.List[highlight_details.HighlightDetails]
+    ):
         operation = change_selection.ChangeSelection(
-            self,
-            self._selected,
-            new_selection
+            self, self._selected, new_selection
         )
         self._editor.undo_stack.add_operation(operation)
         operation.apply()
@@ -165,10 +178,10 @@ class Highlighter:
         higlight_finder: typing.Callable[
             [
                 highlight_details.HighlightDetails,
-                typing.List[highlight_details.HighlightDetails]
+                typing.List[highlight_details.HighlightDetails],
             ],
             highlight_details.HighlightDetails,
-        ]
+        ],
     ):
         new_highlight = higlight_finder(self._highlighted, self._selected)
 
@@ -186,8 +199,7 @@ class Highlighter:
 
         if self._highlighted is not None:
             self._highlighted.map_object.show_highlight(
-                self._highlighted.part,
-                self._HIGHLIGHTED_COLOUR * colour_scale
+                self._highlighted.part, self._HIGHLIGHTED_COLOUR * colour_scale
             )
 
         for selected in self._selected:
@@ -197,8 +209,7 @@ class Highlighter:
                 selected_colour = self._get_selected_colour_callback(selected)
 
             selected.map_object.show_highlight(
-                selected.part,
-                selected_colour * colour_scale
+                selected.part, selected_colour * colour_scale
             )
 
     def clear(self):

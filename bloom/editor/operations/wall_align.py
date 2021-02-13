@@ -8,12 +8,11 @@ from .. import map_objects
 
 
 class WallAlign:
-
     def __init__(self, first_wall: map_objects.EditorWall):
         self._first_wall = first_wall
 
     def align(self):
-        with self._first_wall.undos.multi_step_undo('Wall Align'):
+        with self._first_wall.undos.multi_step_undo("Wall Align"):
             self._do_align(set())
 
     def _do_align(self, seen: typing.Set[map_objects.EditorWall]):
@@ -39,11 +38,11 @@ class WallAlign:
                     continue
 
                 with wall_to_update.change_blood_object():
-                    wall_to_update.blood_wall.wall.panning_x = editor.to_build_panning_x(
-                        new_panning_x
+                    wall_to_update.blood_wall.wall.panning_x = (
+                        editor.to_build_panning_x(new_panning_x)
                     )
-                    wall_to_update.blood_wall.wall.panning_y = editor.to_build_panning_y(
-                        new_panning_y
+                    wall_to_update.blood_wall.wall.panning_y = (
+                        editor.to_build_panning_y(new_panning_y)
                     )
 
                 if wall_to_update != current_wall:

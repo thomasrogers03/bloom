@@ -8,9 +8,8 @@ from .. import cameras
 
 
 class UndoableOperation:
-
     def get_name(self):
-        return 'Undefined'
+        return "Undefined"
 
     def undo(self):
         raise NotImplementedError()
@@ -20,7 +19,6 @@ class UndoableOperation:
 
 
 class SimpleUndoableOperation:
-
     def __init__(self, name: str, undo, redo):
         self._name = name
         self.undo = undo
@@ -32,13 +30,14 @@ class SimpleUndoableOperation:
 
 
 class MapObject:
-
     def invalidate_geometry(self):
         raise NotImplementedError()
 
 
 @contextmanager
-def _property_change(name: str, map_object: MapObject, part: str, property_names: typing.List[str]):
+def _property_change(
+    name: str, map_object: MapObject, part: str, property_names: typing.List[str]
+):
     old_values: typing.Dict[str, typing.Any] = {}
     new_values: typing.Dict[str, typing.Any] = {}
     stat = map_object.get_stat_for_part(part)
@@ -63,7 +62,6 @@ def _property_change(name: str, map_object: MapObject, part: str, property_names
 
 
 class MultiStepUndo(UndoableOperation):
-
     def __init__(self, name: str):
         self._name = name
         self._operations: typing.List[UndoableOperation] = []
@@ -88,7 +86,6 @@ class MultiStepUndo(UndoableOperation):
 
 
 class UndoStack:
-
     def __init__(self, camera_collection: cameras.Cameras):
         self._camera_collection = camera_collection
         self._undo: typing.List[UndoableOperation] = []
@@ -111,24 +108,24 @@ class UndoStack:
 
     def undo(self):
         if len(self._undo) < 1:
-            self._camera_collection.set_info_text('Nothing to undo...')
+            self._camera_collection.set_info_text("Nothing to undo...")
             return
 
         operation = self._undo.pop()
         operation.undo()
 
-        self._camera_collection.set_info_text(f'Undo: {operation.get_name()}')
+        self._camera_collection.set_info_text(f"Undo: {operation.get_name()}")
         self._redo.append(operation)
 
     def redo(self):
         if len(self._redo) < 1:
-            self._camera_collection.set_info_text('Nothing to redo...')
+            self._camera_collection.set_info_text("Nothing to redo...")
             return
 
         operation = self._redo.pop()
         operation.redo()
 
-        self._camera_collection.set_info_text(f'Redo: {operation.get_name()}')
+        self._camera_collection.set_info_text(f"Redo: {operation.get_name()}")
         self._undo.append(operation)
 
     @contextmanager
@@ -143,7 +140,7 @@ class UndoStack:
     def begin_multi_step_undo(self, name: str):
         if self._multi_step_undo is None:
             self._multi_step_undo = MultiStepUndo(name)
-    
+
     def end_multi_step_undo(self):
         if self._multi_step_undo is not None:
             multi_step_undo = self._multi_step_undo
@@ -157,7 +154,7 @@ class UndoStack:
         name: str,
         map_object: MapObject,
         part: str,
-        *property_names: typing.List[str]
+        *property_names: typing.List[str],
     ):
         with _property_change(name, map_object, part, property_names) as operation:
             yield

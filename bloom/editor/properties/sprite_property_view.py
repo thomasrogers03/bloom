@@ -14,12 +14,7 @@ from ...utils import gui
 from ..descriptors.object_property import Property
 from ..descriptors.sprite_type import SpriteType
 
-_PROPERTY_LIST_TYPE = typing.List[
-    typing.Tuple[
-        str,
-        Property
-    ]
-]
+_PROPERTY_LIST_TYPE = typing.List[typing.Tuple[str, Property]]
 
 
 class SpritePropertyView:
@@ -36,7 +31,7 @@ class SpritePropertyView:
         canvas_height: float,
         frame_width: float,
         frame_height: float,
-        alpha=1
+        alpha=1,
     ):
         self._canvas_height = canvas_height
         self._frame_width = frame_width
@@ -48,7 +43,7 @@ class SpritePropertyView:
             frameColor=(0.65, 0.65, 0.65, alpha),
             state=DirectGuiGlobals.NORMAL,
             scrollBarWidth=0.04,
-            relief=DirectGuiGlobals.SUNKEN
+            relief=DirectGuiGlobals.SUNKEN,
         )
         self._bind_scroll(self._frame)
         self._canvas = self._frame.getCanvas()
@@ -62,11 +57,11 @@ class SpritePropertyView:
         property_count = len(property_list)
         columns = math.ceil(property_count / self._property_rows)
 
-        self._frame['canvasSize'] = (
+        self._frame["canvasSize"] = (
             0,
             columns * self._padded_property_width + 0.2,
             -self._canvas_height,
-            0
+            0,
         )
 
         self._value_setters: typing.Dict[str, typing.Any] = {}
@@ -78,8 +73,7 @@ class SpritePropertyView:
 
                 name, descriptor = property_list[index]
 
-                x = column * (self._padded_property_width) + \
-                    self._PROPERTY_PADDING / 4
+                x = column * (self._padded_property_width) + self._PROPERTY_PADDING / 4
                 y = -(row + 1) * self._property_height
 
                 label = DirectGui.DirectLabel(
@@ -88,18 +82,13 @@ class SpritePropertyView:
                     text=name,
                     scale=constants.TEXT_SIZE,
                     text_align=core.TextNode.A_left,
-                    frameColor=(0, 0, 0, 0)
+                    frameColor=(0, 0, 0, 0),
                 )
                 self._bind_scroll(label)
 
                 label_size = label.node().get_frame() * constants.TEXT_SIZE
-                label_width = (
-                    label_size[1] -
-                    label_size[0]
-                ) + self._PROPERTY_PADDING
-                width_left = (
-                    self._PROPERTY_WIDTH - label_width
-                ) / constants.TEXT_SIZE
+                label_width = (label_size[1] - label_size[0]) + self._PROPERTY_PADDING
+                width_left = (self._PROPERTY_WIDTH - label_width) / constants.TEXT_SIZE
 
                 if descriptor.property_type == Property.INTEGER_PROPERTY:
                     setter = DirectGui.DirectEntry(
@@ -109,54 +98,49 @@ class SpritePropertyView:
                         frameColor=(1, 1, 1, 1),
                         relief=DirectGuiGlobals.SUNKEN,
                         scale=constants.TEXT_SIZE,
-                        initialText=str(descriptor.value - descriptor.offset)
+                        initialText=str(descriptor.value - descriptor.offset),
                     )
                 elif descriptor.property_type == Property.BOOLEAN_PROPERTY:
                     setter = DirectGui.DirectCheckButton(
                         parent=self._canvas,
                         pos=core.Vec3(
-                            x + self._PROPERTY_WIDTH,
-                            y + constants.TEXT_SIZE / 2
+                            x + self._PROPERTY_WIDTH, y + constants.TEXT_SIZE / 2
                         ),
                         scale=constants.TEXT_SIZE,
-                        indicatorValue=descriptor.value ^ descriptor.offset
+                        indicatorValue=descriptor.value ^ descriptor.offset,
                     )
                 elif descriptor.property_type == Property.SOUND_PROPERTY:
                     setter = DirectGui.DirectButton(
                         parent=self._canvas,
                         pos=core.Vec3(
-                            x + self._PROPERTY_WIDTH,
-                            y + constants.TEXT_SIZE / 2
+                            x + self._PROPERTY_WIDTH, y + constants.TEXT_SIZE / 2
                         ),
                         scale=constants.TEXT_SIZE,
-                        text='Browse',
+                        text="Browse",
                         command=self._browse_sounds,
-                        text_align=core.TextNode.A_right
+                        text_align=core.TextNode.A_right,
                     )
-                    setter.set_python_tag('sound_index', descriptor.value)
+                    setter.set_python_tag("sound_index", descriptor.value)
                 elif descriptor.property_type == Property.ENUM_PROPERTY:
                     items = list(descriptor.enum_values.keys())
                     setter = DirectGui.DirectOptionMenu(
                         parent=self._canvas,
-                        pos=core.Vec3(
-                            x + label_width,
-                            y
-                        ),
+                        pos=core.Vec3(x + label_width, y),
                         scale=constants.TEXT_SIZE,
                         items=items,
                     )
                     setter.set(descriptor.reverse_enum_values[descriptor.value])
-                    setter.set_python_tag('enum_values', descriptor.enum_values)
+                    setter.set_python_tag("enum_values", descriptor.enum_values)
                 else:
                     raise ValueError(
-                        f'Invalid property type {descriptor.property_type}'
+                        f"Invalid property type {descriptor.property_type}"
                     )
 
                 self._bind_scroll(setter)
                 self._value_setters[name] = setter
 
-                setter['state'] = DirectGuiGlobals.NORMAL
-                setter['extraArgs'] = [setter, descriptor]
+                setter["state"] = DirectGuiGlobals.NORMAL
+                setter["extraArgs"] = [setter, descriptor]
                 if descriptor.tile_link_type == Property.TILE_LINK_OFFSET:
                     self._setup_tile_link_offset_setter(setter, descriptor)
 
@@ -165,17 +149,16 @@ class SpritePropertyView:
         for property_name, setter in self._value_setters.items():
             descriptor = self._properties[property_name]
             if descriptor.property_type == Property.INTEGER_PROPERTY:
-                value = self._validate_setter_integer_value(
-                    setter
-                ) + descriptor.offset
+                value = self._validate_setter_integer_value(setter) + descriptor.offset
             elif descriptor.property_type == Property.BOOLEAN_PROPERTY:
-                value = bool(setter['indicatorValue']) ^ descriptor.offset
+                value = bool(setter["indicatorValue"]) ^ descriptor.offset
             elif descriptor.property_type == Property.SOUND_PROPERTY:
-                value = setter.get_python_tag('sound_index') + descriptor.offset
+                value = setter.get_python_tag("sound_index") + descriptor.offset
             elif descriptor.property_type == Property.ENUM_PROPERTY:
                 enum_name = setter.get()
-                value = setter.get_python_tag('enum_values')[
-                    enum_name] + descriptor.offset
+                value = (
+                    setter.get_python_tag("enum_values")[enum_name] + descriptor.offset
+                )
             new_values[property_name] = value
 
         return new_values
@@ -185,8 +168,8 @@ class SpritePropertyView:
 
     def _validate_setter_integer_value(self, setter):
         value = setter.get()
-        if not re.match('^-?[0-9]+$', value):
-            setter.set('0')
+        if not re.match("^-?[0-9]+$", value):
+            setter.set("0")
             return 0
         return int(value)
 
@@ -204,13 +187,18 @@ class SpritePropertyView:
 
     def _browse_sounds(self, setter: DirectGui.DirectButton, descriptor: Property):
         def _update_sound(sound_index):
-            setter.set_python_tag('sound_index', sound_index)
-        current_sound_index = setter.get_python_tag('sound_index')
+            setter.set_python_tag("sound_index", sound_index)
+
+        current_sound_index = setter.get_python_tag("sound_index")
         self._sound_browser.show(current_sound_index, _update_sound)
 
-    def _setup_tile_link_offset_setter(self, setter: DirectGui.DirectEntry, descriptor: Property):
+    def _setup_tile_link_offset_setter(
+        self, setter: DirectGui.DirectEntry, descriptor: Property
+    ):
         if descriptor.property_type != Property.INTEGER_PROPERTY:
-            message = f'Invalid property type for tile offset {descriptor.property_type}'
+            message = (
+                f"Invalid property type for tile offset {descriptor.property_type}"
+            )
             raise ValueError(message)
 
         def _update():
@@ -219,11 +207,13 @@ class SpritePropertyView:
         def _get_tile():
             return self._get_offset_tile(setter.get(), descriptor)
 
-        setter['command'] = self._update_with_offset
-        setter['focusOutCommand'] = _update
+        setter["command"] = self._update_with_offset
+        setter["focusOutCommand"] = _update
         self.get_current_tile = _get_tile
 
-    def _update_with_offset(self, value: str, setter: DirectGui.DirectEntry, descriptor: Property):
+    def _update_with_offset(
+        self, value: str, setter: DirectGui.DirectEntry, descriptor: Property
+    ):
         value = self._get_offset_tile(value, descriptor)
         self._update_tile(value)
 

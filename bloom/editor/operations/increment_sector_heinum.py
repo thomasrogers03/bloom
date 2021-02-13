@@ -3,8 +3,8 @@
 
 from .. import map_objects
 
-class IncrementSectorHeinum:
 
+class IncrementSectorHeinum:
     def __init__(self, sector: map_objects.EditorSector, part: str):
         self._sector = sector
         self._part = part

@@ -12,7 +12,6 @@ from . import sector_draw, sprite_find_sector
 
 
 class GradientHeights:
-
     def __init__(self, sectors: typing.List[map_objects.EditorSector], part: str):
         self._sectors = sectors
         self._part = part

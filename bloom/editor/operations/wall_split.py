@@ -7,17 +7,20 @@ from ..geometry import wall_repeat_adjust
 from ..map_objects import wall
 from .. import undo_stack
 
-class WallSplit:
 
+class WallSplit:
     def __init__(self, wall_to_split: wall.EditorWall, where: core.Point2):
         self._wall_to_split = wall_to_split
         self._where = where
 
     def split(self):
-        if self._where == self._wall_to_split.point_1 or self._where == self._wall_to_split.point_2:
+        if (
+            self._where == self._wall_to_split.point_1
+            or self._where == self._wall_to_split.point_2
+        ):
             return
 
-        with self._wall_to_split.undos.multi_step_undo('Wall Split'):
+        with self._wall_to_split.undos.multi_step_undo("Wall Split"):
             self._do_split()
             if self._wall_to_split.other_side_wall is not None:
                 other_side_wall = self._wall_to_split.other_side_wall

@@ -15,7 +15,6 @@ class SoundDescriptor(data_loading.CustomStruct):
 
 
 class Sound:
-
     def __init__(self, sounds_rff: rff.RFF, sound_descriptor_data: bytes):
         unpacker = data_loading.Unpacker(sound_descriptor_data)
         self._descriptor = unpacker.read_struct(SoundDescriptor)
@@ -25,10 +24,10 @@ class Sound:
         elif self._descriptor.sound_format == 5:
             self._sample_rate = 22050
         else:
-            raise ValueError('Unsupported SFX')
+            raise ValueError("Unsupported SFX")
 
-        raw_name = unpacker.read_remaining().decode().rstrip('\x00').upper()
-        self._raw = sounds_rff.data_for_entry(f'{raw_name}.RAW')
+        raw_name = unpacker.read_remaining().decode().rstrip("\x00").upper()
+        self._raw = sounds_rff.data_for_entry(f"{raw_name}.RAW")
 
     @staticmethod
     def load(sounds_rff: rff.RFF, sound_sfx_name: str):
@@ -63,7 +62,7 @@ class Sound:
         return self._raw is not None
 
     def create_wav(self, path: str):
-        with wave.open(path, 'wb') as wave_file:
+        with wave.open(path, "wb") as wave_file:
             wave_file.setnchannels(1)
             wave_file.setsampwidth(1)
             wave_file.setframerate(self._sample_rate)

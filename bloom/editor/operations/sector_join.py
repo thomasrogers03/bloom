@@ -5,12 +5,11 @@ from .. import map_objects
 
 
 class SectorJoin:
-
     def __init__(
-        self, 
-        all_sectors: map_objects.SectorCollection, 
-        joiner: map_objects.EditorSector, 
-        joinee: map_objects.EditorSector
+        self,
+        all_sectors: map_objects.SectorCollection,
+        joiner: map_objects.EditorSector,
+        joinee: map_objects.EditorSector,
     ):
         self._all_sectors = all_sectors
         self._joiner = joiner
@@ -70,13 +69,13 @@ class SectorJoin:
                 found = False
                 for find_wall in self._walls:
                     if next_point == find_wall.point_1:
-                        assert(find_wall.wall_previous_point.is_destroyed)
+                        assert find_wall.wall_previous_point.is_destroyed
 
                         find_wall.wall_previous_point = editor_wall
                         editor_wall.set_wall_point_2(find_wall)
                         found = True
                         break
-                assert(found)
+                assert found
 
         self._joiner.validate()
         self._joiner.invalidate_geometry()

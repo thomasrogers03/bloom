@@ -6,11 +6,8 @@ from . import wall_link
 
 
 class WallExtrude:
-
     def __init__(
-        self, 
-        wall: map_objects.EditorWall,
-        all_sectors: map_objects.SectorCollection
+        self, wall: map_objects.EditorWall, all_sectors: map_objects.SectorCollection
     ):
         self._wall = wall
         self._all_sectors = all_sectors
@@ -19,7 +16,7 @@ class WallExtrude:
         if self._wall.other_side_wall is not None:
             return
 
-        with self._wall.undos.multi_step_undo('Wall Extrude'):
+        with self._wall.undos.multi_step_undo("Wall Extrude"):
             new_sector = self._all_sectors.create_sector(self._sector)
             extrude_direction = self._wall.get_normal() * 2048
 
@@ -62,13 +59,10 @@ class WallExtrude:
                 (point_1, point_2),
                 (point_2, point_3),
                 (point_3, point_4),
-                (point_4, point_1)
+                (point_4, point_1),
             ]
             for new_wall, new_wall_point_2 in new_segments:
-                new_wall.setup(
-                    new_wall_point_2,
-                    None
-                )
+                new_wall.setup(new_wall_point_2, None)
                 new_wall.reset_panning_and_repeats(None)
             point_1.link(self._wall)
 

@@ -12,7 +12,6 @@ from .editor import map_objects, ror_constants
 
 
 class RORTypeSelector(empty_edit_mode.EditMode):
-
     def __init__(self, parent: core.NodePath, edit_mode_selector: edit_mode.EditMode):
         self._edit_mode_selector = edit_mode_selector
         self._type_selected: typing.Optional[typing.Callable[[str], None]] = None
@@ -22,7 +21,7 @@ class RORTypeSelector(empty_edit_mode.EditMode):
             pos=core.Vec3(-0.18, -0.1),
             frameSize=(0, 0.36, 0, 0.24),
             relief=DirectGuiGlobals.RAISED,
-            borderWidth=(0.01, 0.01)
+            borderWidth=(0.01, 0.01),
         )
         self._frame.hide()
 
@@ -35,7 +34,7 @@ class RORTypeSelector(empty_edit_mode.EditMode):
                 ror_constants.ROR_TYPE_STACK,
                 ror_constants.ROR_TYPE_WATER,
                 ror_constants.ROR_TYPE_GOO,
-            ]
+            ],
         )
 
         DirectGui.DirectButton(
@@ -43,8 +42,8 @@ class RORTypeSelector(empty_edit_mode.EditMode):
             pos=core.Vec3(0.18, 0.05),
             frameSize=core.Vec4(-0.06, 0.06, -0.02, 0.06) / constants.BIG_TEXT_SIZE,
             scale=constants.BIG_TEXT_SIZE,
-            text='Ok',
-            command=self._confirm
+            text="Ok",
+            command=self._confirm,
         )
 
     def show(self, type_selected: typing.Callable[[str], None]):

@@ -13,15 +13,11 @@ from . import utils
 
 
 class TestWallGather(unittest.TestCase):
-
     def setUp(self):
         self._sectors = utils.new_sector_collection()
         self._start_sector = utils.build_rectangular_sector(self._sectors, -1, 1, -1, 1)
         operations.sector_split.SectorSplit(self._start_sector, self._sectors).split(
-            [
-                core.Point2(-1, 0),
-                core.Point2(1, 0)
-            ]
+            [core.Point2(-1, 0), core.Point2(1, 0)]
         )
         wall_to_split = utils.find_wall_on_point(self._start_sector, core.Point2(-1, 0))
         operations.wall_split.WallSplit(wall_to_split, core.Point2(0, 0)).split()
@@ -30,9 +26,7 @@ class TestWallGather(unittest.TestCase):
         test_id = self.id()
         for sector_index, sector in enumerate(self._sectors.sectors):
             utils.save_sector_images(
-                f'{test_id}-sector_{sector_index}', 
-                sector,
-                self._sectors
+                f"{test_id}-sector_{sector_index}", sector, self._sectors
             )
 
     def test_can_grab_walls_2_sectors(self):
@@ -40,49 +34,31 @@ class TestWallGather(unittest.TestCase):
 
     def test_can_grab_walls_3_sectors(self):
         operations.sector_split.SectorSplit(self._start_sector, self._sectors).split(
-            [
-                core.Point2(0, 0),
-                core.Point2(0, 1)
-            ]
+            [core.Point2(0, 0), core.Point2(0, 1)]
         )
 
         self._assert_got_all_walls()
 
     def test_can_grab_walls_4_sectors(self):
         operations.sector_split.SectorSplit(self._start_sector, self._sectors).split(
-            [
-                core.Point2(0, 0),
-                core.Point2(0, 1)
-            ]
+            [core.Point2(0, 0), core.Point2(0, 1)]
         )
-        operations.sector_split.SectorSplit(self._sectors.sectors[1], self._sectors).split(
-            [
-                core.Point2(0, 0),
-                core.Point2(0, -1)
-            ]
-        )
+        operations.sector_split.SectorSplit(
+            self._sectors.sectors[1], self._sectors
+        ).split([core.Point2(0, 0), core.Point2(0, -1)])
 
         self._assert_got_all_walls()
 
     def test_can_grab_walls_5_sectors(self):
         operations.sector_split.SectorSplit(self._start_sector, self._sectors).split(
-            [
-                core.Point2(0, 0),
-                core.Point2(0, 1)
-            ]
+            [core.Point2(0, 0), core.Point2(0, 1)]
         )
         operations.sector_split.SectorSplit(self._start_sector, self._sectors).split(
-            [
-                core.Point2(0, 0),
-                core.Point2(-1, 1)
-            ]
+            [core.Point2(0, 0), core.Point2(-1, 1)]
         )
-        operations.sector_split.SectorSplit(self._sectors.sectors[1], self._sectors).split(
-            [
-                core.Point2(0, 0),
-                core.Point2(0, -1)
-            ]
-        )
+        operations.sector_split.SectorSplit(
+            self._sectors.sectors[1], self._sectors
+        ).split([core.Point2(0, 0), core.Point2(0, -1)])
 
         self._assert_got_all_walls()
 
@@ -97,4 +73,4 @@ class TestWallGather(unittest.TestCase):
 
         for sector_index, sector in enumerate(self._sectors.sectors):
             if sector not in wall_sectors:
-                raise AssertionError(f'Sector {sector_index} not found in wall gather')
+                raise AssertionError(f"Sector {sector_index} not found in wall gather")

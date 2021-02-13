@@ -13,8 +13,8 @@ class SubSector(typing.NamedTuple):
     outer_wall: EditorWall
     inner_walls: typing.List[EditorWall]
 
-class Sector:
 
+class Sector:
     def __init__(self, walls: typing.List[EditorWall]):
         self._walls = walls
 
@@ -52,7 +52,7 @@ class Sector:
     def get_wall_bunch_points(start_wall: EditorWall):
         points: typing.List[core.Point2] = []
         current_wall = start_wall.wall_point_2
-        
+
         while current_wall != start_wall:
             points.append(current_wall.point_1)
             current_wall = current_wall.wall_point_2
@@ -72,7 +72,7 @@ class Sector:
             for inner_wall in inner_walls:
                 if inner_wall in handled:
                     continue
-                
+
                 if self.point_in_shape(bunch_points, inner_wall.point_1):
                     sub_sector.inner_walls.append(inner_wall)
                     for wall in inner_wall.iterate_wall_bunch():

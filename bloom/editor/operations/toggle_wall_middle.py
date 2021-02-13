@@ -5,7 +5,6 @@ from .. import map_objects
 
 
 class ToggleWallMiddle:
-
     def __init__(self, wall: map_objects.EditorWall, part: str):
         self._wall = wall
         self._part = part

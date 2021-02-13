@@ -12,19 +12,19 @@ from . import sector_draw, sprite_find_sector
 
 
 class SectorInsert:
-
-    def __init__(self, sector_to_split: map_objects.EditorSector, all_sectors: map_objects.SectorCollection):
+    def __init__(
+        self,
+        sector_to_split: map_objects.EditorSector,
+        all_sectors: map_objects.SectorCollection,
+    ):
         self._sector_to_split = sector_to_split
         self._all_sectors = all_sectors
 
-    def insert(
-        self,
-        points: typing.List[core.Point2]
-    ):
+    def insert(self, points: typing.List[core.Point2]):
         if len(points) < 3:
             return
 
-        with self._all_sectors.undos.multi_step_undo('Sector Insert'):
+        with self._all_sectors.undos.multi_step_undo("Sector Insert"):
             if self._sector_to_split is None:
                 new_sector = self._all_sectors.create_empty_sector()
             else:
@@ -35,14 +35,10 @@ class SectorInsert:
 
             if self._sector_to_split is not None:
                 new_points = sector_draw.make_wall_points(
-                    self._wall_base,
-                    self._sector_to_split,
-                    points
+                    self._wall_base, self._sector_to_split, points
                 )
             new_otherside_points = sector_draw.make_wall_points(
-                self._wall_base,
-                new_sector,
-                points
+                self._wall_base, new_sector, points
             )
 
             if self._sector_to_split is not None:
@@ -68,8 +64,7 @@ class SectorInsert:
             if self._sector_to_split is not None:
                 for sprite in self._sector_to_split.sprites:
                     sprite_find_sector.SpriteFindSector(
-                        sprite,
-                        self._all_sectors.sectors
+                        sprite, self._all_sectors.sectors
                     ).update_sector()
 
     @staticmethod

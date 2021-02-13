@@ -13,7 +13,12 @@ class SectorExtrude:
     _WALL_OFFSET = core.Vec2(256, 256)
     _LINK_OFFSET = 64
 
-    def __init__(self, sector: map_objects.EditorSector, all_sectors: map_objects.SectorCollection, part: str):
+    def __init__(
+        self,
+        sector: map_objects.EditorSector,
+        all_sectors: map_objects.SectorCollection,
+        part: str,
+    ):
         self._sector = sector
         self._all_sectors = all_sectors
         self._part = part
@@ -58,10 +63,7 @@ class SectorExtrude:
         upper_sector.sector.sector.floor_picnum = picnum
         lower_sector.sector.sector.ceiling_picnum = picnum
 
-        upper_sector.link(
-            map_objects.EditorSector.FLOOR_PART, 
-            lower_sector
-        )
+        upper_sector.link(map_objects.EditorSector.FLOOR_PART, lower_sector)
 
         if link_type in ror_constants.ROR_TYPES_WITH_WATER:
             lower_sector.get_data().underwater = 1
@@ -71,13 +73,11 @@ class SectorExtrude:
 
     def _get_link_offset(self):
         normal = self._walls[0].get_normal() * self._LINK_OFFSET
-        link_sprite_offset_2d = (self._walls[0].get_centre_2d() - normal) - self._walls[0].point_1
-
-        return core.Vec3(
-            link_sprite_offset_2d.x,
-            link_sprite_offset_2d.y,
+        link_sprite_offset_2d = (self._walls[0].get_centre_2d() - normal) - self._walls[
             0
-        )
+        ].point_1
+
+        return core.Vec3(link_sprite_offset_2d.x, link_sprite_offset_2d.y, 0)
 
     @property
     def _walls(self) -> typing.List[map_objects.EditorWall]:

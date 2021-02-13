@@ -6,18 +6,18 @@ import typing
 from ..highlighting import highlight_details
 from ..undo_stack import UndoableOperation
 
+
 class Selector:
-    
     def set_selected(self, selection: typing.List[highlight_details.HighlightDetails]):
         raise NotImplementedError()
 
-class ChangeSelection(UndoableOperation):
 
+class ChangeSelection(UndoableOperation):
     def __init__(
-        self, 
+        self,
         selector: Selector,
-        previous_selection: typing.List[highlight_details.HighlightDetails], 
-        new_selection: typing.List[highlight_details.HighlightDetails]
+        previous_selection: typing.List[highlight_details.HighlightDetails],
+        new_selection: typing.List[highlight_details.HighlightDetails],
     ):
         self._selector = selector
         self._previous_selection = previous_selection
@@ -29,5 +29,3 @@ class ChangeSelection(UndoableOperation):
 
     def redo(self):
         self._selector.set_selected(self._new_selection)
-
-

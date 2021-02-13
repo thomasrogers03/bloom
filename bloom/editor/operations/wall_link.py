@@ -8,25 +8,23 @@ from . import wall_split
 
 
 class SectorWallLink:
-
     def __init__(
         self,
         wall_to_link: map_objects.EditorWall,
-        all_sectors: map_objects.SectorCollection
+        all_sectors: map_objects.SectorCollection,
     ):
         self._wall_to_link = wall_to_link
         self._link_wall_sector: map_objects.EditorSector = self._wall_to_link.sector
         self._all_sectors = all_sectors
 
     def try_link_wall(self):
-        with self._wall_to_link.undos.multi_step_undo('Wall Link'):
+        with self._wall_to_link.undos.multi_step_undo("Wall Link"):
             if self._try_link_single_wall():
                 if self._wall_to_link.other_side_wall is None:
                     self.try_link_wall()
                 elif self._wall_to_link.wall_point_2.other_side_wall is None:
                     SectorWallLink(
-                        self._wall_to_link.wall_point_2,
-                        self._all_sectors
+                        self._wall_to_link.wall_point_2, self._all_sectors
                     ).try_link_wall()
 
     def _try_link_single_wall(self):
@@ -43,7 +41,9 @@ class SectorWallLink:
         return False
 
     @staticmethod
-    def _try_link(test_wall: map_objects.EditorWall, wall_to_link: map_objects.EditorWall):
+    def _try_link(
+        test_wall: map_objects.EditorWall, wall_to_link: map_objects.EditorWall
+    ):
         if SectorWallLink._cannot_link(test_wall, wall_to_link):
             return False
 
@@ -76,19 +76,23 @@ class SectorWallLink:
         return False
 
     @staticmethod
-    def _cannot_link(test_wall: map_objects.EditorWall, wall_to_link: map_objects.EditorWall):
-        return wall_to_link == test_wall or \
-            wall_to_link == test_wall.wall_previous_point or \
-            wall_to_link == test_wall.wall_point_2 or \
-            test_wall.other_side_wall is not None or \
-            test_wall.get_direction().dot(wall_to_link.get_direction()) >= 0
+    def _cannot_link(
+        test_wall: map_objects.EditorWall, wall_to_link: map_objects.EditorWall
+    ):
+        return (
+            wall_to_link == test_wall
+            or wall_to_link == test_wall.wall_previous_point
+            or wall_to_link == test_wall.wall_point_2
+            or test_wall.other_side_wall is not None
+            or test_wall.get_direction().dot(wall_to_link.get_direction()) >= 0
+        )
 
     def _do_try_link_wall(
         self,
         test_sector: map_objects.EditorSector,
         seen_sectors: typing.Set[map_objects.EditorSector],
         depth_left=100,
-        include_self=False
+        include_self=False,
     ):
         if depth_left < 1 or test_sector in seen_sectors:
             return False
@@ -107,7 +111,7 @@ class SectorWallLink:
                 portal.other_side_sector,
                 seen_sectors,
                 depth_left=depth_left - 1,
-                include_self=True
+                include_self=True,
             )
             if result:
                 return True

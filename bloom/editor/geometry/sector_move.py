@@ -13,9 +13,11 @@ class SpriteMove(typing.NamedTuple):
     start_position: core.Point2
     sprite: map_objects.EditorSprite
 
-class SectorMove(empty_move.EmptyMove):
 
-    def __init__(self, sector: map_objects.EditorSector, part: str, move_sprites_on_sectors: bool):
+class SectorMove(empty_move.EmptyMove):
+    def __init__(
+        self, sector: map_objects.EditorSector, part: str, move_sprites_on_sectors: bool
+    ):
         self._sector = sector
         self._part = part
 
@@ -28,19 +30,17 @@ class SectorMove(empty_move.EmptyMove):
         if move_sprites_on_sectors:
             for sprite in self._sector.sprites:
                 if self._sprite_should_move(sprite):
-                    self._sprite_moves.append(
-                        SpriteMove(
-                            sprite.origin,
-                            sprite
-                        )
-                    )
+                    self._sprite_moves.append(SpriteMove(sprite.origin, sprite))
 
     def _sprite_should_move(self, sprite: map_objects.EditorSprite):
         origin = sprite.origin_2d
-        return (self._part == map_objects.EditorSector.FLOOR_PART and \
-                sprite.z_at_bottom >= self._sector.floor_z_at_point(origin)) or \
-                (self._part == map_objects.EditorSector.CEILING_PART and \
-                sprite.z_at_top <= self._sector.ceiling_z_at_point(origin))
+        return (
+            self._part == map_objects.EditorSector.FLOOR_PART
+            and sprite.z_at_bottom >= self._sector.floor_z_at_point(origin)
+        ) or (
+            self._part == map_objects.EditorSector.CEILING_PART
+            and sprite.z_at_top <= self._sector.ceiling_z_at_point(origin)
+        )
 
     def get_move_direction(self) -> core.Vec3:
         return core.Vec3(0, 0, -1)
@@ -56,6 +56,4 @@ class SectorMove(empty_move.EmptyMove):
         snapped_delta_z = new_z - self._start_z
         sprite_delta = core.Vec3(0, 0, snapped_delta_z)
         for sprite_move in self._sprite_moves:
-            sprite_move.sprite.move_to(
-                sprite_move.start_position + sprite_delta
-            )
+            sprite_move.sprite.move_to(sprite_move.start_position + sprite_delta)

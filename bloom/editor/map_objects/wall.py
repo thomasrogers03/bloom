@@ -13,7 +13,7 @@ from . import empty_object, geometry_highlight
 
 
 class EditorWall(empty_object.EmptyObject):
-    _MASK_WALL_PART = 'middle_highlight'
+    _MASK_WALL_PART = "middle_highlight"
     _LENGTH_REPEAT_SCALE = 1 / 16.0
 
     def __init__(
@@ -21,7 +21,7 @@ class EditorWall(empty_object.EmptyObject):
         blood_wall: map_data.wall.Wall,
         name: str,
         editor_sector,
-        undos: undo_stack.UndoStack
+        undos: undo_stack.UndoStack,
     ):
         super().__init__(undos)
 
@@ -37,17 +37,13 @@ class EditorWall(empty_object.EmptyObject):
         self._is_destroyed = False
         self._parts: typing.Dict[str, sector_geometry.GeometryPart] = {}
 
-    def setup(
-        self,
-        wall_point_2: 'EditorWall',
-        other_side_wall: 'EditorWall'
-    ):
+    def setup(self, wall_point_2: "EditorWall", other_side_wall: "EditorWall"):
         self._wall_point_2 = wall_point_2
         self._other_side_wall = other_side_wall
 
-    def link(self, other_side_wall: 'EditorWall'):
+    def link(self, other_side_wall: "EditorWall"):
         if self._other_side_wall is not None:
-            message = 'Tried to link to a wall when we are already linking to one'
+            message = "Tried to link to a wall when we are already linking to one"
             raise AssertionError(message)
 
         old_other_side_wall = self._other_side_wall
@@ -84,7 +80,7 @@ class EditorWall(empty_object.EmptyObject):
             yield current_wall
             current_wall = current_wall.wall_point_2
 
-    def _gather_walls_at_point_1(self, seen: typing.Set['EditorWall']):
+    def _gather_walls_at_point_1(self, seen: typing.Set["EditorWall"]):
         if self in seen:
             return
 
@@ -99,10 +95,10 @@ class EditorWall(empty_object.EmptyObject):
     def setup_geometry(self, all_geometry: sector_geometry.SectorGeometry):
         self._parts = {}
 
-        debug_display_node = core.TextNode('debug')
-        text = f'Angle: {self.get_direction_theta()}\n'
-        text += f'Direction: {self.get_direction()}\n'
-        text += f'Length: {self.get_direction().length()}'
+        debug_display_node = core.TextNode("debug")
+        text = f"Angle: {self.get_direction_theta()}\n"
+        text += f"Direction: {self.get_direction()}\n"
+        text += f"Length: {self.get_direction().length()}"
         debug_display_node.set_text(text)
         debug_display_node.set_align(core.TextNode.A_center)
         self._debug_display = all_geometry.scene.attach_new_node(debug_display_node)
@@ -115,7 +111,7 @@ class EditorWall(empty_object.EmptyObject):
             self.point_1,
             self._sector.floor_z_at_point(self.point_1),
             self._sector.ceiling_z_at_point(self.point_1),
-            self.vertex_part_name
+            self.vertex_part_name,
         )
 
         thickness = 4
@@ -134,9 +130,7 @@ class EditorWall(empty_object.EmptyObject):
             colour = core.Vec4(1, 0, 0, 1)
         all_geometry.add_2d_geometry(self.point_1, self.point_2, colour, thickness)
         all_geometry.add_2d_highlight_geometry(
-            self.default_part,
-            self.point_1,
-            self.point_2
+            self.default_part, self.point_1, self.point_2
         )
 
         if self._other_side_wall is None:
@@ -145,18 +139,18 @@ class EditorWall(empty_object.EmptyObject):
             else:
                 peg = self._sector.ceiling_z
 
-            self._parts['full'] = sector_geometry.GeometryPart(
+            self._parts["full"] = sector_geometry.GeometryPart(
                 self._wall.wall.picnum,
                 self._wall.wall.palette,
                 self._wall.data.pan_always,
-                'full'
+                "full",
             )
             self._make_wall_part(
                 all_geometry,
                 peg,
                 lambda point: self._sector.floor_z_at_point(point),
                 lambda point: self._sector.ceiling_z_at_point(point),
-                self._parts['full']
+                self._parts["full"],
             )
         else:
             if not self.other_side_sector.sector.sector.floor_stat.parallax:
@@ -172,19 +166,19 @@ class EditorWall(empty_object.EmptyObject):
                 else:
                     peg = self.other_side_sector.floor_z
 
-                self._parts['lower'] = sector_geometry.GeometryPart(
+                self._parts["lower"] = sector_geometry.GeometryPart(
                     lower_picnum,
                     self._wall.wall.palette,
                     self._wall.data.pan_always,
-                    'lower'
+                    "lower",
                 )
                 self._make_wall_part(
                     all_geometry,
                     peg,
                     lambda point: self._sector.floor_z_at_point(point),
                     lambda point: self.other_side_sector.floor_z_at_point(point),
-                    self._parts['lower'],
-                    stat=lower_stat
+                    self._parts["lower"],
+                    stat=lower_stat,
                 )
             if not self.other_side_sector.sector.sector.ceiling_stat.parallax:
                 if self._wall.wall.stat.align:
@@ -192,43 +186,37 @@ class EditorWall(empty_object.EmptyObject):
                 else:
                     peg = self.other_side_sector.ceiling_z
 
-                self._parts['upper'] = sector_geometry.GeometryPart(
+                self._parts["upper"] = sector_geometry.GeometryPart(
                     self._wall.wall.picnum,
                     self._wall.wall.palette,
                     self._wall.data.pan_always,
-                    'upper'
+                    "upper",
                 )
                 self._make_wall_part(
                     all_geometry,
                     peg,
                     lambda point: self.other_side_sector.ceiling_z_at_point(point),
                     lambda point: self._sector.ceiling_z_at_point(point),
-                    self._parts['upper']
+                    self._parts["upper"],
                 )
             if self._has_wall_mask:
                 if self._wall.wall.stat.align:
-                    peg = min(
-                        self._sector.floor_z,
-                        self.other_side_sector.floor_z
-                    )
+                    peg = min(self._sector.floor_z, self.other_side_sector.floor_z)
                 else:
-                    peg = max(
-                        self._sector.ceiling_z,
-                        self.other_side_sector.ceiling_z
-                    )
+                    peg = max(self._sector.ceiling_z, self.other_side_sector.ceiling_z)
 
-                self._parts['middle'] = sector_geometry.GeometryPart(
+                self._parts["middle"] = sector_geometry.GeometryPart(
                     self._wall.wall.over_picnum,
                     self._wall.wall.palette,
                     self._wall.data.pan_always,
-                    'middle'
+                    "middle",
                 )
                 self._make_wall_part(
                     all_geometry,
                     peg,
                     lambda point: self.other_side_sector.floor_z_at_point(point),
                     lambda point: self.other_side_sector.ceiling_z_at_point(point),
-                    self._parts['middle']
+                    self._parts["middle"],
                 )
 
         self._needs_geometry_reset = False
@@ -243,8 +231,10 @@ class EditorWall(empty_object.EmptyObject):
         if self._is_other_side_sector_visible is not None:
             return self._is_other_side_sector_visible
 
-        if self.other_side_sector.sector.sector.floor_stat.parallax or \
-                self.other_side_sector.sector.sector.ceiling_stat.parallax:
+        if (
+            self.other_side_sector.sector.sector.floor_stat.parallax
+            or self.other_side_sector.sector.sector.ceiling_stat.parallax
+        ):
             return True
 
         middle_bottom = max(
@@ -314,7 +304,7 @@ class EditorWall(empty_object.EmptyObject):
     def wall_point_2(self):
         return self._wall_point_2
 
-    def set_wall_point_2(self, value: 'EditorWall'):
+    def set_wall_point_2(self, value: "EditorWall"):
         previous_point_2 = self._wall_point_2
 
         def _undo():
@@ -344,10 +334,7 @@ class EditorWall(empty_object.EmptyObject):
 
     @property
     def point_1(self):
-        return core.Point2(
-            self._wall.wall.position_x,
-            self._wall.wall.position_y
-        )
+        return core.Point2(self._wall.wall.position_x, self._wall.wall.position_y)
 
     @property
     def origin_2d(self):
@@ -358,7 +345,7 @@ class EditorWall(empty_object.EmptyObject):
         return core.Point3(
             self.origin_2d.x,
             self.origin_2d.y,
-            self._sector.floor_z_at_point(self.origin_2d)
+            self._sector.floor_z_at_point(self.origin_2d),
         )
 
     @property
@@ -379,7 +366,7 @@ class EditorWall(empty_object.EmptyObject):
 
     @property
     def vertex_part_name(self):
-        return f'{self._name}_vertex'
+        return f"{self._name}_vertex"
 
     def destroy(self):
         self._is_destroyed = True
@@ -450,22 +437,17 @@ class EditorWall(empty_object.EmptyObject):
 
     @property
     def default_part(self):
-        return f'{self._name}_2d_highlight'
+        return f"{self._name}_2d_highlight"
 
     def get_all_parts(self):
         return [
-            f'{self._name}_{part_name}_highlight'
-            for part_name in [
-                'lower',
-                'upper',
-                'full',
-                'middle'
-            ]
+            f"{self._name}_{part_name}_highlight"
+            for part_name in ["lower", "upper", "full", "middle"]
         ]
 
     def get_part_at_point(self, position: core.Point3):
         if self._other_side_wall is None:
-            return f'{self._name}_full_highlight'
+            return f"{self._name}_full_highlight"
 
         lower_bottom = self._sector.floor_z_at_point(position.xy)
         lower_top = self.other_side_sector.floor_z_at_point(position.xy)
@@ -477,10 +459,10 @@ class EditorWall(empty_object.EmptyObject):
         upper_top = self._sector.ceiling_z_at_point(position.xy)
 
         if position.z <= upper_bottom and position.z >= upper_top:
-            return f'{self._name}_upper_highlight'
+            return f"{self._name}_upper_highlight"
 
         if self._has_wall_mask:
-            return f'{self._name}_middle_highlight'
+            return f"{self._name}_middle_highlight"
 
         return None
 
@@ -494,12 +476,14 @@ class EditorWall(empty_object.EmptyObject):
 
     def prepare_to_persist(
         self,
-        sector_mapping: typing.Dict['editor.sector.EditorSector', int],
-        wall_mapping: typing.Dict['editor.wall.EditorWall', int]
+        sector_mapping: typing.Dict["editor.sector.EditorSector", int],
+        wall_mapping: typing.Dict["editor.wall.EditorWall", int],
     ) -> map_data.wall.Wall:
         if self._other_side_wall is not None:
             self._wall.wall.other_side_wall_index = wall_mapping[self._other_side_wall]
-            self._wall.wall.other_side_sector_index = sector_mapping[self.other_side_sector]
+            self._wall.wall.other_side_sector_index = sector_mapping[
+                self.other_side_sector
+            ]
         else:
             self._wall.wall.other_side_wall_index = -1
             self._wall.wall.other_side_sector_index = -1
@@ -568,8 +552,8 @@ class EditorWall(empty_object.EmptyObject):
                         core.Vec3(
                             ticks * self._wall.data.panx / 128,
                             ticks * self._wall.data.pany / 1024,
-                            0
-                        )
+                            0,
+                        ),
                     )
 
     @property
@@ -585,16 +569,18 @@ class EditorWall(empty_object.EmptyObject):
         return self._wall.wall.stat.masking > 0 and self._wall.wall.over_picnum >= 0
 
     def _is_lower_swapped_part(self, part: str):
-        return self._other_side_wall is not None and \
-            self._wall.wall.stat.bottom_swap and \
-            part == self._lower_wall_part
+        return (
+            self._other_side_wall is not None
+            and self._wall.wall.stat.bottom_swap
+            and part == self._lower_wall_part
+        )
 
     def _is_masking_part(self, part: str):
         return part is not None and part.endswith(self._MASK_WALL_PART)
 
     @property
     def _lower_wall_part(self):
-        return f'{self._name}_lower_highlight'
+        return f"{self._name}_lower_highlight"
 
     def _make_wall_part(
         self,
@@ -603,7 +589,7 @@ class EditorWall(empty_object.EmptyObject):
         floor_z_at_point_callback: typing.Callable[[core.Point2], float],
         ceiling_z_at_point_callback: typing.Callable[[core.Point2], float],
         part: sector_geometry.GeometryPart,
-        stat: map_data.wall.Stat = None
+        stat: map_data.wall.Stat = None,
     ):
         if stat is None:
             stat = self._wall.wall.stat
@@ -616,17 +602,12 @@ class EditorWall(empty_object.EmptyObject):
 
         if point_1_top < point_1_bottom or point_2_top < point_2_bottom:
             vertex_data = core.GeomVertexData(
-                part.part,
-                constants.VERTEX_FORMAT,
-                core.Geom.UH_static
+                part.part, constants.VERTEX_FORMAT, core.Geom.UH_static
             )
             vertex_data.set_num_rows(4)
-            position_writer = core.GeomVertexWriter(vertex_data, 'vertex')
-            colour_write = core.GeomVertexWriter(vertex_data, 'color')
-            texcoord_writer = core.GeomVertexWriter(
-                vertex_data,
-                'texcoord'
-            )
+            position_writer = core.GeomVertexWriter(vertex_data, "vertex")
+            colour_write = core.GeomVertexWriter(vertex_data, "color")
+            texcoord_writer = core.GeomVertexWriter(vertex_data, "texcoord")
 
             shade = self._shade_to_colour_channel(self.shade)
             colour_write.add_data4(shade, shade, shade, 1)
@@ -651,35 +632,19 @@ class EditorWall(empty_object.EmptyObject):
                 point_1_bottom,
                 point_1_top,
                 point_2_bottom,
-                point_2_top
+                point_2_top,
             )
 
-            position_writer.add_data3(
-                self.point_1.x,
-                self.point_1.y,
-                point_1_bottom
-            )
+            position_writer.add_data3(self.point_1.x, self.point_1.y, point_1_bottom)
             texcoord_writer.add_data2(uv_1)
 
-            position_writer.add_data3(
-                self.point_1.x,
-                self.point_1.y,
-                point_1_top
-            )
+            position_writer.add_data3(self.point_1.x, self.point_1.y, point_1_top)
             texcoord_writer.add_data2(uv_2)
 
-            position_writer.add_data3(
-                self.point_2.x,
-                self.point_2.y,
-                point_2_top
-            )
+            position_writer.add_data3(self.point_2.x, self.point_2.y, point_2_top)
             texcoord_writer.add_data2(uv_3)
 
-            position_writer.add_data3(
-                self.point_2.x,
-                self.point_2.y,
-                point_2_bottom
-            )
+            position_writer.add_data3(self.point_2.x, self.point_2.y, point_2_bottom)
             texcoord_writer.add_data2(uv_4)
 
             primitive = core.GeomTriangles(core.Geom.UH_static)
@@ -691,10 +656,7 @@ class EditorWall(empty_object.EmptyObject):
             geometry.add_primitive(primitive)
 
             all_geometry.add_geometry(geometry, part)
-            all_geometry.add_highlight_geometry(
-                geometry,
-                f'{self._name}_{part.part}'
-            )
+            all_geometry.add_highlight_geometry(geometry, f"{self._name}_{part.part}")
 
             return True
 
@@ -707,7 +669,7 @@ class EditorWall(empty_object.EmptyObject):
         point_1_bottom: float,
         point_1_top: float,
         point_2_bottom: float,
-        point_2_top: float
+        point_2_top: float,
     ):
         x_repeat = self.x_repeat
 

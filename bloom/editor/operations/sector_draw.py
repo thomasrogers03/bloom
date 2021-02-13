@@ -13,7 +13,7 @@ from ..map_objects.drawing import sector as drawing_sector
 def make_wall_points(
     blood_wall_base: wall.Wall,
     editor_sector: map_objects.EditorSector,
-    points: typing.List[core.Vec2]
+    points: typing.List[core.Vec2],
 ) -> typing.List[map_objects.EditorWall]:
     result: typing.List[map_objects.EditorWall] = []
     for point in points:
