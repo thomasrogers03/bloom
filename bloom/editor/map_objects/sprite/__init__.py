@@ -6,11 +6,11 @@ import typing
 
 from panda3d import bullet, core
 
-from ... import audio, constants, editor, game_map, map_data
-from ...tiles import manager
-from .. import (event_grouping, marker_constants, plane, sector_geometry,
-                segment, undo_stack)
-from . import empty_object, sprite_highlight
+from .... import audio, constants, editor, game_map, map_data
+from ....tiles import manager
+from ... import (event_grouping, marker_constants, plane, sector_geometry,
+                 segment, undo_stack)
+from .. import empty_object, sprite_highlight
 
 
 class EditorSprite(empty_object.EmptyObject):
@@ -315,7 +315,8 @@ class EditorSprite(empty_object.EmptyObject):
             {'sprite': self},
             picnum,
             self._sprite.sprite.palette,
-            self._sprite.sprite.stat.blocking | (self._sprite.sprite.stat.blocking2 << 1),
+            self._sprite.sprite.stat.blocking | (
+                self._sprite.sprite.stat.blocking2 << 1),
             self._sprite.sprite.stat.centring,
             self._sprite.sprite.stat.one_sided,
             self.theta
