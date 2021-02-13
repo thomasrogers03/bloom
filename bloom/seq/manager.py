@@ -47,16 +47,16 @@ class Manager:
 
     def __init__(self, rff: RFF):
         self._rff = rff
-        self._seqs: typing.Dict[str, Seq] = {}
+        self._seqs: typing.Dict[int, Seq] = {}
 
-    def get_seq(self, name: str):
-        if name not in self._seqs:
-            data = self._rff.data_for_entry(f'{name}.SEQ')
+    def get_seq(self, index: int):
+        if index not in self._seqs:
+            data = self._rff.data_for_entry_by_index('SEQ', index)
 
             loader = data_loading.Unpacker(data)
             header = loader.read_struct(Header)
             frames = loader.read_multiple(Frame, header.frame_count)
 
-            self._seqs[name] = Seq(header, frames)
+            self._seqs[index] = Seq(header, frames)
 
-        return self._seqs[name]
+        return self._seqs[index]

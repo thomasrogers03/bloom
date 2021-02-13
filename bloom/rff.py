@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import typing
+from collections import defaultdict
 from fnmatch import fnmatch
 
 from . import data_loading
@@ -48,10 +49,13 @@ class RFF:
 
         entries = data_loading.Unpacker(encrypted_entries).read_multiple(Entry, self._header.number_of_entries)
         self._entries: typing.Dict[str, Entry] = {}
+        self._indexed_entries: typing.Dict[str, typing.Dict[int, Entry]] = defaultdict(lambda: {})
         for entry in entries:
             file_name = entry.name.rstrip('\x00')
-            file_name = f'{file_name[3:]}.{file_name[0:3]}'
+            extension = file_name[0:3]
+            file_name = f'{file_name[3:]}.{extension}'
             self._entries[file_name] = entry
+            self._indexed_entries[extension][entry.indexer] = entry
 
     def file_listing(self) -> typing.List[str]:
         return list(self._entries.keys())
@@ -75,9 +79,18 @@ class RFF:
             return None
 
         entry = self._entries[file_name]
+        return self._decrypted_entry(entry)
+
+    def data_for_entry_by_index(self, extension: str, index: int) -> bytes:
+        if index not in self._indexed_entries[extension]:
+            return None
+
+        entry = self._indexed_entries[extension][index]
+        return self._decrypted_entry(entry)
+
+    def _decrypted_entry(self, entry: Entry):
         self._unpacker.seek(entry.offset)
         data = bytearray(self._unpacker.get_bytes(entry.size))
-
         if (entry.flags & self._FLAG_ENCRYPTED) != 0:
             for index in range(min(256, entry.size)):
                 data[index] ^= (index >> 1)
