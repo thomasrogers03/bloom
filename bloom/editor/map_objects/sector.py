@@ -879,12 +879,12 @@ class EditorSector(empty_object.EmptyObject):
     def get_type(self) -> int:
         return self._sector.sector.tags[0]
 
-    def get_picnum(self, part: str):
+    def get_picnum(self, part: typing.Optional[str]):
         if part == self.FLOOR_PART:
             return self._sector.sector.floor_picnum
         return self._sector.sector.ceiling_picnum
 
-    def set_picnum(self, part: str, picnum: int):
+    def set_picnum(self, part: typing.Optional[str], picnum: int):
         with self.change_blood_object():
             if part == self.FLOOR_PART:
                 self._sector.sector.floor_picnum = picnum

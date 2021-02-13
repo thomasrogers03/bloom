@@ -32,7 +32,7 @@ class EditorSprite(empty_object.EmptyObject):
         self,
         sprite: map_data.sprite.Sprite,
         name: str,
-        sector: "bloom.editor.map_objects.sector.EditorSector",
+        sector: typing.Any,
         audio_manager: audio.Manager,
         tile_manager: manager.Manager,
         seq_manager: seq.Manager,
@@ -48,9 +48,7 @@ class EditorSprite(empty_object.EmptyObject):
         self._seq_manager = seq_manager
         self._sprite_collision: core.NodePath = None
 
-    def move_to_sector(
-        self, new_sector: "bloom.editor.map_objects.sector.EditorSector"
-    ):
+    def move_to_sector(self, new_sector: typing.Any):
         self._sector = new_sector
         self.invalidate_geometry()
 
@@ -210,10 +208,10 @@ class EditorSprite(empty_object.EmptyObject):
         self._sprite.sprite.repeat_x = editor.to_build_sprite_repeat(x_repeat)
         self._sprite.sprite.repeat_y = editor.to_build_sprite_repeat(y_repeat)
 
-    def get_picnum(self, part: str):
+    def get_picnum(self, part: typing.Optional[str]):
         return self._sprite.sprite.picnum
 
-    def set_picnum(self, part: str, picnum: int):
+    def set_picnum(self, part: typing.Optional[str], picnum: int):
         self._sprite.sprite.picnum = picnum
         self.invalidate_geometry()
 
@@ -338,7 +336,7 @@ class EditorSprite(empty_object.EmptyObject):
         self._sprite_collision.set_pos(self.position)
         self._set_display_size(self.get_picnum(None))
 
-        alpha = 1
+        alpha = 1.0
         if self._sprite.sprite.stat.translucent_rev:
             alpha = 0.75
         elif self._sprite.sprite.stat.translucent:
@@ -402,7 +400,7 @@ class EditorSprite(empty_object.EmptyObject):
         self._set_z(position.z)
 
     def prepare_to_persist(
-        self, sector_mapping: typing.Dict["editor.sector.EditorSector", int]
+        self, sector_mapping: typing.Dict[typing.Any, int]
     ) -> map_data.sprite.Sprite:
         self._sprite.sprite.sector_index = sector_mapping[self._sector]
         self._sprite.sprite.owner = -1

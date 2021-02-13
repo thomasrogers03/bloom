@@ -28,12 +28,12 @@ class EditorWall(empty_object.EmptyObject):
         self._sector = editor_sector
         self._name = name
         self._wall = blood_wall
-        self.wall_previous_point: EditorWall = None
-        self._wall_point_2: EditorWall = None
-        self._other_side_wall: EditorWall = None
+        self.wall_previous_point: EditorWall = self
+        self._wall_point_2: EditorWall = self
+        self._other_side_wall: typing.Optional[EditorWall] = None
         self._debug_display: core.NodePath = None
         self._needs_geometry_reset = False
-        self._is_other_side_sector_visible: bool = None
+        self._is_other_side_sector_visible: typing.Optional[bool] = None
         self._is_destroyed = False
         self._parts: typing.Dict[str, sector_geometry.GeometryPart] = {}
 
@@ -89,8 +89,12 @@ class EditorWall(empty_object.EmptyObject):
         if self.other_side_wall is not None:
             self.other_side_wall.wall_point_2._gather_walls_at_point_1(seen)
 
-        if self.wall_previous_point.other_side_wall is not None:
-            self.wall_previous_point.other_side_wall._gather_walls_at_point_1(seen)
+        if self.wall_previous_point._other_side_wall is not None:
+            self.wall_previous_point._other_side_wall._gather_walls_at_point_1(seen)
+
+    @property
+    def _definite_other_side_wall(self):
+        return typing.cast(EditorWall, self._other_side_wall)
 
     def setup_geometry(self, all_geometry: sector_geometry.SectorGeometry):
         self._parts = {}
@@ -281,9 +285,6 @@ class EditorWall(empty_object.EmptyObject):
             self._wall.wall.position_x = int(position.x)
             self._wall.wall.position_y = int(position.y)
 
-    def move_point_2_to(self, position: core.Point2):
-        self._wall_point_2.move_point_1_to(position)
-
     @property
     def sector(self):
         return self._sector
@@ -374,17 +375,17 @@ class EditorWall(empty_object.EmptyObject):
     def get_type(self) -> int:
         return self._wall.wall.tags[0]
 
-    def get_picnum(self, part: str):
+    def get_picnum(self, part: typing.Optional[str]):
         if self._is_lower_swapped_part(part):
-            return self._other_side_wall.get_picnum(None)
+            return self._definite_other_side_wall.get_picnum(None)
         if self._is_masking_part(part):
             return self._wall.wall.over_picnum
         return self._wall.wall.picnum
 
-    def set_picnum(self, part: str, picnum: int):
+    def set_picnum(self, part: typing.Optional[str], picnum: int):
         self.invalidate_geometry()
         if self._is_lower_swapped_part(part):
-            self._other_side_wall.set_picnum(None, picnum)
+            self._definite_other_side_wall.set_picnum(None, picnum)
         elif self._is_masking_part(part):
             with self.change_blood_object():
                 self._wall.wall.over_picnum = picnum
@@ -471,13 +472,13 @@ class EditorWall(empty_object.EmptyObject):
 
     def get_stat_for_part(self, part: str):
         if self._is_lower_swapped_part(part):
-            return self._other_side_wall._wall.wall.stat
+            return self._definite_other_side_wall._wall.wall.stat
         return self._wall.wall.stat
 
     def prepare_to_persist(
         self,
-        sector_mapping: typing.Dict["editor.sector.EditorSector", int],
-        wall_mapping: typing.Dict["editor.wall.EditorWall", int],
+        sector_mapping: typing.Dict[typing.Any, int],
+        wall_mapping: typing.Dict[typing.Optional["EditorWall"], int],
     ) -> map_data.wall.Wall:
         if self._other_side_wall is not None:
             self._wall.wall.other_side_wall_index = wall_mapping[self._other_side_wall]
@@ -568,14 +569,14 @@ class EditorWall(empty_object.EmptyObject):
     def _has_wall_mask(self):
         return self._wall.wall.stat.masking > 0 and self._wall.wall.over_picnum >= 0
 
-    def _is_lower_swapped_part(self, part: str):
+    def _is_lower_swapped_part(self, part: typing.Optional[str]):
         return (
             self._other_side_wall is not None
             and self._wall.wall.stat.bottom_swap
             and part == self._lower_wall_part
         )
 
-    def _is_masking_part(self, part: str):
+    def _is_masking_part(self, part: typing.Optional[str]):
         return part is not None and part.endswith(self._MASK_WALL_PART)
 
     @property

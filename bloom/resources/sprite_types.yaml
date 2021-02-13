@@ -270,7 +270,6 @@
 47:
   category: weapons
   name: Pitchfork
-  repeats: {}
 48:
   category: weapons
   name: Spray Can
@@ -655,17 +654,14 @@
   category: items
   name: Wine Bottle
   palette: 4
-  repeats: {}
 134:
   blocking: 0
   category: items
   name: Skull Grail
-  repeats: {}
 135:
   blocking: 0
   category: items
   name: Silver Grail
-  repeats: {}
 136:
   category: items
   name: Tome
@@ -1233,7 +1229,6 @@
   clipdist: 64.0
   name: Unknown
   palette: 0
-  repeats: {}
   seq: 4096
   tile_config:
     tile: 0
@@ -1334,7 +1329,6 @@
   clipdist: 32.0
   name: Unknown
   palette: 0
-  repeats: {}
   seq: 13568
   tile_config:
     tile: 0
@@ -1344,7 +1338,6 @@
   clipdist: 48.0
   name: Unknown
   palette: 41
-  repeats: {}
   seq: 10752
   tile_config:
     tile: 0
@@ -1868,13 +1861,11 @@
 452:
   category: traps
   name: Flame Trap
-  repeats: {}
   tile_config:
     tile: 2183
 454:
   category: traps
   name: Saw Blade
-  repeats: {}
   tile_config:
     tile: 655
 455:
@@ -1922,19 +1913,15 @@
 700:
   category: environment
   name: Trigger Generator
-  repeats: {}
 701:
   category: environment
   name: Water Drip
-  repeats: {}
 702:
   category: environment
   name: Blood Drip
-  repeats: {}
 703:
   category: environment
   name: Fireball Generator
-  repeats: {}
 704:
   category: environment
   name: Ecto Skul Generator
@@ -1944,11 +1931,9 @@
 706:
   category: environment
   name: Bubble Generator
-  repeats: {}
 707:
   category: environment
   name: Multi Bubble Generator
-  repeats: {}
 708:
   category: sounds
   invisible: true
@@ -1957,7 +1942,6 @@
   - from: data_1
     name: Sound To Play
     type: sound
-  repeats: {}
   tile_config:
     tile: 2519
 709:

@@ -4,12 +4,8 @@
 import typing
 from concurrent import futures
 
-import yaml
-
-from ... import constants
 from ...tiles import art
 from .. import map_objects
-from ..descriptors import constants as descriptor_constants
 from ..properties import sprite_properties
 
 
@@ -68,7 +64,7 @@ class MapFixer:
                 sprite.set_picnum(None, 0)
                 fix_count += 1
 
-            descriptor = descriptor_constants.sprite_types[sprite.get_type()]
+            descriptor = sprite.type_descriptor
             palette = descriptor.palette
             if palette is None:
                 palette = sprite.sprite.sprite.palette

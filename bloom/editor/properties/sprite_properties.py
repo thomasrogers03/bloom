@@ -10,14 +10,14 @@ from panda3d import core
 
 from ... import constants, edit_mode, tile_dialog
 from ...audio import sound_view
-from ...tiles import manager
+from ...edit_modes import empty_edit_mode
 from ...utils import gui
 from .. import descriptors, event_grouping, map_objects
 from ..descriptors import sprite_type
 from . import sprite_property_view, sprite_type_list
 
 
-class SpriteDialog:
+class SpriteDialog(empty_edit_mode.EditMode):
     _TILE_FRAME_SIZE = 0.3
     _TILE_FRAME_SIZE_INNER = _TILE_FRAME_SIZE - 0.02
 
@@ -77,12 +77,16 @@ class SpriteDialog:
         self._tile_viewer = tile_viewer
         self._edit_mode = edit_mode
 
-        self._sprite: map_objects.EditorSprite = None
-        self._selected_descriptor: sprite_type.SpriteType = None
-        self._current_descriptor: sprite_type.SpriteType = None
-        self._current_picnum: int = None
-        self._current_palette: int = None
-        self._current_status_number: int = None
+        self._sprite: typing.Optional[map_objects.EditorSprite] = None
+        self._selected_descriptor: map_objects.sprite_type_descriptor.Descriptor = (
+            map_objects.sprite_type_descriptor.Descriptor(-1, {})
+        )
+        self._current_descriptor: map_objects.sprite_type_descriptor.Descriptor = (
+            map_objects.sprite_type_descriptor.Descriptor(-1, {})
+        )
+        self._current_picnum: typing.Optional[int] = None
+        self._current_palette: typing.Optional[int] = None
+        self._current_status_number: typing.Optional[int] = None
 
         self._sprite_category_options = DirectGui.DirectOptionMenu(
             parent=self._dialog,
@@ -95,7 +99,9 @@ class SpriteDialog:
         self._sprite_type_list = sprite_type_list.SpriteTypeList(
             self._dialog, self._tile_viewer.tile_manager, self._select_sprite_type
         )
-        self._properties: sprite_property_view.SpritePropertyView = None
+        self._properties: typing.Optional[
+            sprite_property_view.SpritePropertyView
+        ] = None
 
         self._droppables = {
             descriptor.name: sprite_type
@@ -229,7 +235,7 @@ class SpriteDialog:
     @staticmethod
     def apply_sprite_properties(
         sprite: map_objects.EditorSprite,
-        descriptor: sprite_type.SpriteType,
+        descriptor: map_objects.sprite_type_descriptor.Descriptor,
         picnum: int,
         palette: int,
     ):
@@ -284,7 +290,9 @@ class SpriteDialog:
             self._sprite_type_list.add_sprite_type(descriptor)
         self._sprite_type_list.set_current_type(self._current_descriptor)
 
-    def _select_sprite_type(self, descriptor: sprite_type.SpriteType):
+    def _select_sprite_type(
+        self, descriptor: map_objects.sprite_type_descriptor.Descriptor
+    ):
         if self._selected_descriptor == descriptor:
             self._save_changes()
             return

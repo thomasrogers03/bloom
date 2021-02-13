@@ -3,6 +3,7 @@
 
 
 from contextlib import contextmanager
+import typing
 
 from panda3d import core
 
@@ -38,10 +39,10 @@ class EmptyObject:
     def set_shade(self, part: str, value: float):
         raise NotImplementedError()
 
-    def get_picnum(self, part: str) -> int:
+    def get_picnum(self, part: typing.Optional[str]) -> int:
         raise NotImplementedError()
 
-    def set_picnum(self, part: str, picnum: int):
+    def set_picnum(self, part: typing.Optional[str], picnum: int):
         raise NotImplementedError()
 
     def reset_panning_and_repeats(self, part: str):
