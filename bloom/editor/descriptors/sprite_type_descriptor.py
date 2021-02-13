@@ -162,7 +162,7 @@ class SpriteTypeDescriptor:
     def apply_sprite_properties(
         self,
         sprite: map_objects.EditorSprite,
-        values: typing.Dict[str, typing.Tuple[bool, int]]
+        values: typing.Dict[str, typing.Union[bool, int]]
     ):
         stat = sprite.sprite.sprite.stat
         data = sprite.sprite.data

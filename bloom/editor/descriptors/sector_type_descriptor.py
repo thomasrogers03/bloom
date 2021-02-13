@@ -102,7 +102,7 @@ class SectorTypeDescriptor:
     def apply_sector_type_properties(
         self,
         sector: map_objects.EditorSector,
-        values: typing.Dict[str, typing.Tuple[bool, int]]
+        values: typing.Dict[str, typing.Union[bool, int]]
     ):
         data = sector.sector.data
 
