@@ -6,7 +6,7 @@ import typing
 
 from panda3d import bullet, core
 
-from ... import audio, constants, editor, game_map, map_data
+from ... import audio, constants, editor, game_map, map_data, seq
 from ...tiles import manager as tile_manager
 from .. import (event_grouping, marker_constants, plane, ror_constants,
                 sector_geometry, segment, undo_stack)
@@ -24,6 +24,7 @@ class EditorSector(empty_object.EmptyObject):
         sector: map_data.sector.Sector,
         name: str,
         audio_manager: audio.Manager,
+        seq_manager: seq.Manager,
         geometry_factory: sector_geometry.SectorGeometryFactory,
         suggest_sky_picnum: typing.Callable[[int], int],
         undos: undo_stack.UndoStack
@@ -33,6 +34,7 @@ class EditorSector(empty_object.EmptyObject):
         self._sector = sector
         self._name = name
         self._audio_manager = audio_manager
+        self._seq_manager = seq_manager
         self._geometry_factory = geometry_factory
         self._suggest_sky_picnum = suggest_sky_picnum
 
@@ -982,6 +984,7 @@ class EditorSector(empty_object.EmptyObject):
             self,
             self._audio_manager,
             self._geometry_factory.tile_manager,
+            self._seq_manager,
             self._undo_stack
         )
 

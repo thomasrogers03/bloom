@@ -367,6 +367,7 @@ class Bloom(ShowBase):
             self._camera_collection,
             map_to_load,
             self._audio_manager,
+            self._seq_manager,
             self._tile_manager
         )
 

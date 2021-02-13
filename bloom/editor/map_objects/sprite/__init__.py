@@ -6,7 +6,7 @@ import typing
 
 from panda3d import bullet, core
 
-from .... import audio, constants, editor, game_map, map_data
+from .... import audio, constants, editor, game_map, map_data, seq
 from ....tiles import manager
 from ... import (event_grouping, marker_constants, plane, sector_geometry,
                  segment, undo_stack)
@@ -29,6 +29,7 @@ class EditorSprite(empty_object.EmptyObject):
         sector: 'bloom.editor.map_objects.sector.EditorSector',
         audio_manager: audio.Manager,
         tile_manager: manager.Manager,
+        seq_manager: seq.Manager,
         undos: undo_stack.UndoStack
     ):
         super().__init__(undos)
@@ -38,6 +39,7 @@ class EditorSprite(empty_object.EmptyObject):
         self._sprite = sprite
         self._audio_manager = audio_manager
         self._tile_manager = tile_manager
+        self._seq_manager = seq_manager
         self._sprite_collision: core.NodePath = None
 
     def move_to_sector(self, new_sector: 'bloom.editor.map_objects.sector.EditorSector'):

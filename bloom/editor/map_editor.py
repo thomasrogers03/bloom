@@ -8,7 +8,7 @@ import yaml
 from panda3d import bullet, core
 
 from .. import (audio, cameras, constants, data_loading, edit_mode, editor,
-                find_resource, game_map, map_data)
+                find_resource, game_map, map_data, seq)
 from ..tiles import manager
 from ..utils import sky
 from . import grid_snapper, sector_geometry, undo_stack, view_clipping
@@ -27,6 +27,7 @@ class MapEditor:
         camera_collection: cameras.Cameras,
         map_to_load: game_map.Map,
         audio_manager: audio.Manager,
+        seq_manager: seq.Manager,
         tile_manager: manager.Manager
     ):
         logger.info('Setting up sector editor')
@@ -61,6 +62,7 @@ class MapEditor:
         self._sectors = SectorCollection(
             map_to_load,
             audio_manager,
+            seq_manager,
             geometry_factory,
             self._suggest_sky,
             self._undo_stack
