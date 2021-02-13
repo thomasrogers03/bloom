@@ -7,7 +7,7 @@ import typing
 class Descriptor:
     _DECORATION_CATEGORY = 'decoration'
 
-    def __init__(self, sprite_type: int, descriptor: dict):
+    def __init__(self, sprite_type: int, descriptor: typing.Dict[str, typing.Any]):
         self._sprite_type = sprite_type
         self._descriptor = descriptor
 
@@ -73,6 +73,10 @@ class Descriptor:
                 return [tile_config['start_tile']]
 
         return None
+
+    @property
+    def seq(self) -> typing.Union[int, None]:
+        return self._descriptor.get('seq', None)
 
     @property
     def property_descriptors(self) -> typing.List[dict]:

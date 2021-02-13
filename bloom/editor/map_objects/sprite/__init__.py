@@ -73,10 +73,7 @@ class EditorSprite(empty_object.EmptyObject):
 
     @property
     def size(self):
-        tile_dimensions = self._tile_manager.get_tile_dimensions(
-            self.get_picnum(None)
-        )
-        return core.Vec2(tile_dimensions.x * self.x_repeat, tile_dimensions.y * self.y_repeat)
+        return self._size_for_tile(self.get_picnum(None))
 
     @property
     def position(self):
@@ -339,30 +336,9 @@ class EditorSprite(empty_object.EmptyObject):
             self.theta
         )
 
-        sprite_collision.set_pos(self.position)
-        sprite_size = self.size
-        if self.is_floor:
-            y_scale = sprite_size.y
-            z_scale = sprite_size.x
-        else:
-            y_scale = sprite_size.x
-            z_scale = sprite_size.y
-
-        sprite_collision.set_scale(
-            sprite_size.x,
-            y_scale,
-            z_scale
-        )
-
-        texture_scale = core.Vec2(-1, 1)
-        if self._sprite.sprite.stat.xflip:
-            texture_scale.x = 1
-        if self._sprite.sprite.stat.yflip:
-            texture_scale.y = -1
-        sprite_collision.set_tex_scale(
-            core.TextureStage.get_default(),
-            texture_scale
-        )
+        self._sprite_collision = sprite_collision
+        self._sprite_collision.set_pos(self.position)
+        self._set_display_size(self.get_picnum(None))
 
         alpha = 1
         if self._sprite.sprite.stat.translucent_rev:
@@ -370,11 +346,32 @@ class EditorSprite(empty_object.EmptyObject):
         elif self._sprite.sprite.stat.translucent:
             alpha = 0.5
         shade = self._shade_to_colour_channel(self.shade)
-        sprite_collision.set_color(shade, shade, shade, alpha)
+        self._sprite_collision.set_color(shade, shade, shade, alpha)
 
-        self._sprite_collision = sprite_collision
         self.update_ambient_sound()
         self._needs_geometry_reset = False
+
+    def update(self, ticks: int, art_manager: manager.Manager):
+        if self._seq is None:
+            return
+
+        node_path: core.NodePath = self._sprite_collision.find('**/geometry')
+        if node_path.is_empty():
+            return
+
+        frame_index = int(
+            (4 * ticks) / self._seq.header.ticks_per_frame
+        ) % self._seq.header.frame_count
+        frame = self._seq.frames[frame_index]
+
+        self._set_display_size(frame.stat.tile)
+
+        node_path.set_texture(
+            art_manager.get_tile(
+                frame.stat.tile,
+                frame.palette
+            )
+        )
 
     def update_ambient_sound(self):
         if self._sprite.sprite.tags[0] != self._AMBIENT_SFX_TYPE or \
@@ -407,6 +404,35 @@ class EditorSprite(empty_object.EmptyObject):
         self._sprite.sprite.owner = -1
         return self._sprite
 
+    def _size_for_tile(self, tile: int):
+        tile_dimensions = self._tile_manager.get_tile_dimensions(tile)
+        return core.Vec2(tile_dimensions.x * self.x_repeat, tile_dimensions.y * self.y_repeat)
+
+    def _set_display_size(self, tile: int):
+        sprite_size = self._size_for_tile(tile)
+        if self.is_floor:
+            y_scale = sprite_size.y
+            z_scale = sprite_size.x
+        else:
+            y_scale = sprite_size.x
+            z_scale = sprite_size.y
+
+        self._sprite_collision.set_scale(
+            sprite_size.x,
+            y_scale,
+            z_scale
+        )
+
+        texture_scale = core.Vec2(-1, 1)
+        if self._sprite.sprite.stat.xflip:
+            texture_scale.x = 1
+        if self._sprite.sprite.stat.yflip:
+            texture_scale.y = -1
+        self._sprite_collision.set_tex_scale(
+            core.TextureStage.get_default(),
+            texture_scale
+        )
+
     @property
     def _blood_object(self):
         return self._sprite
@@ -414,6 +440,11 @@ class EditorSprite(empty_object.EmptyObject):
     @_blood_object.setter
     def _blood_object(self, value):
         self._sprite = value
+
+    @property
+    def _seq(self):
+        seq_number = self.type_descriptor.seq
+        return self._seq_manager.get_seq(seq_number)
 
     @property
     def _offsets(self):

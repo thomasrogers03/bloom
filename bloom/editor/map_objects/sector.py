@@ -267,6 +267,9 @@ class EditorSector(empty_object.EmptyObject):
         for wall in self._walls:
             wall.update(ticks)
 
+        for sprite in self._sprites:
+            sprite.update(ticks, art_manager)
+
         theta = editor.to_degrees(self._sector.data.angle)
         theta = math.radians(theta)
         x_panning = math.sin(theta)

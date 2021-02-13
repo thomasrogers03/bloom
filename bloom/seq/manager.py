@@ -1,9 +1,10 @@
 # Copyright 2020 Thomas Rogers
 # SPDX-License-Identifier: Apache-2.0
 
+import typing
+
 from .. import data_loading
 from ..rff import RFF
-import typing
 
 
 class Header(data_loading.CustomStruct):
@@ -47,16 +48,18 @@ class Manager:
 
     def __init__(self, rff: RFF):
         self._rff = rff
-        self._seqs: typing.Dict[int, Seq] = {}
+        self._seqs: typing.Dict[int, typing.Union[Seq, None]] = {}
 
     def get_seq(self, index: int):
         if index not in self._seqs:
             data = self._rff.data_for_entry_by_index('SEQ', index)
+            if data is None:
+                self._seqs[index] = None
+            else:
+                loader = data_loading.Unpacker(data)
+                header = loader.read_struct(Header)
+                frames = loader.read_multiple(Frame, header.frame_count)
 
-            loader = data_loading.Unpacker(data)
-            header = loader.read_struct(Header)
-            frames = loader.read_multiple(Frame, header.frame_count)
-
-            self._seqs[index] = Seq(header, frames)
+                self._seqs[index] = Seq(header, frames)
 
         return self._seqs[index]
