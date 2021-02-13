@@ -86,7 +86,7 @@ class WallTypeDescriptor:
     def apply_wall_properties(
         self,
         wall: map_objects.EditorWall,
-        values: typing.Dict[str, typing.Tuple[bool, int]]
+        values: typing.Dict[str, typing.Union[bool, int]]
     ):
         data = wall.blood_wall.data
 
