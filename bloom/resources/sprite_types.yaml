@@ -805,7 +805,6 @@
   repeats:
     x: 10
     y: 10
-  seq: 4352
   tile_config:
     tile: 3054
 206:
@@ -1240,7 +1239,6 @@
   repeats:
     x: 10
     y: 10
-  seq: 4352
   tile_config:
     tile: 1209
 245:

@@ -9,6 +9,7 @@ from . import (
     increment_panning,
     increment_repeats,
     increment_sector_heinum,
+    object_translucency,
     map_fixer,
     object_blocking,
     sector_copy,

@@ -135,6 +135,7 @@ class ObjectEditor:
         event_handler.accept("delete", self._delete_selected)
         event_handler.accept("b", self._bind_objects)
         event_handler.accept("n", self._toggle_blocking_state)
+        event_handler.accept("t", self._toggle_translucent_state)
 
         event_handler.accept("home", self._move_selected_to_ceiling)
         event_handler.accept("end", self._move_selected_to_floor)
@@ -343,6 +344,22 @@ class ObjectEditor:
             stat = selected_item.map_object.get_stat_for_part(selected_item.part)
             self._camera_collection.set_info_text(
                 f"Blocking: {stat.blocking}, Blocking 2: {stat.blocking2}"
+            )
+
+    def _toggle_translucent_state(self):
+        selected = self._highlighter.select_append(
+            no_append_if_not_selected=True,
+            selected_type_or_types=[map_objects.EditorWall, map_objects.EditorSprite],
+        )
+
+        for selected_item in selected:
+            operations.object_translucency.ObjectTranslucency(
+                selected_item.map_object, selected_item.part
+            ).toggle()
+
+            stat = selected_item.map_object.get_stat_for_part(selected_item.part)
+            self._camera_collection.set_info_text(
+                f"Translucency: {stat.translucent}, Translucency Reverse: {stat.translucent_rev}"
             )
 
     def _decrease_slope(self):
