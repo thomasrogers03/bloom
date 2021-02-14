@@ -307,7 +307,9 @@ class EditorSector(empty_object.EmptyObject):
     def get_below_draw_offset(self) -> typing.Optional[core.Vec3]:
         if self._sector_above_ceiling is None:
             return None
-        return -self._sector_above_ceiling.get_above_draw_offset()
+        sector_above_ceiling: EditorSector = self._sector_above_ceiling
+        offset: core.Vec3 = sector_above_ceiling.get_above_draw_offset()
+        return -offset
 
     def get_above_draw_offset(self) -> typing.Optional[core.Vec3]:
         if self._sector_below_floor is None:
