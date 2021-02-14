@@ -256,6 +256,14 @@ class SpriteDialog(empty_edit_mode.EditMode):
             if descriptor.blocking >= 2:
                 sprite.sprite.sprite.stat.blocking2 = 1
 
+        if descriptor.translucency is not None:
+            sprite.sprite.sprite.stat.translucent_rev = 0
+            sprite.sprite.sprite.stat.translucent = 0
+            if descriptor.translucency >= 2:
+                sprite.sprite.sprite.stat.translucent_rev = 1
+            elif descriptor.translucency >= 1:
+                sprite.sprite.sprite.stat.translucent = 1
+
         repeats = descriptor.sprite_repeats
         if repeats is not None:
             sprite.set_repeats(repeats["x"], repeats["y"])

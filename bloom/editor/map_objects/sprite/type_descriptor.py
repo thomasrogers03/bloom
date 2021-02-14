@@ -27,6 +27,13 @@ class Descriptor:
         return self._descriptor.get("blocking", 0)
 
     @property
+    def translucency(self) -> typing.Optional[int]:
+        if self._is_decoration:
+            return None
+
+        return self._descriptor.get("translucency", 0)
+
+    @property
     def category(self):
         return self._descriptor["category"]
 
