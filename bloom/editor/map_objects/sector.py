@@ -865,6 +865,7 @@ class EditorSector(empty_object.EmptyObject):
         self._sector_below_floor._sector_above_ceiling = self
 
     def unlink(self):
+        self._ror_type = None
         if self._sector_below_floor is not None:
             self._sector_below_floor._sector_above_ceiling = None
             self._sector_below_floor = None
