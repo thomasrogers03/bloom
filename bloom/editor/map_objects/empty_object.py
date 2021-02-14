@@ -45,7 +45,7 @@ class EmptyObject:
     def set_picnum(self, part: typing.Optional[str], picnum: int):
         raise NotImplementedError()
 
-    def reset_panning_and_repeats(self, part: str):
+    def reset_panning_and_repeats(self, part: typing.Optional[str]):
         pass
 
     def get_data(self):

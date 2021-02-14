@@ -235,7 +235,7 @@ class EditorSector(empty_object.EmptyObject):
         self.invalidate_geometry()
         self._is_destroyed = False
 
-    def reset_panning_and_repeats(self, part: str):
+    def reset_panning_and_repeats(self, part: typing.Optional[str]):
         self.invalidate_geometry()
         if part == self.FLOOR_PART:
             self._sector.sector.floor_stat.groudraw = 0
@@ -304,12 +304,12 @@ class EditorSector(empty_object.EmptyObject):
         ):
             self._ceiling_part.node_path.set_tex_pos(texture_stage, panning)
 
-    def get_below_draw_offset(self):
+    def get_below_draw_offset(self) -> typing.Optional[core.Vec3]:
         if self._sector_above_ceiling is None:
             return None
         return -self._sector_above_ceiling.get_above_draw_offset()
 
-    def get_above_draw_offset(self):
+    def get_above_draw_offset(self) -> typing.Optional[core.Vec3]:
         if self._sector_below_floor is None:
             return None
 

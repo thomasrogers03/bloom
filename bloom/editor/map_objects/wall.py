@@ -530,7 +530,7 @@ class EditorWall(empty_object.EmptyObject):
     def get_length(self):
         return self.get_direction().length()
 
-    def reset_panning_and_repeats(self, part: str):
+    def reset_panning_and_repeats(self, part: typing.Optional[str]):
         with self.change_blood_object():
             self._wall.wall.panning_x = 0
             self._wall.wall.panning_y = 0
