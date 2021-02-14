@@ -260,9 +260,9 @@ class SpriteDialog(empty_edit_mode.EditMode):
             sprite.sprite.sprite.stat.translucent_rev = 0
             sprite.sprite.sprite.stat.translucent = 0
             if descriptor.translucency >= 2:
-                sprite.sprite.sprite.stat.translucent_rev = 1
-            elif descriptor.translucency >= 1:
                 sprite.sprite.sprite.stat.translucent = 1
+            elif descriptor.translucency >= 1:
+                sprite.sprite.sprite.stat.translucent_rev = 1
 
         repeats = descriptor.sprite_repeats
         if repeats is not None:

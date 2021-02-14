@@ -17,4 +17,5 @@ class SectorDelete:
         for wall in self._sector.portal_walls():
             wall.other_side_wall.unlink()
             wall.destroy()
+        self._sector.unlink()
         self._all_sectors.destroy_sector(self._sector)

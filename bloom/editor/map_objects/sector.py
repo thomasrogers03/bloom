@@ -862,6 +862,14 @@ class EditorSector(empty_object.EmptyObject):
         self._sector_below_floor = sector_below_floor
         self._sector_below_floor._sector_above_ceiling = self
 
+    def unlink(self):
+        if self._sector_below_floor is not None:
+            self._sector_below_floor._sector_above_ceiling = None
+            self._sector_below_floor = None
+        if self._sector_above_ceiling is not None:
+            self._sector_above_ceiling._sector_below_floor = None
+            self._sector_above_ceiling = None
+
     def get_bounding_rectangle(self):
         result = core.Vec4(
             constants.REALLY_BIG_NUMBER,

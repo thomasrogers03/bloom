@@ -856,6 +856,7 @@
   category: monsters
   clipdist: 64.0
   name: Phantasm
+  translucency: 1
   repeats:
     x: 10
     y: 10
