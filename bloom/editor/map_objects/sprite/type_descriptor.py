@@ -13,7 +13,9 @@ class Descriptor:
 
     @property
     def sprite_repeats(self):
-        return self._descriptor.get("repeats", None)
+        if "repeats" in self._descriptor and len(self._descriptor["repeats"]) > 0:
+            return self._descriptor["repeats"]
+        return None
 
     @property
     def sprite_type(self):
