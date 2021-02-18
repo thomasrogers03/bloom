@@ -54,6 +54,7 @@ class SpecialGrouping:
 
 
 class EventGroupingCollection:
+    SECRET_GROUPING = SpecialGrouping(None, 2)
     END_LEVEL_GROUPING = SpecialGrouping(None, 4)
     SECRET_END_LEVEL_GROUPING = SpecialGrouping(None, 5)
     START_LEVEL_GROUPING = SpecialGrouping(7, None)
@@ -65,6 +66,7 @@ class EventGroupingCollection:
         groupings: typing.Dict[int, EventGrouping] = defaultdict(
             lambda: EventGrouping()
         )
+        groupings[2] = self.SECRET_GROUPING
         groupings[4] = self.END_LEVEL_GROUPING
         groupings[5] = self.SECRET_END_LEVEL_GROUPING
         groupings[7] = self.START_LEVEL_GROUPING

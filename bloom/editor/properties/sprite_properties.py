@@ -164,6 +164,11 @@ class SpriteDialog(empty_edit_mode.EditMode):
 
         if (
             self._sprite.target_event_grouping
+            == event_grouping.EventGroupingCollection.SECRET_GROUPING
+        ):
+            self._special_target_menu.set("Secret")
+        elif (
+            self._sprite.target_event_grouping
             == event_grouping.EventGroupingCollection.END_LEVEL_GROUPING
         ):
             self._special_target_menu.set("Next Level")
@@ -179,7 +184,7 @@ class SpriteDialog(empty_edit_mode.EditMode):
             self._sprite.source_event_grouping
             == event_grouping.EventGroupingCollection.START_LEVEL_GROUPING
         ):
-            self._special_source_menu.set("Next Level")
+            self._special_source_menu.set("Level Start")
         else:
             self._special_source_menu.set("None")
 
@@ -203,7 +208,11 @@ class SpriteDialog(empty_edit_mode.EditMode):
         self._sprite.invalidate_geometry()
 
         target_special_value = self._special_target_menu.get()
-        if target_special_value == "Next Level":
+        if target_special_value == "Secret":
+            self._sprite.set_target_event_grouping(
+                event_grouping.EventGroupingCollection.SECRET_GROUPING
+            )
+        elif target_special_value == "Next Level":
             self._sprite.set_target_event_grouping(
                 event_grouping.EventGroupingCollection.END_LEVEL_GROUPING
             )

@@ -27,6 +27,8 @@ class Property(typing.NamedTuple):
         "Stop Off": 9,
         "Stop On": 10,
         "Stop Next": 11,
+        "Secret": 64,
+        "Super Secret": 65,
     }
     KEY_ENUM = {
         "None": 0,
