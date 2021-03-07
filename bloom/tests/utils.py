@@ -177,6 +177,7 @@ def save_sector_images(
 
 def new_sector_collection():
     mock_audio_manager = mock.Mock()
+    mock_seq_manager = mock.Mock()
     mock_geometry_factory = mock.Mock()
     mock_suggest_sky = mock.Mock()
     mock_camera_collection = mock.Mock()
@@ -184,7 +185,7 @@ def new_sector_collection():
 
     map_to_load = game_map.Map()
     return map_objects.SectorCollection(
-        map_to_load, mock_audio_manager, mock_geometry_factory, mock_suggest_sky, undos
+        map_to_load, mock_audio_manager, mock_seq_manager, mock_geometry_factory, mock_suggest_sky, undos
     )
 
 
