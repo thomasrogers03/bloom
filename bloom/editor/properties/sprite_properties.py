@@ -132,7 +132,7 @@ class SpriteDialog(empty_edit_mode.EditMode):
         self._special_target_menu = DirectGui.DirectOptionMenu(
             parent=self._dialog,
             pos=core.Vec3(1.90, 0.38 - constants.TEXT_SIZE - 0.02),
-            items=["None", "Next Level", "Secret Level"],
+            items=["None", "Secret", "Next Level", "Secret Level"],
             scale=constants.TEXT_SIZE,
         )
 

@@ -4,6 +4,7 @@
 import typing
 
 import yaml
+from bloom.editor import event_grouping
 from direct.gui import DirectGui, DirectGuiGlobals
 from panda3d import core
 
@@ -43,6 +44,10 @@ class TypeSelector:
             frameColor=(0.85, 0.85, 0.85, 0.75),
             state=DirectGuiGlobals.NORMAL,
         )
+        self._properties_parent: core.NodePath = self._properties_frame.attach_new_node(
+            "properties"
+        )
+        self._properties_parent.set_z(0.10)
         gui.bind_gui_for_focus(self._properties_frame)
         self._properties_frame.hide()
         self._properties: sprite_property_view.SpritePropertyView = None
@@ -63,6 +68,42 @@ class TypeSelector:
             command=self._type_changed,
         )
 
+        DirectGui.DirectLabel(
+            parent=self._properties_frame,
+            text="Special Source:",
+            pos=core.Vec3(
+                7 * constants.PADDING, 2 * constants.TEXT_SIZE + 2 * constants.PADDING
+            ),
+            scale=constants.TEXT_SIZE,
+            frameColor=(0, 0, 0, 0),
+        )
+        self._special_source_menu = DirectGui.DirectOptionMenu(
+            parent=self._properties_frame,
+            pos=core.Vec3(
+                7 * constants.PADDING + 0.16,
+                2 * constants.TEXT_SIZE + 2 * constants.PADDING,
+            ),
+            items=["None", "Level Start"],
+            scale=constants.TEXT_SIZE,
+        )
+
+        DirectGui.DirectLabel(
+            parent=self._properties_frame,
+            text="Special Target:",
+            pos=core.Vec3(
+                7 * constants.PADDING, constants.TEXT_SIZE + constants.PADDING
+            ),
+            scale=constants.TEXT_SIZE,
+            frameColor=(0, 0, 0, 0),
+        )
+        self._special_target_menu = DirectGui.DirectOptionMenu(
+            parent=self._properties_frame,
+            pos=core.Vec3(7 * constants.PADDING + 0.16, constants.TEXT_SIZE)
+            + constants.PADDING,
+            items=["None", "Secret", "Next Level", "Secret Level"],
+            scale=constants.TEXT_SIZE,
+        )
+
         self._update_frame_position()
 
     def tick(self):
@@ -74,6 +115,33 @@ class TypeSelector:
         self._current_sector_type = sector.sector.sector.tags[0]
         type_name = descriptors.sector_types[self._sector.sector.sector.tags[0]].name
         self._type_selector.set(type_name)
+
+        if (
+            self._sector.target_event_grouping
+            == event_grouping.EventGroupingCollection.SECRET_GROUPING
+        ):
+            self._special_target_menu.set("Secret")
+        elif (
+            self._sector.target_event_grouping
+            == event_grouping.EventGroupingCollection.END_LEVEL_GROUPING
+        ):
+            self._special_target_menu.set("Next Level")
+        elif (
+            self._sector.target_event_grouping
+            == event_grouping.EventGroupingCollection.SECRET_END_LEVEL_GROUPING
+        ):
+            self._special_target_menu.set("Secret Level")
+        else:
+            self._special_target_menu.set("None")
+
+        if (
+            self._sector.source_event_grouping
+            == event_grouping.EventGroupingCollection.START_LEVEL_GROUPING
+        ):
+            self._special_source_menu.set("Level Start")
+        else:
+            self._special_source_menu.set("None")
+
         self._frame.show()
         self._properties_frame.show()
 
@@ -143,19 +211,50 @@ class TypeSelector:
         self._current_sector_type.apply_sector_type_properties(
             self._sector, self._properties.get_values()
         )
+
+        target_special_value = self._special_target_menu.get()
+        if target_special_value == "Secret":
+            self._sector.set_target_event_grouping(
+                event_grouping.EventGroupingCollection.SECRET_GROUPING
+            )
+        elif target_special_value == "Next Level":
+            self._sector.set_target_event_grouping(
+                event_grouping.EventGroupingCollection.END_LEVEL_GROUPING
+            )
+        elif target_special_value == "Secret Level":
+            self._sector.set_target_event_grouping(
+                event_grouping.EventGroupingCollection.SECRET_END_LEVEL_GROUPING
+            )
+        elif (
+            self._sector.target_event_grouping is not None
+            and self._sector.target_event_grouping.special_receiver_id is not None
+        ):
+            self._sector.set_target_event_grouping(None)
+
+        source_special_value = self._special_source_menu.get()
+        if source_special_value == "Level Start":
+            self._sector.set_source_event_grouping(
+                event_grouping.EventGroupingCollection.START_LEVEL_GROUPING
+            )
+        elif (
+            self._sector.source_event_grouping is not None
+            and self._sector.source_event_grouping.special_receiver_id is not None
+        ):
+            self._sector.set_source_event_grouping(None)
+
         self._sector.invalidate_geometry()
 
     def _update_property_view(self):
         self._clear_property_view()
         self._properties = sprite_property_view.SpritePropertyView(
-            self._properties_frame,
+            self._properties_parent,
             -1,
             self._current_sector_type.get_sector_type_properties(self._sector),
             None,
             None,
             2.35,
             1,
-            1.25,
+            1.15,
             alpha=0.5,
         )
 
