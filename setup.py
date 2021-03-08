@@ -7,21 +7,22 @@ import os.path
 
 def _install_requires():
     directory = os.path.dirname(__file__)
-    requirements_path = os.path.join(directory, 'requirements.txt')
-    
-    with open(requirements_path, 'r') as file:
+    requirements_path = os.path.join(directory, "requirements.txt")
+
+    with open(requirements_path, "r") as file:
         lines = [
             line.strip()
             for line in file.readlines()
-            if not line.startswith('#') and len(line.strip()) > 0
+            if not line.startswith("#") and len(line.strip()) > 0
         ]
     return lines
 
+
 def _get_version():
     directory = os.path.dirname(__file__)
-    version_path = os.path.join(directory, 'version.txt')
-    
-    with open(version_path, 'r') as file:
+    version_path = os.path.join(directory, "version.txt")
+
+    with open(version_path, "r") as file:
         return file.readlines()[0].strip()
 
 
@@ -39,24 +40,25 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     include_package_data=True,
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     install_requires=_install_requires(),
     options={
-        'build_apps': {
-            'include_patterns': [
-                'bloom/resources/*.*',
-                'bloom/pre_cache/*.*',
-                'bloom/examples/*.*',
-                'README.url',
+        "build_apps": {
+            "include_patterns": [
+                "bloom/resources/*.*",
+                "bloom/pre_cache/*.*",
+                "bloom/examples/*.*",
+                "README.url",
             ],
-            'console_apps': {'bloom': 'run_bloom.py'},
-            'plugins': [
-                'pandagl',
-                'p3tinydisplay',
-                'pandadx9',
-                'p3openal_audio',
+            "console_apps": {"bloom": "run_bloom.py"},
+            "plugins": [
+                "pandagl",
+                "p3tinydisplay",
+                "pandadx9",
+                "p3openal_audio",
             ],
-            'platforms': ['win_amd64']
+            "platforms": ["win_amd64"],
+            "include_modules": ["futures3"],
         }
-    }
+    },
 )
