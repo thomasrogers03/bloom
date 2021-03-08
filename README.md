@@ -48,16 +48,17 @@ Currently it supports:
 - sector special editing
     - indicators for motion
     - property editing
+- wall special editing
+    - property editing
 - easy to build room over room
 - triggers
     - remove the need for manually specifying tx/rx ids
     - just link triggered objects to the objects that trigger them
 - sound previews using openal and [fluidsynth](https://github.com/FluidSynth/fluidsynth)
+- basic undo (somewhat buggy, needs some love)
 
 Planned Features:
-- undo
 - categorized textures
-- special wall types
 - explosion sequence builder
 - easy environmental effects (rain, snow, etc.)
 - scripted sequence tools (for things like puzzles)
@@ -65,6 +66,7 @@ Planned Features:
 - support for quickly running maps/mods in ports
 - SEQ editting support
 - QAV editting support
+- Fresh Supply scripting support
 
 ## Documentation For Specific Features
 
