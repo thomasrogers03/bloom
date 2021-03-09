@@ -33,7 +33,7 @@ jobs:
           command: |
             set -eou pipefail
 
-            ~/Miniconda3/Scripts/activate bloom
+            . ~/Miniconda3/Scripts/activate bloom
 
             python -m pip install wheel
             python -m pip install -r dev_requirements.txt
@@ -43,7 +43,7 @@ jobs:
           command: |
             set -eou pipefail
 
-            ~/Miniconda3/Scripts/activate bloom
+            . ~/Miniconda3/Scripts/activate bloom
             
             python setup.py bdist_apps
             python setup.py bdist_wheel
@@ -60,7 +60,7 @@ jobs:
           command: |
             set -eou pipefail
 
-            ~/Miniconda3/Scripts/activate bloom
+            . ~/Miniconda3/Scripts/activate bloom
 
             python -m unittest bloom.tests
           name: Run Tests
