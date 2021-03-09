@@ -58,7 +58,6 @@ setuptools.setup(
                 "p3openal_audio",
             ],
             "platforms": ["win_amd64"],
-            "include_modules": ["futures3"],
         }
     },
 )
