@@ -64,6 +64,7 @@ jobs:
 
             python -m unittest bloom.tests
           name: Run Tests
+          shell: bash.exe
   publish-github-release:
     executor: python/default
     docker:
