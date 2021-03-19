@@ -63,7 +63,7 @@ class SectorExtrude:
         upper_sector.sector.sector.floor_picnum = picnum
         lower_sector.sector.sector.ceiling_picnum = picnum
 
-        upper_sector.link(map_objects.EditorSector.FLOOR_PART, lower_sector)
+        upper_sector.link(link_type, lower_sector)
 
         if link_type in ror_constants.ROR_TYPES_WITH_WATER:
             lower_sector.get_data().underwater = 1
