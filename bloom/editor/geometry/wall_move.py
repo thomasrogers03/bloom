@@ -64,7 +64,10 @@ class WallMove(empty_move.EmptyMove):
             wall_below = point
             while sector_below is not None:
                 offset = sector_below.get_below_draw_offset()
-                wall_below = sector_below.find_wall_on_point(wall_below.point_1 + offset.xy)
+                point_to_find = wall_below.point_1
+                wall_below = sector_below.find_wall_on_point(point_to_find + offset.xy)
+                if wall_below is None:
+                    raise ValueError(f"No wall for {point_to_find} to move in ror sector below")
                 points_below = wall_below.all_walls_at_point_1()
                 for point_to_move in points_below:
                     vertex_moves.append((point_to_move, new_position + offset.xy))
